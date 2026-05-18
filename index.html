@@ -859,6 +859,16 @@ html{scroll-behavior:smooth}
 <div class="auto-scroll" id="autoScroll2"></div>
 </div>
 
+<!-- Page: Versions -->
+<div class="page" id="page-versions">
+<div class="section-hd"><h2>📜 版本历史</h2></div>
+<div id="versionList"></div>
+<div style="margin-top:12px;font-size:12px;color:var(--text2);padding:12px;background:var(--card);border-radius:8px;border:1px solid rgba(255,255,255,.035)">
+<strong>📌 说明</strong><br>
+每次你让我改版时，旧版本会自动存档到这里。点击版本号可查看对应版本的完整页面。
+</div>
+</div>
+
 </div>
 
 <!-- Bottom Navigation -->
@@ -867,6 +877,7 @@ html{scroll-behavior:smooth}
 <button class="item" data-page="papers" onclick="switchPage('papers')"><span class="ico">📄</span><span class="lbl">论文</span></button>
 <button class="item" data-page="tools" onclick="switchPage('tools')"><span class="ico">🧭</span><span class="lbl">工具</span></button>
 <button class="item" data-page="auto" onclick="switchPage('auto')"><span class="ico">🤖</span><span class="lbl">自动化</span></button>
+<button class="item" data-page="versions" onclick="switchPage('versions')"><span class="ico">📜</span><span class="lbl">版本</span></button>
 </nav>
 
 <script>
@@ -1062,6 +1073,22 @@ function renderInsightCards(data){
 $('insightScroll').innerHTML=data.map(c=>'<div class="insight-card card '+c.cls+'"><div class="cat"><span style="font-size:16px">'+c.cat.split(' ')[0]+'</span>'+esc(c.cat.split(' ').slice(1).join(' '))+'</div><div class="sum">'+esc(c.summary)+'</div><div class="plist">'+c.papers.map(p=>'<div class="i" onclick="window.open(\''+p.url+'\',\'_blank\')"><span class="d" style="background:'+(c.cls==='c0'?'var(--accent)':c.cls==='c1'?'var(--accent2)':'var(--accent3)')+'"></span><span class="t">'+esc(p.title)+'</span><span class="s">'+esc(p.src)+'</span></div>').join('')+'</div></div>').join('');
 }
 
+// ====== Version History ======
+function loadVersions(){
+const list=$('versionList');
+if(!list)return;
+list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text2);font-size:13px"><span class="loading"></span> 加载版本列表...</div>';
+fetch('versions/manifest.json?v='+Date.now()).then(r=>r.ok?r.json():Promise.reject()).then(data=>{
+list.innerHTML=data.map((v,i)=>'<div style="background:var(--card);border:1px solid rgba(255,255,255,.035);border-radius:10px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px" onclick="window.open(\'versions/'+v.id+'-'+v.date.slice(0,10)+'.html\',\'_blank\')" class="card" style="cursor:pointer">'+
+'<div style="font-size:24px;font-weight:700;color:var(--accent);min-width:48px">v'+(data.length-i)+'</div>'+
+'<div style="flex:1;min-width:0"><div style="font-weight:600;font-size:14px;margin-bottom:2px">'+esc(v.label)+'</div><div style="font-size:12px;color:var(--text2)">'+esc(v.desc)+'</div></div>'+
+'<div style="font-size:11px;color:var(--text3);text-align:right;flex-shrink:0">'+v.date+'<br><span style="color:var(--accent2)">查看 →</span></div>'+
+'</div>').join('');
+}).catch(()=>{
+list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text2);font-size:13px">暂无版本记录<br><span style="font-size:11px">每次改版时会自动存档</span></div>';
+});
+}
+
 // ====== Add spotlight to cards ======
 function initSpotlight(){
 // Spotlight is applied via CSS ::before on hover with mouse tracking
@@ -1192,6 +1219,7 @@ renderTools();
 loadWeather();
 loadPapers();
 loadAutomations();
+loadVersions();
 renderInsights();
 initSpotlight();
 setInterval(loadPapers,300000);
