@@ -250,7 +250,10 @@ const FALLBACK_PAPERS=[
 {title:'Sora: Video Generation as a World Simulator',source:'OpenAI',date:'2025-02',url:'https://openai.com/sora',authors:'OpenAI',cat:'cs.CV',abs:'Sora is a text-to-video model that can generate realistic and imaginative scenes from text instructions.'},
 ];
 
-// ====== Utils ======
+// ====== Cache Utils ======
+const CACHE={set(k,v,t){try{localStorage.setItem('aic_'+k,JSON.stringify({data:v,exp:Date.now()+t}))}catch(e){}},get(k){try{const c=JSON.parse(localStorage.getItem('aic_'+k));return c&&c.exp>Date.now()?c.data:null}catch(e){return null}},del(k){try{localStorage.removeItem('aic_'+k)}catch(e){}}};
+
+// ====== Clock ======
 const $=id=>document.getElementById(id);
 const esc=s=>{const d=document.createElement('div');d.textContent=s;return d.innerHTML};
 
@@ -260,10 +263,17 @@ setInterval(tick,10000);tick();
 
 // ====== Weather ======
 async function loadWeather(){
+const cached=CACHE.get('weather');
+if(cached){applyWeather(cached);return}
 try{
 const r=await fetch('https://wttr.in/?format=j1');
 if(!r.ok)throw Error();
 const d=await r.json();
+CACHE.set('weather',d,600000); // 10min cache
+applyWeather(d);
+}catch(e){$('wCity').textContent='--';$('wTemp').textContent='--°'}
+}
+function applyWeather(d){
 const c=d.current_condition[0],a=d.nearest_area[0];
 const city=a.areaName[0].value;
 $('wIcon').textContent=emojiCode(c.weatherCode);
@@ -281,28 +291,30 @@ html+=`<div class="forecast-day"><div class="name">周${days[date.getDay()]}</di
 });
 html+='</div>';
 $('weatherDetail').innerHTML=html;
-}catch(e){$('wCity').textContent='--';$('wTemp').textContent='--°'}
 }
 function emojiCode(code){const m={'113':'☀️','116':'⛅','119':'☁️','122':'☁️','143':'🌫️','176':'🌦️','179':'🌧️','182':'🌧️','185':'🌧️','200':'⛈️','227':'🌨️','230':'🌨️','248':'🌫️','260':'🌫️','263':'🌦️','266':'🌦️','281':'🌧️','284':'🌧️','293':'🌦️','296':'🌦️','299':'🌧️','302':'🌧️','305':'🌧️','308':'🌧️','311':'🌧️','314':'🌧️','317':'🌧️','320':'🌨️','323':'🌨️','326':'🌨️','329':'🌨️','332':'🌨️','335':'🌨️','338':'🌨️','350':'🧊','353':'🌦️','356':'🌧️','359':'🌧️','362':'🌧️','365':'🌧️','368':'🌨️','371':'🌨️','374':'🌧️','377':'🌧️','386':'⛈️','389':'⛈️','392':'🌨️','395':'🌨️'};return m[code]||'🌤️'}
 function toggleWeather(){$('weatherPopover').classList.toggle('open')}
 
-// ====== Papers (OpenAlex API + Fallback) ======
+// ====== Papers (OpenAlex API + Fallback + Cache) ======
 async function loadPapers(){
 const scroll=$('paperScroll');
-scroll.innerHTML='<div style="padding:20px;color:var(--muted);font-size:13px"><span class="loading"></span> 加载论文...</div>';
+const cached=CACHE.get('papers');
+if(cached){scroll.innerHTML='';renderPapers(cached);$('paperBadge').textContent=cached.length;}
+
+// Try API (even if cached, refresh in bg)
 try{
 const r=await fetch('https://api.openalex.org/works?filter=type:article,primary_location.source.id:S4306504241&sort=publication_date:desc&per_page=10',{signal:AbortSignal.timeout(8000)});
-if(!r.ok)throw Error('status '+r.status);
+if(!r.ok)throw Error();
 const d=await r.json();
 if(d.results&&d.results.length){
-renderPapers(d.results.map(p=>({title:p.title,source:(p.primary_location?.source?.display_name||'arXiv').slice(0,20),date:(p.publication_date||'').slice(0,7),url:p.doi?`https://doi.org/${p.doi}`:'#',authors:(p.authorships||[]).slice(0,2).map(a=>a.author.display_name).join(', '),cat:(p.concepts||[]).slice(0,2).map(c=>c.display_name).join(', '),abs:p.title})));
-$('paperBadge').textContent=d.meta?.count||d.results.length;
+const papers=d.results.map(p=>({title:p.title,source:(p.primary_location?.source?.display_name||'arXiv').slice(0,20),date:(p.publication_date||'').slice(0,7),url:p.doi?`https://doi.org/${p.doi}`:'#',authors:(p.authorships||[]).slice(0,2).map(a=>a.author.display_name).join(', '),cat:(p.concepts||[]).slice(0,2).map(c=>c.display_name).join(', '),abs:p.title}));
+CACHE.set('papers',papers,1800000); // 30min cache
+renderPapers(papers);
+$('paperBadge').textContent=papers.length;
 return;
 }
-}catch(e){console.log('Paper API fail:',e)}
-// Fallback
-renderPapers(FALLBACK_PAPERS);
-$('paperBadge').textContent=FALLBACK_PAPERS.length;
+}catch(e){}
+if(!cached){renderPapers(FALLBACK_PAPERS);$('paperBadge').textContent=FALLBACK_PAPERS.length;}
 }
 function renderPapers(papers){
 const scroll=$('paperScroll');
@@ -316,13 +328,14 @@ scroll.innerHTML=papers.map((p,i)=>`<div class="paper-card" onclick="window.open
 
 // ====== Automations ======
 async function loadAutomations(){
-const scroll=$('autoScroll');
+const cached=CACHE.get('autos');
+if(cached){renderAutos(cached);$('autoBadge').textContent=cached.filter(t=>t.status==='active').length}
 try{
 const r=await fetch('https://raw.githubusercontent.com/LaskyMY/ai-nav/main/automations.json',{signal:AbortSignal.timeout(5000)});
-if(r.ok){const d=await r.json();renderAutos(d.tasks||[]);$('autoBadge').textContent=(d.tasks||[]).filter(t=>t.status==='active').length;return}
+if(r.ok){const d=await r.json();const t=d.tasks||[];CACHE.set('autos',t,300000);renderAutos(t);$('autoBadge').textContent=t.filter(x=>x.status==='active').length;return}
 }catch(e){}
-renderAutos([{name:'每日论文刷新',schedule:'每5分钟',status:'active',last:'刚刚'},{name:'天气更新',schedule:'每10分钟',status:'active',last:'刚刚'},{name:'GitHub Pages',schedule:'自动部署',status:'active',last:'在线'}]);
-$('autoBadge').textContent=3;
+if(!cached){const fallback=[{name:'每日论文刷新',schedule:'每5分钟',status:'active',last:'刚刚'},{name:'天气更新',schedule:'每10分钟',status:'active',last:'刚刚'},{name:'GitHub Pages',schedule:'自动部署',status:'active',last:'在线'}];
+renderAutos(fallback);$('autoBadge').textContent=3;}
 }
 function renderAutos(tasks){
 const dots={active:'green',inactive:'yellow',failed:'red'};
