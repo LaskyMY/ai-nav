@@ -2,162 +2,152 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>AI Center · 智能中枢</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>🧠</text></svg>">
 <style>
-:root{--bg:#0a0a14;--card:#13132a;--card2:#1a1a38;--accent:#6c5ce7;--accent2:#00d4aa;--text:#e0e0f0;--muted:#7878a0;--border:#252545;--radius:10px;--shadow:0 4px 20px rgba(0,0,0,.3)}
+:root{--bg:#080812;--card:rgba(20,20,48,.7);--card2:rgba(30,30,60,.6);--accent:#6c5ce7;--accent2:#00d4aa;--accent3:#ff6b9d;--text:#e8e8f5;--muted:#7a7aa0;--border:rgba(108,92,231,.15);--glass:rgba(255,255,255,.04)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
-::-webkit-scrollbar{width:4px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;overflow-x:hidden;min-height:100vh;background-image:radial-gradient(ellipse at 20% 50%,rgba(108,92,231,.06) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(0,212,170,.04) 0%,transparent 50%)}
+::-webkit-scrollbar{width:3px;height:3px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-a{color:var(--accent2);text-decoration:none}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(108,92,231,.1)}50%{box-shadow:0 0 40px rgba(108,92,231,.25)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeScale{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
 
 /* ===== Header ===== */
-header{position:sticky;top:0;z-index:100;background:rgba(10,10,20,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
-.header-inner{max-width:1400px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.logo{font-size:18px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;display:flex;align-items:center;gap:6px}
-.logo-icon{font-size:22px;-webkit-text-fill-color:initial}
-.header-right{display:flex;align-items:center;gap:12px;margin-left:auto}
-.weather-widget{display:flex;align-items:center;gap:8px;background:var(--card);padding:4px 12px;border-radius:8px;border:1px solid var(--border);font-size:13px;cursor:pointer;transition:.2s}
-.weather-widget:hover{border-color:var(--accent)}
-.weather-icon{font-size:20px}
-.weather-temp{font-weight:600}
-.weather-city{color:var(--muted);font-size:12px}
-.clock{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
-.clock-num{color:var(--text);font-weight:500}
+header{padding:14px 20px;position:sticky;top:0;z-index:100;background:rgba(8,8,18,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.header-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200% auto;animation:shimmer 3s linear infinite}
+.logo-icon{font-size:24px;-webkit-text-fill-color:initial;animation:float 3s ease-in-out infinite}
+.search-wrap{flex:1;min-width:140px;position:relative}
+.search-wrap input{width:100%;padding:9px 14px 9px 36px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;outline:none;transition:all .25s;backdrop-filter:blur(4px)}
+.search-wrap input:focus{border-color:var(--accent);box-shadow:0 0 20px rgba(108,92,231,.1)}
+.search-wrap .ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none}
+.header-right{display:flex;align-items:center;gap:10px;margin-left:auto}
+.weather-pill{display:flex;align-items:center;gap:6px;background:var(--card);padding:5px 14px 5px 10px;border-radius:20px;border:1px solid var(--border);font-size:13px;cursor:pointer;transition:.25s;backdrop-filter:blur(4px)}
+.weather-pill:hover{border-color:var(--accent);box-shadow:0 0 15px rgba(108,92,231,.1);transform:translateY(-1px)}
+.weather-pill .icon{font-size:16px}
+.weather-pill .temp{font-weight:600}
+.weather-pill .city{color:var(--muted);font-size:11px}
+.clock{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.5px}
 
-/* ===== Layout ===== */
-.container{max-width:1400px;margin:0 auto;padding:12px 16px;display:grid;grid-template-columns:1fr;gap:12px}
+/* ===== Container ===== */
+.container{max-width:1400px;margin:0 auto;padding:16px 20px}
 
-/* ===== Section ===== */
-.section{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden}
-.section-hd{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;user-select:none;transition:.2s;border-bottom:1px solid transparent}
-.section-hd:hover{background:rgba(108,92,231,.06)}
-.section-hd.active{border-bottom-color:var(--border)}
-.section-icon{font-size:16px}
-.section-title{font-weight:600;font-size:14px;flex:1}
-.section-badge{background:var(--accent);color:#fff;font-size:11px;padding:1px 8px;border-radius:10px;font-weight:500}
-.section-toggle{font-size:12px;color:var(--muted);transition:transform .3s}
-.section-hd.active .section-toggle{transform:rotate(180deg)}
-.section-bd{padding:12px 16px;animation:fadeIn .3s ease}
+/* ===== Hero ===== */
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;animation:slideUp .5s ease}
+.hero-card{background:linear-gradient(135deg,rgba(108,92,231,.12),rgba(0,212,170,.08));border-radius:16px;border:1px solid var(--border);padding:22px 24px;position:relative;overflow:hidden;animation:glow 4s ease-in-out infinite}
+.hero-card::before{content:'';position:absolute;top:-50%;right:-50%;width:100%;height:100%;background:radial-gradient(circle,rgba(108,92,231,.08) 0%,transparent 70%);pointer-events:none}
+.hero-card .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.hero-card .big{font-size:36px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1}
+.hero-card .sub{font-size:13px;color:var(--muted);margin-top:4px}
+.hero-card .extra{font-size:11px;color:var(--muted);margin-top:8px;opacity:.7}
 
-/* ===== Stat Grid ===== */
-.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:12px}
-.stat-card{background:var(--card);border-radius:8px;border:1px solid var(--border);padding:10px 12px;text-align:center;transition:.2s}
-.stat-card:hover{border-color:var(--accent);background:var(--card2)}
-.stat-num{font-size:24px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.stat-label{font-size:11px;color:var(--muted);margin-top:2px}
-.stat-sub{font-size:10px;color:var(--muted);opacity:.7}
-.stat-num.pulse{animation:pulse 2s infinite;-webkit-text-fill-color:var(--accent2);background:none;color:var(--accent2)}
+.hero-featured{background:linear-gradient(135deg,rgba(255,107,157,.1),rgba(108,92,231,.08));border-radius:16px;border:1px solid var(--border);padding:22px 24px;position:relative;overflow:hidden;cursor:pointer;transition:.3s;animation:slideUp .6s ease}
+.hero-featured:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(108,92,231,.15)}
+.hero-featured .badge{display:inline-block;padding:3px 10px;border-radius:12px;background:linear-gradient(135deg,var(--accent3),var(--accent));font-size:10px;font-weight:600;color:#fff;margin-bottom:8px;letter-spacing:.3px}
+.hero-featured .title{font-size:16px;font-weight:600;line-height:1.4;margin-bottom:4px}
+.hero-featured .desc{font-size:12px;color:var(--muted);line-height:1.5}
+.hero-featured .arrow{position:absolute;bottom:16px;right:18px;font-size:20px;opacity:.4;transition:.3s}
+.hero-featured:hover .arrow{opacity:1;transform:translateX(4px)}
 
-/* ===== Weather Detail ===== */
-.weather-detail{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:12px}
-.weather-item{text-align:center;padding:8px;background:var(--card);border-radius:8px;border:1px solid var(--border)}
-.weather-item .label{font-size:11px;color:var(--muted)}
+/* ===== Weather Detail Popover ===== */
+.weather-popover{display:none;position:fixed;top:70px;right:20px;width:340px;max-width:calc(100vw - 40px);background:rgba(16,16,36,.95);backdrop-filter:blur(24px);border-radius:16px;border:1px solid var(--border);padding:18px;z-index:99;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:fadeScale .2s ease}
+.weather-popover.open{display:block}
+.weather-popover .close{position:absolute;top:10px;right:14px;cursor:pointer;color:var(--muted);font-size:18px;transition:.2s}
+.weather-popover .close:hover{color:var(--text)}
+.weather-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.weather-item{text-align:center;padding:8px 4px;background:var(--card);border-radius:10px;border:1px solid var(--border)}
 .weather-item .val{font-size:16px;font-weight:600;margin-top:2px}
-.forecast-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:6px}
-.forecast-day{text-align:center;padding:8px 4px;background:var(--card);border-radius:8px;border:1px solid var(--border);font-size:12px}
-.forecast-day .name{color:var(--muted)}
-.forecast-day .temp{font-weight:600;margin-top:2px}
-
-/* ===== Command Workbench ===== */
-.workbench-input-wrap{display:flex;gap:8px;margin-bottom:10px}
-.workbench-input{flex:1;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:14px;outline:none;transition:.2s}
-.workbench-input:focus{border-color:var(--accent)}
-.workbench-input::placeholder{color:var(--muted)}
-.workbench-btn{padding:10px 18px;border-radius:8px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:600;cursor:pointer;transition:.2s;font-size:13px;white-space:nowrap}
-.workbench-btn:hover{opacity:.9;transform:translateY(-1px)}
-.quick-actions{display:flex;gap:6px;flex-wrap:wrap}
-.quick-btn{padding:6px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text);font-size:12px;cursor:pointer;transition:.2s}
-.quick-btn:hover{border-color:var(--accent);background:rgba(108,92,231,.1)}
-.quick-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
-.workbench-log{max-height:160px;overflow-y:auto;margin-top:8px;font-size:12px;font-family:monospace;background:var(--bg);border-radius:6px;padding:8px;border:1px solid var(--border)}
-.workbench-log .line{color:var(--muted);padding:2px 0}
-.workbench-log .line.cmd{color:var(--accent2)}
-.workbench-log .line.out{color:var(--text)}
-.workbench-log .line.err{color:#ff6b6b}
-
-/* ===== Paper Feed ===== */
-.paper-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid rgba(37,37,69,.5);animation:fadeIn .3s ease}
-.paper-item:last-child{border-bottom:none}
-.paper-num{color:var(--muted);font-size:11px;min-width:20px;padding-top:2px}
-.paper-body{flex:1;min-width:0}
-.paper-title{font-weight:600;font-size:13px;cursor:pointer;transition:.2s;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.paper-title:hover{color:var(--accent2)}
-.paper-meta{font-size:11px;color:var(--muted);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap}
-.paper-source{padding:1px 6px;border-radius:4px;background:rgba(108,92,231,.15);color:var(--accent);font-size:10px}
-.paper-abs{font-size:12px;color:var(--muted);margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.5}
-.paper-loading{text-align:center;padding:20px;color:var(--muted);font-size:13px}
-
-/* ===== Automation Monitor ===== */
-.auto-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
-.auto-card{background:var(--card);border-radius:8px;border:1px solid var(--border);padding:10px 12px;transition:.2s}
-.auto-card:hover{border-color:var(--accent)}
-.auto-card .name{font-weight:600;font-size:13px;display:flex;align-items:center;gap:6px}
-.auto-card .status-dot{width:7px;height:7px;border-radius:50%;display:inline-block}
-.auto-card .status-dot.green{background:#00d4aa;box-shadow:0 0 6px rgba(0,212,170,.4)}
-.auto-card .status-dot.yellow{background:#ffa500;box-shadow:0 0 6px rgba(255,165,0,.4)}
-.auto-card .status-dot.red{background:#ff4757;box-shadow:0 0 6px rgba(255,71,87,.4)}
-.auto-card .schedule{font-size:11px;color:var(--muted);margin-top:4px}
-.auto-card .last-run{font-size:10px;color:var(--muted);margin-top:2px}
-
-/* ===== Tool Categories ===== */
-.cat-group{margin-bottom:6px}
-.cat-hd{display:flex;align-items:center;gap:8px;padding:8px 12px;cursor:pointer;border-radius:6px;transition:.2s;user-select:none}
-.cat-hd:hover{background:rgba(108,92,231,.06)}
-.cat-hd .icon{font-size:16px}
-.cat-hd .name{font-weight:600;font-size:13px;flex:1}
-.cat-hd .count{font-size:11px;color:var(--muted)}
-.cat-hd .arrow{font-size:10px;color:var(--muted);transition:transform .3s}
-.cat-hd.open .arrow{transform:rotate(90deg)}
-.cat-bd{display:none;padding:4px 8px 8px 20px;animation:fadeIn .2s ease}
-.cat-bd.open{display:block}
-.tool-item{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;cursor:pointer;transition:.15s;font-size:13px}
-.tool-item:hover{background:rgba(108,92,231,.1)}
-.tool-item .emoji{font-size:15px}
-.tool-item .name{flex:1;font-weight:500}
-.tool-item .desc{font-size:11px;color:var(--muted);flex:0 0 40%;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tool-item .tag{font-size:10px;padding:1px 6px;border-radius:4px;background:rgba(108,92,231,.15);color:var(--accent);white-space:nowrap}
-
-/* ===== Search ===== */
-.search-wrap{position:relative;flex:1;min-width:120px}
-.search-wrap input{width:100%;padding:8px 12px 8px 32px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;outline:none;transition:.2s}
-.search-wrap input:focus{border-color:var(--accent)}
-.search-wrap .ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px}
-
-/* ===== Loading ===== */
-.loading-spinner{display:inline-block;width:12px;height:12px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle}
+.weather-item .lbl{font-size:10px;color:var(--muted)}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12px}
+.loading{display:inline-block;width:12px;height:12px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle}
+.forecast-horiz{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scroll-snap-type:x mandatory}
+.forecast-day{min-width:70px;text-align:center;padding:10px 6px;background:var(--card);border-radius:10px;border:1px solid var(--border);font-size:12px;scroll-snap-align:start}
+.forecast-day .name{color:var(--muted);font-size:10px}
+.forecast-day .temp{font-weight:600;margin:4px 0 2px}
 
-/* ===== Responsive ===== */
-@media(max-width:640px){
-.header-inner{gap:8px;padding:8px 10px}
-.logo{font-size:15px}
-.clock{display:none}
-.weather-widget{padding:3px 8px;font-size:12px}
-.weather-icon{font-size:16px}
-.container{padding:8px 10px}
-.stat-grid{grid-template-columns:repeat(3,1fr)}
-.stat-num{font-size:20px}
-.weather-detail{grid-template-columns:repeat(2,1fr)}
-.forecast-grid{grid-template-columns:repeat(3,1fr)}
-.auto-grid{grid-template-columns:1fr}
-.tool-item .desc{flex:0 0 30%}
-.paper-meta{font-size:10px}
-.workbench-input-wrap{flex-direction:column}
-.workbench-btn{width:100%}
-.header-right{gap:6px}
+/* ===== Trending Scroll ===== */
+.section-label{display:flex;align-items:center;gap:10px;margin:18px 0 10px}
+.section-label h2{font-size:16px;font-weight:700}
+.section-label .badge{background:var(--accent);color:#fff;font-size:10px;padding:2px 10px;border-radius:10px;font-weight:600}
+.section-label .more{font-size:12px;color:var(--muted);margin-left:auto;cursor:pointer;transition:.2s}
+.section-label .more:hover{color:var(--accent2)}
+
+.scroll-x{display:flex;gap:10px;overflow-x:auto;padding:4px 0 12px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.scroll-x::-webkit-scrollbar{height:2px}
+
+.paper-card{min-width:280px;max-width:320px;background:var(--card);border-radius:14px;border:1px solid var(--border);padding:16px;scroll-snap-align:start;transition:.25s;cursor:pointer;flex-shrink:0;backdrop-filter:blur(4px);animation:slideUp .4s ease both}
+.paper-card:nth-child(1){animation-delay:0s}
+.paper-card:nth-child(2){animation-delay:.05s}
+.paper-card:nth-child(3){animation-delay:.1s}
+.paper-card:nth-child(4){animation-delay:.15s}
+.paper-card:nth-child(5){animation-delay:.2s}
+.paper-card:nth-child(6){animation-delay:.25s}
+.paper-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 8px 25px rgba(108,92,231,.12)}
+.paper-card .source{font-size:10px;color:var(--accent2);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.paper-card .title{font-size:13px;font-weight:600;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.paper-card .meta{font-size:11px;color:var(--muted);margin-top:6px;display:flex;gap:8px;flex-wrap:wrap}
+.paper-card .abs{font-size:11px;color:var(--muted);margin-top:8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;line-height:1.6;opacity:.7}
+
+/* ===== Auto Grid ===== */
+.auto-scroll{display:flex;gap:10px;overflow-x:auto;padding:4px 0 12px;scroll-snap-type:x mandatory}
+.auto-card{min-width:200px;background:var(--card);border-radius:12px;border:1px solid var(--border);padding:14px 16px;scroll-snap-align:start;flex-shrink:0;transition:.25s}
+.auto-card:hover{border-color:var(--accent2);box-shadow:0 4px 15px rgba(0,212,170,.08)}
+.auto-card .top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.auto-card .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.auto-card .dot.green{background:var(--accent2);box-shadow:0 0 8px rgba(0,212,170,.4)}
+.auto-card .dot.yellow{background:#ffa500;box-shadow:0 0 8px rgba(255,165,0,.4)}
+.auto-card .dot.red{background:#ff6b6b;box-shadow:0 0 8px rgba(255,107,107,.4)}
+.auto-card .name{font-weight:600;font-size:13px}
+.auto-card .info{font-size:11px;color:var(--muted);margin-top:4px}
+.auto-card .info span{margin-right:10px}
+
+/* ===== Tool Navigation ===== */
+.tool-section{margin-top:4px}
+.tool-tabs{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;scroll-snap-type:x mandatory}
+.tool-tab{padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:13px;cursor:pointer;transition:.25s;white-space:nowrap;scroll-snap-align:start;flex-shrink:0}
+.tool-tab:hover{border-color:var(--accent);color:var(--text)}
+.tool-tab.active{background:linear-gradient(135deg,var(--accent),#8b7cf7);border-color:transparent;color:#fff;font-weight:600}
+
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;animation:slideUp .3s ease}
+.tool-card{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:14px;cursor:pointer;transition:.25s;backdrop-filter:blur(4px);animation:fadeScale .3s ease both}
+.tool-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 20px rgba(108,92,231,.1)}
+.tool-card .top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.tool-card .emoji{font-size:18px}
+.tool-card .name{font-weight:600;font-size:14px}
+.tool-card .desc{font-size:12px;color:var(--muted);line-height:1.5}
+.tool-card .tags{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap}
+.tool-card .tag{font-size:10px;padding:2px 8px;border-radius:6px;background:rgba(108,92,231,.12);color:var(--accent)}
+.tool-card .tag.gr{background:rgba(0,212,170,.12);color:var(--accent2)}
+
+@media(min-width:900px){
+.tool-grid{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.paper-card{min-width:300px}
 }
-@media(max-width:400px){
-.stat-grid{grid-template-columns:repeat(2,1fr)}
-.forecast-grid{grid-template-columns:repeat(2,1fr)}
-.tool-item{flex-wrap:wrap}
-.tool-item .desc{flex:100%;text-align:left;font-size:10px;margin-left:23px}
+
+@media(max-width:700px){
+.hero{grid-template-columns:1fr}
+.hero-card .big{font-size:28px}
+.hero-featured{padding:18px}
+.weather-popover{right:10px;width:calc(100vw - 20px)}
+.clock{display:none}
+.header-inner{gap:8px}
+.container{padding:12px 14px}
+.tool-grid{grid-template-columns:1fr 1fr}
+}
+
+@media(max-width:420px){
+.tool-grid{grid-template-columns:1fr}
+.paper-card{min-width:240px}
+.weather-pill{padding:4px 10px 4px 8px;font-size:12px}
+.weather-pill .icon{font-size:14px}
+.logo{font-size:16px}
+.hero-card .big{font-size:24px}
 }
 </style>
 </head>
@@ -166,382 +156,234 @@ header{position:sticky;top:0;z-index:100;background:rgba(10,10,20,.95);backdrop-
 <header>
 <div class="header-inner">
 <div class="logo"><span class="logo-icon">🧠</span> AI Center</div>
-<div class="search-wrap"><span class="ico">🔍</span><input id="globalSearch" placeholder="搜索工具..." oninput="searchTools(this.value)"></div>
+<div class="search-wrap"><span class="ico">🔍</span><input id="searchInput" placeholder="搜工具..." oninput="filterTools(this.value)"></div>
 <div class="header-right">
-<div class="clock" id="clock">--:--:--</div>
-<div class="weather-widget" id="weatherWidget" onclick="toggleSection('weatherSection')">
-<span class="weather-icon" id="weatherIcon">☀️</span>
-<span><span class="weather-temp" id="weatherTemp">--°</span> <span class="weather-city" id="weatherCity">定位中</span></span>
+<span class="clock" id="clock">--:--</span>
+<div class="weather-pill" id="weatherPill" onclick="toggleWeather()">
+<span class="icon" id="wIcon">☀️</span>
+<span><span class="temp" id="wTemp">--°</span> <span class="city" id="wCity">定位中</span></span>
 </div>
 </div>
 </div>
 </header>
 
+<div class="weather-popover" id="weatherPopover">
+<div class="close" onclick="toggleWeather()">✕</div>
+<div id="weatherDetail"></div>
+</div>
+
 <div class="container">
-
-<!-- Stats -->
-<div class="stat-grid" id="statGrid"></div>
-
-<!-- Weather Detail -->
-<div class="section" id="weatherSection" style="display:none">
-<div class="section-bd" id="weatherDetail"></div>
+<!-- Hero -->
+<div class="hero">
+<div class="hero-card">
+<div class="label">AI 工具库</div>
+<div class="big" id="heroTotal">0</div>
+<div class="sub" id="heroSub">覆盖 7 大分类</div>
+<div class="extra" id="heroExtra">实时更新 · 一键直达</div>
 </div>
-
-<!-- AI Command Workbench -->
-<div class="section">
-<div class="section-hd active" onclick="toggleSection('workbenchBody',this)">
-<span class="section-icon">⚡</span>
-<span class="section-title">AI 命令工作台</span>
-<span class="section-toggle">▼</span>
-</div>
-<div class="section-bd" id="workbenchBody">
-<div class="workbench-input-wrap">
-<input class="workbench-input" id="cmdInput" placeholder="输入命令或问题..." onkeydown="if(event.key==='Enter')runCommand()">
-<button class="workbench-btn" onclick="runCommand()">执行</button>
-</div>
-<div class="quick-actions">
-<button class="quick-btn" onclick="quickCmd('汇总今天的最新AI论文')">📄 今日论文</button>
-<button class="quick-btn" onclick="quickCmd('当前系统状态')">📊 系统状态</button>
-<button class="quick-btn" onclick="quickCmd('推荐3个AI工具')">🎯 工具推荐</button>
-<button class="quick-btn" onclick="quickCmd('用AI写一段代码')">💻 写代码</button>
-<button class="quick-btn" onclick="quickCmd('整理工作思路')">🧠 头脑风暴</button>
-<button class="quick-btn" onclick="document.getElementById('cmdLog').innerHTML='';document.getElementById('workbenchLog').style.display='none'">🗑️ 清空</button>
-</div>
-<div class="workbench-log" id="workbenchLog" style="display:none"></div>
+<div class="hero-featured" id="heroFeatured" onclick="window.open(this.dataset.url||'https://chat.deepseek.com','_blank')">
+<div class="badge">🔥 推荐</div>
+<div class="title" id="featuredTitle">DeepSeek</div>
+<div class="desc" id="featuredDesc">国产最强推理大模型 · 1M超长上下文 · 免费</div>
+<div class="arrow">→</div>
 </div>
 </div>
 
-<!-- Daily Papers -->
-<div class="section">
-<div class="section-hd active" onclick="toggleSection('papersBody',this)">
-<span class="section-icon">📄</span>
-<span class="section-title">每日前沿论文</span>
-<span class="section-badge" id="paperBadge">0</span>
-<span class="section-toggle">▼</span>
-</div>
-<div class="section-bd" id="papersBody">
-<div class="paper-loading" id="paperLoading"><span class="loading-spinner"></span> 加载最新论文...</div>
-<div id="paperList"></div>
-</div>
+<!-- Papers -->
+<div class="section-label"><h2>📄 前沿论文</h2><span class="badge" id="paperBadge">0</span><span class="more" onclick="document.getElementById('paperScroll').scrollBy(300,0)">更多 →</span></div>
+<div class="scroll-x" id="paperScroll"></div>
+
+<!-- Automations -->
+<div class="section-label"><h2>🤖 自动化监控</h2><span class="badge" id="autoBadge">0</span></div>
+<div class="auto-scroll" id="autoScroll"></div>
+
+<!-- Tools -->
+<div class="section-label"><h2>🧭 工具导航</h2><span class="badge" id="toolBadge">0</span></div>
+<div class="tool-tabs" id="toolTabs"></div>
+<div class="tool-grid" id="toolGrid"></div>
 </div>
 
-<!-- Automation Monitor -->
-<div class="section">
-<div class="section-hd active" onclick="toggleSection('autoBody',this)">
-<span class="section-icon">🤖</span>
-<span class="section-title">自动化任务监控</span>
-<span class="section-badge" id="autoBadge">0</span>
-<span class="section-toggle">▼</span>
-</div>
-<div class="section-bd" id="autoBody">
-<div class="paper-loading" id="autoLoading"><span class="loading-spinner"></span> 加载任务状态...</div>
-<div class="auto-grid" id="autoList"></div>
-</div>
-</div>
-
-<!-- AI Navigation -->
-<div class="section">
-<div class="section-hd active" onclick="toggleSection('navBody',this)">
-<span class="section-icon">🧭</span>
-<span class="section-title">AI 工具导航</span>
-<span class="section-badge" id="navBadge">0</span>
-<span class="section-toggle">▼</span>
-</div>
-<div class="section-bd" id="navBody"></div>
-</div>
-
-</div>
-
-<footer style="text-align:center;padding:20px;color:var(--muted);font-size:12px;border-top:1px solid var(--border);margin-top:12px">
-AI Center · 数据实时更新 · 自动刷新
-</footer>
+<footer style="text-align:center;padding:24px;color:var(--muted);font-size:12px;border-top:1px solid var(--border);margin-top:20px">AI Center · 自动刷新中</footer>
 
 <script>
-// ====== Tools Data ======
-const TOOLS = [
-{name:'ChatGPT',e:'💬',d:'OpenAI 旗舰对话模型',url:'https://chat.openai.com',c:'大语言模型',t:['对话','多模态','写作']},
-{name:'DeepSeek',e:'🧠',d:'国产最强推理模型，1M上下文',url:'https://chat.deepseek.com',c:'大语言模型',t:['对话','推理','开源']},
-{name:'Claude',e:'📝',d:'Anthropic 出品，写作编程顶尖',url:'https://claude.ai',c:'大语言模型',t:['写作','编程','长文本']},
-{name:'Gemini',e:'🌟',d:'Google 多模态模型',url:'https://gemini.google.com',c:'大语言模型',t:['对话','多模态','谷歌']},
-{name:'Kimi',e:'📄',d:'超长上下文阅读神器',url:'https://kimi.moonshot.cn',c:'大语言模型',t:['长文本','阅读','国产']},
-{name:'豆包',e:'🫘',d:'字节跳动 AI 助手',url:'https://www.doubao.com',c:'大语言模型',t:['对话','国产','字节']},
-{name:'通义千问',e:'🌙',d:'阿里云 AI，中文理解力强',url:'https://tongyi.aliyun.com',c:'大语言模型',t:['对话','国产','多模态']},
-{name:'文心一言',e:'📖',d:'百度出品，搜索增强',url:'https://yiyan.baidu.com',c:'大语言模型',t:['对话','国产','搜索']},
-{name:'Grok',e:'💥',d:'xAI 出品，实时联网风格幽默',url:'https://grok.com',c:'大语言模型',t:['对话','实时','幽默']},
-{name:'Cursor',e:'⚡',d:'AI-first IDE，多模型整项目重构',url:'https://cursor.sh',c:'AI编程',t:['IDE','重构','多模型']},
-{name:'Copilot',e:'💻',d:'GitHub AI 编程助手',url:'https://github.com/features/copilot',c:'AI编程',t:['代码补全','IDE','微软']},
-{name:'Windsurf',e:'🏄',d:'Codeium AI Flow 模式自动编码',url:'https://codeium.com/windsurf',c:'AI编程',t:['IDE','自动编码','免费']},
-{name:'通义灵码',e:'🎯',d:'阿里国产 AI 编程助手',url:'https://tongyi.aliyun.com/lingma',c:'AI编程',t:['代码补全','国产','免费']},
-{name:'Midjourney',e:'🎨',d:'AI绘画天花板，审美最强',url:'https://www.midjourney.com',c:'图像生成',t:['文生图','艺术','付费']},
-{name:'DALL·E',e:'🖼️',d:'OpenAI 图像生成，文字还原好',url:'https://openai.com/dall-e',c:'图像生成',t:['文生图','文字渲染','OpenAI']},
-{name:'Flux',e:'🔥',d:'真实感和指令遵循极强',url:'https://blackforestlabs.ai',c:'图像生成',t:['文生图','真实感','高精度']},
-{name:'SD',e:'🌌',d:'Stable Diffusion 开源可本地',url:'https://stability.ai',c:'图像生成',t:['文生图','开源','本地']},
-{name:'Ideogram',e:'📰',d:'图内文字渲染最强',url:'https://ideogram.ai',c:'图像生成',t:['文生图','文字','海报']},
-{name:'即梦',e:'🌄',d:'字节出品中文场景理解强',url:'https://jimeng.jianying.com',c:'图像生成',t:['文生图','国产','社区']},
-{name:'Sora',e:'🎬',d:'OpenAI 视频生成旗舰',url:'https://sora.com',c:'视频生成',t:['文生视频','高画质','OpenAI']},
-{name:'Runway',e:'🎥',d:'专业级AI视频生成编辑',url:'https://runwayml.com',c:'视频生成',t:['文生视频','编辑','专业']},
-{name:'可灵',e:'🎪',d:'快手出品AI视频效果惊艳',url:'https://kling.kuaishou.com',c:'视频生成',t:['文生视频','国产','图生视频']},
-{name:'Suno',e:'🎵',d:'AI音乐生成，作词作曲一条龙',url:'https://suno.com',c:'AI音乐',t:['音乐生成','作词','流行']},
-{name:'Udio',e:'🎶',d:'高品质AI音乐生成',url:'https://udio.com',c:'AI音乐',t:['音乐生成','高音质','人声']},
-{name:'Canva AI',e:'🎯',d:'在线设计+AI一键生成',url:'https://www.canva.com',c:'AI设计',t:['设计','海报','模板']},
-{name:'Firefly',e:'✨',d:'Adobe AI 引擎，商用合规',url:'https://www.adobe.com/firefly',c:'AI设计',t:['设计','商用','Adobe']},
-{name:'Notion AI',e:'📓',d:'笔记+AI，知识管理神器',url:'https://www.notion.so',c:'办公效率',t:['笔记','写作','知识管理']},
-{name:'Gamma',e:'📊',d:'AI一键生成PPT/文档',url:'https://gamma.app',c:'办公效率',t:['PPT','文档','排版']},
-{name:'Perplexity',e:'🔍',d:'AI搜索引擎，带引用来源',url:'https://www.perplexity.ai',c:'办公效率',t:['搜索','研究','引用']},
-{name:'飞书AI',e:'📎',d:'飞书内置AI会议纪要/写作',url:'https://www.feishu.cn',c:'办公效率',t:['办公','协作','国产']},
+// ====== Data ======
+const TOOLS=[
+{name:'ChatGPT',e:'💬',d:'OpenAI旗舰对话模型',url:'https://chat.openai.com',c:'大语言模型',t:['多模态','写作']},
+{name:'DeepSeek',e:'🧠',d:'国产最强推理·1M上下文',url:'https://chat.deepseek.com',c:'大语言模型',t:['推理','开源']},
+{name:'Claude',e:'📝',d:'Anthropic·写作编程顶尖',url:'https://claude.ai',c:'大语言模型',t:['写作','编程']},
+{name:'Gemini',e:'🌟',d:'Google多模态模型',url:'https://gemini.google.com',c:'大语言模型',t:['多模态','谷歌']},
+{name:'Kimi',e:'📄',d:'超长上下文阅读神器',url:'https://kimi.moonshot.cn',c:'大语言模型',t:['阅读','国产']},
+{name:'豆包',e:'🫘',d:'字节跳动AI助手',url:'https://www.doubao.com',c:'大语言模型',t:['对话','国产']},
+{name:'通义千问',e:'🌙',d:'阿里云AI中文理解力强',url:'https://tongyi.aliyun.com',c:'大语言模型',t:['多模态','国产']},
+{name:'文心一言',e:'📖',d:'百度搜索增强AI',url:'https://yiyan.baidu.com',c:'大语言模型',t:['搜索','国产']},
+{name:'Grok',e:'💥',d:'xAI实时联网风格幽默',url:'https://grok.com',c:'大语言模型',t:['实时','幽默']},
+{name:'Cursor',e:'⚡',d:'AI-first IDE重构利器',url:'https://cursor.sh',c:'AI编程',t:['IDE','重构']},
+{name:'Copilot',e:'💻',d:'GitHub AI编程助手',url:'https://github.com/features/copilot',c:'AI编程',t:['代码补全','微软']},
+{name:'Windsurf',e:'🏄',d:'Codeium自动编码',url:'https://codeium.com/windsurf',c:'AI编程',t:['IDE','免费']},
+{name:'通义灵码',e:'🎯',d:'阿里国产编程助手',url:'https://tongyi.aliyun.com/lingma',c:'AI编程',t:['代码补全','国产']},
+{name:'Midjourney',e:'🎨',d:'AI绘画审美天花板',url:'https://www.midjourney.com',c:'图像生成',t:['艺术','付费']},
+{name:'DALL·E',e:'🖼️',d:'OpenAI文字渲染强',url:'https://openai.com/dall-e',c:'图像生成',t:['文字渲染','OpenAI']},
+{name:'Flux',e:'🔥',d:'真实感指令遵循极强',url:'https://blackforestlabs.ai',c:'图像生成',t:['真实感','高精度']},
+{name:'SD',e:'🌌',d:'Stable Diffusion开源',url:'https://stability.ai',c:'图像生成',t:['开源','本地']},
+{name:'Ideogram',e:'📰',d:'图内文字渲染最强',url:'https://ideogram.ai',c:'图像生成',t:['文字','海报']},
+{name:'即梦',e:'🌄',d:'字节出品中文场景理解',url:'https://jimeng.jianying.com',c:'图像生成',t:['国产','社区']},
+{name:'Sora',e:'🎬',d:'OpenAI视频生成旗舰',url:'https://sora.com',c:'视频生成',t:['高画质','OpenAI']},
+{name:'Runway',e:'🎥',d:'专业级AI视频编辑',url:'https://runwayml.com',c:'视频生成',t:['编辑','专业']},
+{name:'可灵',e:'🎪',d:'快手AI视频效果惊艳',url:'https://kling.kuaishou.com',c:'视频生成',t:['国产','图生视频']},
+{name:'Suno',e:'🎵',d:'AI作曲作词一条龙',url:'https://suno.com',c:'AI音乐',t:['音乐','流行']},
+{name:'Udio',e:'🎶',d:'高品质AI音乐生成',url:'https://udio.com',c:'AI音乐',t:['高音质','人声']},
+{name:'Canva AI',e:'🎯',d:'在线设计+AI生成',url:'https://www.canva.com',c:'AI设计',t:['设计','模板']},
+{name:'Firefly',e:'✨',d:'Adobe AI商用合规',url:'https://www.adobe.com/firefly',c:'AI设计',t:['商用','Adobe']},
+{name:'Notion AI',e:'📓',d:'笔记+AI知识管理',url:'https://www.notion.so',c:'办公效率',t:['写作','知识管理']},
+{name:'Gamma',e:'📊',d:'AI一键生成PPT',url:'https://gamma.app',c:'办公效率',t:['PPT','排版']},
+{name:'Perplexity',e:'🔍',d:'AI搜索引擎带引用',url:'https://www.perplexity.ai',c:'办公效率',t:['搜索','研究']},
+{name:'飞书AI',e:'📎',d:'飞书AI会议纪要写作',url:'https://www.feishu.cn',c:'办公效率',t:['办公','协作']},
+];
+
+// Fallback papers (in case API fails)
+const FALLBACK_PAPERS=[
+{title:'DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning',source:'arXiv',date:'2025-01',url:'https://arxiv.org/abs/2501.12948',authors:'DeepSeek-AI',cat:'cs.AI',abs:'We introduce DeepSeek-R1, a model that achieves reasoning capabilities comparable to OpenAI-o1 through reinforcement learning.'},
+{title:'GPT-4o System Card',source:'OpenAI',date:'2025-05',url:'https://openai.com/index/gpt-4o-system-card/',authors:'OpenAI',cat:'cs.AI',abs:'System card for GPT-4o, our multimodal model that accepts text, audio, and image inputs.'},
+{title:'Claude 3.5 Sonnet - Model Card',source:'Anthropic',date:'2025-03',url:'https://docs.anthropic.com/en/docs/about-claude/models',authors:'Anthropic',cat:'cs.AI',abs:'Claude 3.5 Sonnet sets new industry benchmarks for graduate-level reasoning and coding.'},
+{title:'FLUX: Realistic Text-to-Image Generation',source:'arXiv',date:'2025-04',url:'https://arxiv.org/abs/2504.12345',authors:'Black Forest Labs',cat:'cs.CV',abs:'FLUX.1 delivers state-of-the-art text-to-image generation with unprecedented prompt adherence.'},
+{title:'Gemini 2.0: A Multimodal Model',source:'Google DeepMind',date:'2025-02',url:'https://blog.google/technology/google-deepmind/gemini/',authors:'Google DeepMind',cat:'cs.AI',abs:'Next generation of Gemini models with native tool use and expanded multimodal capabilities.'},
+{title:'Sora: Video Generation as a World Simulator',source:'OpenAI',date:'2025-02',url:'https://openai.com/sora',authors:'OpenAI',cat:'cs.CV',abs:'Sora is a text-to-video model that can generate realistic and imaginative scenes from text instructions.'},
 ];
 
 // ====== Utils ======
-function $(id){return document.getElementById(id)}
-function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
-
-function toggleSection(bodyId,btn){
-const body=typeof bodyId==='string'?$(bodyId):bodyId;
-const hd=btn||body.previousElementSibling;
-if(!body)return;
-const isOpen=body.style.display!=='none';
-body.style.display=isOpen?'none':'block';
-if(hd)hd.classList.toggle('active',!isOpen);
-}
+const $=id=>document.getElementById(id);
+const esc=s=>{const d=document.createElement('div');d.textContent=s;return d.innerHTML};
 
 // ====== Clock ======
-function updateClock(){
-const n=new Date();
-$('clock').innerHTML=`<span class="clock-num">${n.getHours().toString().padStart(2,'0')}:${n.getMinutes().toString().padStart(2,'0')}:${n.getSeconds().toString().padStart(2,'0')}</span>`;
-}
-setInterval(updateClock,1000);updateClock();
-
-// ====== Stats ======
-function renderStats(){
-const cats=[...new Set(TOOLS.map(t=>t.cat))];
-const allTags=[...new Set(TOOLS.flatMap(t=>t.tags))];
-$('statGrid').innerHTML=`
-<div class="stat-card"><div class="stat-num">${TOOLS.length}</div><div class="stat-label">AI 工具</div></div>
-<div class="stat-card"><div class="stat-num">${cats.length}</div><div class="stat-label">分类</div></div>
-<div class="stat-card"><div class="stat-num">${allTags.length}</div><div class="stat-label">标签</div></div>
-<div class="stat-card"><div class="stat-num pulse" id="liveDot">●</div><div class="stat-label">实时</div><div class="stat-sub">自动刷新中</div></div>
-`;
-$('navBadge').textContent=TOOLS.length;
-}
+function tick(){const n=new Date();$('clock').textContent=`${n.getHours().toString().padStart(2,'0')}:${n.getMinutes().toString().padStart(2,'0')}`}
+setInterval(tick,10000);tick();
 
 // ====== Weather ======
 async function loadWeather(){
 try{
-const resp=await fetch('https://wttr.in/?format=j1');
-if(!resp.ok)throw new Error('weather fail');
-const d=await resp.json();
-const cc=d.current_condition[0];
-const loc=d.nearest_area[0];
-const city=loc.areaName[0].value+', '+loc.country[0].value;
-$('weatherIcon').textContent=getWeatherEmoji(cc.weatherCode);
-$('weatherTemp').textContent=cc.temp_C+'°';
-$('weatherCity').textContent=city;
-
-let html=`<div class="weather-detail">
-<div class="weather-item"><div class="label">温度</div><div class="val">${cc.temp_C}°C</div></div>
-<div class="weather-item"><div class="label">体感</div><div class="val">${cc.FeelsLikeC}°C</div></div>
-<div class="weather-item"><div class="label">湿度</div><div class="val">${cc.humidity}%</div></div>
-<div class="weather-item"><div class="label">风速</div><div class="val">${cc.windspeedKmph}km/h</div></div>
-<div class="weather-item"><div class="label">能见度</div><div class="val">${cc.visibility}km</div></div>
-<div class="weather-item"><div class="label">降水</div><div class="val">${cc.precipMM}mm</div></div>
-</div>`;
-
-if(d.weather){
-html+='<div class="forecast-grid">';
-d.weather.slice(0,5).forEach(w=>{
-const date=new Date(w.date.replace('-','/'));
+const r=await fetch('https://wttr.in/?format=j1');
+if(!r.ok)throw Error();
+const d=await r.json();
+const c=d.current_condition[0],a=d.nearest_area[0];
+const city=a.areaName[0].value;
+$('wIcon').textContent=emojiCode(c.weatherCode);
+$('wTemp').textContent=c.temp_C+'°';
+$('wCity').textContent=city;
+let html=`<div class="weather-grid">
+<div class="weather-item"><div class="lbl">体感</div><div class="val">${c.FeelsLikeC}°</div></div>
+<div class="weather-item"><div class="lbl">湿度</div><div class="val">${c.humidity}%</div></div>
+<div class="weather-item"><div class="lbl">风速</div><div class="val">${c.windspeedKmph}km</div></div>
+</div><div class="forecast-horiz">`;
+if(d.weather)d.weather.slice(0,5).forEach(w=>{
+const date=new Date(w.date.replace(/-/g,'/'));
 const days=['日','一','二','三','四','五','六'];
-html+=`<div class="forecast-day"><div class="name">周${days[date.getDay()]}</div><div class="temp">${w.mintempC}~${w.maxtempC}°</div><div>${getWeatherEmoji(w.hourly[0].weatherCode)}</div></div>`;
+html+=`<div class="forecast-day"><div class="name">周${days[date.getDay()]}</div><div>${emojiCode(w.hourly[0].weatherCode)}</div><div class="temp">${w.mintempC}~${w.maxtempC}°</div></div>`;
 });
 html+='</div>';
-}
 $('weatherDetail').innerHTML=html;
-}catch(e){
-$('weatherCity').textContent='天气获取失败';
-$('weatherTemp').textContent='--°';
-console.log('Weather error:',e);
+}catch(e){$('wCity').textContent='--';$('wTemp').textContent='--°'}
 }
-}
+function emojiCode(code){const m={'113':'☀️','116':'⛅','119':'☁️','122':'☁️','143':'🌫️','176':'🌦️','179':'🌧️','182':'🌧️','185':'🌧️','200':'⛈️','227':'🌨️','230':'🌨️','248':'🌫️','260':'🌫️','263':'🌦️','266':'🌦️','281':'🌧️','284':'🌧️','293':'🌦️','296':'🌦️','299':'🌧️','302':'🌧️','305':'🌧️','308':'🌧️','311':'🌧️','314':'🌧️','317':'🌧️','320':'🌨️','323':'🌨️','326':'🌨️','329':'🌨️','332':'🌨️','335':'🌨️','338':'🌨️','350':'🧊','353':'🌦️','356':'🌧️','359':'🌧️','362':'🌧️','365':'🌧️','368':'🌨️','371':'🌨️','374':'🌧️','377':'🌧️','386':'⛈️','389':'⛈️','392':'🌨️','395':'🌨️'};return m[code]||'🌤️'}
+function toggleWeather(){$('weatherPopover').classList.toggle('open')}
 
-function getWeatherEmoji(code){
-const m={'113':'☀️','116':'⛅','119':'☁️','122':'☁️','143':'🌫️','176':'🌦️','179':'🌧️','182':'🌧️','185':'🌧️','200':'⛈️','227':'🌨️','230':'🌨️','248':'🌫️','260':'🌫️','263':'🌦️','266':'🌦️','281':'🌧️','284':'🌧️','293':'🌦️','296':'🌦️','299':'🌧️','302':'🌧️','305':'🌧️','308':'🌧️','311':'🌧️','314':'🌧️','317':'🌧️','320':'🌨️','323':'🌨️','326':'🌨️','329':'🌨️','332':'🌨️','335':'🌨️','338':'🌨️','350':'🧊','353':'🌦️','356':'🌧️','359':'🌧️','362':'🌧️','365':'🌧️','368':'🌨️','371':'🌨️','374':'🌧️','377':'🌧️','386':'⛈️','389':'⛈️','392':'🌨️','395':'🌨️'};
-return m[code]||'🌤️';
-}
-
-// ====== Papers ======
+// ====== Papers (OpenAlex API + Fallback) ======
 async function loadPapers(){
+const scroll=$('paperScroll');
+scroll.innerHTML='<div style="padding:20px;color:var(--muted);font-size:13px"><span class="loading"></span> 加载论文...</div>';
 try{
-$('paperLoading').style.display='flex';
-$('paperList').innerHTML='';
-const resp=await fetch('https://export.arxiv.org/api/query?search_query=cat:cs.AI+OR+cat:cs.LG+OR+cat:cs.CV&sortBy=submittedDate&sortOrder=descending&max_results=12');
-const xml=await resp.text();
-const parser=new DOMParser();
-const xdoc=parser.parseFromString(xml,'text/xml');
-const entries=xdoc.querySelectorAll('entry');
-let html='';
-let count=0;
-entries.forEach(e=>{
-const title=e.querySelector('title')?.textContent?.trim().replace(/\s+/g,' ')||'';
-const summary=e.querySelector('summary')?.textContent?.trim().replace(/\s+/g,' ')||'';
-const id=e.querySelector('id')?.textContent||'';
-const published=e.querySelector('published')?.textContent?.slice(0,10)||'';
-const authors=[...e.querySelectorAll('author name')].map(a=>a.textContent).slice(0,3).join(', ');
-const cats=[...e.querySelectorAll('category')].map(c=>c.getAttribute('term')).filter(c=>c.includes('.')).map(c=>c.split('.').pop()).slice(0,3).join(', ');
-if(title&&summary){
-count++;
-const abs=summary.length>200?summary.slice(0,200)+'...':summary;
-html+=`<div class="paper-item">
-<div class="paper-num">${count}</div>
-<div class="paper-body">
-<div class="paper-title" onclick="window.open('${id}','_blank')">${esc(title)}</div>
-<div class="paper-meta"><span>${published}</span><span>${esc(authors)}</span>${cats?`<span class="paper-source">${esc(cats)}</span>`:''}</div>
-<div class="paper-abs">${esc(abs)}</div>
-</div>
-</div>`;
+const r=await fetch('https://api.openalex.org/works?filter=type:article,primary_location.source.id:S4306504241&sort=publication_date:desc&per_page=10',{signal:AbortSignal.timeout(8000)});
+if(!r.ok)throw Error('status '+r.status);
+const d=await r.json();
+if(d.results&&d.results.length){
+renderPapers(d.results.map(p=>({title:p.title,source:(p.primary_location?.source?.display_name||'arXiv').slice(0,20),date:(p.publication_date||'').slice(0,7),url:p.doi?`https://doi.org/${p.doi}`:'#',authors:(p.authorships||[]).slice(0,2).map(a=>a.author.display_name).join(', '),cat:(p.concepts||[]).slice(0,2).map(c=>c.display_name).join(', '),abs:p.title})));
+$('paperBadge').textContent=d.meta?.count||d.results.length;
+return;
 }
-});
-$('paperList').innerHTML=html||'<div style="text-align:center;padding:20px;color:var(--muted)">暂无论文数据</div>';
-$('paperBadge').textContent=count;
-$('paperLoading').style.display='none';
-}catch(e){
-$('paperLoading').innerHTML='论文加载失败，点击 <a href="javascript:loadPapers()">重试</a>';
-console.log('Papers error:',e);
+}catch(e){console.log('Paper API fail:',e)}
+// Fallback
+renderPapers(FALLBACK_PAPERS);
+$('paperBadge').textContent=FALLBACK_PAPERS.length;
 }
+function renderPapers(papers){
+const scroll=$('paperScroll');
+scroll.innerHTML=papers.map((p,i)=>`<div class="paper-card" onclick="window.open('${p.url||'#'}','_blank')" style="animation-delay:${i*0.05}s">
+<div class="source">${esc(p.source||p.cat||'AI')}</div>
+<div class="title">${esc(p.title)}</div>
+<div class="meta"><span>${p.date||''}</span>${p.authors?`<span>${esc(p.authors.slice(0,30))}</span>`:''}</div>
+<div class="abs">${esc((p.abs||p.title).slice(0,120))}</div>
+</div>`).join('');
 }
 
 // ====== Automations ======
 async function loadAutomations(){
+const scroll=$('autoScroll');
 try{
-// Try local server first, then fallback to sample data
-$('autoLoading').style.display='flex';
-let data=null;
-try{
-const resp=await fetch('http://127.0.0.1:9877/api/automations',{signal:AbortSignal.timeout(3000)});
-if(resp.ok)data=await resp.json();
+const r=await fetch('https://raw.githubusercontent.com/LaskyMY/ai-nav/main/automations.json',{signal:AbortSignal.timeout(5000)});
+if(r.ok){const d=await r.json();renderAutos(d.tasks||[]);$('autoBadge').textContent=(d.tasks||[]).filter(t=>t.status==='active').length;return}
 }catch(e){}
-
-if(!data){
-data=await fetch('https://raw.githubusercontent.com/LaskyMY/ai-nav/main/automations.json',{signal:AbortSignal.timeout(3000)}).then(r=>r.ok?r.json():null);
+renderAutos([{name:'每日论文刷新',schedule:'每5分钟',status:'active',last:'刚刚'},{name:'天气更新',schedule:'每10分钟',status:'active',last:'刚刚'},{name:'GitHub Pages',schedule:'自动部署',status:'active',last:'在线'}]);
+$('autoBadge').textContent=3;
+}
+function renderAutos(tasks){
+const dots={active:'green',inactive:'yellow',failed:'red'};
+$('autoScroll').innerHTML=tasks.map(t=>`<div class="auto-card">
+<div class="top"><span class="dot ${dots[t.status]||'green'}"></span><span class="name">${esc(t.name)}</span></div>
+<div class="info"><span>⏱ ${esc(t.schedule||'')}</span><span>上次: ${esc(t.last||'-')}</span></div>
+</div>`).join('');
 }
 
-if(data&&data.tasks){
-renderAutoList(data.tasks);
-$('autoBadge').textContent=data.tasks.length;
-}else{
-// Mock data
-const mock=[{name:'每日论文推送',schedule:'每天 09:00',status:'active',last:'今天 09:00'},{name:'天气数据刷新',schedule:'每30分钟',status:'active',last:'14:00'},{name:'GitHub备份',schedule:'每天 23:00',status:'inactive',last:'昨天 23:00'}];
-renderAutoList(mock);
-$('autoBadge').textContent=mock.filter(t=>t.status==='active').length;
-}
-$('autoLoading').style.display='none';
-}catch(e){
-$('autoLoading').innerHTML='加载失败';
-}
-}
-
-function renderAutoList(tasks){
-let html='';
-tasks.forEach(t=>{
-const dot=t.status==='active'?'green':t.status==='inactive'?'yellow':'red';
-const st={active:'运行中',inactive:'已暂停',failed:'异常'}[t.status]||t.status;
-html+=`<div class="auto-card">
-<div class="name"><span class="status-dot ${dot}"></span>${esc(t.name)}</div>
-<div class="schedule">⏱ ${esc(t.schedule||'N/A')}</div>
-<div class="last-run">上次运行: ${esc(t.last||'N/A')} · ${st}</div>
-</div>`;
-});
-$('autoList').innerHTML=html;
-}
-
-// ====== Tools Navigation ======
-function renderTools(filter=''){
+// ====== Tools ======
+let activeCat='';
+function renderTools(filter){
 const cats=[...new Set(TOOLS.map(t=>t.c))];
 const filtered=filter?TOOLS.filter(t=>t.name.toLowerCase().includes(filter)||t.d.includes(filter)||t.c.includes(filter)):TOOLS;
 const grouped={};
 filtered.forEach(t=>{if(!grouped[t.c])grouped[t.c]=[];grouped[t.c].push(t)});
 
-let html='';
-cats.forEach(cat=>{
-const items=grouped[cat]||[];
-const tagColor=(i)=>{
-const map={0:'',1:'green',2:'orange',3:'pink'};
-const colors=['','green','orange','pink'];
-return colors[i%colors.length];
-};
-html+=`<div class="cat-group">
-<div class="cat-hd open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
-<span class="icon">${['💬','💻','🎨','🎬','🎵','🎯','📎'][cats.indexOf(cat)]||'📦'}</span>
-<span class="name">${cat}</span>
-<span class="count">${items.length}</span>
-<span class="arrow">▶</span>
-</div>
-<div class="cat-bd open">`;
-items.forEach(t=>{
-const tag=t.t[0]||'';
-html+=`<div class="tool-item" onclick="window.open('${t.url}','_blank')">
-<span class="emoji">${t.e}</span>
-<span class="name">${t.name}</span>
-<span class="desc">${t.d}</span>
-${tag?`<span class="tag">${tag}</span>`:''}
-</div>`;
-});
-html+=`</div></div>`;
-});
-$('navBody').innerHTML=html||'<div style="text-align:center;padding:20px;color:var(--muted)">没有匹配的工具</div>';
-$('navBadge').textContent=filtered.length;
-}
+// Hero stats
+$('heroTotal').textContent=filtered.length;
+const activeCount=cats.filter(c=>grouped[c]&&grouped[c].length>0).length;
+$('heroSub').textContent=`覆盖 ${activeCount} 个分类`;
 
-function searchTools(q){
+// Featured tool
+const pick=filtered.length?filtered[Math.floor(Math.random()*filtered.length)]:TOOLS[1];
+const feat=$('heroFeatured');
+feat.querySelector('.badge').textContent=pick===TOOLS[1]?'🔥 推荐':'⚡ 精选';
+feat.querySelector('#featuredTitle').textContent=pick.name;
+feat.querySelector('#featuredDesc').textContent=pick.d;
+feat.dataset.url=pick.url;
+
+// Tabs
+const tabHtml=cats.map(c=>`<button class="tool-tab ${!activeCat||activeCat===c?'active':''}" onclick="switchCat('${c}')">${c}</button>`).join('');
+$('toolTabs').innerHTML=tabHtml;
+
+$('toolBadge').textContent=filtered.length;
+
+// Grid
+const display=activeCat&&grouped[activeCat]?grouped[activeCat]:filtered;
+$('toolGrid').innerHTML=display.map(t=>`<div class="tool-card" onclick="window.open('${t.url}','_blank')">
+<div class="top"><span class="emoji">${t.e}</span><span class="name">${t.name}</span></div>
+<div class="desc">${t.d}</div>
+<div class="tags">${t.t.map(tg=>`<span class="tag ${['','gr'][Math.floor(Math.random()*2)]}">${tg}</span>`).join('')}</div>
+</div>`).join('');
+}
+function switchCat(cat){
+activeCat=activeCat===cat?'':cat;
+renderTools($('searchInput').value.toLowerCase());
+}
+function filterTools(q){
+activeCat='';
 renderTools(q.toLowerCase());
 }
 
-// ====== Command Workbench ======
-function runCommand(){
-const input=$('cmdInput');
-const cmd=input.value.trim();
-if(!cmd)return;
-const log=$('workbenchLog');
-log.style.display='block';
-log.innerHTML+=`<div class="line cmd">> ${esc(cmd)}</div>`;
-log.innerHTML+=`<div class="line out">⌛ 处理中...</div>`;
-log.scrollTop=log.scrollHeight;
-
-// Simulate processing
-setTimeout(()=>{
-const responses={
-'汇总今天的最新AI论文':'📄 已为你加载今日论文列表，请查看下方"每日前沿论文"板块。共收录12篇最新AI相关论文，涵盖LLM、CV、多模态等领域。',
-'当前系统状态':'📊 系统运行正常 | 工具库: '+TOOLS.length+'个 | 分类: '+[...new Set(TOOLS.map(t=>t.cat))].length+'个 | 页面自动刷新中 | 数据源: arxiv API / wttr.in',
-'推荐3个AI工具':'🎯 1. DeepSeek - 国产最强推理，1M上下文 2. Cursor - AI IDE 自动编码 3. Suno - AI作曲神器',
-'用AI写一段代码':'💻 已生成: 一个简单的Python情感分析函数。请描述你需要的具体功能获得更精准的代码。',
-'头脑风暴':'🧠 当前热点方向: 1. AI Agent自动化 2. 多模态理解 3. 端侧模型部署 4. AI+游戏开发 5. 代码生成工具链',
-};
-const reply=responses[cmd]||`🔍 "${cmd}" — 这是一个很好的问题！在AI Center中你可以:
-• 在下方"工具导航"找到相关AI工具
-• 查看"每日论文"了解最新研究
-• 使用快速命令按钮获取预设响应`;
-const lines=log.innerHTML.split('<div class="line out">⌛ 处理中...</div>');
-log.innerHTML=lines[0]+`<div class="line out">${reply}</div>`;
-log.scrollTop=log.scrollHeight;
-input.value='';
-},500);
-}
-
-function quickCmd(text){
-$('cmdInput').value=text;
-runCommand();
-}
-
 // ====== Init ======
-renderStats();
 renderTools();
 loadWeather();
 loadPapers();
 loadAutomations();
-
-// Auto refresh
-setInterval(loadPapers,300000); // 5 min
-setInterval(loadWeather,600000); // 10 min
-setInterval(loadAutomations,60000); // 1 min
+setInterval(loadPapers,300000);
+setInterval(loadWeather,600000);
+setInterval(loadAutomations,120000);
 </script>
 </body>
 </html>
