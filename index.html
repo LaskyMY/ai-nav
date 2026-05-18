@@ -321,6 +321,7 @@ header,.nav{background:rgba(245,245,247,.72)!important}
 </div>
 
 <div class="toast" id="toast"></div>
+<div id="jsError" style="display:none;position:fixed;top:0;left:0;right:0;z-index:99999;background:#dc2626;color:#fff;padding:8px 16px;font-size:12px;font-family:monospace;word-break:break-all"></div>
 <div class="offline" id="offline">📡 网络离线 · 部分功能不可用</div>
 
 <button class="fab" id="fabTop" data-act="scroll">↑</button>
@@ -925,42 +926,3 @@ if(e.key==='/'&&e.target.tagName!=='INPUT'){e.preventDefault();$('search').focus
 if(e.key==='Escape'){$('wPop').classList.remove('w-pop--open');$('favPnl').classList.remove('fav-panel--open')}
 });
 
-/* ============================
-   SPLASH & INIT (with error safety)
-   ============================ */
-(function(){
-const s=$('splash');
-if(!s)return;
-// Force hide splash after 1.5s (primary)
-// Backup: force remove after 3s no matter what
-setTimeout(()=>{
-  try{s.classList.add('hide')}catch(e){}
-  setTimeout(()=>{try{if(s&&s.parentNode)s.style.display='none'}catch(e){}},500);
-},1500);
-// Emergency backup: if JS errors block everything, brute-force remove
-setTimeout(()=>{
-  try{
-    const el=document.getElementById('splash');
-    if(el)el.remove();
-  }catch(e){}
-},3000);
-})();
-
-// Init all modules (each wrapped in error safety)
-function safeInit(name,fn){try{fn()}catch(e){console.warn('[AI Center] '+name+' init error:',e)}}
-safeInit('Tools',()=>Tools.render());
-safeInit('Weather',()=>Weather.load());
-safeInit('Papers',()=>Papers.load());
-safeInit('Autos',()=>Autos.load());
-safeInit('Versions',()=>Versions.load());
-safeInit('Insights',()=>Insights.render());
-safeInit('Todo',()=>Todo.init());
-safeInit('Req',()=>Req.init());
-
-// Auto refresh intervals
-setInterval(()=>safeInit('Papers-refresh',()=>Papers.load()),300000);
-setInterval(()=>safeInit('Weather-refresh',()=>Weather.load()),600000);
-setInterval(()=>safeInit('Autos-refresh',()=>Autos.load()),120000);
-</script>
-</body>
-</html>
