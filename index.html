@@ -450,8 +450,8 @@ setInterval(tick,10000);tick();
 
 async function loadWeather(){
 const c=CACHE.get('weather');if(c){renderWx(c);return}
-try{const r=await fetch('https://wttr.in/?format=j1');if(!r.ok)throw Error();const d=await r.json();CACHE.set('weather',d,600000);renderWx(d)}
-catch(e){$('wCity').textContent='--'}
+try{const r=await fetch('https://wttr.in/?format=j1',{signal:AbortSignal.timeout(5000)});if(!r.ok)throw Error();const d=await r.json();CACHE.set('weather',d,600000);renderWx(d)}
+catch(e){$('wCity').textContent='定位失败'}
 }
 function renderWx(d){
 const c=d.current_condition[0],a=d.nearest_area[0],city=a.areaName[0].value;
@@ -475,7 +475,7 @@ const scroll=$('paperScroll');const recent=$('recentPaperScroll');
 const cached=CACHE.get('papers');
 let papers=null;
 try{
-const r=await fetch('https://api.openalex.org/works?filter=type:article,primary_location.source.id:S4306504241&sort=publication_date:desc&per_page=12',{signal:AbortSignal.timeout(8000)});
+const r=await fetch('https://api.openalex.org/works?filter=type:article,primary_location.source.id:S4306504241&sort=publication_date:desc&per_page=12',{signal:AbortSignal.timeout(4000)});
 if(r.ok){const d=await r.json();if(d.results&&d.results.length){papers=d.results.map(p=>({title:p.title,source:(p.primary_location?.source?.display_name||'arXiv').slice(0,25),date:(p.publication_date||'').slice(0,7),url:p.doi?'https://doi.org/'+p.doi:'#',authors:(p.authorships||[]).slice(0,2).map(a=>a.author.display_name).join(', '),cat:(p.concepts||[]).slice(0,2).map(c=>c.display_name).join(', '),abs:p.title}));CACHE.set('papers',papers,1800000)}}
 catch(e){}
 if(!papers){papers=cached||PAPERS_FALLBACK}
@@ -495,7 +495,7 @@ $('statsGrid').innerHTML='<div class="summary-card"><div class="num">'+papers.le
 
 async function loadAutomations(){
 const cached=CACHE.get('autos');let tasks=null;
-try{const r=await fetch('https://raw.githubusercontent.com/LaskyMY/ai-nav/main/automations.json',{signal:AbortSignal.timeout(5000)});if(r.ok){const d=await r.json();tasks=d.tasks||[];CACHE.set('autos',tasks,300000)}}
+try{const r=await fetch('https://raw.githubusercontent.com/LaskyMY/ai-nav/main/automations.json',{signal:AbortSignal.timeout(3000)});if(r.ok){const d=await r.json();tasks=d.tasks||[];CACHE.set('autos',tasks,300000)}}
 catch(e){}
 if(!tasks)tasks=cached||[{name:'论文刷新',schedule:'每5分',status:'active',last:'实时'},{name:'天气更新',schedule:'每10分',status:'active',last:'实时'},{name:'Pages部署',schedule:'自动',status:'active',last:'在线'}];
 renderAutos($('autoScroll'),tasks);renderAutos($('autoScroll2'),tasks);
