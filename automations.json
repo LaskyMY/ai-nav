@@ -1,0 +1,29 @@
+{
+  "tasks": [
+    {
+      "name": "每日论文推送",
+      "schedule": "每天 09:00",
+      "status": "active",
+      "last": "今天 09:00"
+    },
+    {
+      "name": "天气数据刷新",
+      "schedule": "每30分钟",
+      "status": "active",
+      "last": "14:00"
+    },
+    {
+      "name": "GitHub Pages 部署",
+      "schedule": "代码推送时触发",
+      "status": "active",
+      "last": "刚刚"
+    },
+    {
+      "name": "AI 工具库同步",
+      "schedule": "每周日 03:00",
+      "status": "active",
+      "last": "昨天 03:00"
+    }
+  ],
+  "updated": "2026-05-18T14:00:00+08:00"
+}
