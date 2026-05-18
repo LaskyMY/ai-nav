@@ -60,7 +60,31 @@ header{padding:10px 16px;background:rgba(8,8,18,.85);backdrop-filter:blur(20px);
 .hero-feat .desc{font-size:11px;color:var(--muted)}
 .hero-feat .arr{font-size:18px;text-align:right;margin-top:-4px;opacity:.4}
 
-/* ===== Sub-nav (page inner tabs) ===== */
+/* ===== Insight Cards ===== */
+.insight-scroll{display:flex;gap:12px;overflow-x:auto;padding:4px 0 14px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;margin-bottom:4px}
+.insight-card{min-width:300px;max-width:360px;background:var(--card);border-radius:14px;border:1px solid var(--border);padding:16px;scroll-snap-align:start;flex-shrink:0;cursor:default;transition:.25s;backdrop-filter:blur(4px)}
+.insight-card:hover{border-color:var(--accent);box-shadow:0 6px 24px rgba(108,92,231,.1)}
+.insight-card .icat{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.insight-card .isum{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:10px}
+.insight-card .ipapers{display:flex;flex-direction:column;gap:6px}
+.insight-card .ipaper{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:8px;cursor:pointer;transition:.2s;font-size:12px;border:1px solid transparent}
+.insight-card .ipaper:hover{background:rgba(108,92,231,.08);border-color:var(--border)}
+.insight-card .ipaper .dotw{width:5px;height:5px;border-radius:50%;background:var(--accent2);flex-shrink:0}
+.insight-card .ipaper .ititle{flex:1;font-weight:500;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.insight-card .ipaper .isrc{font-size:10px;color:var(--muted);white-space:nowrap}
+.insight-card .icat-icon{font-size:18px}
+.insight-card.c1{border-left:3px solid var(--accent)}
+.insight-card.c2{border-left:3px solid var(--accent2)}
+.insight-card.c3{border-left:3px solid var(--accent3)}
+.insight-card.c4{border-left:3px solid #ffa500}
+.insight-card.c5{border-left:3px solid #a29bfe}
+
+@media(max-width:640px){
+.insight-card{min-width:260px}
+.insight-card .isum{font-size:11px}
+}
+
+/* ===== Sub-nav ===== */
 .subnav{display:flex;gap:6px;overflow-x:auto;padding:2px 0 12px;scroll-snap-type:x mandatory}
 .subnav button{padding:6px 14px;border-radius:16px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;cursor:pointer;white-space:nowrap;transition:.2s;flex-shrink:0;font-family:inherit}
 .subnav button:hover{border-color:var(--accent);color:var(--text)}
@@ -210,6 +234,8 @@ header{padding:10px 16px;background:rgba(8,8,18,.85);backdrop-filter:blur(20px);
 <div class="arr">→</div>
 </div>
 </div>
+
+<div class="insight-scroll" id="insightScroll"></div>
 
 <div class="subnav" id="overviewSubnav">
 <button class="active" onclick="switchOverviewTab('trend')">📈 趋势</button>
@@ -402,6 +428,46 @@ $('toolGrid').innerHTML=items.map(t=>'<div class="tool-card" onclick="window.ope
 function pickCat(c){activeCat=activeCat===c?'':c;renderTools()}
 function searchTools(q){activeCat='';renderTools(q.toLowerCase())}
 
+// ====== Curated Paper Insights (cached) ======
+const INSIGHTS=[
+{cat:'🤖 AI前沿',cls:'c1',summary:'2026年AI进入"推理时代"。DeepSeek-R1通过纯强化学习实现推理突破，无需人工标注；GPT-4o实现全模态统一；Claude 3.5在编程和研究生推理上刷新纪录。AI Agent从概念走向生产，MCP协议成为行业标准。开源模型追赶闭源，推理成本持续下降。',color:'var(--accent)',papers:[
+{title:'DeepSeek-R1: 强化学习驱动推理能力',url:'https://arxiv.org/abs/2501.12948',src:'arXiv 2025'},
+{title:'GPT-4o System Card',url:'https://openai.com/index/gpt-4o-system-card/',src:'OpenAI 2025'},
+{title:'Gemini 2.0: Native Tool Use',url:'https://blog.google/technology/google-deepmind/gemini/',src:'Google 2025'},
+]},
+{cat:'🎨 渲染与图形',cls:'c2',summary:'3D Gaussian Splatting (3DGS) 彻底改变了实时三维重建格局，超越传统NeRF方案。SplatWeaver提出基数高斯专家路由，按场景复杂度动态分配计算资源。动态场景重建和流式渲染取得突破，实时渲染质量逼近离线级别。',color:'var(--accent2)',papers:[
+{title:'SplatWeaver: 按需分配高斯资源',url:'https://www.techwalker.com/2026/0515/3187193.shtml',src:'哈工大·华为 2026'},
+{title:'3DGS完全指南: 实时重建革命',url:'https://sorabin.com/3dgs-complete-guide/',src:'综述 2026'},
+{title:'动态场景实时渲染进展',url:'https://www.x-mol.com/paper/1899953963372208128/t',src:'arXiv 2025'},
+]},
+{cat:'🧠 心理学与认知',cls:'c3',summary:'AI与心理学深度交叉：清华研究团队探索AI建议在健康风险判断中的采纳机制；浙大"智能心理计算"平台用大模型+游戏化认知范式做心理测评。计算精神病学通过社交媒体和可穿戴设备数据预测情绪障碍，AI心理咨询从实验走向应用。',color:'var(--accent3)',papers:[
+{title:'AI建议采纳机制研究',url:'https://www.pcs.tsinghua.edu.cn/kxyj/kycg.htm',src:'清华心理系 2026'},
+{title:'智能心理计算平台',url:'https://zjuaipsy.cn/',src:'浙大 2026'},
+{title:'计算精神病学新进展',url:'https://www.nature.com/articles/s41398-025-03369-x',src:'Nature 2025'},
+]},
+{cat:'🌐 综合突破',cls:'c4',summary:'AI for Science加速科研：AlphaFold 3开源、AI数学推理达IMO金牌水平。多模态理解从文本扩展到视频/3D/音频统一建模。端侧模型爆发，手机运行7B模型成为现实。AI编码助手从补全进化到自主编程，Cursor/Windsurf代表新范式。',color:'#ffa500',papers:[
+{title:'2026十大AI技术趋势',url:'https://www.ncsti.gov.cn/kjdt/xwjj/202601/t20260109_234835.html',src:'智源研究院 2026'},
+{title:'AI大模型技术全景',url:'https://cloud.tencent.com/developer/article/2611702',src:'腾讯云 2026'},
+{title:'AI与数据科学五大趋势',url:'https://www.36kr.com/p/3728058030013572',src:'36氪 2026'},
+]},
+{cat:'🔥 热度最高',cls:'c5',summary:'社区讨论最激烈的方向：1) AI Agent能否替代程序员——Cursor/Windsurf引发职业焦虑；2) 开源vs闭源之争——DeepSeek开源重定义行业格局；3) AI安全与对齐——从理论走向工程实践；4) MCP协议标准化——AI工具互联互通新基建。',color:'#a29bfe',papers:[
+{title:'范式变革：AI理解物理世界',url:'https://www.ncsti.gov.cn/kjdt/xwjj/202601/t20260109_234835.html',src:'智源 2026'},
+{title:'多模态大模型全面盘点',url:'https://zhuanlan.zhihu.com/p/2033357454025700478',src:'知乎 2026'},
+{title:'2026值得关注的科学大事',url:'https://news.sciencenet.cn/htmlnews/2025/12/557517.shtm',src:'Nature 2026'},
+]},
+];
+
+function renderInsights(){
+const cached=CACHE.get('insights');
+if(cached){renderInsightCards(cached);return}
+// Cache the curated data
+CACHE.set('insights',INSIGHTS,86400000); // 24h cache
+renderInsightCards(INSIGHTS);
+}
+function renderInsightCards(data){
+$('insightScroll').innerHTML=data.map(c=>'<div class="insight-card '+c.cls+'"><div class="icat"><span class="icat-icon">'+c.cat.split(' ')[0]+'</span>'+esc(c.cat.split(' ').slice(1).join(' '))+'</div><div class="isum">'+esc(c.summary)+'</div><div class="ipapers">'+c.papers.map(p=>'<div class="ipaper" onclick="window.open(\''+p.url+'\',\'_blank\')"><span class="dotw"></span><span class="ititle">'+esc(p.title)+'</span><span class="isrc">'+esc(p.src)+'</span></div>').join('')+'</div></div>').join('');
+}
+
 // ====== Favorites ======
 function getFavs(){try{return JSON.parse(localStorage.getItem('ac_favs'))||[]}catch(e){return[]}}
 function setFavs(f){localStorage.setItem('ac_favs',JSON.stringify(f));renderFavs()}
@@ -483,6 +549,7 @@ renderTools();
 loadWeather();
 loadPapers();
 loadAutomations();
+renderInsights();
 setInterval(loadPapers,300000);
 setInterval(loadWeather,600000);
 setInterval(loadAutomations,120000);
