@@ -40,7 +40,8 @@ html{scroll-behavior:smooth}
 @keyframes orbFloat{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(30px,-40px)scale(1.1)}50%{transform:translate(-20px,20px)scale(.95)}75%{transform:translate(40px,30px)scale(1.05)}}
 
 /* ===== Splash ===== */
-.splash{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s ease}
+.splash{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s ease;animation:splashAutoHide 1ms 3.5s forwards}
+@keyframes splashAutoHide{to{visibility:hidden;pointer-events:none}}
 .splash.hide{opacity:0;pointer-events:none}
 .splash-burst{position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center;animation:splashScale .7s var(--spring) forwards}
 .splash-burst .ring{position:absolute;border-radius:50%;border:1.5px solid;opacity:0}
@@ -623,7 +624,9 @@ document.documentElement.style.setProperty('--mx',_lx+'px');document.documentEle
 requestAnimationFrame(_follow)}_follow();
 document.addEventListener('mousemove',e=>{document.querySelectorAll('.card,.hero-card').forEach(el=>{const r=el.getBoundingClientRect();el.style.setProperty('--cx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%');el.style.setProperty('--cy',((e.clientY-r.top)/r.height*100).toFixed(1)+'%')})});
 
-setTimeout(()=>{const s=$('splash');if(s){s.classList.add('hide');setTimeout(()=>{s.style.display='none'},500)}},2000);
+setTimeout(()=>{const s=$('splash');if(s){s.classList.add('hide');setTimeout(()=>{if(s&&s.parentNode)s.style.display='none'},600)}},2000);
+// Fallback: also hide on load
+window.addEventListener('load',()=>{const s=$('splash');if(s)s.classList.add('hide')});
 
 showSkeleton($('paperScroll'),4);
 showSkeleton($('autoScroll'),3);
