@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 导航 · 智能工具集</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>🤖</text></svg>">
+    <style>
+        :root {
+            --bg: #0f0f1a;
+            --card: #1a1a2e;
+            --card-hover: #222240;
+            --accent: #6c63ff;
+            --accent2: #00d4aa;
+            --text: #e8e8f0;
+            --muted: #8888a0;
+            --border: #2a2a45;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(15,15,26,.92);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            white-space: nowrap;
+        }
+        .logo span { font-size: 26px; -webkit-text-fill-color: initial; }
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--text);
+            font-size: 15px;
+            outline: none;
+            transition: border .2s;
+        }
+        .search-box:focus { border-color: var(--accent); }
+        .search-box::placeholder { color: var(--muted); }
+
+        .tag-filter {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .tag-btn {
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--muted);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all .2s;
+        }
+        .tag-btn:hover { border-color: var(--accent); color: var(--text); }
+        .tag-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+        /* Main */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .category {
+            margin-bottom: 36px;
+        }
+        .category-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .category-title .icon { font-size: 20px; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 12px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            transition: all .25s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover {
+            background: var(--card-hover);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(108,99,255,.15);
+        }
+        .card:active { transform: scale(.98); }
+        .card-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-name .emoji { font-size: 18px; }
+        .card-desc {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+        .card-tags {
+            margin-top: 10px;
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .card-tags .tag {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: rgba(108,99,255,.12);
+            color: var(--accent);
+        }
+        .card-tags .tag.green { background: rgba(0,212,170,.12); color: var(--accent2); }
+        .card-tags .tag.orange { background: rgba(255,165,0,.12); color: #ffa500; }
+        .card-tags .tag.pink { background: rgba(255,105,180,.12); color: #ff69b4; }
+
+        .card-link {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+
+        /* Empty state */
+        .empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--muted);
+        }
+        .empty .big { font-size: 48px; margin-bottom: 12px; }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--muted);
+            font-size: 13px;
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            header { padding: 14px 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-inner">
+        <div class="logo"><span>🤖</span> AI 导航</div>
+        <input class="search-box" id="search" type="text" placeholder="搜索AI工具..." oninput="filterCards()">
+        <div class="tag-filter" id="tagFilter"></div>
+    </div>
+</header>
+
+<main id="main">
+    <div id="categories"></div>
+</main>
+
+<footer>AI Navigation · 持续收录优质AI工具</footer>
+
+<script>
+// ========== 数据 ==========
+const TOOLS = [
+    // ── 大语言模型 ──
+    { name:'ChatGPT', emoji:'💬', desc:'OpenAI 旗舰对话模型，GPT-4o 多模态能力最强之一', url:'https://chat.openai.com', cat:'大语言模型', tags:['对话','多模态','写作'] },
+    { name:'DeepSeek', emoji:'🧠', desc:'国产最强开源大模型，推理能力极强，支持1M超长上下文', url:'https://chat.deepseek.com', cat:'大语言模型', tags:['对话','推理','长文本'] },
+    { name:'Claude', emoji:'📝', desc:'Anthropic 出品，长文写作和编程能力顶尖，安全可控', url:'https://claude.ai', cat:'大语言模型', tags:['写作','编程','长文本'] },
+    { name:'Gemini', emoji:'🌟', desc:'Google 多模态模型，与谷歌生态深度集成', url:'https://gemini.google.com', cat:'大语言模型', tags:['对话','多模态','谷歌'] },
+    { name:'Kimi', emoji:'📄', desc:'月之暗面出品，超长上下文处理，阅读文档神器', url:'https://kimi.moonshot.cn', cat:'大语言模型', tags:['长文本','阅读','国产'] },
+    { name:'豆包', emoji:'🫘', desc:'字节跳动 AI 助手，集成在抖音火山引擎生态', url:'https://www.doubao.com', cat:'大语言模型', tags:['对话','国产','字节'] },
+    { name:'通义千问', emoji:'🌙', desc:'阿里云出品，中文理解力强，支持多模态和文档解析', url:'https://tongyi.aliyun.com', cat:'大语言模型', tags:['对话','国产','多模态'] },
+    { name:'文心一言', emoji:'📖', desc:'百度出品，中文原生，搜索增强，擅长知识问答', url:'https://yiyan.baidu.com', cat:'大语言模型', tags:['对话','国产','搜索'] },
+    { name:'Grok', emoji:'💥', desc:'xAI 出品，实时联网，风格幽默不拘谨', url:'https://grok.com', cat:'大语言模型', tags:['对话','实时','幽默'] },
+
+    // ── AI 编程 ──
+    { name:'GitHub Copilot', emoji:'💻', desc:'最流行的 AI 编程助手，支持 VS Code/JetBrains 等 IDE', url:'https://github.com/features/copilot', cat:'AI编程', tags:['代码补全','IDE','微软'] },
+    { name:'Cursor', emoji:'⚡', desc:'AI-first IDE，内置多模型，支持整项目编辑和重构', url:'https://cursor.sh', cat:'AI编程', tags:['IDE','重构','多模型'] },
+    { name:'Windsurf', emoji:'🏄', desc:'Codeium 出品，AI Flow 模式自动编码，极速补全', url:'https://codeium.com/windsurf', cat:'AI编程', tags:['IDE','自动编码','免费'] },
+    { name:'通义灵码', emoji:'🎯', desc:'阿里出品国产 AI 编程助手，中文友好，免费', url:'https://tongyi.aliyun.com/lingma', cat:'AI编程', tags:['代码补全','国产','免费'] },
+
+    // ── AI 图像生成 ──
+    { name:'Midjourney', emoji:'🎨', desc:'AI 绘画天花板，审美最强，适合艺术创作和概念设计', url:'https://www.midjourney.com', cat:'图像生成', tags:['文生图','艺术','付费'] },
+    { name:'DALL·E 3/4', emoji:'🖼️', desc:'OpenAI 图像生成，文字还原最好，与 ChatGPT 深度整合', url:'https://openai.com/dall-e', cat:'图像生成', tags:['文生图','文字渲染','综合'] },
+    { name:'Stable Diffusion', emoji:'🌌', desc:'开源图像生成模型，本地部署可玩性极高，生态丰富', url:'https://stability.ai', cat:'图像生成', tags:['文生图','开源','本地'] },
+    { name:'Flux', emoji:'🔥', desc:'Black Forest Labs 出品，真实感和指令遵循极强', url:'https://blackforestlabs.ai', cat:'图像生成', tags:['文生图','真实感','高精度'] },
+    { name:'Ideogram', emoji:'📰', desc:'图内文字渲染最强，做海报Logo神器', url:'https://ideogram.ai', cat:'图像生成', tags:['文生图','文字','海报'] },
+    { name:'即梦', emoji:'🌄', desc:'字节跳动出品，中文场景理解力强，社区活跃', url:'https://jimeng.jianying.com', cat:'图像生成', tags:['文生图','国产','社区'] },
+
+    // ── AI 视频生成 ──
+    { name:'Sora', emoji:'🎬', desc:'OpenAI 视频生成旗舰，物理世界理解能力领先', url:'https://sora.com', cat:'视频生成', tags:['文生视频','高画质','物理'] },
+    { name:'Runway Gen-3', emoji:'🎥', desc:'专业级 AI 视频生成和编辑平台，多控制模式', url:'https://runwayml.com', cat:'视频生成', tags:['文生视频','编辑','专业'] },
+    { name:'可灵 Kling', emoji:'🎪', desc:'快手出品，AI 视频生成效果惊艳，支持图生视频', url:'https://kling.kuaishou.com', cat:'视频生成', tags:['文生视频','国产','图生视频'] },
+    { name:'Pika', emoji:'🦙', desc:'简单易用的 AI 视频生成，适合快速制作短视频', url:'https://pika.art', cat:'视频生成', tags:['文生视频','易用','短视频'] },
+
+    // ── AI 设计 ──
+    { name:'Canva AI', emoji:'🎯', desc:'在线设计平台内置 AI 功能，一键生成海报/PPT/社交媒体素材', url:'https://www.canva.com', cat:'AI设计', tags:['设计','海报','模板'] },
+    { name:'Adobe Firefly', emoji:'✨', desc:'Adobe 全家桶 AI 引擎，商用合规可授权', url:'https://www.adobe.com/firefly', cat:'AI设计', tags:['设计','商用','PS'] },
+    { name:'Figma AI', emoji:'🎭', desc:'Figma 内置 AI 功能，自动生成 UI 组件和设计稿', url:'https://www.figma.com', cat:'AI设计', tags:['UI','组件','原型'] },
+
+    // ── AI 音乐 ──
+    { name:'Suno', emoji:'🎵', desc:'最流行的 AI 音乐生成，作词作曲编曲一条龙', url:'https://suno.com', cat:'AI音乐', tags:['音乐生成','作词','流行'] },
+    { name:'Udio', emoji:'🎶', desc:'高品质 AI 音乐生成，音质和人声表现优秀', url:'https://udio.com', cat:'AI音乐', tags:['音乐生成','高音质','人声'] },
+
+    // ── AI 办公效率 ──
+    { name:'Notion AI', emoji:'📓', desc:'笔记+AI助手，自动总结/写作/翻译，知识管理神器', url:'https://www.notion.so', cat:'办公效率', tags:['笔记','写作','知识管理'] },
+    { name:'Gamma', emoji:'📊', desc:'AI 一键生成 PPT/文档/网页，排版精美', url:'https://gamma.app', cat:'办公效率', tags:['PPT','文档','排版'] },
+    { name:'Perplexity', emoji:'🔍', desc:'AI 搜索引擎，带引用来源，深度研究利器', url:'https://www.perplexity.ai', cat:'办公效率', tags:['搜索','研究','引用'] },
+    { name:'飞书智能伙伴', emoji:'📎', desc:'飞书内置 AI 助手，会议纪要/文档写作/信息提取', url:'https://www.feishu.cn', cat:'办公效率', tags:['办公','协作','国产'] },
+    { name:'Grammarly', emoji:'✍️', desc:'AI 英文写作助手，语法检查/润色/改写', url:'https://www.grammarly.com', cat:'办公效率', tags:['写作','英文','润色'] },
+];
+
+// ========== 渲染 ==========
+const categories = [...new Set(TOOLS.map(t => t.cat))];
+const allTags = [...new Set(TOOLS.flatMap(t => t.tags))];
+
+function render(filterTag = '', searchText = '') {
+    const container = document.getElementById('categories');
+    const tagFilter = document.getElementById('tagFilter');
+
+    // 标签过滤
+    tagFilter.innerHTML = `<button class="tag-btn ${!filterTag ? 'active' : ''}" onclick="render('','${searchText}')">全部</button>`;
+    allTags.forEach(tag => {
+        tagFilter.innerHTML += `<button class="tag-btn ${filterTag === tag ? 'active' : ''}" onclick="render('${tag}','${searchText}')">${tag}</button>`;
+    });
+
+    // 过滤
+    const filtered = TOOLS.filter(t => {
+        const matchTag = !filterTag || t.tags.includes(filterTag);
+        const matchSearch = !searchText || t.name.toLowerCase().includes(searchText) || t.desc.includes(searchText) || t.cat.includes(searchText);
+        return matchTag && matchSearch;
+    });
+
+    if (filtered.length === 0) {
+        container.innerHTML = `<div class="empty"><div class="big">🔍</div><p>没有找到匹配的AI工具</p></div>`;
+        return;
+    }
+
+    // 按分类分组
+    const grouped = {};
+    filtered.forEach(t => {
+        if (!grouped[t.cat]) grouped[t.cat] = [];
+        grouped[t.cat].push(t);
+    });
+
+    let html = '';
+    Object.entries(grouped).forEach(([cat, tools]) => {
+        const icons = { '大语言模型':'💬','AI编程':'💻','图像生成':'🎨','视频生成':'🎬','AI设计':'🎯','AI音乐':'🎵','办公效率':'📎' };
+        html += `<div class="category"><div class="category-title"><span class="icon">${icons[cat]||'📦'}</span>${cat} <span style="font-size:13px;color:var(--muted);font-weight:400">(${tools.length})</span></div>`;
+        html += '<div class="grid">';
+        tools.forEach(t => {
+            const tagHtml = t.tags.map(tg => {
+                const cls = ['免费','开源','国产','本地'].includes(tg) ? 'green' : tg === '付费' ? 'orange' : '';
+                return `<span class="tag ${cls}">${tg}</span>`;
+            }).join('');
+            html += `<div class="card" onclick="window.open('${t.url}','_blank')">
+                <div class="card-name"><span class="emoji">${t.emoji}</span>${t.name}</div>
+                <div class="card-desc">${t.desc}</div>
+                <div class="card-tags">${tagHtml}</div>
+            </div>`;
+        });
+        html += '</div></div>';
+    });
+
+    container.innerHTML = html;
+    document.getElementById('search').value = searchText;
+}
+
+function filterCards() {
+    const q = document.getElementById('search').value.toLowerCase();
+    const activeTag = document.querySelector('.tag-btn.active');
+    const tag = activeTag && activeTag.textContent !== '全部' ? activeTag.textContent : '';
+    render(tag, q);
+}
+
+// initial
+render();
+</script>
+</body>
+</html>
