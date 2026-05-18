@@ -455,7 +455,7 @@ $('autoList').innerHTML=html;
 
 // ====== Tools Navigation ======
 function renderTools(filter=''){
-const cats=[...new Set(TOOLS.map(t=>t.cat))];
+const cats=[...new Set(TOOLS.map(t=>t.c))];
 const filtered=filter?TOOLS.filter(t=>t.name.toLowerCase().includes(filter)||t.d.includes(filter)||t.c.includes(filter)):TOOLS;
 const grouped={};
 filtered.forEach(t=>{if(!grouped[t.c])grouped[t.c]=[];grouped[t.c].push(t)});
