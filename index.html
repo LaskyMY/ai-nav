@@ -3,151 +3,138 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>AI Center · 智能中枢</title>
+<title>AI Center</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>🧠</text></svg>">
 <style>
-:root{--bg:#080812;--card:rgba(20,20,48,.7);--card2:rgba(30,30,60,.6);--accent:#6c5ce7;--accent2:#00d4aa;--accent3:#ff6b9d;--text:#e8e8f5;--muted:#7a7aa0;--border:rgba(108,92,231,.15);--glass:rgba(255,255,255,.04)}
+:root{--bg:#080812;--card:rgba(20,20,48,.7);--card2:rgba(30,30,60,.6);--accent:#6c5ce7;--accent2:#00d4aa;--accent3:#ff6b9d;--text:#e8e8f5;--muted:#7a7aa0;--border:rgba(108,92,231,.15);--nav-h:56px}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;overflow-x:hidden;min-height:100vh;background-image:radial-gradient(ellipse at 20% 50%,rgba(108,92,231,.06) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(0,212,170,.04) 0%,transparent 50%)}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;min-height:100vh;padding-bottom:calc(var(--nav-h)+16px);background-image:radial-gradient(ellipse at 20% 50%,rgba(108,92,231,.06) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(0,212,170,.04) 0%,transparent 50%)}
 ::-webkit-scrollbar{width:3px;height:3px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(108,92,231,.1)}50%{box-shadow:0 0 40px rgba(108,92,231,.25)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-@keyframes fadeScale{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading{display:inline-block;width:12px;height:12px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite}
 
 /* ===== Header ===== */
-header{padding:14px 20px;position:sticky;top:0;z-index:100;background:rgba(8,8,18,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.header-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.logo{font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200% auto;animation:shimmer 3s linear infinite}
-.logo-icon{font-size:24px;-webkit-text-fill-color:initial;animation:float 3s ease-in-out infinite}
-.search-wrap{flex:1;min-width:140px;position:relative}
-.search-wrap input{width:100%;padding:9px 14px 9px 36px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;outline:none;transition:all .25s;backdrop-filter:blur(4px)}
-.search-wrap input:focus{border-color:var(--accent);box-shadow:0 0 20px rgba(108,92,231,.1)}
-.search-wrap .ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none}
-.header-right{display:flex;align-items:center;gap:10px;margin-left:auto}
-.weather-pill{display:flex;align-items:center;gap:6px;background:var(--card);padding:5px 14px 5px 10px;border-radius:20px;border:1px solid var(--border);font-size:13px;cursor:pointer;transition:.25s;backdrop-filter:blur(4px)}
-.weather-pill:hover{border-color:var(--accent);box-shadow:0 0 15px rgba(108,92,231,.1);transform:translateY(-1px)}
-.weather-pill .icon{font-size:16px}
-.weather-pill .temp{font-weight:600}
-.weather-pill .city{color:var(--muted);font-size:11px}
-.clock{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.5px}
+header{padding:10px 16px;background:rgba(8,8,18,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:90}
+.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.logo{font-size:18px;font-weight:800;display:flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200% auto;animation:shimmer 3s linear infinite}
+.logo .ico{font-size:22px;-webkit-text-fill-color:initial;animation:float 3s ease-in-out infinite}
+.search-wrap{flex:1;min-width:100px;position:relative}
+.search-wrap input{width:100%;padding:7px 10px 7px 30px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:12px;outline:none}
+.search-wrap input:focus{border-color:var(--accent)}
+.search-wrap .ico{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:12px;pointer-events:none}
+.header-right{display:flex;align-items:center;gap:8px;margin-left:auto}
+.weather-pill{display:flex;align-items:center;gap:4px;background:var(--card);padding:4px 10px 4px 8px;border-radius:16px;border:1px solid var(--border);font-size:12px;cursor:pointer;transition:.2s}
+.weather-pill:hover{border-color:var(--accent)}
+.clock{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
 
-/* ===== Container ===== */
-.container{max-width:1400px;margin:0 auto;padding:16px 20px}
+/* ===== Nav ===== */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:var(--nav-h);background:rgba(8,8,18,.92);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;z-index:100;justify-content:center;gap:0}
+.bottom-nav .item{flex:1;max-width:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;transition:.2s;color:var(--muted);border:none;background:none;font-family:inherit;padding:4px 0}
+.bottom-nav .item .ico{font-size:18px;transition:.2s}
+.bottom-nav .item .lbl{font-size:9px;font-weight:500}
+.bottom-nav .item.active{color:var(--accent2)}
+.bottom-nav .item.active .ico{transform:translateY(-2px)}
+.bottom-nav .item:hover{color:var(--text)}
 
-/* ===== Hero ===== */
-.hero{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;animation:slideUp .5s ease}
-.hero-card{background:linear-gradient(135deg,rgba(108,92,231,.12),rgba(0,212,170,.08));border-radius:16px;border:1px solid var(--border);padding:22px 24px;position:relative;overflow:hidden;animation:glow 4s ease-in-out infinite}
-.hero-card::before{content:'';position:absolute;top:-50%;right:-50%;width:100%;height:100%;background:radial-gradient(circle,rgba(108,92,231,.08) 0%,transparent 70%);pointer-events:none}
-.hero-card .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
-.hero-card .big{font-size:36px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1}
-.hero-card .sub{font-size:13px;color:var(--muted);margin-top:4px}
-.hero-card .extra{font-size:11px;color:var(--muted);margin-top:8px;opacity:.7}
+/* ===== Pages ===== */
+.page{display:none;animation:slideUp .35s ease}
+.page.active{display:block}
+.container{max-width:1200px;margin:0 auto;padding:12px 16px}
 
-.hero-featured{background:linear-gradient(135deg,rgba(255,107,157,.1),rgba(108,92,231,.08));border-radius:16px;border:1px solid var(--border);padding:22px 24px;position:relative;overflow:hidden;cursor:pointer;transition:.3s;animation:slideUp .6s ease}
-.hero-featured:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(108,92,231,.15)}
-.hero-featured .badge{display:inline-block;padding:3px 10px;border-radius:12px;background:linear-gradient(135deg,var(--accent3),var(--accent));font-size:10px;font-weight:600;color:#fff;margin-bottom:8px;letter-spacing:.3px}
-.hero-featured .title{font-size:16px;font-weight:600;line-height:1.4;margin-bottom:4px}
-.hero-featured .desc{font-size:12px;color:var(--muted);line-height:1.5}
-.hero-featured .arrow{position:absolute;bottom:16px;right:18px;font-size:20px;opacity:.4;transition:.3s}
-.hero-featured:hover .arrow{opacity:1;transform:translateX(4px)}
+/* ===== Hero Stats ===== */
+.hero-grid{display:grid;grid-template-columns:2fr 1fr;gap:10px;margin-bottom:16px}
+.hero-main{background:linear-gradient(135deg,rgba(108,92,231,.12),rgba(0,212,170,.08));border-radius:14px;border:1px solid var(--border);padding:18px 20px;position:relative;overflow:hidden}
+.hero-main .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}
+.hero-main .big{font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1;margin:4px 0 2px}
+.hero-main .sub{font-size:12px;color:var(--muted)}
+.hero-feat{background:linear-gradient(135deg,rgba(255,107,157,.1),rgba(108,92,231,.08));border-radius:14px;border:1px solid var(--border);padding:16px 18px;cursor:pointer;transition:.3s}
+.hero-feat:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(108,92,231,.12)}
+.hero-feat .badge{display:inline-block;padding:2px 8px;border-radius:10px;background:linear-gradient(135deg,var(--accent3),var(--accent));font-size:9px;font-weight:600;color:#fff}
+.hero-feat .title{font-size:15px;font-weight:600;margin:6px 0 2px}
+.hero-feat .desc{font-size:11px;color:var(--muted)}
+.hero-feat .arr{font-size:18px;text-align:right;margin-top:-4px;opacity:.4}
 
-/* ===== Weather Detail Popover ===== */
-.weather-popover{display:none;position:fixed;top:70px;right:20px;width:340px;max-width:calc(100vw - 40px);background:rgba(16,16,36,.95);backdrop-filter:blur(24px);border-radius:16px;border:1px solid var(--border);padding:18px;z-index:99;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:fadeScale .2s ease}
-.weather-popover.open{display:block}
-.weather-popover .close{position:absolute;top:10px;right:14px;cursor:pointer;color:var(--muted);font-size:18px;transition:.2s}
-.weather-popover .close:hover{color:var(--text)}
-.weather-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.weather-item{text-align:center;padding:8px 4px;background:var(--card);border-radius:10px;border:1px solid var(--border)}
-.weather-item .val{font-size:16px;font-weight:600;margin-top:2px}
-.weather-item .lbl{font-size:10px;color:var(--muted)}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loading{display:inline-block;width:12px;height:12px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle}
-.forecast-horiz{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scroll-snap-type:x mandatory}
-.forecast-day{min-width:70px;text-align:center;padding:10px 6px;background:var(--card);border-radius:10px;border:1px solid var(--border);font-size:12px;scroll-snap-align:start}
-.forecast-day .name{color:var(--muted);font-size:10px}
-.forecast-day .temp{font-weight:600;margin:4px 0 2px}
+/* ===== Sub-nav (page inner tabs) ===== */
+.subnav{display:flex;gap:6px;overflow-x:auto;padding:2px 0 12px;scroll-snap-type:x mandatory}
+.subnav button{padding:6px 14px;border-radius:16px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;cursor:pointer;white-space:nowrap;transition:.2s;flex-shrink:0;font-family:inherit}
+.subnav button:hover{border-color:var(--accent);color:var(--text)}
+.subnav button.active{background:linear-gradient(135deg,var(--accent),#8b7cf7);border-color:transparent;color:#fff;font-weight:600}
 
-/* ===== Trending Scroll ===== */
-.section-label{display:flex;align-items:center;gap:10px;margin:18px 0 10px}
-.section-label h2{font-size:16px;font-weight:700}
-.section-label .badge{background:var(--accent);color:#fff;font-size:10px;padding:2px 10px;border-radius:10px;font-weight:600}
-.section-label .more{font-size:12px;color:var(--muted);margin-left:auto;cursor:pointer;transition:.2s}
-.section-label .more:hover{color:var(--accent2)}
+/* ===== Paper Summary ===== */
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-bottom:14px}
+.summary-card{background:var(--card);border-radius:10px;border:1px solid var(--border);padding:12px;text-align:center}
+.summary-card .num{font-size:22px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.summary-card .lbl{font-size:11px;color:var(--muted);margin-top:2px}
+.summary-card .src{font-size:10px;color:var(--muted);margin-top:4px;opacity:.7}
 
-.scroll-x{display:flex;gap:10px;overflow-x:auto;padding:4px 0 12px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
-.scroll-x::-webkit-scrollbar{height:2px}
+.paper-scroll{display:flex;gap:10px;overflow-x:auto;padding:4px 0 12px;scroll-snap-type:x mandatory}
+.paper-card{min-width:280px;max-width:340px;background:var(--card);border-radius:12px;border:1px solid var(--border);padding:14px;scroll-snap-align:start;flex-shrink:0;cursor:pointer;transition:.25s;animation:slideUp .35s ease both}
+.paper-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 20px rgba(108,92,231,.1)}
+.paper-card .cat{font-size:10px;color:var(--accent2);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px}
+.paper-card .ptitle{font-size:13px;font-weight:600;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.paper-card .psum{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;opacity:.8}
+.paper-card .pmeta{font-size:10px;color:var(--muted);margin-top:6px;display:flex;gap:8px;flex-wrap:wrap}
+.paper-card .ptag{display:inline-block;padding:1px 6px;border-radius:4px;background:rgba(108,92,231,.12);color:var(--accent);font-size:9px}
 
-.paper-card{min-width:280px;max-width:320px;background:var(--card);border-radius:14px;border:1px solid var(--border);padding:16px;scroll-snap-align:start;transition:.25s;cursor:pointer;flex-shrink:0;backdrop-filter:blur(4px);animation:slideUp .4s ease both}
-.paper-card:nth-child(1){animation-delay:0s}
-.paper-card:nth-child(2){animation-delay:.05s}
-.paper-card:nth-child(3){animation-delay:.1s}
-.paper-card:nth-child(4){animation-delay:.15s}
-.paper-card:nth-child(5){animation-delay:.2s}
-.paper-card:nth-child(6){animation-delay:.25s}
-.paper-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 8px 25px rgba(108,92,231,.12)}
-.paper-card .source{font-size:10px;color:var(--accent2);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
-.paper-card .title{font-size:13px;font-weight:600;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.paper-card .meta{font-size:11px;color:var(--muted);margin-top:6px;display:flex;gap:8px;flex-wrap:wrap}
-.paper-card .abs{font-size:11px;color:var(--muted);margin-top:8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;line-height:1.6;opacity:.7}
+/* ===== Tools ===== */
+.tool-col{display:grid;grid-template-columns:180px 1fr;gap:14px}
+.tool-sidebar{display:flex;flex-direction:column;gap:4px}
+.tool-sidebar button{padding:8px 12px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--muted);font-size:13px;cursor:pointer;text-align:left;transition:.2s;font-family:inherit}
+.tool-sidebar button:hover{background:rgba(108,92,231,.06);color:var(--text)}
+.tool-sidebar button.active{border-color:var(--border);background:var(--card);color:var(--accent2);font-weight:600}
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;animation:slideUp .25s ease}
+.tool-card{background:var(--card);border-radius:10px;border:1px solid var(--border);padding:12px;cursor:pointer;transition:.25s;animation:fadeIn .3s ease both}
+.tool-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 15px rgba(108,92,231,.08)}
+.tool-card .top{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.tool-card .emoji{font-size:16px}
+.tool-card .name{font-weight:600;font-size:13px}
+.tool-card .desc{font-size:11px;color:var(--muted);line-height:1.4}
+.tool-card .tags{display:flex;gap:3px;margin-top:6px;flex-wrap:wrap}
+.tool-card .tag{font-size:9px;padding:1px 6px;border-radius:4px;background:rgba(108,92,231,.12);color:var(--accent)}
 
-/* ===== Auto Grid ===== */
-.auto-scroll{display:flex;gap:10px;overflow-x:auto;padding:4px 0 12px;scroll-snap-type:x mandatory}
-.auto-card{min-width:200px;background:var(--card);border-radius:12px;border:1px solid var(--border);padding:14px 16px;scroll-snap-align:start;flex-shrink:0;transition:.25s}
-.auto-card:hover{border-color:var(--accent2);box-shadow:0 4px 15px rgba(0,212,170,.08)}
-.auto-card .top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.auto-card .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.auto-card .dot.green{background:var(--accent2);box-shadow:0 0 8px rgba(0,212,170,.4)}
-.auto-card .dot.yellow{background:#ffa500;box-shadow:0 0 8px rgba(255,165,0,.4)}
-.auto-card .dot.red{background:#ff6b6b;box-shadow:0 0 8px rgba(255,107,107,.4)}
-.auto-card .name{font-weight:600;font-size:13px}
-.auto-card .info{font-size:11px;color:var(--muted);margin-top:4px}
-.auto-card .info span{margin-right:10px}
+/* ===== Auto ===== */
+.auto-scroll{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px}
+.auto-card{min-width:180px;background:var(--card);border-radius:10px;border:1px solid var(--border);padding:12px;flex-shrink:0;transition:.2s}
+.auto-card:hover{border-color:var(--accent2)}
+.auto-card .top{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.auto-card .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.auto-card .dot.green{background:var(--accent2);box-shadow:0 0 6px rgba(0,212,170,.4)}
+.auto-card .dot.yellow{background:#ffa500;box-shadow:0 0 6px rgba(255,165,0,.4)}
+.auto-card .dname{font-weight:600;font-size:12px}
+.auto-card .info{font-size:10px;color:var(--muted);margin-top:4px}
 
-/* ===== Tool Navigation ===== */
-.tool-section{margin-top:4px}
-.tool-tabs{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;scroll-snap-type:x mandatory}
-.tool-tab{padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:13px;cursor:pointer;transition:.25s;white-space:nowrap;scroll-snap-align:start;flex-shrink:0}
-.tool-tab:hover{border-color:var(--accent);color:var(--text)}
-.tool-tab.active{background:linear-gradient(135deg,var(--accent),#8b7cf7);border-color:transparent;color:#fff;font-weight:600}
+/* ===== Weather Popover ===== */
+.weather-pop{display:none;position:fixed;top:60px;right:16px;width:320px;max-width:calc(100vw - 32px);background:rgba(16,16,36,.95);backdrop-filter:blur(24px);border-radius:14px;border:1px solid var(--border);padding:16px;z-index:99;box-shadow:0 16px 48px rgba(0,0,0,.5)}
+.weather-pop.open{display:block;animation:fadeIn .2s ease}
+.weather-pop .close{position:absolute;top:8px;right:12px;cursor:pointer;color:var(--muted);font-size:16px}
+.w-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.w-item{text-align:center;padding:6px 4px;background:var(--card);border-radius:8px;border:1px solid var(--border)}
+.w-item .v{font-size:15px;font-weight:600}
+.w-item .l{font-size:9px;color:var(--muted)}
+.w-fc{display:flex;gap:6px;overflow-x:auto}
+.w-fc .day{min-width:64px;text-align:center;padding:8px 4px;background:var(--card);border-radius:8px;border:1px solid var(--border);font-size:11px}
+.w-fc .day .dn{color:var(--muted);font-size:9px}
+.w-fc .day .dt{font-weight:600;margin:2px 0}
 
-.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;animation:slideUp .3s ease}
-.tool-card{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:14px;cursor:pointer;transition:.25s;backdrop-filter:blur(4px);animation:fadeScale .3s ease both}
-.tool-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 20px rgba(108,92,231,.1)}
-.tool-card .top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.tool-card .emoji{font-size:18px}
-.tool-card .name{font-weight:600;font-size:14px}
-.tool-card .desc{font-size:12px;color:var(--muted);line-height:1.5}
-.tool-card .tags{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap}
-.tool-card .tag{font-size:10px;padding:2px 8px;border-radius:6px;background:rgba(108,92,231,.12);color:var(--accent)}
-.tool-card .tag.gr{background:rgba(0,212,170,.12);color:var(--accent2)}
-
-@media(min-width:900px){
-.tool-grid{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
-.paper-card{min-width:300px}
-}
-
+/* ===== Responsive ===== */
 @media(max-width:700px){
-.hero{grid-template-columns:1fr}
-.hero-card .big{font-size:28px}
-.hero-featured{padding:18px}
-.weather-popover{right:10px;width:calc(100vw - 20px)}
-.clock{display:none}
-.header-inner{gap:8px}
-.container{padding:12px 14px}
+.hero-grid{grid-template-columns:1fr}
+.tool-col{grid-template-columns:1fr}
+.tool-sidebar{flex-direction:row;overflow-x:auto;padding-bottom:4px}
+.tool-sidebar button{white-space:nowrap;flex-shrink:0;font-size:12px;padding:6px 12px}
 .tool-grid{grid-template-columns:1fr 1fr}
+.paper-card{min-width:240px}
 }
-
 @media(max-width:420px){
 .tool-grid{grid-template-columns:1fr}
-.paper-card{min-width:240px}
-.weather-pill{padding:4px 10px 4px 8px;font-size:12px}
-.weather-pill .icon{font-size:14px}
-.logo{font-size:16px}
-.hero-card .big{font-size:24px}
+.paper-card{min-width:200px}
+.clock{display:none}
 }
 </style>
 </head>
@@ -155,55 +142,85 @@ header{padding:14px 20px;position:sticky;top:0;z-index:100;background:rgba(8,8,1
 
 <header>
 <div class="header-inner">
-<div class="logo"><span class="logo-icon">🧠</span> AI Center</div>
-<div class="search-wrap"><span class="ico">🔍</span><input id="searchInput" placeholder="搜工具..." oninput="filterTools(this.value)"></div>
+<div class="logo"><span class="ico">🧠</span> AI Center</div>
+<div class="search-wrap"><span class="ico">🔍</span><input id="searchInput" placeholder="搜工具..." oninput="searchTools(this.value)"></div>
 <div class="header-right">
 <span class="clock" id="clock">--:--</span>
 <div class="weather-pill" id="weatherPill" onclick="toggleWeather()">
-<span class="icon" id="wIcon">☀️</span>
-<span><span class="temp" id="wTemp">--°</span> <span class="city" id="wCity">定位中</span></span>
+<span id="wIcon">☀️</span><span id="wTemp">--°</span><span id="wCity" style="font-size:10px;color:var(--muted)">定位中</span>
 </div>
 </div>
 </div>
 </header>
 
-<div class="weather-popover" id="weatherPopover">
-<div class="close" onclick="toggleWeather()">✕</div>
-<div id="weatherDetail"></div>
-</div>
+<div class="weather-pop" id="weatherPop"><div class="close" onclick="toggleWeather()">✕</div><div id="weatherDetail"></div></div>
 
+<!-- ===== Pages ===== -->
 <div class="container">
-<!-- Hero -->
-<div class="hero">
-<div class="hero-card">
-<div class="label">AI 工具库</div>
+
+<!-- Page: Overview -->
+<div class="page active" id="page-overview">
+<div class="hero-grid">
+<div class="hero-main">
+<div class="lbl">AI 工具库</div>
 <div class="big" id="heroTotal">0</div>
-<div class="sub" id="heroSub">覆盖 7 大分类</div>
-<div class="extra" id="heroExtra">实时更新 · 一键直达</div>
+<div class="sub" id="heroSub">覆盖多个分类</div>
 </div>
-<div class="hero-featured" id="heroFeatured" onclick="window.open(this.dataset.url||'https://chat.deepseek.com','_blank')">
+<div class="hero-feat" id="heroFeat" onclick="window.open(this.dataset.url,'_blank')">
 <div class="badge">🔥 推荐</div>
-<div class="title" id="featuredTitle">DeepSeek</div>
-<div class="desc" id="featuredDesc">国产最强推理大模型 · 1M超长上下文 · 免费</div>
-<div class="arrow">→</div>
+<div class="title" id="featTitle">DeepSeek</div>
+<div class="desc" id="featDesc">国产最强推理大模型</div>
+<div class="arr">→</div>
 </div>
 </div>
 
-<!-- Papers -->
-<div class="section-label"><h2>📄 前沿论文</h2><span class="badge" id="paperBadge">0</span><span class="more" onclick="document.getElementById('paperScroll').scrollBy(300,0)">更多 →</span></div>
-<div class="scroll-x" id="paperScroll"></div>
+<div class="subnav" id="overviewSubnav">
+<button class="active" onclick="switchOverviewTab('trend')">📈 趋势</button>
+<button onclick="switchOverviewTab('recent')">🕐 最近</button>
+<button onclick="switchOverviewTab('stats')">📊 统计</button>
+</div>
 
-<!-- Automations -->
-<div class="section-label"><h2>🤖 自动化监控</h2><span class="badge" id="autoBadge">0</span></div>
+<div id="overviewTrend" class="ov-tab">
 <div class="auto-scroll" id="autoScroll"></div>
+</div>
+<div id="overviewRecent" class="ov-tab" style="display:none">
+<div class="paper-scroll" id="recentPaperScroll"></div>
+</div>
+<div id="overviewStats" class="ov-tab" style="display:none">
+<div class="summary-grid" id="statsGrid"></div>
+</div>
+</div>
 
-<!-- Tools -->
-<div class="section-label"><h2>🧭 工具导航</h2><span class="badge" id="toolBadge">0</span></div>
-<div class="tool-tabs" id="toolTabs"></div>
+<!-- Page: Papers -->
+<div class="page" id="page-papers">
+<div class="summary-grid" id="paperSummary"></div>
+<div class="paper-scroll" id="paperScroll"></div>
+<div style="font-size:11px;color:var(--muted);text-align:center;padding:8px">点击卡片查看原文 · 自动刷新</div>
+</div>
+
+<!-- Page: Tools -->
+<div class="page" id="page-tools">
+<div class="tool-col">
+<div class="tool-sidebar" id="toolSidebar"></div>
 <div class="tool-grid" id="toolGrid"></div>
 </div>
+</div>
 
-<footer style="text-align:center;padding:24px;color:var(--muted);font-size:12px;border-top:1px solid var(--border);margin-top:20px">AI Center · 自动刷新中</footer>
+<!-- Page: Automation -->
+<div class="page" id="page-auto">
+<div class="summary-grid" id="autoSummary"></div>
+<div class="auto-scroll" id="autoScroll2"></div>
+</div>
+
+</div>
+
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+<button class="item active" data-page="overview" onclick="switchPage('overview')"><span class="ico">🏠</span><span class="lbl">总览</span></button>
+<button class="item" data-page="papers" onclick="switchPage('papers')"><span class="ico">📄</span><span class="lbl">论文</span></button>
+<button class="item" data-page="tools" onclick="switchPage('tools')"><span class="ico">🧭</span><span class="lbl">工具</span></button>
+<button class="item" data-page="auto" onclick="switchPage('auto')"><span class="ico">🤖</span><span class="lbl">自动化</span></button>
+</nav>
 
 <script>
 // ====== Data ======
@@ -214,22 +231,22 @@ const TOOLS=[
 {name:'Gemini',e:'🌟',d:'Google多模态模型',url:'https://gemini.google.com',c:'大语言模型',t:['多模态','谷歌']},
 {name:'Kimi',e:'📄',d:'超长上下文阅读神器',url:'https://kimi.moonshot.cn',c:'大语言模型',t:['阅读','国产']},
 {name:'豆包',e:'🫘',d:'字节跳动AI助手',url:'https://www.doubao.com',c:'大语言模型',t:['对话','国产']},
-{name:'通义千问',e:'🌙',d:'阿里云AI中文理解力强',url:'https://tongyi.aliyun.com',c:'大语言模型',t:['多模态','国产']},
+{name:'通义千问',e:'🌙',d:'阿里云AI中文理解强',url:'https://tongyi.aliyun.com',c:'大语言模型',t:['多模态','国产']},
 {name:'文心一言',e:'📖',d:'百度搜索增强AI',url:'https://yiyan.baidu.com',c:'大语言模型',t:['搜索','国产']},
 {name:'Grok',e:'💥',d:'xAI实时联网风格幽默',url:'https://grok.com',c:'大语言模型',t:['实时','幽默']},
-{name:'Cursor',e:'⚡',d:'AI-first IDE重构利器',url:'https://cursor.sh',c:'AI编程',t:['IDE','重构']},
+{name:'Cursor',e:'⚡',d:'AI-first IDE重构',url:'https://cursor.sh',c:'AI编程',t:['IDE','重构']},
 {name:'Copilot',e:'💻',d:'GitHub AI编程助手',url:'https://github.com/features/copilot',c:'AI编程',t:['代码补全','微软']},
 {name:'Windsurf',e:'🏄',d:'Codeium自动编码',url:'https://codeium.com/windsurf',c:'AI编程',t:['IDE','免费']},
 {name:'通义灵码',e:'🎯',d:'阿里国产编程助手',url:'https://tongyi.aliyun.com/lingma',c:'AI编程',t:['代码补全','国产']},
 {name:'Midjourney',e:'🎨',d:'AI绘画审美天花板',url:'https://www.midjourney.com',c:'图像生成',t:['艺术','付费']},
-{name:'DALL·E',e:'🖼️',d:'OpenAI文字渲染强',url:'https://openai.com/dall-e',c:'图像生成',t:['文字渲染','OpenAI']},
+{name:'DALL-E',e:'🖼️',d:'OpenAI文字渲染强',url:'https://openai.com/dall-e',c:'图像生成',t:['文字','OpenAI']},
 {name:'Flux',e:'🔥',d:'真实感指令遵循极强',url:'https://blackforestlabs.ai',c:'图像生成',t:['真实感','高精度']},
 {name:'SD',e:'🌌',d:'Stable Diffusion开源',url:'https://stability.ai',c:'图像生成',t:['开源','本地']},
 {name:'Ideogram',e:'📰',d:'图内文字渲染最强',url:'https://ideogram.ai',c:'图像生成',t:['文字','海报']},
-{name:'即梦',e:'🌄',d:'字节出品中文场景理解',url:'https://jimeng.jianying.com',c:'图像生成',t:['国产','社区']},
+{name:'即梦',e:'🌄',d:'字节中文场景理解强',url:'https://jimeng.jianying.com',c:'图像生成',t:['国产','社区']},
 {name:'Sora',e:'🎬',d:'OpenAI视频生成旗舰',url:'https://sora.com',c:'视频生成',t:['高画质','OpenAI']},
 {name:'Runway',e:'🎥',d:'专业级AI视频编辑',url:'https://runwayml.com',c:'视频生成',t:['编辑','专业']},
-{name:'可灵',e:'🎪',d:'快手AI视频效果惊艳',url:'https://kling.kuaishou.com',c:'视频生成',t:['国产','图生视频']},
+{name:'可灵',e:'🎪',d:'快手AI视频效果惊艳',url:'https://kling.kuaishou.com',c:'视频生成',t:['国产','视频']},
 {name:'Suno',e:'🎵',d:'AI作曲作词一条龙',url:'https://suno.com',c:'AI音乐',t:['音乐','流行']},
 {name:'Udio',e:'🎶',d:'高品质AI音乐生成',url:'https://udio.com',c:'AI音乐',t:['高音质','人声']},
 {name:'Canva AI',e:'🎯',d:'在线设计+AI生成',url:'https://www.canva.com',c:'AI设计',t:['设计','模板']},
@@ -239,155 +256,114 @@ const TOOLS=[
 {name:'Perplexity',e:'🔍',d:'AI搜索引擎带引用',url:'https://www.perplexity.ai',c:'办公效率',t:['搜索','研究']},
 {name:'飞书AI',e:'📎',d:'飞书AI会议纪要写作',url:'https://www.feishu.cn',c:'办公效率',t:['办公','协作']},
 ];
-
-// Fallback papers (in case API fails)
-const FALLBACK_PAPERS=[
-{title:'DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning',source:'arXiv',date:'2025-01',url:'https://arxiv.org/abs/2501.12948',authors:'DeepSeek-AI',cat:'cs.AI',abs:'We introduce DeepSeek-R1, a model that achieves reasoning capabilities comparable to OpenAI-o1 through reinforcement learning.'},
-{title:'GPT-4o System Card',source:'OpenAI',date:'2025-05',url:'https://openai.com/index/gpt-4o-system-card/',authors:'OpenAI',cat:'cs.AI',abs:'System card for GPT-4o, our multimodal model that accepts text, audio, and image inputs.'},
-{title:'Claude 3.5 Sonnet - Model Card',source:'Anthropic',date:'2025-03',url:'https://docs.anthropic.com/en/docs/about-claude/models',authors:'Anthropic',cat:'cs.AI',abs:'Claude 3.5 Sonnet sets new industry benchmarks for graduate-level reasoning and coding.'},
-{title:'FLUX: Realistic Text-to-Image Generation',source:'arXiv',date:'2025-04',url:'https://arxiv.org/abs/2504.12345',authors:'Black Forest Labs',cat:'cs.CV',abs:'FLUX.1 delivers state-of-the-art text-to-image generation with unprecedented prompt adherence.'},
-{title:'Gemini 2.0: A Multimodal Model',source:'Google DeepMind',date:'2025-02',url:'https://blog.google/technology/google-deepmind/gemini/',authors:'Google DeepMind',cat:'cs.AI',abs:'Next generation of Gemini models with native tool use and expanded multimodal capabilities.'},
-{title:'Sora: Video Generation as a World Simulator',source:'OpenAI',date:'2025-02',url:'https://openai.com/sora',authors:'OpenAI',cat:'cs.CV',abs:'Sora is a text-to-video model that can generate realistic and imaginative scenes from text instructions.'},
+const PAPERS_FALLBACK=[
+{title:'DeepSeek-R1: Reasoning via Reinforcement Learning',source:'arXiv',date:'2025-01',url:'https://arxiv.org/abs/2501.12948',authors:'DeepSeek-AI',cat:'LLM',abs:'通过强化学习实现推理能力突破，性能媲美OpenAI o1。开源模型推理能力的里程碑。'},
+{title:'GPT-4o System Card',source:'OpenAI',date:'2025-05',url:'https://openai.com/index/gpt-4o-system-card/',authors:'OpenAI',cat:'多模态',abs:'GPT-4o系统报告，覆盖文本/音频/图像多模态输入的安全评估与能力边界。'},
+{title:'Claude 3.5 Sonnet',source:'Anthropic',date:'2025-03',url:'https://docs.anthropic.com/en/docs/about-claude/models',authors:'Anthropic',cat:'LLM',abs:'研究生级别推理和编程能力新标杆，多项基准测试刷新记录。'},
+{title:'FLUX: Text-to-Image Generation',source:'Black Forest Labs',date:'2025-04',url:'https://arxiv.org/abs/2504.12345',authors:'BFL',cat:'CV',abs:'FLUX.1实现前所未有的指令遵循和真实感图像生成质量。'},
+{title:'Gemini 2.0',source:'Google DeepMind',date:'2025-02',url:'https://blog.google/technology/google-deepmind/gemini/',authors:'Google',cat:'多模态',abs:'原生工具使用和扩展多模态能力的新一代Gemini模型。'},
+{title:'Sora: Video World Simulator',source:'OpenAI',date:'2025-02',url:'https://openai.com/sora',authors:'OpenAI',cat:'视频',abs:'文生视频模型，从文字指令生成逼真且富有想象力的场景。'},
 ];
 
-// ====== Cache Utils ======
-const CACHE={set(k,v,t){try{localStorage.setItem('aic_'+k,JSON.stringify({data:v,exp:Date.now()+t}))}catch(e){}},get(k){try{const c=JSON.parse(localStorage.getItem('aic_'+k));return c&&c.exp>Date.now()?c.data:null}catch(e){return null}},del(k){try{localStorage.removeItem('aic_'+k)}catch(e){}}};
-
-// ====== Clock ======
+// ====== Cache ======
+const CACHE={set(k,v,t){try{localStorage.setItem('ac_'+k,JSON.stringify({d:v,e:Date.now()+t}))}catch(e){}},get(k){try{const c=JSON.parse(localStorage.getItem('ac_'+k));return c&&c.e>Date.now()?c.d:null}catch(e){return null}}};
 const $=id=>document.getElementById(id);
 const esc=s=>{const d=document.createElement('div');d.textContent=s;return d.innerHTML};
 
+// ====== Navigation ======
+function switchPage(name){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.querySelectorAll('.bottom-nav .item').forEach(b=>b.classList.remove('active'));
+$(name==='overview'?'page-overview':`page-${name}`).classList.add('active');
+document.querySelector(`.bottom-nav .item[data-page="${name}"]`).classList.add('active');
+}
+
 // ====== Clock ======
-function tick(){const n=new Date();$('clock').textContent=`${n.getHours().toString().padStart(2,'0')}:${n.getMinutes().toString().padStart(2,'0')}`}
+function tick(){const n=new Date();$('clock').textContent=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0')}
 setInterval(tick,10000);tick();
 
 // ====== Weather ======
 async function loadWeather(){
-const cached=CACHE.get('weather');
-if(cached){applyWeather(cached);return}
-try{
-const r=await fetch('https://wttr.in/?format=j1');
-if(!r.ok)throw Error();
-const d=await r.json();
-CACHE.set('weather',d,600000); // 10min cache
-applyWeather(d);
-}catch(e){$('wCity').textContent='--';$('wTemp').textContent='--°'}
+const c=CACHE.get('weather');if(c){renderWx(c);return}
+try{const r=await fetch('https://wttr.in/?format=j1');if(!r.ok)throw Error();const d=await r.json();CACHE.set('weather',d,600000);renderWx(d)}
+catch(e){$('wCity').textContent='--'}
 }
-function applyWeather(d){
-const c=d.current_condition[0],a=d.nearest_area[0];
-const city=a.areaName[0].value;
-$('wIcon').textContent=emojiCode(c.weatherCode);
-$('wTemp').textContent=c.temp_C+'°';
-$('wCity').textContent=city;
-let html=`<div class="weather-grid">
-<div class="weather-item"><div class="lbl">体感</div><div class="val">${c.FeelsLikeC}°</div></div>
-<div class="weather-item"><div class="lbl">湿度</div><div class="val">${c.humidity}%</div></div>
-<div class="weather-item"><div class="lbl">风速</div><div class="val">${c.windspeedKmph}km</div></div>
-</div><div class="forecast-horiz">`;
-if(d.weather)d.weather.slice(0,5).forEach(w=>{
-const date=new Date(w.date.replace(/-/g,'/'));
-const days=['日','一','二','三','四','五','六'];
-html+=`<div class="forecast-day"><div class="name">周${days[date.getDay()]}</div><div>${emojiCode(w.hourly[0].weatherCode)}</div><div class="temp">${w.mintempC}~${w.maxtempC}°</div></div>`;
-});
-html+='</div>';
-$('weatherDetail').innerHTML=html;
-}
-function emojiCode(code){const m={'113':'☀️','116':'⛅','119':'☁️','122':'☁️','143':'🌫️','176':'🌦️','179':'🌧️','182':'🌧️','185':'🌧️','200':'⛈️','227':'🌨️','230':'🌨️','248':'🌫️','260':'🌫️','263':'🌦️','266':'🌦️','281':'🌧️','284':'🌧️','293':'🌦️','296':'🌦️','299':'🌧️','302':'🌧️','305':'🌧️','308':'🌧️','311':'🌧️','314':'🌧️','317':'🌧️','320':'🌨️','323':'🌨️','326':'🌨️','329':'🌨️','332':'🌨️','335':'🌨️','338':'🌨️','350':'🧊','353':'🌦️','356':'🌧️','359':'🌧️','362':'🌧️','365':'🌧️','368':'🌨️','371':'🌨️','374':'🌧️','377':'🌧️','386':'⛈️','389':'⛈️','392':'🌨️','395':'🌨️'};return m[code]||'🌤️'}
-function toggleWeather(){$('weatherPopover').classList.toggle('open')}
+function renderWx(d){
+const c=d.current_condition[0],a=d.nearest_area[0],city=a.areaName[0].value;
+$('wIcon').textContent=wxEmoji(c.weatherCode);$('wTemp').textContent=c.temp_C+'°';$('wCity').textContent=city;
+let h='<div class="w-grid"><div class="w-item"><div class="v">'+c.FeelsLikeC+'°</div><div class="l">体感</div></div><div class="w-item"><div class="v">'+c.humidity+'%</div><div class="l">湿度</div></div><div class="w-item"><div class="v">'+c.windspeedKmph+'km</div><div class="l">风速</div></div></div><div class="w-fc">';
+if(d.weather)d.weather.slice(0,5).forEach(w=>{const date=new Date(w.date.replace(/-/g,'/'));const wd=['日','一','二','三','四','五','六'];h+='<div class="day"><div class="dn">周'+wd[date.getDay()]+'</div><div>'+wxEmoji(w.hourly[0].weatherCode)+'</div><div class="dt">'+w.mintempC+'~'+w.maxtempC+'°</div></div>'});
 
-// ====== Papers (OpenAlex API + Fallback + Cache) ======
+h+='</div>';$('weatherDetail').innerHTML=h;
+}
+function wxEmoji(c){return {'113':'☀️','116':'⛅','119':'☁️','122':'☁️','143':'🌫️','176':'🌦️','179':'🌧️','182':'🌧️','185':'🌧️','200':'⛈️','227':'🌨️','230':'🌨️','248':'🌫️','260':'🌫️','263':'🌦️','266':'🌦️','281':'🌧️','284':'🌧️','293':'🌦️','296':'🌦️','299':'🌧️','302':'🌧️','305':'🌧️','308':'🌧️','311':'🌧️','314':'🌧️','317':'🌧️','320':'🌨️','323':'🌨️','326':'🌨️','329':'🌨️','332':'🌨️','335':'🌨️','338':'🌨️','350':'🧊','353':'🌦️','356':'🌧️','359':'🌧️','362':'🌧️','365':'🌧️','368':'🌨️','371':'🌨️','374':'🌧️','377':'🌧️','386':'⛈️','389':'⛈️','392':'🌨️','395':'🌨️'}[c]||'🌤️'}
+function toggleWeather(){$('weatherPop').classList.toggle('open')}
+
+// ====== Overview Tabs ======
+function switchOverviewTab(tab){
+document.querySelectorAll('#page-overview .ov-tab').forEach(t=>t.style.display='none');
+document.querySelectorAll('#page-overview .subnav button').forEach(b=>b.classList.remove('active'));
+$(tab==='trend'?'overviewTrend':tab==='recent'?'overviewRecent':'overviewStats').style.display='block';
+event.target.classList.add('active');
+}
+
+// ====== Papers ======
 async function loadPapers(){
-const scroll=$('paperScroll');
+const scroll=$('paperScroll');const recent=$('recentPaperScroll');
 const cached=CACHE.get('papers');
-if(cached){scroll.innerHTML='';renderPapers(cached);$('paperBadge').textContent=cached.length;}
-
-// Try API (even if cached, refresh in bg)
+let papers=null;
 try{
-const r=await fetch('https://api.openalex.org/works?filter=type:article,primary_location.source.id:S4306504241&sort=publication_date:desc&per_page=10',{signal:AbortSignal.timeout(8000)});
-if(!r.ok)throw Error();
-const d=await r.json();
-if(d.results&&d.results.length){
-const papers=d.results.map(p=>({title:p.title,source:(p.primary_location?.source?.display_name||'arXiv').slice(0,20),date:(p.publication_date||'').slice(0,7),url:p.doi?`https://doi.org/${p.doi}`:'#',authors:(p.authorships||[]).slice(0,2).map(a=>a.author.display_name).join(', '),cat:(p.concepts||[]).slice(0,2).map(c=>c.display_name).join(', '),abs:p.title}));
-CACHE.set('papers',papers,1800000); // 30min cache
-renderPapers(papers);
-$('paperBadge').textContent=papers.length;
-return;
-}
+const r=await fetch('https://api.openalex.org/works?filter=type:article,primary_location.source.id:S4306504241&sort=publication_date:desc&per_page=12',{signal:AbortSignal.timeout(8000)});
+if(r.ok){const d=await r.json();if(d.results&&d.results.length){papers=d.results.map(p=>({title:p.title,source:(p.primary_location?.source?.display_name||'arXiv').slice(0,25),date:(p.publication_date||'').slice(0,7),url:p.doi?'https://doi.org/'+p.doi:'#',authors:(p.authorships||[]).slice(0,2).map(a=>a.author.display_name).join(', '),cat:(p.concepts||[]).slice(0,2).map(c=>c.display_name).join(', '),abs:p.title}));CACHE.set('papers',papers,1800000)}}
 }catch(e){}
-if(!cached){renderPapers(FALLBACK_PAPERS);$('paperBadge').textContent=FALLBACK_PAPERS.length;}
+if(!papers){papers=cached||PAPERS_FALLBACK}
+renderPapers(scroll,papers);
+renderPapers(recent,papers.slice(0,6));
+renderPaperSummary(papers);
 }
-function renderPapers(papers){
-const scroll=$('paperScroll');
-scroll.innerHTML=papers.map((p,i)=>`<div class="paper-card" onclick="window.open('${p.url||'#'}','_blank')" style="animation-delay:${i*0.05}s">
-<div class="source">${esc(p.source||p.cat||'AI')}</div>
-<div class="title">${esc(p.title)}</div>
-<div class="meta"><span>${p.date||''}</span>${p.authors?`<span>${esc(p.authors.slice(0,30))}</span>`:''}</div>
-<div class="abs">${esc((p.abs||p.title).slice(0,120))}</div>
-</div>`).join('');
+function renderPapers(el,papers){
+el.innerHTML=papers.map((p,i)=>'<div class="paper-card" onclick="window.open(\''+esc(p.url||'#')+'\',\'_blank\')" style="animation-delay:'+(i*0.04)+'s"><div class="cat">'+esc(p.cat||p.source||'AI')+'</div><div class="ptitle">'+esc(p.title)+'</div><div class="psum">'+esc((p.abs||p.title).slice(0,150))+'</div><div class="pmeta"><span>'+esc(p.date||'')+'</span>'+esc(p.authors?' by '+p.authors.slice(0,25):'')+'</div></div>').join('');
+}
+function renderPaperSummary(papers){
+const cats={};papers.forEach(p=>{const k=p.cat||'AI';cats[k]=(cats[k]||0)+1});
+const top=Object.entries(cats).sort((a,b)=>b[1]-a[1]).slice(0,4);
+$('paperSummary').innerHTML=top.map(([k,v]) => '<div class="summary-card"><div class="num">'+v+'</div><div class="lbl">'+esc(k)+'</div><div class="src">最新论文</div></div>').join('')+'<div class="summary-card"><div class="num">'+papers.length+'</div><div class="lbl">总计</div><div class="src">收录论文</div></div>';
+$('statsGrid').innerHTML='<div class="summary-card"><div class="num">'+papers.length+'</div><div class="lbl">论文总数</div></div><div class="summary-card"><div class="num">'+Object.keys(cats).length+'</div><div class="lbl">研究方向</div></div><div class="summary-card"><div class="num">'+papers.reduce((s,p)=>Math.max(s,p.date?.slice(0,4)||0),0)+'</div><div class="lbl">最新年份</div></div>';
 }
 
 // ====== Automations ======
 async function loadAutomations(){
-const cached=CACHE.get('autos');
-if(cached){renderAutos(cached);$('autoBadge').textContent=cached.filter(t=>t.status==='active').length}
-try{
-const r=await fetch('https://raw.githubusercontent.com/LaskyMY/ai-nav/main/automations.json',{signal:AbortSignal.timeout(5000)});
-if(r.ok){const d=await r.json();const t=d.tasks||[];CACHE.set('autos',t,300000);renderAutos(t);$('autoBadge').textContent=t.filter(x=>x.status==='active').length;return}
-}catch(e){}
-if(!cached){const fallback=[{name:'每日论文刷新',schedule:'每5分钟',status:'active',last:'刚刚'},{name:'天气更新',schedule:'每10分钟',status:'active',last:'刚刚'},{name:'GitHub Pages',schedule:'自动部署',status:'active',last:'在线'}];
-renderAutos(fallback);$('autoBadge').textContent=3;}
+const cached=CACHE.get('autos');let tasks=null;
+try{const r=await fetch('https://raw.githubusercontent.com/LaskyMY/ai-nav/main/automations.json',{signal:AbortSignal.timeout(5000)});if(r.ok){const d=await r.json();tasks=d.tasks||[];CACHE.set('autos',tasks,300000)}}
+catch(e){}
+if(!tasks)tasks=cached||[{name:'论文刷新',schedule:'每5分',status:'active',last:'实时'},{name:'天气更新',schedule:'每10分',status:'active',last:'实时'},{name:'Pages部署',schedule:'自动',status:'active',last:'在线'}];
+renderAutos($('autoScroll'),tasks);renderAutos($('autoScroll2'),tasks);
+$('autoSummary').innerHTML='<div class="summary-card"><div class="num">'+tasks.length+'</div><div class="lbl">任务总数</div></div><div class="summary-card"><div class="num">'+tasks.filter(t=>t.status==='active').length+'</div><div class="lbl">运行中</div></div><div class="summary-card"><div class="num">'+tasks.filter(t=>t.status!=='active').length+'</div><div class="lbl">已暂停</div></div>';
 }
-function renderAutos(tasks){
+function renderAutos(el,tasks){
 const dots={active:'green',inactive:'yellow',failed:'red'};
-$('autoScroll').innerHTML=tasks.map(t=>`<div class="auto-card">
-<div class="top"><span class="dot ${dots[t.status]||'green'}"></span><span class="name">${esc(t.name)}</span></div>
-<div class="info"><span>⏱ ${esc(t.schedule||'')}</span><span>上次: ${esc(t.last||'-')}</span></div>
-</div>`).join('');
+el.innerHTML=tasks.map(t=>'<div class="auto-card"><div class="top"><span class="dot '+(dots[t.status]||'green')+'"></span><span class="dname">'+esc(t.name)+'</span></div><div class="info">⏱ '+esc(t.schedule||'')+' · 上次: '+esc(t.last||'-')+'</div></div>').join('');
 }
 
 // ====== Tools ======
-let activeCat='';
-function renderTools(filter){
+let activeCat='';let searchQ='';
+function renderTools(q){
+searchQ=q!==undefined?q:searchQ;
 const cats=[...new Set(TOOLS.map(t=>t.c))];
-const filtered=filter?TOOLS.filter(t=>t.name.toLowerCase().includes(filter)||t.d.includes(filter)||t.c.includes(filter)):TOOLS;
-const grouped={};
-filtered.forEach(t=>{if(!grouped[t.c])grouped[t.c]=[];grouped[t.c].push(t)});
+const filtered=searchQ?TOOLS.filter(t=>t.name.toLowerCase().includes(searchQ)||t.d.includes(searchQ)||t.c.includes(searchQ)):TOOLS;
+if(!activeCat||!filtered.some(t=>t.c===activeCat))activeCat='';
+const items=activeCat?filtered.filter(t=>t.c===activeCat):filtered;
 
-// Hero stats
 $('heroTotal').textContent=filtered.length;
-const activeCount=cats.filter(c=>grouped[c]&&grouped[c].length>0).length;
-$('heroSub').textContent=`覆盖 ${activeCount} 个分类`;
+$('heroSub').textContent='覆盖 '+cats.filter(c=>filtered.some(t=>t.c===c)).length+' 个分类';
+const pick=filtered[Math.floor(Math.random()*filtered.length)]||TOOLS[1];
+$('featTitle').textContent=pick.name;$('featDesc').textContent=pick.d;$('heroFeat').dataset.url=pick.url;
 
-// Featured tool
-const pick=filtered.length?filtered[Math.floor(Math.random()*filtered.length)]:TOOLS[1];
-const feat=$('heroFeatured');
-feat.querySelector('.badge').textContent=pick===TOOLS[1]?'🔥 推荐':'⚡ 精选';
-feat.querySelector('#featuredTitle').textContent=pick.name;
-feat.querySelector('#featuredDesc').textContent=pick.d;
-feat.dataset.url=pick.url;
-
-// Tabs
-const tabHtml=cats.map(c=>`<button class="tool-tab ${!activeCat||activeCat===c?'active':''}" onclick="switchCat('${c}')">${c}</button>`).join('');
-$('toolTabs').innerHTML=tabHtml;
-
-$('toolBadge').textContent=filtered.length;
-
-// Grid
-const display=activeCat&&grouped[activeCat]?grouped[activeCat]:filtered;
-$('toolGrid').innerHTML=display.map(t=>`<div class="tool-card" onclick="window.open('${t.url}','_blank')">
-<div class="top"><span class="emoji">${t.e}</span><span class="name">${t.name}</span></div>
-<div class="desc">${t.d}</div>
-<div class="tags">${t.t.map(tg=>`<span class="tag ${['','gr'][Math.floor(Math.random()*2)]}">${tg}</span>`).join('')}</div>
-</div>`).join('');
+$('toolSidebar').innerHTML='<button class="'+(activeCat===''?'active':'')+'" onclick="pickCat(\'\')">🏷️ 全部 ('+filtered.length+')</button>'+cats.map(c=>'<button class="'+(activeCat===c?'active':'')+'" onclick="pickCat(\''+c+'\')">'+c+' ('+(filtered.filter(t=>t.c===c).length)+')</button>').join('');
+$('toolGrid').innerHTML=items.map(t=>'<div class="tool-card" onclick="window.open(\''+t.url+'\',\'_blank\')"><div class="top"><span class="emoji">'+t.e+'</span><span class="name">'+t.name+'</span></div><div class="desc">'+t.d+'</div><div class="tags">'+t.t.map(tg=>'<span class="tag">'+tg+'</span>').join('')+'</div></div>').join('');
 }
-function switchCat(cat){
-activeCat=activeCat===cat?'':cat;
-renderTools($('searchInput').value.toLowerCase());
-}
-function filterTools(q){
-activeCat='';
-renderTools(q.toLowerCase());
-}
+function pickCat(c){activeCat=activeCat===c?'':c;renderTools()}
+function searchTools(q){activeCat='';renderTools(q.toLowerCase())}
 
 // ====== Init ======
 renderTools();
