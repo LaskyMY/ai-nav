@@ -926,28 +926,41 @@ if(e.key==='Escape'){$('wPop').classList.remove('w-pop--open');$('favPnl').class
 });
 
 /* ============================
-   SPLASH & INIT
+   SPLASH & INIT (with error safety)
    ============================ */
 (function(){
 const s=$('splash');
 if(!s)return;
-setTimeout(()=>{s.classList.add('hide');setTimeout(()=>{if(s.parentNode)s.style.display='none'},500)},1500);
+// Force hide splash after 1.5s (primary)
+// Backup: force remove after 3s no matter what
+setTimeout(()=>{
+  try{s.classList.add('hide')}catch(e){}
+  setTimeout(()=>{try{if(s&&s.parentNode)s.style.display='none'}catch(e){}},500);
+},1500);
+// Emergency backup: if JS errors block everything, brute-force remove
+setTimeout(()=>{
+  try{
+    const el=document.getElementById('splash');
+    if(el)el.remove();
+  }catch(e){}
+},3000);
 })();
 
-// Init all modules
-Tools.render();
-Weather.load();
-Papers.load();
-Autos.load();
-Versions.load();
-Insights.render();
-Todo.init();
-Req.init();
+// Init all modules (each wrapped in error safety)
+function safeInit(name,fn){try{fn()}catch(e){console.warn('[AI Center] '+name+' init error:',e)}}
+safeInit('Tools',()=>Tools.render());
+safeInit('Weather',()=>Weather.load());
+safeInit('Papers',()=>Papers.load());
+safeInit('Autos',()=>Autos.load());
+safeInit('Versions',()=>Versions.load());
+safeInit('Insights',()=>Insights.render());
+safeInit('Todo',()=>Todo.init());
+safeInit('Req',()=>Req.init());
 
 // Auto refresh intervals
-setInterval(()=>Papers.load(),300000);
-setInterval(()=>Weather.load(),600000);
-setInterval(()=>Autos.load(),120000);
+setInterval(()=>safeInit('Papers-refresh',()=>Papers.load()),300000);
+setInterval(()=>safeInit('Weather-refresh',()=>Weather.load()),600000);
+setInterval(()=>safeInit('Autos-refresh',()=>Autos.load()),120000);
 </script>
 </body>
 </html>
