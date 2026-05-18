@@ -16,6 +16,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:3px}
 ::selection{background:rgba(139,91,246,.25)}
 
+/* ===== Background Orbs ===== */
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.1}
+.bg__orb:nth-child(1){width:450px;height:450px;background:var(--a1);top:-12%;left:-6%;animation:orbA 24s ease-in-out infinite}
+.bg__orb:nth-child(2){width:350px;height:350px;background:var(--pink);bottom:-10%;right:-5%;animation:orbA 28s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:250px;height:250px;background:var(--cyan);top:45%;left:55%;animation:orbA 20s ease-in-out infinite}
+.bg__orb:nth-child(4){width:200px;height:200px;background:var(--a2);top:25%;left:30%;animation:orbA 22s ease-in-out infinite reverse}
+@keyframes orbA{0%,100%{transform:translate(0,0)}25%{transform:translate(30px,-25px)}50%{transform:translate(-15px,15px)}75%{transform:translate(20px,20px)}}
+
+/* ===== Mouse Glow ===== */
+.glow{position:fixed;inset:0;pointer-events:none;z-index:9998;background:radial-gradient(300px circle at var(--mx,0) var(--my,0),rgba(124,58,237,.06) 0%,rgba(236,72,153,.03) 30%,transparent 55%)}
+
+/* ===== Animated Text ===== */
+.text--flow{background:linear-gradient(135deg,var(--a1),var(--pink),var(--cyan),var(--a2));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:flow 6s ease-in-out infinite}
+@keyframes flow{0%{background-position:0% 50%}25%{background-position:100% 0%}50%{background-position:100% 100%}75%{background-position:0% 100%}100%{background-position:0% 50%}}
+.section__title--flow{background:linear-gradient(135deg,var(--tx),var(--a1),var(--pink));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:h2flow 6s ease-in-out infinite}
+@keyframes h2flow{0%{background-position:0% 50%}25%{background-position:100% 0%}50%{background-position:100% 100%}75%{background-position:0% 100%}100%{background-position:0% 50%}}
+
 /* ===== Splash ===== */
 .splash{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity .4s}
 .splash.hide{opacity:0;pointer-events:none}
@@ -212,12 +230,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 }
 @media(prefers-reduced-motion:reduce){
 *,::before,::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
-.splash{display:none!important}
+.bg,.glow{display:none}.splash{display:none!important}
 }
 </style>
 </head>
 <body>
 
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow" id="glow"></div>
 <div class="splash" id="splash">
 <div class="splash__icon">🧠</div>
 <div class="splash__title">AI Center</div>
@@ -251,7 +271,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="page page--active" id="p-overview">
 <div class="card card--hero" id="hero">
 <div class="hero__info"><div class="hero__tag">🔥 推荐</div><div class="hero__title"><span id="fTitle">DeepSeek</span></div><div class="hero__sub" id="fDesc">国产最强推理大模型</div></div>
-<div class="hero__stat"><div class="hero__num" id="hNum">0</div><div class="hero__lbl" id="hLbl">工具</div></div>
+<div class="hero__stat"><div class="hero__num text--flow" id="hNum">0</div><div class="hero__lbl" id="hLbl">工具</div></div>
 </div>
 <div class="scroll-x" id="insSc"></div>
 <div class="subnav" id="ovSn">
@@ -280,7 +300,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div>
 
 <div class="page" id="p-versions">
-<div class="section"><h2 class="section__title">📜 版本历史</h2></div>
+<div class="section"><h2 class="section__title section__title--flow">📜 版本历史</h2></div>
 <div id="vList"></div>
 <div class="card card--static card--sm" style="margin-top:10px"><p style="font-size:12px;color:var(--tx2)"><strong>说明</strong><br>每次改版旧版本自动存档至此。点击版本号查看完整页面。</p></div>
 </div>
@@ -493,6 +513,11 @@ togglePanel(){$('favPnl').classList.toggle('fav-panel--open')}
 
 /* ===== Events ===== */
 function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('toast--show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('toast--show'),2200)}
+
+// Mouse glow
+let _mx=0,_my=0,_lx=0,_ly=0;
+document.addEventListener('mousemove',e=>{_mx=e.clientX;_my=e.clientY});
+(function mf(){_lx+=(_mx-_lx)*0.08;_ly+=(_my-_ly)*0.08;document.documentElement.style.setProperty('--mx',_lx+'px');document.documentElement.style.setProperty('--my',_ly+'px');requestAnimationFrame(mf)})();
 
 // Nav
 document.querySelectorAll('.nav__item').forEach(b=>b.addEventListener('click',()=>switchPage(b.dataset.page)));
