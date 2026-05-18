@@ -191,9 +191,61 @@ header{padding:10px 16px;background:rgba(8,8,18,.85);backdrop-filter:blur(20px);
 .paper-card{min-width:200px}
 .clock{display:none}
 }
+
+/* ===== Splash Screen ===== */
+.splash{position:fixed;inset:0;z-index:9999;background:radial-gradient(ellipse at 30% 40%,rgba(108,92,231,.15) 0%,transparent 60%),radial-gradient(ellipse at 70% 60%,rgba(0,212,170,.08) 0%,transparent 50%),var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .45s ease,transform .45s ease;will-change:opacity,transform}
+.splash.hide{opacity:0;transform:scale(1.04);pointer-events:none}
+.splash-logo{position:relative;width:72px;height:72px;display:flex;align-items:center;justify-content:center;animation:splashLogo .7s cubic-bezier(.34,1.56,.64,1) forwards;will-change:transform,opacity}
+.splash-logo .ico{font-size:40px;position:relative;z-index:2;filter:drop-shadow(0 0 20px rgba(108,92,231,.4))}
+.splash-ring{position:absolute;border-radius:50%;border:2px solid rgba(108,92,231,.2);width:100%;height:100%;animation:splashRing 1s ease-out forwards;will-change:transform,opacity}
+.splash-ring:nth-child(2){width:140%;height:140%;animation-delay:.15s;border-color:rgba(0,212,170,.15)}
+.splash-ring:nth-child(3){width:180%;height:180%;animation-delay:.3s;border-color:rgba(108,92,231,.1)}
+@keyframes splashLogo{0%{transform:scale(.5);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes splashRing{0%{transform:scale(.3);opacity:.8}100%{transform:scale(1.8);opacity:0}}
+.splash-title{font-size:22px;font-weight:800;margin-top:16px;background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200% auto;animation:splashText 1s .4s both,shimmer 2s linear infinite;will-change:opacity,transform}
+.splash-sub{font-size:12px;color:var(--muted);margin-top:6px;animation:splashText .8s .7s both;letter-spacing:2px;text-transform:uppercase}
+@keyframes splashText{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:translateY(0)}}
+.splash-dots{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.splash-dot{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:0;animation:dotFloat 2s ease-in-out infinite}
+.splash-dot:nth-child(1){left:20%;top:30%;animation-delay:.1s;background:var(--accent2)}
+.splash-dot:nth-child(2){left:70%;top:20%;animation-delay:.4s;width:3px;height:3px}
+.splash-dot:nth-child(3){left:40%;top:70%;animation-delay:.7s;background:var(--accent3);width:5px;height:5px}
+.splash-dot:nth-child(4){left:80%;top:65%;animation-delay:1s;width:3px;height:3px}
+.splash-dot:nth-child(5){left:15%;top:55%;animation-delay:1.3s;background:var(--accent2)}
+.splash-dot:nth-child(6){left:60%;top:75%;animation-delay:.55s;width:3px;height:3px}
+.splash-dot:nth-child(7){left:85%;top:35%;animation-delay:.85s;background:var(--accent3)}
+.splash-dot:nth-child(8){left:30%;top:15%;animation-delay:1.15s;width:3px;height:3px}
+@keyframes dotFloat{0%{opacity:0;transform:translateY(0) scale(0)}30%{opacity:.8;transform:translateY(-10px) scale(1)}70%{opacity:.4;transform:translateY(-18px) scale(.8)}100%{opacity:0;transform:translateY(-28px) scale(0)}}
+.splash-loader{position:absolute;bottom:18%;left:50%;transform:translateX(-50%);width:120px;height:2px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;animation:splashText .6s 1s both}
+.splash-loader span{display:block;height:100%;width:0;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));animation:loaderFill 1.6s .2s cubic-bezier(.4,.0,.2,1) forwards;will-change:width}
+@keyframes loaderFill{0%{width:0%}100%{width:100%}}
+
+@media(max-width:640px){
+.splash-logo{width:60px;height:60px}
+.splash-logo .ico{font-size:32px}
+.splash-title{font-size:18px}
+.splash-sub{font-size:10px}
+.splash-loader{width:100px}
+}
+
+}
 </style>
 </head>
 <body>
+<!-- Splash Screen -->
+<div class="splash" id="splash">
+<div class="splash-dots">
+<div class="splash-dot"></div><div class="splash-dot"></div><div class="splash-dot"></div><div class="splash-dot"></div>
+<div class="splash-dot"></div><div class="splash-dot"></div><div class="splash-dot"></div><div class="splash-dot"></div>
+</div>
+<div class="splash-logo">
+<span class="splash-ring"></span><span class="splash-ring"></span><span class="splash-ring"></span>
+<span class="ico">🧠</span>
+</div>
+<div class="splash-title">AI Center</div>
+<div class="splash-sub">Intelligent Hub</div>
+<div class="splash-loader"><span></span></div>
+</div>
 
 <div class="toast" id="toast"></div>
 <div class="offline-banner" id="offlineBanner">📡 网络离线 · 部分功能不可用</div>
@@ -543,6 +595,12 @@ el.innerHTML=Array(count).fill('<div class="skel-card skeleton"><div class="skel
 }
 
 // ====== Init ======
+// Splash: hide after 2s
+setTimeout(()=>{
+const s=$('splash');
+if(s){s.classList.add('hide');setTimeout(()=>{s.style.display='none'},500)}
+},2000);
+
 showSkeleton($('paperScroll'),4);
 showSkeleton($('autoScroll'),3);
 renderTools();
