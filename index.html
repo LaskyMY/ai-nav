@@ -20,7 +20,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 ::-webkit-scrollbar{width:3px;height:3px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:3px}
 ::selection{background:rgba(139,91,246,.25)}html{scroll-behavior:smooth}
 
-/* ===== Reduced Motion ===== */
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}.bg,.glow{display:none}.splash{display:none!important}}
 
 /* ===== Background Orbs ===== */
@@ -32,16 +31,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .bg__orb:nth-child(4){width:min(250px,35vw);height:min(250px,35vw);background:var(--amber);top:25%;left:30%;animation:orb 22s ease-in-out infinite reverse}
 @keyframes orb{0%,100%{transform:translate(0,0)}25%{transform:translate(30px,-25px)}50%{transform:translate(-15px,15px)}75%{transform:translate(20px,20px)}}
 
-/* ===== Mouse Glow (lerp smooth) ===== */
 .glow{position:fixed;inset:0;pointer-events:none;z-index:9998;background:radial-gradient(300px circle at var(--mx,0) var(--my,0),rgba(124,58,237,.06) 0%,rgba(236,72,153,.03) 30%,transparent 55%)}
 
-/* ===== Animated Text ===== */
 .text--flow{background:linear-gradient(135deg,var(--a1),var(--pink),var(--cyan),var(--a2));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 6s ease-in-out infinite}
 @keyframes tFlow{0%{background-position:0% 50%}25%{background-position:100% 0%}50%{background-position:100% 100%}75%{background-position:0% 100%}100%{background-position:0% 50%}}
 .sec__title--flow{background:linear-gradient(135deg,var(--tx),var(--a1),var(--pink));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:h2f 6s ease-in-out infinite}
 @keyframes h2f{0%{background-position:0% 50%}25%{background-position:100% 0%}50%{background-position:100% 100%}75%{background-position:0% 100%}100%{background-position:0% 50%}}
 
-/* ===== Splash (DISABLED - was blocking load) ===== */
 .splash{display:none!important}
 
 /* ===== Header ===== */
@@ -59,10 +55,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .weather:hover{border-color:rgba(124,58,237,.15);background:rgba(124,58,237,.04)}
 
 /* ===== Bottom Nav ===== */
-.nav{position:fixed;bottom:0;left:0;right:0;height:56px;background:rgba(5,5,10,.82);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid rgba(255,255,255,.035);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom,0)}
-.nav__item{flex:1;max-width:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;color:var(--tx3);border:none;background:transparent;font-family:inherit;padding:4px 0;transition:all .35s var(--ease);-webkit-user-select:none;position:relative}
-.nav__ico{font-size:20px;transition:transform .35s var(--spring)}
-.nav__lbl{font-size:10px;font-weight:500;letter-spacing:-.01em}
+.nav{position:fixed;bottom:0;left:0;right:0;height:56px;background:rgba(5,5,10,.82);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid rgba(255,255,255,.035);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom,0);overflow-x:auto;-webkit-overflow-scrolling:touch}
+.nav::-webkit-scrollbar{display:none}
+.nav__item{flex:1;min-width:52px;max-width:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;color:var(--tx3);border:none;background:transparent;font-family:inherit;padding:4px 0;transition:all .35s var(--ease);-webkit-user-select:none;position:relative;flex-shrink:0}
+.nav__ico{font-size:18px;transition:transform .35s var(--spring)}
+.nav__lbl{font-size:9px;font-weight:500;letter-spacing:-.01em}
 .nav__item--active{color:var(--a1)}
 .nav__item--active .nav__ico{transform:translateY(-2px);filter:drop-shadow(0 0 6px rgba(124,58,237,.2))}
 .nav__item::after{content:'';position:absolute;bottom:2px;width:14px;height:2px;border-radius:2px;background:var(--a1);transform:scaleX(0);transition:transform .35s var(--ease)}
@@ -74,33 +71,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .page--active{display:block;position:relative;z-index:1}
 @keyframes pIn{0%{opacity:0;transform:translateY(16px) scale(.98)}100%{opacity:1;transform:translateY(0) scale(1)}}
 
-/* ===== Section ===== */
 .section{display:flex;align-items:center;gap:10px;margin-bottom:18px}
 .section__title{font-size:20px;font-weight:700;letter-spacing:-.03em}
 .section__badge{background:rgba(139,91,246,.1);color:var(--a1);font-size:10px;padding:3px 10px;border-radius:6px;font-weight:600;letter-spacing:.02em}
 
-/* ===== Bento Card (with spotlight + glass-shine) ===== */
+/* ===== Card ===== */
 .card{background:linear-gradient(160deg,rgba(255,255,255,.045),rgba(255,255,255,.01));border:1px solid rgba(255,255,255,.035);border-top:1px solid rgba(255,255,255,.07);border-radius:var(--r);padding:18px;transition:all .5s var(--ease);position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.03)}
-/* Spotlight via ::after - mouse tracking */
 .card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:radial-gradient(180px circle at var(--cx,50%) var(--cy,50%),rgba(255,255,255,.05) 0%,transparent 60%);pointer-events:none;opacity:0;transition:opacity .4s var(--ease);z-index:1}
 .card:hover::after{opacity:1}
-/* Glass shine via ::before - moving highlight */
 .card::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.03) 48%,rgba(255,255,255,.06) 50%,rgba(255,255,255,.03) 52%,transparent 70%);background-size:200% 100%;animation:shine 6s ease-in-out infinite;pointer-events:none;z-index:0}
 @keyframes shine{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .card>*{position:relative;z-index:2}
 .card:hover{transform:translateY(-3px);border-color:rgba(139,91,246,.1);box-shadow:0 20px 60px rgba(0,0,0,.18),0 0 40px rgba(139,91,246,.03),inset 0 1px 0 rgba(255,255,255,.04)}
 .card:active{transform:scale(.97)!important;transition-duration:.1s!important}
 
-/* Hero card */
 .card--hero{background:linear-gradient(135deg,rgba(124,92,255,.07),rgba(5,150,105,.03));border:1px solid rgba(124,92,255,.06);padding:22px 26px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:28px}
 .card--hero:hover{border-color:rgba(124,92,255,.12);box-shadow:0 24px 80px rgba(0,0,0,.22),0 0 60px rgba(124,92,255,.05)}
 .card--hero::before{background:radial-gradient(350px circle at 80% 20%,rgba(124,92,255,.04) 0%,transparent 60%)}
 
-/* Card size variants */
 .card--sm{padding:14px}.card--md{padding:16px}
 .card--static{background:var(--cd)}.card--highlight{background:linear-gradient(135deg,rgba(124,92,255,.06),rgba(5,150,105,.03))}
 
-/* ===== Hero Content ===== */
 .hero__info{flex:1;min-width:110px}
 .hero__tag{display:inline-block;padding:4px 12px;border-radius:6px;background:linear-gradient(135deg,var(--a3),var(--pink));font-size:10px;font-weight:600;color:#fff;margin-bottom:8px}
 .hero__title{font-size:18px;font-weight:600;margin-bottom:4px;letter-spacing:-.02em}
@@ -109,18 +100,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .hero__num{font-size:36px;font-weight:700;letter-spacing:-.04em;line-height:1;color:var(--a1)}
 .hero__lbl{font-size:12px;color:var(--tx2);margin-top:2px}
 
-/* ===== Scroll Row ===== */
 .scroll-x{display:flex;gap:10px;overflow-x:auto;padding:4px 0 14px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
 .scroll-x::-webkit-scrollbar{height:3px}
 .scroll-x::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:3px}
 
-/* ===== Subnav ===== */
 .subnav{display:flex;gap:4px;overflow-x:auto;padding:2px 0 12px}
 .subnav__btn{padding:6px 14px;border-radius:8px;border:none;background:transparent;color:var(--tx3);font-size:12px;cursor:pointer;white-space:nowrap;font-family:inherit;font-weight:500;transition:all .25s var(--ease);flex-shrink:0}
 .subnav__btn:hover{background:rgba(255,255,255,.04);color:var(--tx2)}
 .subnav__btn--active{background:rgba(139,91,246,.08);color:var(--a1);font-weight:600}
 
-/* ===== Insight Cards ===== */
 .insight{min-width:290px;max-width:360px;padding:18px;flex-shrink:0;scroll-snap-align:start}
 .insight__cat{font-size:13px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px;letter-spacing:-.01em}
 .insight__sum{font-size:12px;color:var(--tx2);line-height:1.7;margin-bottom:14px}
@@ -136,14 +124,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .insight--c4 .insight__cat,.insight--c4 .insight__dot{color:var(--amber);background:var(--amber)}
 .insight--c5 .insight__cat,.insight--c5 .insight__dot{color:var(--vio);background:var(--vio)}
 
-/* ===== Paper Cards ===== */
 .paper{min-width:270px;max-width:330px;padding:16px;flex-shrink:0;cursor:pointer;scroll-snap-align:start}
 .paper__cat{font-size:10px;color:var(--a1);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
 .paper__title{font-size:14px;font-weight:600;line-height:1.5;margin-bottom:6px;letter-spacing:-.01em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .paper__abs{font-size:12px;color:var(--tx2);line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .paper__meta{font-size:11px;color:var(--tx3);margin-top:8px;display:flex;gap:8px}
 
-/* ===== Auto Cards ===== */
 .auto{min-width:170px;padding:14px 16px;flex-shrink:0;scroll-snap-align:start}
 .auto__top{display:flex;align-items:center;gap:6px;margin-bottom:6px}
 .auto__dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
@@ -153,7 +139,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .auto__info{font-size:11px;color:var(--tx2);margin-top:4px}
 .auto__info span{opacity:.7}
 
-/* ===== Summary Grid ===== */
 .grid-s{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:var(--g);margin-bottom:14px}
 .summary{padding:18px 14px;text-align:center}
 .summary__num{font-size:30px;font-weight:800;color:var(--a2);letter-spacing:-.04em;margin-bottom:2px;line-height:1.1}
@@ -206,20 +191,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .fav-panel__empty{font-size:12px;color:var(--tx2);text-align:center;padding:12px}
 .fav-badge{position:absolute;top:-3px;right:-3px;background:var(--a3);color:#fff;font-size:8px;width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;box-shadow:0 2px 8px rgba(255,91,143,.3)}
 
-/* ===== Offline ===== */
 .offline{display:none;position:fixed;top:0;left:0;right:0;background:rgba(255,91,143,.2);border-bottom:1px solid rgba(255,91,143,.2);color:var(--a3);text-align:center;padding:8px;font-size:12px;z-index:300;font-weight:500}
 
-/* ===== Loading/Skeleton ===== */
 .skeleton{background:linear-gradient(90deg,rgba(255,255,255,.03)25%,rgba(124,92,255,.05)50%,rgba(255,255,255,.03)75%);background-size:200%100%;animation:shim 1.5s infinite;border-radius:var(--rs);height:80px;margin-bottom:8px}
 @keyframes shim{0%{background-position:-200%0}100%{background-position:200%0}}
 .loading{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.06);border-top-color:var(--a1);border-radius:50%;animation:spn .6s linear infinite;vertical-align:middle}
 @keyframes spn{to{transform:rotate(360deg)}}
 @keyframes fIn{from{opacity:0}to{opacity:1}}
 
-/* ===== Todo / Task List Module ===== */
+/* ===== Todo Module ===== */
 .todo-hero{margin-bottom:20px}
 .todo-hero__head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.todo-hero__ttl{font-size:16px;font-weight:700;display:flex;align-items:center;gap:6px}
+.todo-hero__ttl{font-size:16px;font-weight:700;display:flex;align-items:center;gap:6px;cursor:pointer}
+.todo-hero__ttl:hover{opacity:.8}
 .todo-hero__count{font-size:12px;color:var(--tx3)}
 .todo-progress{height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;margin-bottom:14px}
 .todo-progress__bar{height:100%;background:linear-gradient(90deg,var(--a1),var(--pink));border-radius:2px;transition:width .5s var(--ease)}
@@ -247,25 +231,66 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .todo-del:hover{color:var(--a3)}
 
 /* Todo add form */
-.todo-add{display:flex;gap:8px;margin-bottom:12px}
+.todo-add{display:flex;gap:8px;margin-bottom:8px}
 .todo-add__input{flex:1;padding:10px 14px;border-radius:var(--rs);border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.03);color:var(--tx);font-size:14px;outline:none;font-family:inherit;transition:border .2s}
 .todo-add__input:focus{border-color:rgba(124,58,237,.25)}
 .todo-add__input::placeholder{color:var(--tx3)}
 .todo-add__btn{padding:10px 18px;border-radius:var(--rs);border:none;background:linear-gradient(135deg,var(--a1),#8B5CF6);color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:transform .2s;white-space:nowrap;font-family:inherit}
 .todo-add__btn:hover{transform:scale(1.02)}
 .todo-add__btn:active{transform:scale(.97)}
+.todo-add__row{display:flex;gap:6px;margin-bottom:8px;align-items:center}
+.todo-add__opt{padding:6px 12px;border-radius:6px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.03);color:var(--tx2);font-size:12px;cursor:pointer;transition:all .2s;font-family:inherit}
+.todo-add__opt:hover{border-color:rgba(124,58,237,.2)}
+.todo-add__opt--active{background:rgba(220,38,38,.1);border-color:rgba(220,38,38,.3);color:var(--a3)}
+.todo-add__date{padding:6px 12px;border-radius:6px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.03);color:var(--tx);font-size:12px;font-family:inherit;outline:none}
+.todo-add__date::-webkit-calendar-picker-indicator{filter:invert(1) opacity(.5)}
 
-/* ===== Request List (需求记录) ===== */
+/* ===== Request List ===== */
 .req-list{display:flex;flex-direction:column;gap:6px}
 .req-item{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-radius:var(--rs);background:rgba(255,255,255,.02);border-left:3px solid var(--a1)}
 .req-item--done{border-left-color:var(--a2);opacity:.6}
-.req-item__body{flex:1}
-.req-item__text{font-size:13px;font-weight:500;line-height:1.5}
+.req-item__body{flex:1;min-width:0}
+.req-item__text{font-size:13px;font-weight:500;line-height:1.5;word-break:break-word}
 .req-item__date{font-size:11px;color:var(--tx3);margin-top:4px}
-.req-item__status{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600;flex-shrink:0}
+.req-item__status{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600;flex-shrink:0;cursor:pointer;transition:all .15s;user-select:none}
+.req-item__status:hover{filter:brightness(1.2);transform:scale(1.05)}
 .req-item__status--open{background:rgba(220,38,38,.1);color:var(--a3)}
 .req-item__status--doing{background:rgba(124,58,237,.1);color:var(--a1)}
 .req-item__status--done{background:rgba(5,150,105,.1);color:var(--a2)}
+.req-del{background:none;border:none;cursor:pointer;font-size:14px;color:var(--tx3);padding:2px 4px;opacity:0;transition:opacity .2s;flex-shrink:0;line-height:1}
+.req-item:hover .req-del{opacity:1}
+.req-del:hover{color:var(--a3)}
+
+/* ===== Timer / Countdown Page ===== */
+.timer-display{font-size:64px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.03em;text-align:center;margin:20px 0 8px;line-height:1.1}
+.timer-display--warn{color:var(--amber)}
+.timer-display--danger{color:var(--a3);animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.timer-label{text-align:center;font-size:13px;color:var(--tx3);margin-bottom:20px}
+.timer-controls{display:flex;justify-content:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.timer-btn{padding:12px 28px;border-radius:var(--rs);border:none;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+.timer-btn--primary{background:linear-gradient(135deg,var(--a1),#8B5CF6);color:#fff}
+.timer-btn--primary:hover{transform:scale(1.03);box-shadow:0 4px 20px rgba(124,58,237,.3)}
+.timer-btn--secondary{background:rgba(255,255,255,.05);color:var(--tx2);border:1px solid rgba(255,255,255,.06)}
+.timer-btn--secondary:hover{background:rgba(255,255,255,.08);color:var(--tx)}
+.timer-btn--danger{background:rgba(220,38,38,.12);color:var(--a3)}
+.timer-presets{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:20px}
+.timer-preset{padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.03);color:var(--tx2);font-size:12px;cursor:pointer;transition:all .2s;font-family:inherit;font-weight:500}
+.timer-preset:hover{border-color:rgba(124,58,237,.2);background:rgba(124,58,237,.06);color:var(--a1)}
+.timer-custom{display:flex;gap:6px;justify-content:center;align-items:center;margin-bottom:16px}
+.timer-custom input{width:60px;padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.03);color:var(--tx);font-size:14px;text-align:center;font-family:inherit;outline:none}
+.timer-custom input:focus{border-color:rgba(124,58,237,.25)}
+.timer-custom span{font-size:12px;color:var(--tx3)}
+.timer-ring{width:200px;height:200px;margin:0 auto 20px;position:relative}
+.timer-ring svg{transform:rotate(-90deg)}
+.timer-ring circle{fill:none;stroke-width:4}
+.timer-ring .ring-bg{stroke:rgba(255,255,255,.06)}
+.timer-ring .ring-fg{stroke:var(--a1);stroke-linecap:round;transition:stroke-dashoffset .5s var(--ease)}
+.timer-ring .timer-ring-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.pomo-stat{display:flex;gap:8px;margin-bottom:16px}
+.pomo-stat__item{flex:1;padding:10px;border-radius:var(--rs);background:rgba(255,255,255,.02);text-align:center}
+.pomo-stat__num{font-size:20px;font-weight:700;color:var(--a1)}
+.pomo-stat__lbl{font-size:11px;color:var(--tx3);margin-top:2px}
 
 /* ===== Responsive ===== */
 @media(max-width:800px){
@@ -277,6 +302,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .card--hero{padding:16px 18px}.hero__title{font-size:16px}.hero__num{font-size:28px}
 .insight,.paper{min-width:260px}
 .w-pop{right:10px;width:calc(100vw - 20px);top:56px}
+.timer-display{font-size:48px}
+.timer-ring{width:160px;height:160px}
+.timer-ring .timer-ring-text{font-size:28px}
 }
 @media(max-width:520px){
 .container{padding:14px 16px}
@@ -285,15 +313,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .card--hero{padding:14px 16px}.hero__title{font-size:15px}.hero__num{font-size:24px}
 .insight,.paper{min-width:calc(100vw - 32px);max-width:calc(100vw - 32px);padding:14px}
 .grid-s{grid-template-columns:repeat(2,1fr)}.summary__num{font-size:22px}
-.nav__item{max-width:72px}.nav__ico{font-size:19px}
+.nav__item{min-width:46px}.nav__ico{font-size:17px}.nav__lbl{font-size:8px}
 .todo-stats{flex-wrap:wrap}
+.timer-display{font-size:40px}
+.timer-ring{width:140px;height:140px}
+.timer-ring .timer-ring-text{font-size:24px}
 }
 @media(max-width:380px){
 .tools__btn{font-size:11px;padding:5px 10px}
 .insight__cat{font-size:12px}.insight__sum{font-size:11px}
 }
 
-/* Light mode */
 @media(prefers-color-scheme:light){
 :root{--bg:#F5F5F7;--card:#FFFFFF;--cd:rgba(0,0,0,.03);--cd2:rgba(0,0,0,.055);--tx:rgba(0,0,0,.85);--tx2:rgba(0,0,0,.45);--tx3:rgba(0,0,0,.2)}
 .card,.card--hero{border-color:rgba(139,91,246,.08)!important}
@@ -303,16 +333,9 @@ header,.nav{background:rgba(245,245,247,.72)!important}
 </head>
 <body>
 
-<!-- Background -->
 <div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
-<!-- Mouse glow -->
 <div class="glow" id="glow"></div>
-<!-- Splash (disabled - was causing load block) -->
-<div class="splash" id="splash" style="display:none!important">
-<div class="splash__icon">🧠</div>
-<div class="splash__title">AI Center</div>
-<div class="splash__sub">Intelligent Hub</div>
-</div>
+<div class="splash" id="splash" style="display:none!important"></div>
 
 <div class="toast" id="toast"></div>
 <div id="jsError" style="display:none;position:fixed;top:0;left:0;right:0;z-index:99999;background:#dc2626;color:#fff;padding:8px 16px;font-size:12px;font-family:monospace;word-break:break-all"></div>
@@ -328,7 +351,7 @@ header,.nav{background:rgba(245,245,247,.72)!important}
 <header class="header">
 <div class="header__in">
 <div class="header__logo">🧠 AI Center</div>
-<div class="search"><span class="search__ico">🔍</span><input class="search__input" id="search" placeholder="搜工具..."></div>
+<div class="search"><span class="search__ico">🔍</span><input class="search__input" id="search" placeholder="搜工具/论文..."></div>
 <div class="header__right">
 <span class="clock" id="clock">--:--</span>
 <div class="weather" id="weather" data-act="weather"><span id="wIcon">☀️</span><span id="wTemp">--°</span><span id="wCity" style="font-size:10px;color:var(--tx3)">定位中</span></div>
@@ -343,8 +366,6 @@ header,.nav{background:rgba(245,245,247,.72)!important}
 
 <!-- Page: Overview -->
 <div class="page page--active" id="p-overview">
-
-<!-- Hero -->
 <div class="card card--hero card--highlight" id="hero" onclick="window.open(this.dataset.url||'#','_blank')">
 <div class="hero__info">
 <div class="hero__tag">🔥 推荐</div>
@@ -357,10 +378,9 @@ header,.nav{background:rgba(245,245,247,.72)!important}
 </div>
 </div>
 
-<!-- Todo Card (首页待办卡片) -->
 <div class="card todo-hero" id="todoHero">
 <div class="todo-hero__head">
-<div class="todo-hero__ttl">📋 今日待办 <span class="todo-hero__count" id="todoCount">0/0</span></div>
+<div class="todo-hero__ttl" onclick="switchPage('todos')">📋 今日待办 <span class="todo-hero__count" id="todoCount">0/0</span></div>
 <button class="todo-add__btn" onclick="Todo.toggleAdd()" id="todoToggleBtn" style="padding:6px 14px;font-size:12px">+ 添加</button>
 </div>
 <div class="todo-progress"><div class="todo-progress__bar" id="todoBar" style="width:0%"></div></div>
@@ -374,14 +394,16 @@ header,.nav{background:rgba(245,245,247,.72)!important}
 <input class="todo-add__input" id="todoInput" placeholder="输入新任务..." onkeydown="if(event.key==='Enter')Todo.add()">
 <button class="todo-add__btn" onclick="Todo.add()">添加</button>
 </div>
+<div class="todo-add__row">
+<button class="todo-add__opt" id="todoPriBtn" onclick="Todo.togglePri()">🔴 紧急</button>
+<input type="date" class="todo-add__date" id="todoDeadline" title="截止日期">
+</div>
 </div>
 <div class="todo-list" id="todoList"></div>
 </div>
 
-<!-- Insights scroll -->
 <div class="scroll-x" id="insSc"></div>
 
-<!-- Sub nav tabs -->
 <div class="subnav" id="ovSn">
 <button class="subnav__btn subnav__btn--active" data-tab="trend">📈 趋势</button>
 <button class="subnav__btn" data-tab="recent">🕐 最近</button>
@@ -394,14 +416,90 @@ header,.nav{background:rgba(245,245,247,.72)!important}
 
 <!-- Page: Papers -->
 <div class="page" id="p-papers">
+<div class="section"><h2 class="section__title sec__title--flow">📄 论文追踪</h2><span class="section__badge" id="papBadge">最新研究</span></div>
+<div class="subnav" id="papFilter" style="margin-bottom:12px">
+<button class="subnav__btn subnav__btn--active" onclick="Papers.filterCat('')">全部</button>
+<button class="subnav__btn" onclick="Papers.filterCat('LLM')">LLM</button>
+<button class="subnav__btn" onclick="Papers.filterCat('CV')">CV</button>
+<button class="subnav__btn" onclick="Papers.filterCat('多模态')">多模态</button>
+<button class="subnav__btn" onclick="Papers.filterCat('Agent')">Agent</button>
+<button class="subnav__btn" onclick="Papers.filterCat('视频')">视频</button>
+</div>
 <div class="grid-s" id="papSum"></div>
 <div class="scroll-x" id="papSc"></div>
-<p style="font-size:11px;color:var(--tx3);text-align:center;padding:8px">点击卡片查看原文 · 自动刷新</p>
+<p style="font-size:11px;color:var(--tx3);text-align:center;padding:8px">点击卡片查看原文 · 数据来自 OpenAlex</p>
 </div>
 
 <!-- Page: Tools -->
 <div class="page" id="p-tools">
 <div class="tools"><div class="tools__side" id="tSide"></div><div class="tools__grid" id="tGrid"></div></div>
+</div>
+
+<!-- Page: Timer/Countdown -->
+<div class="page" id="p-timer">
+<div class="section"><h2 class="section__title sec__title--flow">⏱️ 计时器</h2><span class="section__badge">专注管理</span></div>
+
+<div class="subnav" id="timerTabs" style="margin-bottom:16px">
+<button class="subnav__btn subnav__btn--active" onclick="TimerPage.switchMode('stopwatch')">⏱️ 正计时</button>
+<button class="subnav__btn" onclick="TimerPage.switchMode('countdown')">⏳ 倒计时</button>
+<button class="subnav__btn" onclick="TimerPage.switchMode('pomodoro')">🍅 番茄钟</button>
+</div>
+
+<div class="card card--md" style="text-align:center;margin-bottom:16px">
+<!-- Ring visualization -->
+<div class="timer-ring" id="timerRing">
+<svg width="100%" height="100%" viewBox="0 0 200 200">
+<circle class="ring-bg" cx="100" cy="100" r="90"/>
+<circle class="ring-fg" id="timerRingFg" cx="100" cy="100" r="90" stroke-dasharray="565.48" stroke-dashoffset="0"/>
+</svg>
+<div class="timer-ring-text" id="timerRingText">00:00</div>
+</div>
+<div class="timer-label" id="timerLabel">点击开始计时</div>
+</div>
+
+<div class="timer-controls" id="timerControls">
+<button class="timer-btn timer-btn--primary" onclick="TimerPage.start()">▶ 开始</button>
+<button class="timer-btn timer-btn--secondary" onclick="TimerPage.pause()" id="timerPauseBtn" style="display:none">⏸ 暂停</button>
+<button class="timer-btn timer-btn--danger" onclick="TimerPage.reset()">↺ 重置</button>
+</div>
+
+<!-- Countdown presets -->
+<div id="countdownPresets" style="display:none">
+<div class="timer-presets">
+<button class="timer-preset" onclick="TimerPage.setCountdown(5)">5 分钟</button>
+<button class="timer-preset" onclick="TimerPage.setCountdown(10)">10 分钟</button>
+<button class="timer-preset" onclick="TimerPage.setCountdown(15)">15 分钟</button>
+<button class="timer-preset" onclick="TimerPage.setCountdown(25)">25 分钟</button>
+<button class="timer-preset" onclick="TimerPage.setCountdown(30)">30 分钟</button>
+<button class="timer-preset" onclick="TimerPage.setCountdown(45)">45 分钟</button>
+<button class="timer-preset" onclick="TimerPage.setCountdown(60)">60 分钟</button>
+</div>
+<div class="timer-custom">
+<input type="number" id="customMin" placeholder="分" min="0" max="999">
+<span>分</span>
+<input type="number" id="customSec" placeholder="秒" min="0" max="59">
+<span>秒</span>
+<button class="timer-preset" onclick="TimerPage.setCustomCountdown()">设定</button>
+</div>
+</div>
+
+<!-- Pomodoro stats -->
+<div id="pomodoroSection" style="display:none">
+<div class="pomo-stat">
+<div class="pomo-stat__item"><div class="pomo-stat__num" id="pomoCount">0</div><div class="pomo-stat__lbl">🍅 完成</div></div>
+<div class="pomo-stat__item"><div class="pomo-stat__num" id="pomoTotal">0m</div><div class="pomo-stat__lbl">专注时长</div></div>
+</div>
+<div style="text-align:center;font-size:12px;color:var(--tx3);margin-bottom:8px">工作 25 分钟 → 休息 5 分钟 → 循环</div>
+</div>
+
+<!-- Lap records (stopwatch) -->
+<div id="lapSection" style="display:none">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+<span style="font-size:13px;font-weight:600">📋 计次记录</span>
+<button class="timer-btn timer-btn--secondary" onclick="TimerPage.lap()" style="padding:4px 12px;font-size:11px">+ 计次</button>
+</div>
+<div id="lapList" style="max-height:200px;overflow-y:auto"></div>
+</div>
 </div>
 
 <!-- Page: Automation -->
@@ -410,7 +508,7 @@ header,.nav{background:rgba(245,245,247,.72)!important}
 <div class="scroll-x" id="autoSc2"></div>
 </div>
 
-<!-- Page: Todos (独立待办页) -->
+<!-- Page: Todos -->
 <div class="page" id="p-todos">
 <div class="section"><h2 class="section__title sec__title--flow">📋 待办清单</h2><span class="section__badge" id="todoBadge">管理任务</span></div>
 <div class="card card--md" style="margin-bottom:16px">
@@ -418,8 +516,11 @@ header,.nav{background:rgba(245,245,247,.72)!important}
 <input class="todo-add__input" id="todoFullInput" placeholder="✏️ 输入新任务，按回车添加..." onkeydown="if(event.key==='Enter')Todo.addFromFull()">
 <button class="todo-add__btn" onclick="Todo.addFromFull()">+ 添加任务</button>
 </div>
+<div class="todo-add__row">
+<button class="todo-add__opt" id="todoFullPriBtn" onclick="Todo.toggleFullPri()">🔴 紧急</button>
+<input type="date" class="todo-add__date" id="todoFullDeadline" title="截止日期">
 </div>
-<!-- Filter bar -->
+</div>
 <div class="subnav" style="margin-bottom:12px">
 <button class="subnav__btn subnav__btn--active" onclick="Todo.filter('all')">全部</button>
 <button class="subnav__btn" onclick="Todo.filter('pending')">未完成</button>
@@ -430,7 +531,7 @@ header,.nav{background:rgba(245,245,247,.72)!important}
 <div class="todo-list" id="todoFullList"></div>
 </div>
 
-<!-- Page: Requests (需求记录) -->
+<!-- Page: Requests -->
 <div class="page" id="p-requests">
 <div class="section"><h2 class="section__title sec__title--flow">📝 需求记录</h2><span class="section__badge">任务追踪</span></div>
 <div class="card card--md" style="margin-bottom:16px">
@@ -440,7 +541,7 @@ header,.nav{background:rgba(245,245,247,.72)!important}
 </div>
 </div>
 <div class="req-list" id="reqList"></div>
-<div style="text-align:center;padding:16px;color:var(--tx3);font-size:12px">点击状态标签可切换：待处理 → 进行中 → 已完成</div>
+<div style="text-align:center;padding:12px;color:var(--tx3);font-size:11px">点击状态标签切换状态 · 点击 ✕ 删除</div>
 </div>
 
 <!-- Page: Versions -->
@@ -453,14 +554,14 @@ header,.nav{background:rgba(245,245,247,.72)!important}
 </div>
 
 <!-- Bottom Nav -->
-<nav class="nav">
+<nav class="nav" id="bottomNav">
 <button class="nav__item nav__item--active" data-page="overview"><span class="nav__ico">🏠</span><span class="nav__lbl">总览</span></button>
 <button class="nav__item" data-page="papers"><span class="nav__ico">📄</span><span class="nav__lbl">论文</span></button>
 <button class="nav__item" data-page="tools"><span class="nav__ico">🧭</span><span class="nav__lbl">工具</span></button>
+<button class="nav__item" data-page="timer"><span class="nav__ico">⏱️</span><span class="nav__lbl">计时</span></button>
 <button class="nav__item" data-page="auto"><span class="nav__ico">🤖</span><span class="nav__lbl">自动化</span></button>
 <button class="nav__item" data-page="todos"><span class="nav__ico">📋</span><span class="nav__lbl">待办</span></button>
 <button class="nav__item" data-page="requests"><span class="nav__ico">📝</span><span class="nav__lbl">需求</span></button>
-<button class="nav__item" data-page="versions"><span class="nav__ico">📜</span><span class="nav__lbl">版本</span></button>
 </nav>
 
 <script>
@@ -501,12 +602,14 @@ tools:[
 {nm:'飞书AI',e:'📎',d:'飞书会议纪要写作',u:'https://www.feishu.cn',c:'办公效率',t:['协作']},
 ],
 papers:[
-{t:'DeepSeek-R1: Reasoning via RL',s:'arXiv 2025',u:'https://arxiv.org/abs/2501.12948',a:'DeepSeek-AI',c:'LLM',b:'通过强化学习实现推理突破。'},
-{t:'GPT-4o System Card',s:'OpenAI 2025',u:'https://openai.com/index/gpt-4o-system-card/',a:'OpenAI',c:'多模态',b:'全模态统一系统报告。'},
-{t:'Claude 3.5 Sonnet',s:'Anthropic 2025',u:'https://docs.anthropic.com/en/docs/about-claude/models',a:'Anthropic',c:'LLM',b:'研究生级推理新标杆。'},
-{t:'FLUX: Text-to-Image',s:'BFL 2025',u:'https://arxiv.org/abs/2504.12345',a:'BFL',c:'CV',b:'指令遵循与真实感新高。'},
-{t:'Gemini 2.0',s:'Google 2025',u:'https://blog.google/technology/google-deepmind/gemini/',a:'Google',c:'多模态',b:'原生工具使用多模态。'},
-{t:'Sora: Video Sim',s:'OpenAI 2025',u:'https://openai.com/sora',a:'OpenAI',c:'视频',b:'文生视频世界模拟器。'},
+{t:'DeepSeek-R1: Reasoning via RL',s:'arXiv 2025',u:'https://arxiv.org/abs/2501.12948',a:'DeepSeek-AI',c:'LLM',b:'通过强化学习实现推理突破，纯RL方法达到o1级别。'},
+{t:'GPT-4o System Card',s:'OpenAI 2025',u:'https://openai.com/index/gpt-4o-system-card/',a:'OpenAI',c:'多模态',b:'全模态统一系统报告，语音视觉文本一体化。'},
+{t:'Claude 3.5 Sonnet',s:'Anthropic 2025',u:'https://docs.anthropic.com/en/docs/about-claude/models',a:'Anthropic',c:'LLM',b:'研究生级推理新标杆，编程能力显著提升。'},
+{t:'FLUX.1: Fast & High Quality',s:'BFL 2024',u:'https://blackforestlabs.ai/announcing-black-forest-labs/',a:'Black Forest Labs',c:'CV',b:'指令遵循与真实感新高度，开源文生图模型。'},
+{t:'Gemini 2.0',s:'Google 2025',u:'https://blog.google/technology/google-deepmind/gemini/',a:'Google',c:'多模态',b:'原生工具使用多模态，Agent能力增强。'},
+{t:'Sora: Video Generation',s:'OpenAI 2025',u:'https://openai.com/sora',a:'OpenAI',c:'视频',b:'文生视频世界模拟器，物理理解突破。'},
+{t:'MCP: Model Context Protocol',s:'Anthropic 2024',u:'https://modelcontextprotocol.io/',a:'Anthropic',c:'Agent',b:'AI工具互联标准协议，标准化上下文管理。'},
+{t:'AlphaFold 3',s:'DeepMind 2024',u:'https://deepmind.google/technologies/alphafold/',a:'DeepMind',c:'CV',b:'蛋白质结构预测新突破，覆盖所有生物分子。'},
 ],
 insights:[
 {cat:'🤖 AI前沿',cls:'insight--c1',sum:'2026年AI进入推理时代。DeepSeek纯RL突破推理；GPT-4o全模态统一；Claude 3.5刷新基准。Agent走向生产，MCP协议成行业标准。开源追赶闭源，推理成本持续下降。',pp:[{t:'DeepSeek-R1强化学习推理',u:'https://arxiv.org/abs/2501.12948',s:'arXiv 2025'},{t:'GPT-4o System Card',u:'https://openai.com/index/gpt-4o-system-card/',s:'OpenAI 2025'},{t:'Gemini 2.0原生工具使用',u:'https://blog.google/technology/google-deepmind/gemini/',s:'Google 2025'}]},
@@ -522,10 +625,14 @@ insights:[
    ============================ */
 const $ = id => document.getElementById(id);
 const esc = s => {const d=document.createElement('div');d.textContent=s;return d.innerHTML};
+const escAttr = s => String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const Cache = {
 set(k,v,t){try{localStorage.setItem('ac_'+k,JSON.stringify({d:v,e:Date.now()+t}))}catch(e){}},
 get(k){try{const c=JSON.parse(localStorage.getItem('ac_'+k));return c&&c.e>Date.now()?c.d:null}catch(e){return null}}
 };
+
+// Debounce utility
+function debounce(fn,ms){let t;return function(...a){clearTimeout(t);t=setTimeout(()=>fn.apply(this,a),ms)}}
 
 /* ============================
    NAVIGATION
@@ -536,15 +643,17 @@ document.querySelectorAll('.nav__item').forEach(b=>b.classList.remove('nav__item
 const page = $('p-'+name);
 if(page)page.classList.add('page--active');
 const btn = document.querySelector(`.nav__item[data-page="${name}"]`);
-if(btn)btn.classList.add('nav__item--active');
+if(btn){btn.classList.add('nav__item--active');// scroll nav item into view
+btn.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'})}
+window.scrollTo({top:0,behavior:'smooth'});
 }
 
 /* ============================
-   CLOCK
+   CLOCK (1s precision)
    ============================ */
 (function(){
-function tick(){const n=new Date();$('clock').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')}
-setInterval(tick,10000);tick();
+function tick(){const n=new Date();$('clock').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0')}
+setInterval(tick,1000);tick();
 })();
 
 /* ============================
@@ -563,10 +672,10 @@ Cache.set('w',d,600000);this.render(d);
 render(d){
 const c=d.current_condition[0],a=d.nearest_area[0],city=a.areaName[0].value;
 $('wIcon').textContent=this.emoji(c.weatherCode);$('wTemp').textContent=c.temp_C+'°';$('wCity').textContent=city;
-let h='<div class="w-grid"><div class="w-item"><div class="w-item__v">'+c.FeelsLikeC+'°</div><div class="w-item__l">体感</div></div><div class="w-item"><div class="w-item__v">'+c.humidity+'%</div><div class="w-item__l">湿度</div></div><div class="w-item"><div class="w-item__v">'+c.windspeedKmph+'km</div><div class="w-item__l">风速</div></div></div><div class="w-fc">';
+let h='<div class="w-grid"><div class="w-item"><div class="w-item__v">'+esc(c.FeelsLikeC)+'°</div><div class="w-item__l">体感</div></div><div class="w-item"><div class="w-item__v">'+esc(c.humidity)+'%</div><div class="w-item__l">湿度</div></div><div class="w-item"><div class="w-item__v">'+esc(c.windspeedKmph)+'km</div><div class="w-item__l">风速</div></div></div><div class="w-fc">';
 if(d.weather)d.weather.slice(0,5).forEach(w=>{
 const date=new Date(w.date.replace(/-/g,'/'));const wd=['日','一','二','三','四','五','六'];
-h+='<div class="w-fc__day"><div class="w-fc__dow">周'+wd[date.getDay()]+'</div><div>'+this.emoji(w.hourly[0].weatherCode)+'</div><div class="w-fc__temp">'+w.mintempC+'~'+w.maxtempC+'°</div></div>';
+h+='<div class="w-fc__day"><div class="w-fc__dow">周'+wd[date.getDay()]+'</div><div>'+this.emoji(w.hourly[0].weatherCode)+'</div><div class="w-fc__temp">'+esc(w.mintempC)+'~'+esc(w.maxtempC)+'°</div></div>';
 });
 h+='</div>';$('wDet').innerHTML=h;
 },
@@ -575,19 +684,65 @@ toggle(){$('wPop').classList.toggle('w-pop--open')}
 };
 
 /* ============================
-   PAPERS
+   PAPERS (improved)
    ============================ */
 const Papers = {
+_catFilter: '',
+_allPapers: null,
+
 async load(){
 const sc=$('papSc'),re=$('recentSc');
 const cached=Cache.get('p');let p=null;
 try{
-const r=await fetch('https://api.openalex.org/works?filter=type:article,primary_location.source.id:S4306504241&sort=publication_date:desc&per_page=12',{signal:AbortSignal.timeout(4000)});
-if(r.ok){const d=await r.json();if(d.results&&d.results.length){p=d.results.map(x=>({t:x.title,s:(x.primary_location?.source?.display_name||'arXiv').slice(0,25),d:(x.publication_date||'').slice(0,7),u:x.doi?'https://doi.org/'+x.doi:'#',a:(x.authorships||[]).slice(0,2).map(z=>z.author.display_name).join(', '),c:(x.concepts||[]).slice(0,2).map(z=>z.display_name).join(', '),b:x.title}));Cache.set('p',p,1800000)}}catch(e){}
+// Query broader: top AI venues + concepts
+const r=await fetch('https://api.openalex.org/works?filter=type:article,concepts.id:C154945302|C119857082|C2522767162|C154945302&sort=publication_date:desc&per_page=15',{signal:AbortSignal.timeout(5000)});
+if(r.ok){const d=await r.json();if(d.results&&d.results.length){
+p=d.results.map(x=>({
+  t:x.title||'Untitled',
+  s:(x.primary_location?.source?.display_name||'arXiv').slice(0,25),
+  d:(x.publication_date||'').slice(0,10),
+  u:x.doi?'https://doi.org/'+x.doi:(x.id||'#'),
+  a:(x.authorships||[]).slice(0,3).map(z=>z.author.display_name).join(', '),
+  c:this._mapCat(x.concepts||[]),
+  b:x.abstract_inverted_index?this._reconstructAbstract(x.abstract_inverted_index):x.title||''
+}));
+Cache.set('p',p,1800000);
+}}
+}catch(e){}
 if(!p)p=cached||DATA.papers;
+this._allPapers = p;
 this.renderSc(sc,p);this.renderSc(re,p.slice(0,6));this.renderSum(p);
 },
-renderSc(el,p){el.innerHTML=p.map(x=>'<div class="paper card card--sm" onclick="window.open(\''+x.u+'\',\'_blank\')"><div class="paper__cat">'+esc(x.c||x.s||'AI')+'</div><div class="paper__title">'+esc(x.t)+'</div><div class="paper__abs">'+esc((x.b||x.t).slice(0,150))+'</div><div class="paper__meta"><span>'+esc(x.d||'')+'</span>'+esc(x.a?' '+x.a.slice(0,25):'')+'</div></div>').join('')},
+
+_mapCat(concepts){
+const names=concepts.slice(0,5).map(c=>c.display_name);
+if(names.some(n=>/language model|LLM|GPT|BERT|transformer/i.test(n)))return'LLM';
+if(names.some(n=>/computer vision|image|detection|segmentation|generation/i.test(n)))return'CV';
+if(names.some(n=>/multimodal|vision-language|clip/i.test(n)))return'多模态';
+if(names.some(n=>/agent|reinforcement|planning|tool/i.test(n)))return'Agent';
+if(names.some(n=>/video|animation|rendering|3d/i.test(n)))return'视频';
+return'AI';
+},
+
+_reconstructAbstract(inv){
+const positions=[];
+for(const[word,indices] of Object.entries(inv)){indices.forEach(i=>positions.push([i,word]))}
+positions.sort((a,b)=>a[0]-b[0]);
+return positions.map(p=>p[1]).join(' ').slice(0,300);
+},
+
+filterCat(cat){
+this._catFilter=cat;
+document.querySelectorAll('#papFilter .subnav__btn').forEach(b=>b.classList.remove('subnav__btn--active'));
+event.target.classList.add('subnav__btn--active');
+if(!this._allPapers)return;
+const p=cat?this._allPapers.filter(x=>x.c===cat):this._allPapers;
+this.renderSc($('papSc'),p);
+},
+
+renderSc(el,p){
+el.innerHTML=p.map(x=>'<div class="paper card card--sm" onclick="window.open(\''+escAttr(x.u)+'\',\'_blank\')"><div class="paper__cat">'+esc(x.c||'AI')+'</div><div class="paper__title">'+esc(x.t)+'</div><div class="paper__abs">'+esc((x.b||x.t).slice(0,150))+'</div><div class="paper__meta"><span>'+esc(x.d||'')+'</span><span>'+esc(x.a?x.a.slice(0,30):'')+'</span></div></div>').join('')
+},
 renderSum(p){
 const cats={};p.forEach(x=>{const k=x.c||'AI';cats[k]=(cats[k]||0)+1});
 const top=Object.entries(cats).sort((a,b)=>b[1]-a[1]).slice(0,4);
@@ -611,7 +766,7 @@ render(el,t){el.innerHTML=t.map(x=>'<div class="auto card card--sm"><div class="
 };
 
 /* ============================
-   TOOLS
+   TOOLS (XSS fixed)
    ============================ */
 const Tools = {
 activeCat:'',searchQ:'',
@@ -627,8 +782,8 @@ const pick=f[Math.floor(Math.random()*f.length)]||DATA.tools[1];
 $('fTitle').textContent=pick.nm;$('fDesc').textContent=pick.d;
 $('hero').dataset.url=pick.u;
 
-$('tSide').innerHTML='<button class="tools__btn'+(this.activeCat==''?' tools__btn--active':'')+'" onclick="Tools.pickCat(\'\')">🏷️ 全部 ('+f.length+')</button>'+cats.map(c=>'<button class="tools__btn'+(this.activeCat===c?' tools__btn--active':'')+'" onclick="Tools.pickCat(\''+c+'\')">'+c+' ('+(f.filter(t=>t.c===c).length)+')</button>').join('');
-$('tGrid').innerHTML=items.map(x=>'<div class="tool card" onclick="window.open(\''+x.u+'\',\'_blank\')"><div class="tool__top"><span class="tool__emoji">'+x.e+'</span><span class="tool__name">'+x.nm+'</span><button class="tool__fav" data-fav="'+x.nm+'"></button></div><div class="tool__desc">'+x.d+'</div><div class="tool__tags">'+x.t.map(tg=>'<span class="tool__tag">'+tg+'</span>').join('')+'</div></div>').join('');
+$('tSide').innerHTML='<button class="tools__btn'+(this.activeCat==''?' tools__btn--active':'')+'" onclick="Tools.pickCat(\'\')">🏷️ 全部 ('+f.length+')</button>'+cats.map(c=>'<button class="tools__btn'+(this.activeCat===c?' tools__btn--active':'')+'" onclick="Tools.pickCat(\''+escAttr(c)+'\')">'+esc(c)+' ('+(f.filter(t=>t.c===c).length)+')</button>').join('');
+$('tGrid').innerHTML=items.map(x=>'<div class="tool card" onclick="window.open(\''+escAttr(x.u)+'\',\'_blank\')"><div class="tool__top"><span class="tool__emoji">'+esc(x.e)+'</span><span class="tool__name">'+esc(x.nm)+'</span><button class="tool__fav" data-fav="'+escAttr(x.nm)+'"></button></div><div class="tool__desc">'+esc(x.d)+'</div><div class="tool__tags">'+x.t.map(tg=>'<span class="tool__tag">'+esc(tg)+'</span>').join('')+'</div></div>').join('');
 Favs.syncUI();
 },
 pickCat(c){this.activeCat=this.activeCat===c?'':c;this.render()},
@@ -646,7 +801,7 @@ Cache.set('i',DATA.insights,86400000);
 this.renderCards(DATA.insights);
 },
 renderCards(d){
-$('insSc').innerHTML=d.map(x=>'<div class="insight card '+x.cls+'"><div class="insight__cat">'+x.cat+'</div><div class="insight__sum">'+esc(x.sum)+'</div><div class="insight__list">'+x.pp.map(p=>'<div class="insight__item" onclick="window.open(\''+p.u+'\',\'_blank\')"><span class="insight__dot"></span><span class="insight__title">'+esc(p.t)+'</span><span class="insight__src">'+esc(p.s)+'</span></div>').join('')+'</div></div>').join('')
+$('insSc').innerHTML=d.map(x=>'<div class="insight card '+x.cls+'"><div class="insight__cat">'+esc(x.cat)+'</div><div class="insight__sum">'+esc(x.sum)+'</div><div class="insight__list">'+x.pp.map(p=>'<div class="insight__item" onclick="window.open(\''+escAttr(p.u)+'\',\'_blank\')"><span class="insight__dot"></span><span class="insight__title">'+esc(p.t)+'</span><span class="insight__src">'+esc(p.s)+'</span></div>').join('')+'</div></div>').join('')
 }
 };
 
@@ -658,7 +813,7 @@ load(){
 const l=$('vList');if(!l)return;
 l.innerHTML='<div style="text-align:center;padding:20px;color:var(--tx2);font-size:13px"><span class="loading"></span> 加载中...</div>';
 fetch('versions/manifest.json?v='+Date.now()).then(r=>r.ok?r.json():Promise.reject()).then(d=>{
-l.innerHTML=d.map((v,i)=>'<div class="card" style="padding:16px;margin-bottom:8px;cursor:pointer" onclick="window.open(\'versions/'+v.id+'-'+v.date.slice(0,10)+'.html\',\'_blank\')"><div style="font-size:24px;font-weight:700;color:var(--a1)">v'+(d.length-i)+'</div><div style="font-weight:600;font-size:14px;margin:4px 0">'+esc(v.label)+'</div><div style="font-size:12px;color:var(--tx2)">'+esc(v.desc)+'<br><span style="color:var(--a2)">'+v.date+'</span></div></div>').join('')
+l.innerHTML=d.map((v,i)=>'<div class="card" style="padding:16px;margin-bottom:8px;cursor:pointer" onclick="window.open(\'versions/'+escAttr(v.id)+'-'+v.date.slice(0,10)+'.html\',\'_blank\')"><div style="font-size:24px;font-weight:700;color:var(--a1)">v'+(d.length-i)+'</div><div style="font-weight:600;font-size:14px;margin:4px 0">'+esc(v.label)+'</div><div style="font-size:12px;color:var(--tx2)">'+esc(v.desc)+'<br><span style="color:var(--a2)">'+esc(v.date)+'</span></div></div>').join('')
 }).catch(()=>{l.innerHTML='<div style="text-align:center;padding:20px;color:var(--tx2);font-size:13px">暂无版本记录</div>'})
 }
 };
@@ -676,7 +831,7 @@ this.set(f);toast(i>-1?'取消:'+n:'收藏:'+n);
 },
 syncUI(){
 const f=this.get();
-$('favList').innerHTML=f.length?f.map(n=>{const x=DATA.tools.find(t=>t.nm===n);return x?'<div class="fav-panel__item" onclick="window.open(\''+x.u+'\',\'_blank\')">'+x.e+' '+esc(x.nm)+'</div>':''}).join(''):'<div class="fav-panel__empty">还没收藏<br>点击☆收藏</div>';
+$('favList').innerHTML=f.length?f.map(n=>{const x=DATA.tools.find(t=>t.nm===n);return x?'<div class="fav-panel__item" onclick="window.open(\''+escAttr(x.u)+'\',\'_blank\')">'+esc(x.e)+' '+esc(x.nm)+'</div>':''}).join(''):'<div class="fav-panel__empty">还没收藏<br>点击☆收藏</div>';
 $('favBdg').textContent=f.length;$('favBdg').style.display=f.length?'':'none';$('favIcon').textContent=f.length?'⭐':'☆';
 document.querySelectorAll('.tool__fav').forEach(b=>b.classList.toggle('tool__fav--on',f.includes(b.dataset.fav)));
 },
@@ -684,29 +839,20 @@ togglePanel(){$('favPnl').classList.toggle('fav-panel--open')}
 };
 
 /* ============================
-   TODO MODULE (待办清单)
-   localStorage key: ac_todos
-   Fields: {id,text,done,createdAt,deadline?,priority?}
+   TODO MODULE (improved with priority & deadline UI)
    ============================ */
 const Todo = {
 STORAGE_KEY: 'ac_todos',
 _filter: 'all',
+_priActive: false,
+_fullPriActive: false,
 
 _get(){try{return JSON.parse(localStorage.getItem(this.STORAGE_KEY))||[]}catch(e){return[]}},
-_save(data){localStorage.setItem(this.STORAGE_KEY,JSON.stringify(data));Cache.set('_todos_cache',data,5000)},
+_save(data){localStorage.setItem(this.STORAGE_KEY,JSON.stringify(data))},
 
 init(){
 const todos=this._get();
 this.renderHero(todos);this.renderFull(todos);
-
-// Bind mouse tracking to cards for spotlight
-document.querySelectorAll('.todo-item,.card--hero').forEach(el=>{
-el.addEventListener('mousemove',e=>{
-const r=el.getBoundingClientRect();
-el.style.setProperty('--cx',((e.clientX-r.left)/r.width*100)+'%');
-el.style.setProperty('--cy',((e.clientY-r.top)/r.height*100)+'%');
-})
-});
 },
 
 renderHero(todos){
@@ -719,10 +865,9 @@ $('todoDoneNum').textContent=done;
 $('todoUrgent').textContent=urgent;
 $('todoBar').style.width=total?Math.round(done/total*100)+'%':'0%';
 
-// Show only first 5 in hero card, rest hidden
 const show=todos.slice(0,5);
 $('todoList').innerHTML=show.map(t=>this._renderItem(t,true)).join('');
-if(total>5)$('todoList').innerHTML+='<div style="font-size:12px;color:var(--tx3);text-align:center;padding:8px">还有 '+(total-5)+' 个任务 → 查看「待办」页面</div>';
+if(total>5)$('todoList').innerHTML+='<div style="font-size:12px;color:var(--tx3);text-align:center;padding:8px;cursor:pointer" onclick="switchPage(\'todos\')">还有 '+(total-5)+' 个任务 → 查看全部</div>';
 else if(total===0)$('todoList').innerHTML='<div style="font-size:12px;color:var(--tx3);text-align:center;padding:16px">暂无待办 ✅ 点击上方按钮添加</div>';
 },
 
@@ -732,7 +877,7 @@ if(this._filter==='pending')filtered=todos.filter(t=>!t.done);
 else if(this._filter==='done')filtered=todos.filter(t=>t.done);
 else if(this._filter==='urgent')filtered=todos.filter(t=>!t.done&&t.priority==='high');
 
-$('todoFilterLabel').textContent=`(${filtered.length} 项)`;
+$('todoFilterLabel').textContent='('+filtered.length+' 项)';
 if(filtered.length===0){$('todoFullList').innerHTML='<div style="text-align:center;padding:30px;color:var(--tx3);font-size:13px">没有符合条件的任务</div>';return}
 $('todoFullList').innerHTML=filtered.map(t=>this._renderItem(t,false)).join('');
 },
@@ -740,53 +885,73 @@ $('todoFullList').innerHTML=filtered.map(t=>this._renderItem(t,false)).join('');
 _renderItem(t,isHero){
 const dlClass=t.deadline&&!t.done?(Date.now()>new Date(t.deadline).getTime()?'todo-item__deadline--urgent':'todo-item__deadline--soon'):'';
 const dlText=t.deadline?this._formatDeadline(new Date(t.deadline)):'';
-return '<div class="todo-item'+(t.done?' todo-item--done')+'" data-id="'+t.id+'">'+
-'<div class="todo-check'+(t.done?' todo-check--checked')+'" onclick="Todo.toggle(\''+t.id+'\')"></div>'+
+return '<div class="todo-item'+(t.done?' todo-item--done')+'" data-id="'+escAttr(t.id)+'">'+
+'<div class="todo-check'+(t.done?' todo-check--checked')+'" onclick="Todo.toggle(\''+escAttr(t.id)+'\')"></div>'+
 '<div class="todo-item__body">'+
 '<div class="todo-item__text">'+esc(t.text)+'</div>'+
 (isHero?'':'<div class="todo-item__meta">'+
-(dlText?'<span class="todo-item__deadline '+dlClass+'">⏰ '+dlText+'</span>':'')+
+(dlText?'<span class="todo-item__deadline '+dlClass+'">⏰ '+esc(dlText)+'</span>':'')+
 (t.priority==='high'?'<span style="color:var(--a3)">🔴 紧急</span>':'')+
 '</div>')+
 '</div>'+
-(!isHero?'<button class="todo-del" onclick="Todo.del(\''+t.id+'\')" title="删除">×</button>':'')+
+(!isHero?'<button class="todo-del" onclick="Todo.del(\''+escAttr(t.id)+'\')" title="删除">×</button>':'')+
 '</div>';
+},
+
+togglePri(){
+this._priActive=!this._priActive;
+$('todoPriBtn').classList.toggle('todo-add__opt--active',this._priActive);
+},
+
+toggleFullPri(){
+this._fullPriActive=!this._fullPriActive;
+$('todoFullPriBtn').classList.toggle('todo-add__opt--active',this._fullPriActive);
 },
 
 add(){
 const input=$('todoInput');const text=input.value.trim();
 if(!text){toast('请输入内容');return}
+const deadline=$('todoDeadline').value||null;
 const todos=this._get();
-todos.unshift({id:'td_'+Date.now(),text:text,done:false,createdAt:new Date().toISOString(),priority:null,deadline:null});
+todos.unshift({id:'td_'+Date.now(),text:text,done:false,createdAt:new Date().toISOString(),priority:this._priActive?'high':null,deadline:deadline});
 this._save(todos);input.value='';
-this.init(); // re-render both views
-toast('已添加: '+text);
+$('todoDeadline').value='';this._priActive=false;$('todoPriBtn').classList.remove('todo-add__opt--active');
+this.init();toast('已添加: '+text);
 },
+
 addFromFull(){
 const input=$('todoFullInput');const text=input.value.trim();
 if(!text){toast('请输入内容');return}
+const deadline=$('todoFullDeadline').value||null;
 const todos=this._get();
-todos.unshift({id:'td_'+Date.now(),text:text,done:false,createdAt:new Date().toISOString(),priority:null,deadline:null});
+todos.unshift({id:'td_'+Date.now(),text:text,done:false,createdAt:new Date().toISOString(),priority:this._fullPriActive?'high':null,deadline:deadline});
 this._save(todos);input.value='';
+$('todoFullDeadline').value='';this._fullPriActive=false;$('todoFullPriBtn').classList.remove('todo-add__opt--active');
 this.init();toast('已添加: '+text);
 },
+
 toggle(id){
 const todos=this._get();
 const item=todos.find(t=>t.id===id);
 if(item)item.done=!item.done;
 this._save(todos);this.init();toast(item.done?'✅ 已完成':'↩️ 重做了');
 },
+
 del(id){
 const todos=this._get();const idx=todos.findIndex(t=>t.id===id);
-if(idx>-1){const removed=todos.splice(idx,1)[0];this._save(todos);this.init();toast('已删除: '+removed.text)}},
+if(idx>-1){const removed=todos.splice(idx,1)[0];this._save(todos);this.init();toast('已删除: '+removed.text)}
+},
+
 filter(type){this._filter=type;document.querySelectorAll('#p-todos .subnav__btn').forEach(b=>b.classList.remove('subnav__btn--active'));
 event.target.classList.add('subnav__btn--active');
 this.renderFull(this._get());
 },
+
 toggleAdd(){
 const area=$('todoAddArea');const btn=$('todoToggleBtn');
 if(area.style.display==='none'){area.style.display='block';btn.textContent='收起'}else{area.style.display='none';btn.textContent='+ 添加'}
 },
+
 _formatDeadline(d){
 const now=new Date();const diff=d-now;
 const days=Math.ceil(diff/86400000);
@@ -798,8 +963,7 @@ return d.getMonth()+1+'/'+d.getDate()
 };
 
 /* ============================
-   REQUEST LIST (需求记录)
-   localStorage key: ac_requests
+   REQUEST LIST (improved with delete & safe status toggle)
    ============================ */
 const Req = {
 STORAGE_KEY: 'ac_requests',
@@ -807,25 +971,22 @@ STORAGE_KEY: 'ac_requests',
 _get(){try{return JSON.parse(localStorage.getItem(this.STORAGE_KEY))||[]}catch(e){return[]}},
 _save(data){localStorage.setItem(this.STORAGE_KEY,JSON.stringify(data))},
 
-init(){
-const reqs=this._get();
-this.render(reqs);
-},
+init(){this.render(this._get())},
 
 render(reqs){
 if(reqs.length===0){$('reqList').innerHTML='<div style="text-align:center;padding:30px;color:var(--tx3);font-size:13px">还没有需求记录<br>在上方输入框记录你的第一个需求</div>';return}
-// Sort by date desc (newest first)
 reqs.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
 $('reqList').innerHTML=reqs.map(r=>{
 const statusMap={'open':['open','待处理'],'doing':['doing','进行中'],'done':['done','已完成']};
 let cur=r.status||'open';
 const [cls,label]=statusMap[cur]||['open','待处理'];
-return '<div class="req-item'+(cur==='done'?' req-item--done')+'" data-id="'+r.id+'" onclick="Req.cycleStatus(\''+r.id+'\')">'+
+return '<div class="req-item'+(cur==='done'?' req-item--done')+'" data-id="'+escAttr(r.id)+'">'+
 '<div class="req-item__body">'+
 '<div class="req-item__text">'+esc(r.text)+'</div>'+
 '<div class="req-item__date">'+this._fmt(r.createdAt)+'</div>'+
 '</div>'+
-'<span class="req-item__status req-item__status--'+cls+'" title="点击切换">'+label+'</span>'+
+'<span class="req-item__status req-item__status--'+cls+'" onclick="Req.cycleStatus(\''+escAttr(r.id)+'\')" title="点击切换状态">'+esc(label)+'</span>'+
+'<button class="req-del" onclick="Req.del(\''+escAttr(r.id)+'\')" title="删除">✕</button>'+
 '</div>';
 }).join('');
 },
@@ -836,9 +997,9 @@ if(!text){toast('请输入需求内容');return}
 const reqs=this._get();
 reqs.unshift({id:'rq_'+Date.now(),text:text,status:'open',createdAt:new Date().toISOString()});
 this._save(reqs);input.value='';
-this.render(reqs);
-toast('已记录: '+text);
+this.render(reqs);toast('已记录: '+text);
 },
+
 cycleStatus(id){
 const reqs=this._get();const item=reqs.find(r=>r.id===id);
 if(!item)return;
@@ -846,10 +1007,257 @@ const flow=['open','doing','done'];
 const idx=flow.indexOf(item.status);
 item.status=flow[(idx+1)%3];
 this._save(reqs);this.render(reqs);
-toast('→ '+({'open':'待处理','doing':'进行中','done':'已完成'})[item.status])
+toast('→ '+({'open':'待处理','doing':'进行中','done':'已完成'})[item.status]);
+},
+
+del(id){
+const reqs=this._get();const idx=reqs.findIndex(r=>r.id===id);
+if(idx>-1){const removed=reqs.splice(idx,1)[0];this._save(reqs);this.render(reqs);toast('已删除: '+removed.text)}
 },
 
 _fmt(iso){try{const d=new Date(iso);return d.getMonth()+1+'/'+d.getDate()+" "+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}catch(e){return iso}}
+};
+
+/* ============================
+   TIMER / COUNTDOWN PAGE
+   ============================ */
+const TimerPage = {
+mode: 'stopwatch', // stopwatch | countdown | pomodoro
+running: false,
+startTime: 0,
+elapsed: 0,
+pausedAt: 0,
+countdownTotal: 0,
+countdownRemain: 0,
+intervalId: null,
+laps: [],
+pomoCount: 0,
+pomoWorkMins: 25,
+pomoBreakMins: 5,
+pomoIsBreak: false,
+pomoTotalMins: 0,
+
+switchMode(mode){
+this.mode=mode;
+this.reset();
+document.querySelectorAll('#timerTabs .subnav__btn').forEach(b=>b.classList.remove('subnav__btn--active'));
+event.target.classList.add('subnav__btn--active');
+
+$('countdownPresets').style.display=mode==='countdown'?'block':'none';
+$('pomodoroSection').style.display=mode==='pomodoro'?'block':'none';
+$('lapSection').style.display=mode==='stopwatch'?'block':'none';
+
+if(mode==='pomodoro'){
+  this.countdownTotal=this.pomoWorkMins*60;
+  this.countdownRemain=this.countdownTotal;
+  $('timerLabel').textContent=this.pomoIsBreak?'🍅 休息时间':'🍅 专注时间';
+  this._updateDisplay(this.countdownRemain);
+  this._updateRing(1);
+}else if(mode==='countdown'){
+  $('timerLabel').textContent='选择倒计时时长';
+  this._updateDisplay(0);
+  this._updateRing(1);
+}else{
+  $('timerLabel').textContent='点击开始计时';
+  this._updateDisplay(0);
+  this._updateRing(1);
+}
+this._updatePomoStats();
+},
+
+setCountdown(minutes){
+this.countdownTotal=minutes*60;
+this.countdownRemain=this.countdownTotal;
+this._updateDisplay(this.countdownRemain);
+this._updateRing(1);
+$('timerLabel').textContent='已设定 '+minutes+' 分钟';
+toast('倒计时: '+minutes+'分钟');
+},
+
+setCustomCountdown(){
+const m=parseInt($('customMin').value)||0;
+const s=parseInt($('customSec').value)||0;
+const total=m*60+s;
+if(total<=0){toast('请输入有效时间');return}
+this.countdownTotal=total;
+this.countdownRemain=total;
+this._updateDisplay(total);
+this._updateRing(1);
+$('timerLabel').textContent='已设定 '+m+'分'+s+'秒';
+toast('倒计时: '+m+'分'+s+'秒');
+},
+
+start(){
+if(this.running)return;
+this.running=true;
+$('timerPauseBtn').style.display='inline-block';
+
+if(this.mode==='stopwatch'){
+  this.startTime=Date.now()-this.elapsed;
+  $('timerLabel').textContent='计时中...';
+}else if(this.mode==='countdown'){
+  if(this.countdownRemain<=0){
+    toast('请先设置倒计时时长');this.running=false;$('timerPauseBtn').style.display='none';return;
+  }
+  $('timerLabel').textContent='倒计时中...';
+}else if(this.mode==='pomodoro'){
+  if(this.countdownRemain<=0){
+    this.countdownTotal=(this.pomoIsBreak?this.pomoBreakMins:this.pomoWorkMins)*60;
+    this.countdownRemain=this.countdownTotal;
+  }
+  $('timerLabel').textContent=this.pomoIsBreak?'🍅 休息中...':'🍅 专注中...';
+}
+
+this.intervalId=setInterval(()=>this._tick(),200);
+},
+
+pause(){
+if(!this.running)return;
+this.running=false;
+clearInterval(this.intervalId);
+$('timerPauseBtn').style.display='none';
+$('timerLabel').textContent='已暂停';
+if(this.mode==='stopwatch')this.elapsed=Date.now()-this.startTime;
+},
+
+reset(){
+this.running=false;
+clearInterval(this.intervalId);
+this.elapsed=0;
+this.pausedAt=0;
+this.laps=[];
+$('lapList').innerHTML='';
+$('timerPauseBtn').style.display='none';
+$('timerDisplay')?.classList?.remove('timer-display--warn','timer-display--danger');
+
+if(this.mode==='stopwatch'){
+  this._updateDisplay(0);this._updateRing(1);
+  $('timerLabel').textContent='点击开始计时';
+}else if(this.mode==='countdown'){
+  this.countdownRemain=this.countdownTotal;
+  this._updateDisplay(this.countdownRemain);this._updateRing(1);
+  $('timerLabel').textContent='已重置';
+}else{
+  this.pomoIsBreak=false;
+  this.countdownTotal=this.pomoWorkMins*60;
+  this.countdownRemain=this.countdownTotal;
+  this._updateDisplay(this.countdownRemain);this._updateRing(1);
+  $('timerLabel').textContent='🍅 专注时间';
+}
+},
+
+lap(){
+if(this.mode!=='stopwatch'||!this.running)return;
+const now=Date.now()-this.startTime;
+this.laps.push(now);
+const lapEl=$('lapList');
+lapEl.innerHTML=this.laps.map((l,i)=>{
+  const prev=i>0?this.laps[i-1]:0;
+  const diff=l-prev;
+  return '<div style="display:flex;justify-content:space-between;padding:6px 10px;font-size:12px;border-bottom:1px solid rgba(255,255,255,.03)"><span style="color:var(--tx2)">#'+(i+1)+'</span><span style="color:var(--a1)">'+this._fmtMs(diff)+'</span><span style="color:var(--tx3)">'+this._fmtMs(l)+'</span></div>';
+}).reverse().join('');
+toast('计次 #'+this.laps.length);
+},
+
+_tick(){
+if(this.mode==='stopwatch'){
+  this.elapsed=Date.now()-this.startTime;
+  this._updateDisplay(Math.floor(this.elapsed/1000));
+  this._updateRing(1);
+}else{
+  // countdown or pomodoro
+  if(this.countdownRemain<=0){
+    this.running=false;
+    clearInterval(this.intervalId);
+    $('timerPauseBtn').style.display='none';
+    this._onCountdownEnd();
+    return;
+  }
+  this.countdownRemain--;
+  this._updateDisplay(this.countdownRemain);
+  const ratio=this.countdownRemain/this.countdownTotal;
+  this._updateRing(ratio);
+
+  // Warning colors
+  const ringText=$('timerRingText');
+  if(this.countdownRemain<=10){
+    ringText.classList.add('timer-display--danger');
+    ringText.classList.remove('timer-display--warn');
+  }else if(this.countdownRemain<=60){
+    ringText.classList.add('timer-display--warn');
+    ringText.classList.remove('timer-display--danger');
+  }
+
+  if(this.mode==='pomodoro'){
+    $('timerLabel').textContent=this.pomoIsBreak?'🍅 休息中...':'🍅 专注中...';
+  }
+}
+},
+
+_onCountdownEnd(){
+if(this.mode==='pomodoro'){
+  if(!this.pomoIsBreak){
+    this.pomoCount++;
+    this.pomoTotalMins+=this.pomoWorkMins;
+    this._updatePomoStats();
+    toast('🍅 专注完成！休息一下吧');
+    this.pomoIsBreak=true;
+    this.countdownTotal=this.pomoBreakMins*60;
+    this.countdownRemain=this.countdownTotal;
+  }else{
+    toast('休息结束，开始新一轮！');
+    this.pomoIsBreak=false;
+    this.countdownTotal=this.pomoWorkMins*60;
+    this.countdownRemain=this.countdownTotal;
+  }
+  $('timerLabel').textContent=this.pomoIsBreak?'🍅 休息时间到了！':'🍅 新一轮开始！';
+}else{
+  toast('⏰ 倒计时结束！');
+  $('timerLabel').textContent='✅ 倒计时结束！';
+}
+// Play notification sound (using Web Audio API)
+try{
+const ctx=new(window.AudioContext||window.webkitAudioContext)();
+const osc=ctx.createOscillator();const gain=ctx.createGain();
+osc.connect(gain);gain.connect(ctx.destination);
+osc.frequency.value=880;gain.gain.value=0.3;
+osc.start();osc.stop(ctx.currentTime+0.3);
+setTimeout(()=>{const o2=ctx.createOscillator();const g2=ctx.createGain();o2.connect(g2);g2.connect(ctx.destination);o2.frequency.value=1100;g2.gain.value=0.3;o2.start();o2.stop(ctx.currentTime+0.3)},350);
+}catch(e){}
+},
+
+_updateDisplay(secs){
+const h=Math.floor(secs/3600);
+const m=Math.floor((secs%3600)/60);
+const s=secs%60;
+const ms=this.mode==='stopwatch'?Math.floor((this.elapsed%1000)/100):0;
+let text='';
+if(h>0)text=h+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+else text=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+if(this.mode==='stopwatch')text+='.'+ms;
+$('timerRingText').textContent=text;
+},
+
+_updateRing(ratio){
+const circ=2*Math.PI*90; // r=90
+const offset=circ*(1-ratio);
+$('timerRingFg').style.strokeDashoffset=offset;
+},
+
+_updatePomoStats(){
+$('pomoCount').textContent=this.pomoCount;
+$('pomoTotal').textContent=this.pomoTotalMins+'m';
+},
+
+_fmtMs(ms){
+const totalSec=Math.floor(ms/1000);
+const h=Math.floor(totalSec/3600);
+const m=Math.floor((totalSec%3600)/60);
+const s=totalSec%60;
+const ds=Math.floor((ms%1000)/100);
+if(h>0)return h+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+'.'+ds;
+return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+'.'+ds;
+}
 };
 
 /* ============================
@@ -859,12 +1267,18 @@ let _mx=0,_my=0,_lx=0,_ly=0;
 document.addEventListener('mousemove',e=>{_mx=e.clientX;_my=e.clientY});
 (function mf(){_lx+=(_mx-_lx)*0.08;_ly+=(_my-_ly)*0.08;document.documentElement.style.setProperty('--mx',_lx+'px');document.documentElement.style.setProperty('--my',_ly+'px');requestAnimationFrame(mf)})();
 
-/* ===== Card Mouse Tracking (spotlight) ===== */
+/* ===== Card Mouse Tracking (spotlight) - throttled ===== */
+let _cardTrackRaf=0;
 document.addEventListener('mousemove',e=>{
+if(_cardTrackRaf)return;
+_cardTrackRaf=requestAnimationFrame(()=>{
 document.querySelectorAll('.card').forEach(el=>{
 const r=el.getBoundingClientRect();
+if(e.clientX<r.left-50||e.clientX>r.right+50||e.clientY<r.top-50||e.clientY>r.bottom+50)return;
 el.style.setProperty('--cx',((e.clientX-r.left)/r.width*100)+'%');
 el.style.setProperty('--cy',((e.clientY-r.top)/r.height*100)+'%');
+});
+_cardTrackRaf=0;
 });
 });
 
@@ -876,25 +1290,26 @@ function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('toast-
 // Nav clicks
 document.querySelectorAll('.nav__item').forEach(b=>b.addEventListener('click',()=>switchPage(b.dataset.page)));
 
-// Search
-$('search').addEventListener('input',e=>Tools.search(e.target.value));
+// Search (debounced)
+const debouncedSearch=debounce(q=>Tools.search(q),250);
+$('search').addEventListener('input',e=>debouncedSearch(e.target.value));
 
 // Weather toggle
 document.querySelectorAll('[data-act="weather"]').forEach(el=>el.addEventListener('click',()=>Weather.toggle()));
 
 // Favorites panel
-document.getElementById('fabFav').addEventListener('click',()=>Favs.togglePanel());
+$('fabFav').addEventListener('click',()=>Favs.togglePanel());
 document.querySelector('[data-act="favClose"]')?.addEventListener('click',()=>Favs.togglePanel());
 
 // Tool favorites (delegated)
-document.getElementById('tGrid').addEventListener('click',e=>{
+$('tGrid').addEventListener('click',e=>{
 const btn=e.target.closest('.tool__fav');
 if(btn)Favs.toggle(btn.dataset.fav,e);
 });
 
 // Scroll to top
 window.addEventListener('scroll',()=>$('fabTop').classList.toggle('fab--show',window.scrollY>300));
-document.getElementById('fabTop').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+$('fabTop').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
 
 // Overview tabs
 document.querySelectorAll('#ovSn .subnav__btn').forEach(b=>b.addEventListener('click',function(){
@@ -920,3 +1335,18 @@ if(e.key==='/'&&e.target.tagName!=='INPUT'){e.preventDefault();$('search').focus
 if(e.key==='Escape'){$('wPop').classList.remove('w-pop--open');$('favPnl').classList.remove('fav-panel--open')}
 });
 
+/* ============================
+   INIT
+   ============================ */
+Weather.load();
+Papers.load();
+Tools.render();
+Insights.render();
+Autos.load();
+Todo.init();
+Req.init();
+Versions.load();
+
+</script>
+</body>
+</html>
