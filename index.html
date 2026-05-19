@@ -265,6 +265,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .splash__label{position:absolute;top:calc(50% + 110px);left:50%;transform:translateX(-50%);font-size:18px;font-weight:800;letter-spacing:.08em;color:transparent;background:linear-gradient(135deg,var(--a1),var(--pink));background-size:200% 200%;-webkit-background-clip:text;background-clip:text;animation:sL .6s .15s ease-out forwards;opacity:0;white-space:nowrap}
 @keyframes sL{0%{opacity:0;transform:translateX(-50%)translateY(10px);filter:blur(4px)}100%{opacity:1;transform:translateX(-50%)translateY(0);filter:blur(0)}}
 @keyframes sB{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+
+/* Daily tasks */
+.daily-card{margin-bottom:20px}
+.daily-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.daily-head-ttl{font-size:16px;font-weight:700}
+.daily-progress{height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;margin-bottom:14px}
+.daily-progress-bar{height:100%;background:linear-gradient(90deg,var(--a2),var(--cyan));border-radius:2px;transition:width .5s}
+.daily-list{display:flex;flex-direction:column;gap:6px}
+.daily-item{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:var(--rs);background:rgba(255,255,255,.02);border:1px solid transparent;transition:.25s;cursor:pointer}
+.daily-item:hover{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.05)}
+.daily-item.done{opacity:.5}
+.daily-item.done .daily-text{text-decoration:line-through;color:var(--tx3)}
+.daily-check{width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,.15);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.2s}
+.daily-item:hover .daily-check{border-color:var(--a2)}
+.daily-check.checked{background:var(--a2);border-color:var(--a2)}
+.daily-check.checked::after{content:'✓';color:#fff;font-size:13px;font-weight:700}
+.daily-icon{font-size:20px;flex-shrink:0}
+.daily-text{font-size:14px;font-weight:500}
+.daily-reset{font-size:10px;color:var(--tx3);margin-left:auto;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -343,6 +362,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
       </div>
     </div>
     <div class="todo-list" id="todoHeroList"></div>
+  </div>
+
+  <!-- Daily Tasks -->
+  <div class="card daily-card" id="dailyCard">
+    <div class="daily-head">
+      <div class="daily-head-ttl">📅 每日任务 <span id="dailyBadge" style="font-size:12px;color:var(--tx3)">0/5</span></div>
+    </div>
+    <div class="daily-progress"><div class="daily-progress-bar" id="dailyProgressBar" style="width:0%"></div></div>
+    <div class="daily-list" id="dailyList"></div>
   </div>
 
   <!-- Insights -->
@@ -884,6 +912,52 @@ const Requests = {
   _date(iso){try{const d=new Date(iso);return(d.getMonth()+1)+'/'+d.getDate()+' '+d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0')}catch(e){return iso}}
 };
 
+// ==================== DAILY TASKS ====================
+const DailyTasks = {
+  TASKS:[
+    {id:'upper-body-am',icon:'🏋️',label:'上肢锻炼（上午）'},
+    {id:'upper-body-pm',icon:'🏋️',label:'上肢锻炼（下午）'},
+    {id:'swimming',icon:'🏊',label:'游泳'},
+    {id:'stand-hourly',icon:'🧍',label:'每小时起立活动'},
+    {id:'ai-review',icon:'🤖',label:'AI成果验收'}
+  ],
+
+  get(){
+    const d=Store.get('dailyTasks');
+    const today=new Date().toDateString();
+    if(!d||d.date!==today)return{date:today,tasks:this.TASKS.map(t=>({...t,done:false}))};
+    return d;
+  },
+
+  save(d){Store.set('dailyTasks',d)},
+
+  init(){
+    const d=this.get();this.save(d);this.render(d);
+  },
+
+  render(d){
+    const data=d||this.get();
+    const done=data.tasks.filter(t=>t.done).length;
+    const total=data.tasks.length;
+    $('dailyBadge').textContent=done+'/'+total;
+    $('dailyProgressBar').style.width=Math.round(done/total*100)+'%';
+    $('dailyList').innerHTML=data.tasks.map(t=>
+      '<div class="daily-item'+(t.done?' done':'')+'" onclick="DailyTasks.toggle(\''+escA(t.id)+'\')">'+
+        '<div class="daily-check'+(t.done?' checked':'')+'"></div>'+
+        '<span class="daily-icon">'+esc(t.icon)+'</span>'+
+        '<span class="daily-text">'+esc(t.label)+'</span>'+
+        '<span class="daily-reset">每日重置</span>'+
+      '</div>'
+    ).join('');
+  },
+
+  toggle(id){
+    const d=this.get();
+    const t=d.tasks.find(x=>x.id===id);
+    if(t){t.done=!t.done;this.save(d);this.render(d)}
+  }
+};
+
 // ==================== TIMER ====================
 const Timer = {
   mode:'stopwatch',running:false,interval:null,
@@ -1013,6 +1087,7 @@ setTimeout(()=>{
   Insights.render();
   Automations.load();
   Todo.init();
+  DailyTasks.init();
   Requests.render();
 },50);
 
