@@ -419,12 +419,12 @@ header,.nav{background:rgba(245,245,247,.72)!important}
 <div class="page" id="p-papers">
 <div class="section"><h2 class="section__title sec__title--flow">📄 论文追踪</h2><span class="section__badge" id="papBadge">最新研究</span></div>
 <div class="subnav" id="papFilter" style="margin-bottom:12px">
-<button class="subnav__btn subnav__btn--active" onclick="Papers.filterCat('')">全部</button>
-<button class="subnav__btn" onclick="Papers.filterCat('LLM')">LLM</button>
-<button class="subnav__btn" onclick="Papers.filterCat('CV')">CV</button>
-<button class="subnav__btn" onclick="Papers.filterCat('多模态')">多模态</button>
-<button class="subnav__btn" onclick="Papers.filterCat('Agent')">Agent</button>
-<button class="subnav__btn" onclick="Papers.filterCat('视频')">视频</button>
+<button class="subnav__btn subnav__btn--active" onclick="Papers.filterCat('',event)">全部</button>
+<button class="subnav__btn" onclick="Papers.filterCat('LLM',event)">LLM</button>
+<button class="subnav__btn" onclick="Papers.filterCat('CV',event)">CV</button>
+<button class="subnav__btn" onclick="Papers.filterCat('多模态',event)">多模态</button>
+<button class="subnav__btn" onclick="Papers.filterCat('Agent',event)">Agent</button>
+<button class="subnav__btn" onclick="Papers.filterCat('视频',event)">视频</button>
 </div>
 <div class="grid-s" id="papSum"></div>
 <div class="scroll-x" id="papSc"></div>
@@ -441,9 +441,9 @@ header,.nav{background:rgba(245,245,247,.72)!important}
 <div class="section"><h2 class="section__title sec__title--flow">⏱️ 计时器</h2><span class="section__badge">专注管理</span></div>
 
 <div class="subnav" id="timerTabs" style="margin-bottom:16px">
-<button class="subnav__btn subnav__btn--active" onclick="TimerPage.switchMode('stopwatch')">⏱️ 正计时</button>
-<button class="subnav__btn" onclick="TimerPage.switchMode('countdown')">⏳ 倒计时</button>
-<button class="subnav__btn" onclick="TimerPage.switchMode('pomodoro')">🍅 番茄钟</button>
+<button class="subnav__btn subnav__btn--active" onclick="TimerPage.switchMode('stopwatch',event)">⏱️ 正计时</button>
+<button class="subnav__btn" onclick="TimerPage.switchMode('countdown',event)">⏳ 倒计时</button>
+<button class="subnav__btn" onclick="TimerPage.switchMode('pomodoro',event)">🍅 番茄钟</button>
 </div>
 
 <div class="card card--md" style="text-align:center;margin-bottom:16px">
@@ -523,10 +523,10 @@ header,.nav{background:rgba(245,245,247,.72)!important}
 </div>
 </div>
 <div class="subnav" style="margin-bottom:12px">
-<button class="subnav__btn subnav__btn--active" onclick="Todo.filter('all')">全部</button>
-<button class="subnav__btn" onclick="Todo.filter('pending')">未完成</button>
-<button class="subnav__btn" onclick="Todo.filter('done')">已完成</button>
-<button class="subnav__btn" onclick="Todo.filter('urgent')">紧急</button>
+<button class="subnav__btn subnav__btn--active" onclick="Todo.filter('all',event)">全部</button>
+<button class="subnav__btn" onclick="Todo.filter('pending',event)">未完成</button>
+<button class="subnav__btn" onclick="Todo.filter('done',event)">已完成</button>
+<button class="subnav__btn" onclick="Todo.filter('urgent',event)">紧急</button>
 <span style="margin-left:auto;font-size:12px;color:var(--tx3)" id="todoFilterLabel"></span>
 </div>
 <div class="todo-list" id="todoFullList"></div>
@@ -732,10 +732,10 @@ positions.sort((a,b)=>a[0]-b[0]);
 return positions.map(p=>p[1]).join(' ').slice(0,300);
 },
 
-filterCat(cat){
+filterCat(cat,e){
 this._catFilter=cat;
 document.querySelectorAll('#papFilter .subnav__btn').forEach(b=>b.classList.remove('subnav__btn--active'));
-event.target.classList.add('subnav__btn--active');
+if(e){var tgt=e.target.closest('.subnav__btn');if(tgt)tgt.classList.add('subnav__btn--active')}
 if(!this._allPapers)return;
 const p=cat?this._allPapers.filter(x=>x.c===cat):this._allPapers;
 this.renderSc($('papSc'),p);
@@ -943,8 +943,8 @@ const todos=this._get();const idx=todos.findIndex(t=>t.id===id);
 if(idx>-1){const removed=todos.splice(idx,1)[0];this._save(todos);this.init();toast('已删除: '+removed.text)}
 },
 
-filter(type){this._filter=type;document.querySelectorAll('#p-todos .subnav__btn').forEach(b=>b.classList.remove('subnav__btn--active'));
-event.target.classList.add('subnav__btn--active');
+filter(type,e){this._filter=type;document.querySelectorAll('#p-todos .subnav__btn').forEach(b=>b.classList.remove('subnav__btn--active'));
+if(e){var tgt=e.target.closest('.subnav__btn');if(tgt)tgt.classList.add('subnav__btn--active')}
 this.renderFull(this._get());
 },
 
@@ -1038,11 +1038,11 @@ pomoBreakMins: 5,
 pomoIsBreak: false,
 pomoTotalMins: 0,
 
-switchMode(mode){
+switchMode(mode,e){
 this.mode=mode;
 this.reset();
 document.querySelectorAll('#timerTabs .subnav__btn').forEach(b=>b.classList.remove('subnav__btn--active'));
-event.target.classList.add('subnav__btn--active');
+if(e){var tgt=e.target.closest('.subnav__btn');if(tgt)tgt.classList.add('subnav__btn--active')}
 
 $('countdownPresets').style.display=mode==='countdown'?'block':'none';
 $('pomodoroSection').style.display=mode==='pomodoro'?'block':'none';
@@ -1129,7 +1129,7 @@ this.pausedAt=0;
 this.laps=[];
 $('lapList').innerHTML='';
 $('timerPauseBtn').style.display='none';
-$('timerDisplay')?.classList?.remove('timer-display--warn','timer-display--danger');
+$('timerRingText')?.classList?.remove('timer-display--warn','timer-display--danger');
 
 if(this.mode==='stopwatch'){
   this._updateDisplay(0);this._updateRing(1);
