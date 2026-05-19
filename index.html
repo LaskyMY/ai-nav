@@ -335,7 +335,8 @@ header,.nav{background:rgba(245,245,247,.72)!important}
 
 <div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow" id="glow"></div>
-<div class="splash" id="splash" style="display:none!important"></div>
+<div class="splash" id="splash" style="display:none!important" onload="this.style.display='none'"></div>
+<noscript><style>.splash{display:none!important}</style></noscript>
 
 <div class="toast" id="toast"></div>
 <div id="jsError" style="display:none;position:fixed;top:0;left:0;right:0;z-index:99999;background:#dc2626;color:#fff;padding:8px 16px;font-size:12px;font-family:monospace;word-break:break-all"></div>
@@ -1336,16 +1337,28 @@ if(e.key==='Escape'){$('wPop').classList.remove('w-pop--open');$('favPnl').class
 });
 
 /* ============================
-   INIT
+   INIT (error-safe)
    ============================ */
-Weather.load();
-Papers.load();
-Tools.render();
-Insights.render();
-Autos.load();
-Todo.init();
-Req.init();
-Versions.load();
+/* Global error catcher */
+window.onerror=function(m,u,l){var e=document.getElementById('jsError');if(e){e.textContent='Error: '+m+' line:'+l;e.style.display='block'}return true};
+/* Safe init wrapper */
+function safe(name,fn){try{fn()}catch(e){console.warn('[FAIL] '+name,e);var el=document.getElementById('jsError');if(el){el.textContent='[FAIL] '+name+': '+e.message;el.style.display='block'}}}
+/* Ensure splash hidden no matter what */
+(function(){try{document.getElementById('splash').style.display='none'}catch(e){}})();
+/* Init all modules with 50ms delay to ensure DOM ready */
+setTimeout(function(){
+safe('Weather',function(){Weather.load()});
+safe('Papers',function(){Papers.load()});
+safe('Tools',function(){Tools.render()});
+safe('Insights',function(){Insights.render()});
+safe('Autos',function(){Autos.load()});
+safe('Todo',function(){Todo.init()});
+safe('Req',function(){Req.init()});
+safe('Versions',function(){Versions.load()});
+},50);
+setInterval(function(){safe('Papers-r',function(){Papers.load()})},300000);
+setInterval(function(){safe('Weather-r',function(){Weather.load()})},600000);
+setInterval(function(){safe('Autos-r',function(){Autos.load()})},120000);
 
 </script>
 </body>
