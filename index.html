@@ -248,9 +248,33 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .todo-stats{flex-wrap:wrap}
 .timer-display{font-size:40px}.timer-ring{width:140px;height:140px}.timer-ring-text{font-size:24px}
 }
+
+/* ===== Splash ===== */
+.splash{position:fixed;inset:0;z-index:9999;background:#0a0a12;display:flex;align-items:center;justify-content:center;pointer-events:all}
+.splash--out{animation:sOut .4s cubic-bezier(.4,0,1,1) forwards}
+@keyframes sOut{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.08);filter:blur(8px)}}
+.splash__ring{position:absolute;border-radius:50%;border:1px solid rgba(139,92,246,.15);animation:sR 1s ease-out infinite}
+.splash__ring:nth-child(1){width:80px;height:80px;animation-delay:0s}
+.splash__ring:nth-child(2){width:140px;height:140px;animation-delay:.15s;border-color:rgba(236,72,153,.1)}
+.splash__ring:nth-child(3){width:200px;height:200px;animation-delay:.3s;border-color:rgba(6,182,212,.08)}
+@keyframes sR{0%{transform:scale(.5);opacity:0}40%{opacity:1}100%{transform:scale(1.6);opacity:0}}
+.splash__core{width:48px;height:48px;position:relative;z-index:1;animation:sC .85s cubic-bezier(.34,1.56,.64,1) forwards}
+@keyframes sC{0%{transform:rotate(-20deg)scale(0);opacity:0}40%{transform:rotate(8deg)scale(1.15);opacity:1}70%{transform:rotate(-2deg)scale(.96)}100%{transform:rotate(0)scale(1);opacity:1}}
+.splash__core::before{content:'';position:absolute;inset:-12px;border-radius:14px;background:linear-gradient(135deg,var(--a1),var(--pink),var(--cyan),var(--a2));background-size:300% 300%;animation:sB 1.2s ease-in-out infinite;filter:blur(8px);opacity:.8}
+.splash__core::after{content:'🧠';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:28px;background:#0a0a12;border-radius:10px;z-index:1}
+.splash__label{position:absolute;top:calc(50% + 110px);left:50%;transform:translateX(-50%);font-size:18px;font-weight:800;letter-spacing:.08em;color:transparent;background:linear-gradient(135deg,var(--a1),var(--pink));background-size:200% 200%;-webkit-background-clip:text;background-clip:text;animation:sL .6s .15s ease-out forwards;opacity:0;white-space:nowrap}
+@keyframes sL{0%{opacity:0;transform:translateX(-50%)translateY(10px);filter:blur(4px)}100%{opacity:1;transform:translateX(-50%)translateY(0);filter:blur(0)}}
+@keyframes sB{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
 </style>
 </head>
 <body>
+
+<!-- Splash -->
+<div class="splash" id="splash">
+<div class="splash__ring"></div><div class="splash__ring"></div><div class="splash__ring"></div>
+<div class="splash__core"></div>
+<div class="splash__label">AI CENTER</div>
+</div>
 
 <div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
 
@@ -975,6 +999,11 @@ document.addEventListener('keydown',e=>{if(e.key==='/'&&e.target.tagName!=='INPU
 // Online/Offline
 window.addEventListener('online',()=>$('offline').style.display='none');
 window.addEventListener('offline',()=>$('offline').style.display='block');
+
+// ==================== SPLASH EXIT ====================
+setTimeout(()=>{
+  const s=$('splash');if(s){s.classList.add('splash--out');setTimeout(()=>{if(s.parentNode)s.remove()},420)}
+},850);
 
 // ==================== INIT ====================
 setTimeout(()=>{
