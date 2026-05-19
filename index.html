@@ -13,6 +13,7 @@
 --tx:#F1F1F6;--tx2:#9CA3AF;--tx3:#5C5C70;
 --r:14px;--rs:10px;--g:8px;--gl:16px;
 --ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);
+	--modal-overlay:rgba(0,0,0,.55);--modal-shadow:0 24px 80px rgba(0,0,0,.5);
 }
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.6;min-height:100vh;padding-bottom:80px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
@@ -284,6 +285,34 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .daily-icon{font-size:20px;flex-shrink:0}
 .daily-text{font-size:14px;font-weight:500}
 .daily-reset{font-size:10px;color:var(--tx3);margin-left:auto;flex-shrink:0}
+
+	/* Shared checkbox (todo + daily) */
+	.chk-round{width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,.15);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+	.chk-round:hover{border-color:var(--a1);background:rgba(139,92,246,.1)}
+	.chk-round--on{background:var(--a1);border-color:var(--a1)}
+	.chk-round--on::after{content:'\2713';color:#fff;font-size:13px;font-weight:700}
+	.chk-round--green:hover{border-color:var(--a2);background:rgba(16,185,129,.1)}
+	.chk-round--green.chk-round--on{background:var(--a2);border-color:var(--a2)}
+
+	/* Shared progress bar */
+	.prog{height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+	.prog__fill{height:100%;border-radius:2px;transition:width .5s}
+	.prog__fill--purple{background:linear-gradient(90deg,var(--a1),var(--pink))}
+	.prog__fill--green{background:linear-gradient(90deg,var(--a2),var(--cyan))}
+
+	/* Modal */
+	.modal-overlay{position:fixed;inset:0;z-index:300;background:var(--modal-overlay);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+	.modal-overlay--open{opacity:1;pointer-events:auto}
+	.modal-box{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--r);padding:28px 24px 22px;max-width:360px;width:90vw;box-shadow:var(--modal-shadow);text-align:center;transform:scale(.85)translateY(16px);transition:transform .35s var(--spring),opacity .25s;opacity:0}
+	.modal-overlay--open .modal-box{transform:scale(1)translateY(0);opacity:1}
+	.modal-icon{font-size:48px;margin-bottom:12px}
+	.modal-title{font-size:20px;font-weight:700;margin-bottom:8px;color:var(--tx)}
+	.modal-body{font-size:14px;color:var(--tx2);line-height:1.6;margin-bottom:20px}
+	.modal-btn{padding:10px 32px;border-radius:var(--rs);border:none;background:linear-gradient(135deg,var(--a1),var(--vio));color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:transform .2s,box-shadow .2s;font-family:inherit}
+	.modal-btn:hover{transform:scale(1.03);box-shadow:0 4px 20px rgba(139,92,246,.3)}
+	.modal-btn:active{transform:scale(.97)}
+	.modal-close{position:absolute;top:10px;right:14px;background:none;border:none;color:var(--tx3);font-size:18px;cursor:pointer;padding:4px;font-family:inherit;line-height:1;transition:color .2s}
+	.modal-close:hover{color:var(--tx)}
 </style>
 </head>
 <body>
@@ -319,7 +348,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
       <span id="weatherBadge" style="cursor:pointer;display:flex;align-items:center;gap:4px;padding:4px 8px;border-radius:16px;border:1px solid rgba(255,255,255,.04);font-size:12px" onclick="Weather.toggle()">
         <span id="wIcon">--</span><span id="wTemp">--°</span>
       </span>
-    </div>
+	      <span id="favBtn" style="cursor:pointer;font-size:16px;padding:2px 4px" onclick="Fav.open()" title="收藏">⭐</span>    </div>
   </div>
 </header>
 
@@ -643,7 +672,7 @@ const Weather = {
     try{
       const r=await fetch('https://wttr.in/?format=j1',{signal:AbortSignal.timeout(5000)});
       if(r.ok){const d=await r.json();Store.cache('weather',d,600000);this.render(d);return}
-    }catch(e){}
+    }catch(e){toast('🌤️ 天气数据加载失败');}
     $('wIcon').textContent='☀️';$('wTemp').textContent='--°';
   },
   render(d){
@@ -655,7 +684,14 @@ const Weather = {
     }catch(e){}
   },
   emoji(c){const m={'113':'☀️','116':'⛅','119':'☁️','122':'☁️','176':'🌦️','179':'🌧️','200':'⛈️','227':'🌨️','248':'🌫️','263':'🌦️','266':'🌦️','281':'🌧️','293':'🌦️','296':'🌦️','299':'🌧️','302':'🌧️','305':'🌧️','308':'🌧️','311':'🌧️','314':'🌧️','317':'🌧️','320':'🌨️','323':'🌨️','326':'🌨️','329':'🌨️','332':'🌨️','335':'🌨️','338':'🌨️','350':'🧊','353':'🌦️','356':'🌧️','359':'🌧️','362':'🌧️','365':'🌧️','368':'🌨️','371':'🌨️','374':'🌧️','377':'🌧️','386':'⛈️','389':'⛈️','392':'🌨️','395':'🌨️'};return m[c]||'🌤️'},
-  toggle(){}
+	  toggle(){
+	    const c=Store.cached('weather');
+	    if(c)try{
+	      const cond=c.current_condition[0],area=c.nearest_area[0];
+	      Modal.show({icon:this.emoji(cond.weatherCode),title:area.areaName[0].value,body:'温度 '+cond.temp_C+'°C · 体感 '+cond.FeelsLikeC+'°C · 湿度 '+cond.humidity+'% · 风速 '+cond.windspeedKmph+'km/h',btn:'关闭'});
+	    }catch(e){Modal.show({icon:'🌤️',title:'天气',body:'暂无详细数据',btn:'关闭'});}
+	    else Modal.show({icon:'🌤️',title:'天气',body:'正在加载中…',btn:'关闭'});
+	  }
 };
 
 // ==================== PAPERS ====================
@@ -676,7 +712,7 @@ const Papers = {
     try{
       const papers=await this._fetchOpenAlex();
       if(papers&&papers.length>=5){this.allPapers=papers;Store.cache('papers',papers,1800000);this.render()}
-    }catch(e){}
+    }catch(e){toast('🌤️ 📄 论文刷新失败，使用缓存数据');}
   },
 
   async _fetchOpenAlex(){
@@ -715,9 +751,9 @@ const Papers = {
     if(filterCat!==undefined)this.catFilter=filterCat;
     const p=this.catFilter?this.allPapers.filter(x=>x.c===this.catFilter):this.allPapers;
     // Render paper scroll
-    $('paperScroll').innerHTML=p.map(x=>'<div class="paper-card card" onclick="window.open(\''+escA(x.u)+'\',\'_blank\')"><div class="paper-cat">'+esc(x.c)+'</div><div class="paper-title">'+esc(x.t)+'</div><div class="paper-abs">'+esc((x.b||x.t).slice(0,150))+'</div><div class="paper-meta"><span>'+esc(x.d||'')+'</span><span>'+esc((x.a||'').slice(0,30))+'</span></div></div>').join('');
+    $('paperScroll').innerHTML=p.map(x=>'<div class="paper-card card" data-url="'+escA(x.u)+'"><div class="paper-cat">'+esc(x.c)+'</div><div class="paper-title">'+esc(x.t)+'</div><div class="paper-abs">'+esc((x.b||x.t).slice(0,150))+'</div><div class="paper-meta"><span>'+esc(x.d||'')+'</span><span>'+esc((x.a||'').slice(0,30))+'</span></div></div>').join('');
     // Recent papers on overview
-    if($('recentPapersScroll'))$('recentPapersScroll').innerHTML=p.slice(0,8).map(x=>'<div class="paper-card card" onclick="window.open(\''+escA(x.u)+'\',\'_blank\')"><div class="paper-cat">'+esc(x.c)+'</div><div class="paper-title">'+esc(x.t)+'</div><div class="paper-abs">'+esc((x.b||x.t).slice(0,120))+'</div><div class="paper-meta"><span>'+esc(x.d||'')+'</span></div></div>').join('');
+    if($('recentPapersScroll'))$('recentPapersScroll').innerHTML=p.slice(0,8).map(x=>'<div class="paper-card card" data-url="'+escA(x.u)+'"><div class="paper-cat">'+esc(x.c)+'</div><div class="paper-title">'+esc(x.t)+'</div><div class="paper-abs">'+esc((x.b||x.t).slice(0,120))+'</div><div class="paper-meta"><span>'+esc(x.d||'')+'</span></div></div>').join('');
     // Summary grid
     const cats={};this.allPapers.forEach(x=>{cats[x.c]=(cats[x.c]||0)+1});
     const top=Object.entries(cats).sort((a,b)=>b[1]-a[1]).slice(0,4);
@@ -754,7 +790,7 @@ const Tools = {
       return count?'<button class="subnav-btn" onclick="Tools.filterCat(\''+escA(c)+'\',event)">'+esc(c)+' ('+count+')</button>':'';
     }).join('');
     // Grid
-    $('toolGrid').innerHTML=tools.map(x=>'<div class="tool-card card" onclick="window.open(\''+escA(x.u)+'\',\'_blank\')"><div class="tool-top"><span class="tool-emoji">'+esc(x.e)+'</span><span class="tool-name">'+esc(x.nm)+'</span><button class="tool-fav" data-tool="'+escA(x.nm)+'" onclick="Fav.toggle(event,\''+escA(x.nm)+'\')">☆</button></div><div class="tool-desc">'+esc(x.d)+'</div><div class="tool-tags">'+x.t.map(tg=>'<span class="tool-tag">'+esc(tg)+'</span>').join('')+'</div></div>').join('');
+    $('toolGrid').innerHTML=tools.map(x=>'<div class="tool-card card" data-url="'+escA(x.u)+'"><div class="tool-top"><span class="tool-emoji">'+esc(x.e)+'</span><span class="tool-name">'+esc(x.nm)+'</span><button class="tool-fav" data-tool="'+escA(x.nm)+'" onclick="Fav.toggle(event,\''+escA(x.nm)+'\')">☆</button></div><div class="tool-desc">'+esc(x.d)+'</div><div class="tool-tags">'+x.t.map(tg=>'<span class="tool-tag">'+esc(tg)+'</span>').join('')+'</div></div>').join('');
     Fav.sync();
   },
   filterCat(c,e){this.render(DATA.tools.filter(t=>t.c===c));document.querySelectorAll('#toolCategories button').forEach(b=>b.classList.remove('active'));if(e&&e.target)e.target.classList.add('active');}
@@ -790,8 +826,8 @@ const Automations = {
     try{
       const r=await fetch('https://raw.githubusercontent.com/LaskyMY/ai-nav/main/automations.json',{signal:AbortSignal.timeout(3000)});
       if(r.ok){const d=await r.json();tasks=d.tasks||[];Store.cache('autos',tasks,300000);}
-    }catch(e){}
-    if(!tasks.length)tasks=[{nm:'论文数据刷新',sch:'每5分钟',status:'active',last:'-'},{nm:'天气更新',sch:'每10分钟',status:'active',last:'-'},{nm:'GitHub Pages 部署',sch:'自动',status:'active',last:'刚刚'}];
+    }catch(e){toast('⚙️ 自动化状态刷新失败');}
+    if(!tasks.length)tasks=[{name:'论文数据刷新',schedule:'每5分钟',status:'active',last:'-'},{name:'天气更新',schedule:'每10分钟',status:'active',last:'-'},{name:'GitHub Pages 部署',schedule:'自动',status:'active',last:'刚刚'}];
     $('automationsScroll').innerHTML=tasks.map(x=>'<div class="card" style="min-width:200px;padding:14px;flex-shrink:0"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span style="width:6px;height:6px;border-radius:50%;background:'+(x.status==='active'?'var(--a2)':'var(--amber)')+'"></span><span style="font-weight:600;font-size:13px">'+esc(x.nm||x.name)+'</span></div><div style="font-size:11px;color:var(--tx2)">⏱ '+esc(x.sch||x.schedule||'')+' · '+esc(x.last||'-')+'</div></div>').join('');
   }
 };
@@ -834,7 +870,7 @@ const Todo = {
   itemHtml(t,full){
     let dl='',dlClass='';
     if(t.deadline){
-      const d=new Date(t.deadline);const diff=d-Date.now();const days=Math.ceil(diff/86400000);
+      const d=new Date(t.deadline);const diff=d-Date.now();const days=Math.floor(diff/86400000);
       let ds=days<0?'已过期':(days===0?'今天':(days===1?'明天':(d.getMonth()+1)+'/'+d.getDate()));
       dl='⏰ '+ds;dlClass=days<0?'urgent':(days<=2?'soon':'');
     }
@@ -1017,9 +1053,9 @@ const Timer = {
 
   _onEnd(){
     if(this.mode==='pomodoro'){
-      if(!this.pomoBreak){this.pomoCount++;this.pomoTotal+=25;this._updatePomo();toast('🍅 专注完成！休息 5 分钟');this.pomoBreak=true;this.cdTotal=5*60;this.cdRemain=this.cdTotal;}else{toast('休息结束，新一轮开始！');this.pomoBreak=false;this.cdTotal=25*60;this.cdRemain=this.cdTotal;}
+      if(!this.pomoBreak){this.pomoCount++;this.pomoTotal+=25;this._updatePomo();toast('🍅 专注完成！休息 5 分钟');Modal.show({icon:'🍅',title:'专注完成！',body:'休息 5 分钟，放松一下',btn:'开始休息'});this.pomoBreak=true;this.cdTotal=5*60;this.cdRemain=this.cdTotal;}else{toast('休息结束，新一轮开始！');Modal.show({icon:'🍅',title:'休息结束',body:'新一轮专注开始！',btn:'开始专注'});this.pomoBreak=false;this.cdTotal=25*60;this.cdRemain=this.cdTotal;}
       $('timerLabel').textContent=this.pomoBreak?'🍅 休息时间':'🍅 新一轮';
-    }else{toast('⏰ 倒计时结束！');$('timerLabel').textContent='✅ 倒计时结束！';}
+    }else{toast('⏰ 倒计时结束！');$('timerLabel').textContent='✅ 倒计时结束！';Modal.show({icon:'⏰',title:'倒计时结束！',body:'设定时间已到，请注意。',btn:'知道了'});}
     try{const ctx=new(window.AudioContext||window.webkitAudioContext)();const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=880;g.gain.value=.3;o.start();o.stop(ctx.currentTime+.3);setTimeout(()=>{const o2=ctx.createOscillator(),g2=ctx.createGain();o2.connect(g2);g2.connect(ctx.destination);o2.frequency.value=1100;g2.gain.value=.3;o2.start();o2.stop(ctx.currentTime+.3)},350)}catch(e){}
   },
 
@@ -1031,9 +1067,31 @@ const Timer = {
   },
 
   _ring(ratio){$('timerRingFg').style.strokeDashoffset=(2*Math.PI*90)*(1-ratio);},
-  _updatePomo(){$('pomoCount').textContent=this.pomoCount;$('pomoTotal').textContent=this.pomoTotal+'m';},
+  _updatePomo(){Store.set('pomo',{c:this.pomoCount,t:this.pomoTotal});$('pomoCount').textContent=this.pomoCount;$('pomoTotal').textContent=this.pomoTotal+'m';},
   _fmt(ms){const s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60);return(h>0?h+':':'')+String(m).padStart(2,'0')+':'+String(s%60).padStart(2,'0')+'.'+Math.floor((ms%1000)/100);}
 };
+
+	// ==================== MODAL ====================
+	const Modal = {
+	  _visible: false,
+
+	  show(opts){
+	    if(this._visible)this.hide();
+	    this._visible=true;
+	    $('modalIcon').textContent=opts.icon||'📢';
+	    $('modalTitle').textContent=opts.title||'';
+	    $('modalBody').textContent=opts.body||'';
+	    if(opts.btn)$('modalBtn').textContent=opts.btn;
+	    $('modalBtn').onclick=()=>{this.hide();if(opts.onClose)opts.onClose();};
+	    $('modalOverlay').classList.add('modal-overlay--open');
+	  },
+
+	  hide(){
+	    if(!this._visible)return;
+	    this._visible=false;
+	    $('modalOverlay').classList.remove('modal-overlay--open');
+	  }
+	};
 
 // ==================== EVENT BINDINGS ====================
 // Bottom nav
@@ -1061,15 +1119,17 @@ document.querySelectorAll('#timerTabs button').forEach(b=>b.addEventListener('cl
 
 // Todo filters
 document.querySelectorAll('#todoFilters button').forEach(b=>b.addEventListener('click',function(){
-  Todo.filter(this.dataset.filter,{target:this});
-}));
+	  Todo.filter(this.dataset.filter,{target:this});
+	}));
+	// Delegate click for data-url cards (paper, tool, insight, fav)
+	document.addEventListener('click',e=>{const card=e.target.closest('[data-url]');if(card&&!e.target.closest('button')){const u=card.dataset.url;if(u)window.open(u,'_blank')}});
 
 // Scroll to top
 window.addEventListener('scroll',()=>$('fabTop').classList.toggle('show',window.scrollY>300));
 // Close panels on outside click
-document.addEventListener('click',e=>{if(!e.target.closest('.fav-panel')&&!e.target.closest('#fabFav'))$('favPanel').classList.remove('open');});
+document.addEventListener('click',e=>{if(!e.target.closest('.fav-panel')&&!e.target.closest('#favBtn'))$('favPanel').classList.remove('open');});
 // Keyboard: / to focus search, Esc to close
-document.addEventListener('keydown',e=>{if(e.key==='/'&&e.target.tagName!=='INPUT'){e.preventDefault();$('searchInput').focus()}if(e.key==='Escape')$('favPanel').classList.remove('open');});
+document.addEventListener('keydown',e=>{if(e.key==='/'&&e.target.tagName!=='INPUT'){e.preventDefault();$('searchInput').focus()}if(e.key==='Escape'){Modal.hide();$('favPanel').classList.remove('open');}});
 // Online/Offline
 window.addEventListener('online',()=>$('offline').style.display='none');
 window.addEventListener('offline',()=>$('offline').style.display='block');
@@ -1090,7 +1150,7 @@ setTimeout(()=>{
   DailyTasks.init();
   Requests.render();
 },50);
-
+	  (function(){const p=Store.get('pomo');if(p){Timer.pomoCount=p.c||0;Timer.pomoTotal=p.t||0;Timer._updatePomo();}})();
 // Auto-refresh papers every 5 min
 setInterval(()=>Papers._tryRefresh(),300000);
 // Auto-refresh weather every 10 min
@@ -1099,4 +1159,15 @@ setInterval(()=>Weather.load(),600000);
 setInterval(()=>Automations.load(),120000);
 </script>
 </body>
+
+	<!-- Modal -->
+	<div class="modal-overlay" id="modalOverlay" onclick="Modal.hide()">
+	  <div class="modal-box" onclick="event.stopPropagation()">
+	    <button class="modal-close" onclick="Modal.hide()">✕</button>
+	    <div class="modal-icon" id="modalIcon"></div>
+	    <div class="modal-title" id="modalTitle"></div>
+	    <div class="modal-body" id="modalBody"></div>
+	    <button class="modal-btn" id="modalBtn" onclick="Modal.hide()">知道了</button>
+	  </div>
+	</div>
 </html>
