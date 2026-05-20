@@ -606,7 +606,7 @@ const App = {
   search(q){
     const val=(q||'').toLowerCase();
     // Search tools
-    const filtered=val?DATA.tools.filter(t=>t.nm.toLowerCase().includes(val)||t.d.includes(val)||t.c.includes(val)):DATA.tools;
+    const filtered=val?DATA.tools.filter(t=>t.nm.toLowerCase().includes(val)||t.d.toLowerCase().includes(val)||t.c.toLowerCase().includes(val)):DATA.tools;
     Tools._searchQ=val;Tools.render(filtered);
     if(val)App.switchPage('tools');
   }
