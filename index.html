@@ -2,9 +2,15 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AI Center">
+<link rel="apple-touch-icon" href="./icon.svg">
+<link rel="manifest" href="manifest.json">
 <title>AI Center · 智能导航</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>🧠</text></svg>">
+<link rel="icon" href="./icon.svg">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 /* Premium font chromatic fringe */
@@ -33,8 +39,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 @keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}}}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 /* Mouse-following spotlight */
-.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%);transition:opacity .6s;opacity:0}
-.glow-spot--on{opacity:1}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%);opacity:1}
+.glow-spot--on{}
 
 
 /* Gradient text */
@@ -62,7 +68,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 
 /* Layout */
 .container{max-width:1200px;margin:0 auto;padding:18px 24px;position:relative;z-index:1;transform:perspective(2400px) rotateX(.25deg);-webkit-transform:perspective(2400px) rotateX(.25deg)}
-.page{display:none;animation:fadeUp .5s var(--ease) both}
+.page{display:none}
 .page.active{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)scale(.96)}to{opacity:1;transform:translateY(0)scale(1)}}
 /* Staggered fade-in for cards */
@@ -282,14 +288,6 @@ input[type="range"]::-webkit-slider-runnable-track{height:6px;border-radius:3px;
 .timer-display{font-size:44px}.timer-ring{width:140px;height:140px}.timer-ring-text{font-size:28px}
 }
 
-/* ===== Splash ===== */
-.splash{position:fixed;inset:0;z-index:9999;background:#0a0a0f;display:flex;align-items:center;justify-content:center;pointer-events:all;overflow:hidden}
-.splash--out{animation:sOut .45s cubic-bezier(.4,0,.6,1)forwards}
-@keyframes sOut{0%{opacity:1;transform:scale(1);filter:blur(0)}100%{opacity:0;transform:scale(1.05);filter:blur(20px)}}
-.splash__burst{position:absolute;width:0;height:0;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.4) 0%,rgba(236,72,153,.2) 40%,transparent 70%);animation:sBurst .7s cubic-bezier(.22,1,.36,1)forwards}
-@keyframes sBurst{0%{width:0;height:0;opacity:1}60%{width:800px;height:800px;opacity:.6}100%{width:1200px;height:1200px;opacity:0}}
-.splash__scan{position:absolute;top:50%;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(99,102,241,.5),rgba(236,72,153,.3),rgba(6,182,212,.5),transparent);animation:sScan .7s cubic-bezier(.22,1,.36,1)forwards;opacity:0;box-shadow:0 0 40px rgba(99,102,241,.3),0 0 20px rgba(236,72,153,.15)}
-@keyframes sScan{0%{transform:translateY(-200px);opacity:0}30%{opacity:1}70%{opacity:1}100%{transform:translateY(200px);opacity:0}}
 
 /* Daily tasks */
 .daily-card{margin-bottom:20px}
@@ -347,11 +345,6 @@ input[type="range"]::-webkit-slider-runnable-track{height:6px;border-radius:3px;
 </head>
 <body>
 
-<!-- Splash -->
-<div class="splash" id="splash">
-<div class="splash__burst"></div>
-<div class="splash__scan"></div>
-</div>
 
 <div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
 
@@ -384,7 +377,7 @@ input[type="range"]::-webkit-slider-runnable-track{height:6px;border-radius:3px;
 <div class="container">
 
 <!-- Page: Overview -->
-<div class="page" id="p-overview">
+<div class="page active" id="p-overview">
   <div class="hero-card card" id="heroCard" onclick="window.open(this.dataset.url||'#','_blank')">
     <div class="hero-info">
       <div class="hero-tag">🔥 推荐</div>
@@ -1163,14 +1156,12 @@ document.addEventListener('keydown',e=>{if(e.key==='/'&&e.target.tagName!=='INPU
 window.addEventListener('online',()=>$('offline').style.display='none');
 window.addEventListener('offline',()=>$('offline').style.display='block');
 
-// ==================== SPLASH EXIT ====================
 
 	// ==================== MOUSE GLOW ====================
 	const glowSpot = $('glowSpot');
 	let glowX = window.innerWidth / 2, glowY = window.innerHeight / 2;
 	let targetGX = glowX, targetGY = glowY;
 	if (!('ontouchstart' in window)) {
-	  glowSpot.classList.add('glow-spot--on');
 	  document.addEventListener('mousemove', e => {
 	    targetGX = e.clientX; targetGY = e.clientY;
 	  });
@@ -1183,11 +1174,6 @@ window.addEventListener('offline',()=>$('offline').style.display='block');
 	  animGlow();
 	}
 
-		setTimeout(()=>{
-  const s=$('splash');if(s){s.classList.add('splash--out');setTimeout(()=>{if(s.parentNode)s.remove();
-    const ov=$('p-overview');if(ov)ov.classList.add('active');
-  },420)}
-},850);
 
 // ==================== INIT ====================
 setTimeout(()=>{
@@ -1207,6 +1193,8 @@ setInterval(()=>Papers._tryRefresh(),300000);
 setInterval(()=>Weather.load(),600000);
 // Auto-refresh automations every 2 min
 setInterval(()=>Automations.load(),120000);
+// PWA Service Worker
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js')}
 </script>
 </body>
 
