@@ -1,7 +1,5 @@
-const CACHE = 'ai-nav-v1';
+const CACHE = 'ai-nav-v2';
 const ASSETS = [
-  './',
-  './index.html',
   './icon.svg',
   './manifest.json'
 ];
@@ -24,7 +22,14 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
-  e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request))
-  );
+  // Network-first for HTML, cache-first for static assets
+  if (e.request.mode === 'navigate') {
+    e.respondWith(
+      fetch(e.request).catch(() => caches.match(e.request))
+    );
+  } else {
+    e.respondWith(
+      caches.match(e.request).then(cached => cached || fetch(e.request))
+    );
+  }
 });
