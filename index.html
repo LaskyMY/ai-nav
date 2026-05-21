@@ -269,6 +269,11 @@ input[type="range"]::-webkit-slider-runnable-track{height:6px;border-radius:3px;
 .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.06);border-top-color:var(--a1);border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* System page */
+.sys-stat-card{text-align:center;padding:14px 10px}
+.sys-stat-val{font-size:22px;font-weight:700;color:#fff}
+.sys-stat-val.mono{font-size:13px;font-family:'SF Mono',Monaco,Menlo,monospace}
+
 /* Responsive */
 @media(max-width:800px){
 .container{transform:none;-webkit-transform:none;padding:14px 14px}
@@ -555,6 +560,40 @@ input[type="range"]::-webkit-slider-runnable-track{height:6px;border-radius:3px;
   <p style="text-align:center;padding:12px;color:var(--tx3);font-size:11px">点击状态标签切换状态 · 点击 ✕ 删除</p>
 </div>
 
+<!-- System page -->
+<div class="page" id="p-system">
+  <div class="sys-status grid-auto" id="sysStatus">
+    <div class="card sys-stat-card">
+      <div style="font-size:11px;color:var(--tx3);margin-bottom:4px">运行时长</div>
+      <div class="sys-stat-val" id="sysUptime">--</div>
+    </div>
+    <div class="card sys-stat-card">
+      <div style="font-size:11px;color:var(--tx3);margin-bottom:4px">Claude 进程</div>
+      <div class="sys-stat-val" id="sysClaude">--</div>
+    </div>
+    <div class="card sys-stat-card">
+      <div style="font-size:11px;color:var(--tx3);margin-bottom:4px">系统负载</div>
+      <div class="sys-stat-val mono" id="sysLoad">--</div>
+    </div>
+    <div class="card sys-stat-card">
+      <div style="font-size:11px;color:var(--tx3);margin-bottom:4px">内存</div>
+      <div class="sys-stat-val mono" id="sysMem">--</div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:12px;padding:14px 18px">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <span style="font-size:12px;font-weight:600;color:var(--tx2)">>_ 终端</span>
+      <span style="font-size:9px;color:var(--tx4)" id="sysHost">--</span>
+      <span id="sysStatusDot" style="width:6px;height:6px;border-radius:50%;background:#ef4444;margin-left:auto"></span>
+    </div>
+    <div id="sysOutput" style="background:rgba(0,0,0,.3);border-radius:10px;padding:10px 14px;min-height:120px;max-height:300px;overflow-y:auto;font-family:'SF Mono',Monaco,Menlo,monospace;font-size:12px;color:var(--tx2);white-space:pre-wrap;word-break:break-all;line-height:1.5"></div>
+    <div style="display:flex;gap:6px;margin-top:8px">
+      <input id="sysCmd" placeholder="输入命令..." style="flex:1;padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:var(--tx);font-size:12px;font-family:'SF Mono',Monaco,Menlo,monospace;outline:none" onkeydown="System.keydown(event)">
+      <button onclick="System.exec()" style="padding:8px 16px;border-radius:10px;border:1px solid rgba(99,102,241,.3);background:rgba(99,102,241,.15);color:#fff;font-size:12px;cursor:pointer;font-weight:500;font-family:inherit;white-space:nowrap">Run</button>
+    </div>
+  </div>
+</div>
+
 </div><!-- /container -->
 
 <!-- Bottom Nav -->
@@ -565,6 +604,7 @@ input[type="range"]::-webkit-slider-runnable-track{height:6px;border-radius:3px;
   <button class="nav-btn" data-page="timer"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span><span class="nav-label">计时</span></button>
   <button class="nav-btn" data-page="todos"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><span class="nav-label">待办</span></button>
   <button class="nav-btn" data-page="requests"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span><span class="nav-label">需求</span></button>
+  <button class="nav-btn" data-page="system"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span><span class="nav-label">系统</span></button>
 </nav>
 
 <script>
@@ -1183,6 +1223,7 @@ window.addEventListener('offline',()=>$('offline').style.display='block');
 
 
 // ==================== INIT ====================
+System.init();
 setTimeout(()=>{
   Weather.load();
   Papers.load();
@@ -1200,6 +1241,84 @@ setInterval(()=>Papers._tryRefresh(),300000);
 setInterval(()=>Weather.load(),600000);
 // Auto-refresh automations every 2 min
 setInterval(()=>Automations.load(),120000);
+// ==================== SYSTEM ====================
+const System = {
+  _base: 'http://127.0.0.1:9337',
+  _online: false,
+
+  async init() {
+    const ok = await this.ping();
+    if (ok) {
+      this._online = true;
+      this.load();
+      this.autoRefresh = setInterval(() => this.load(), 5000);
+    }
+  },
+
+  async ping() {
+    try {
+      const r = await fetch(this._base + '/api/ping', { signal: AbortSignal.timeout(2000) });
+      const d = await r.json();
+      $('sysHost').textContent = d.host || '--';
+      $('sysStatusDot').style.background = '#10b981';
+      return true;
+    } catch (e) {
+      $('sysOutput').textContent = 'Bridge 离线\n\n请在本机运行:  python3 server.py';
+      return false;
+    }
+  },
+
+  async load() {
+    if (!this._online) return;
+    try {
+      const r = await fetch(this._base + '/api/status', { signal: AbortSignal.timeout(3000) });
+      const d = await r.json();
+      $('sysUptime').textContent = d.uptime || '--';
+      $('sysClaude').textContent = d.claudeProcs !== undefined ? d.claudeProcs : '--';
+      $('sysLoad').textContent = d.load || '--';
+      $('sysMem').textContent = d.memory || '--';
+      $('sysStatusDot').style.background = '#10b981';
+    } catch (e) {
+      $('sysStatusDot').style.background = '#ef4444';
+    }
+  },
+
+  async exec() {
+    const input = $('sysCmd');
+    const cmd = input.value.trim();
+    if (!cmd) return;
+    const out = $('sysOutput');
+    out.textContent += '\n$ ' + cmd + '\n';
+    input.value = '';
+    out.scrollTop = out.scrollHeight;
+
+    if (!this._online) {
+      out.textContent += 'Bridge 离线\n';
+      return;
+    }
+
+    try {
+      const r = await fetch(this._base + '/api/cli', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cmd, timeout: 15 }),
+        signal: AbortSignal.timeout(18000)
+      });
+      const d = await r.json();
+      if (d.out) out.textContent += d.out;
+      if (d.err) out.textContent += d.err;
+      if (!d.ok && d.err) out.textContent += d.err;
+      out.scrollTop = out.scrollHeight;
+    } catch (e) {
+      out.textContent += '错误: ' + e.message + '\n';
+    }
+  },
+
+  keydown(e) {
+    if (e.key === 'Enter') this.exec();
+  }
+};
+
 // PWA Service Worker
 if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js')}
 </script>
