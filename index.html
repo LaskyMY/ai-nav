@@ -1223,25 +1223,6 @@ window.addEventListener('offline',()=>$('offline').style.display='block');
 	}
 
 
-// ==================== INIT ====================
-System.init();
-setTimeout(()=>{
-  Weather.load();
-  Papers.load();
-  Tools.render();
-  Insights.render();
-  Automations.load();
-  Todo.init();
-  DailyTasks.init();
-  Requests.render();
-},50);
-	  (function(){const p=Store.get('pomo');if(p){Timer.pomoCount=p.c||0;Timer.pomoTotal=p.t||0;Timer._updatePomo();}})();
-// Auto-refresh papers every 5 min
-setInterval(()=>Papers._tryRefresh(),300000);
-// Auto-refresh weather every 10 min
-setInterval(()=>Weather.load(),600000);
-// Auto-refresh automations every 2 min
-setInterval(()=>Automations.load(),120000);
 // ==================== SYSTEM ====================
 const System = {
   _base: 'http://127.0.0.1:9337',
@@ -1320,6 +1301,25 @@ const System = {
   }
 };
 
+// ==================== INIT ====================
+System.init();
+setTimeout(()=>{
+  Weather.load();
+  Papers.load();
+  Tools.render();
+  Insights.render();
+  Automations.load();
+  Todo.init();
+  DailyTasks.init();
+  Requests.render();
+},50);
+	  (function(){const p=Store.get('pomo');if(p){Timer.pomoCount=p.c||0;Timer.pomoTotal=p.t||0;Timer._updatePomo();}})();
+// Auto-refresh papers every 5 min
+setInterval(()=>Papers._tryRefresh(),300000);
+// Auto-refresh weather every 10 min
+setInterval(()=>Weather.load(),600000);
+// Auto-refresh automations every 2 min
+setInterval(()=>Automations.load(),120000);
 // PWA Service Worker
 if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js')}
 </script>

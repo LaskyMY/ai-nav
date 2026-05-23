@@ -1,4 +1,4 @@
-const CACHE = 'ai-nav-v2';
+const CACHE = 'ai-nav-v3';
 const ASSETS = [
   './icon.svg',
   './manifest.json'
