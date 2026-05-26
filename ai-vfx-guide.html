@@ -114,11 +114,57 @@ background:var(--bg);color:var(--tx);font-size:15px;line-height:1.65;
 
 /* Responsive */
 @media(max-width:768px){
-.container{padding:16px 14px 100px}
-.arch-flow{flex-direction:column;min-width:auto}
-.arch-arrow{transform:rotate(90deg)}
-.code-block pre{font-size:11px}
-.mcp-table{display:block;overflow-x:auto}
+  .container{padding:12px 12px 100px}
+  .header{border-radius:0 0 16px 16px;padding:8px 14px;gap:8px;margin-bottom:16px}
+  .header-logo{font-size:14px}
+  .header-back{font-size:11px}
+
+  /* Architecture: vertical stack */
+  .arch-flow{flex-direction:column;align-items:center;gap:0;padding:8px 0}
+  .arch-node{width:100%;max-width:260px;flex-direction:row;gap:10px;padding:12px 16px;text-align:left}
+  .arch-node .icon{font-size:22px}
+  .arch-node .label{font-size:13px}
+  .arch-arrow{transform:rotate(90deg);margin:2px 0;font-size:14px}
+
+  /* Hero */
+  .card{padding:16px;border-radius:18px}
+  .section-hd h2{font-size:16px}
+  .step-num{width:30px;height:30px;font-size:13px;border-radius:8px}
+  .card h3{font-size:14px}
+  .card p,.card li{font-size:12.5px}
+
+  /* Code blocks */
+  .code-block{border-radius:10px}
+  .code-block pre{font-size:10.5px;padding:10px 12px;-webkit-text-size-adjust:none}
+  .code-block .lang{font-size:9px;padding:6px 12px 0}
+
+  /* Tables: horizontal scroll with sticky headers */
+  .mcp-table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;font-size:11px}
+  .mcp-table th{font-size:10px;padding:8px 10px;white-space:nowrap}
+  .mcp-table td{padding:8px 10px;font-size:11px;white-space:nowrap}
+  .mcp-table td:first-child{white-space:normal;min-width:110px}
+
+  /* Info boxes */
+  .info-box{font-size:12px;padding:10px 14px;border-radius:10px}
+
+  /* Arch card */
+  [style*="overflow:visible"] .arch-flow{gap:2px}
+
+  /* Hero section */
+  .grad-text br{display:none}
+}
+@media(max-width:480px){
+  .container{padding:8px 8px 110px}
+  .card{padding:14px;border-radius:14px;margin-bottom:10px}
+  .code-block pre{font-size:10px;padding:8px 10px;line-height:1.5}
+  .header{padding:6px 10px;gap:6px}
+  .arch-node{max-width:100%}
+  .section-hd{gap:8px;margin-bottom:14px}
+  .section-hd h2{font-size:15px}
+  .step-num{width:26px;height:26px;font-size:11px}
+  .copy-btn{width:24px;height:24px;font-size:10px}
+  .tag{font-size:9px;padding:1px 6px}
+  body{font-size:14px}
 }
 
 /* Footer */
@@ -156,7 +202,7 @@ v2.0 · 2026-05-26 · 全程 25 分钟 · 所有命令可直接复制执行
 <!-- ═══ ARCHITECTURE ═══ -->
 <div class="card" style="overflow:visible">
 <h3 style="text-align:center;color:var(--tx2)">整体架构</h3>
-<div class="arch-flow" style="min-width:720px">
+<div class="arch-flow">
 <div class="arch-node"><div class="icon">🖥</div><div class="label">你的终端</div><div class="sublabel">Claude Code CLI</div></div>
 <div class="arch-arrow">→</div>
 <div class="arch-node highlight"><div class="icon">🔄</div><div class="label">API 路由层</div><div class="sublabel">Claude Code Router</div></div>

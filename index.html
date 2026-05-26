@@ -283,6 +283,9 @@ input[type="range"]::-webkit-slider-runnable-track{height:6px;border-radius:3px;
 .insight-card,.paper-card{min-width:260px}
 .timer-display{font-size:56px}.timer-ring{width:160px;height:160px}.timer-ring-text{font-size:32px}
 .card{padding:14px}
+/* VFX page */
+#p-vfx .grad-text{font-size:18px!important}
+#p-vfx [style*="grid-template"]{grid-template-columns:repeat(3,1fr)!important}
 }
 @media(max-width:520px){
 .container{padding:12px 12px}
@@ -299,6 +302,12 @@ input[type="range"]::-webkit-slider-runnable-track{height:6px;border-radius:3px;
 .header{padding:8px 14px;margin:0 8px}
 .header-logo{font-size:15px}
 .search-wrap input{padding:8px 10px 8px 28px;font-size:12px}
+/* VFX page mobile */
+#p-vfx .card{padding:12px}
+#p-vfx table{font-size:10px}
+#p-vfx td,#p-vfx th{padding:6px 8px}
+#p-vfx [style*="grid-template"]{grid-template-columns:repeat(2,1fr)!important}
+#p-vfx a[style*="padding:14px"]{padding:12px 16px!important;font-size:13px!important}
 }
 
 
@@ -603,7 +612,7 @@ input[type="range"]::-webkit-slider-runnable-track{height:6px;border-radius:3px;
   </div>
 
   <div class="card" style="overflow:visible">
-    <div style="display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;padding:12px 0;font-size:12px;color:var(--tx3);min-width:600px">
+    <div style="display:flex;align-items:center;justify-content:center;gap:2px;flex-wrap:wrap;padding:12px 0;font-size:11px;color:var(--tx3)">
       <span style="padding:8px 14px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid var(--card-border);text-align:center"><span style="display:block;font-size:20px;margin-bottom:2px">🖥</span>Claude Code</span>
       <span style="margin:0 2px;font-size:16px">→</span>
       <span style="padding:8px 14px;border-radius:10px;background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.2);text-align:center"><span style="display:block;font-size:20px;margin-bottom:2px">🔄</span>API Router</span>
