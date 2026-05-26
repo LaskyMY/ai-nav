@@ -628,6 +628,37 @@ setTimeout(()=>{btn.textContent='📋';btn.classList.remove('copied')},1500);
 });
 b.appendChild(btn);
 });
+
+// ==================== MOBILE GYRO TILT ====================
+(function(){
+if (!('ontouchstart' in window) && !(navigator.maxTouchPoints > 0)) return;
+if (!window.DeviceOrientationEvent) return;
+const c = document.querySelector('.container');
+if (!c) return;
+let beta=0, gamma=0, tBeta=0, tGamma=0, active=false;
+const MAX=2.5;
+function lerp(){
+beta+=(tBeta-beta)*.04; gamma+=(tGamma-gamma)*.04;
+c.style.transform='perspective(2400px) rotateX('+(-beta).toFixed(2)+'deg) rotateY('+gamma.toFixed(2)+'deg)';
+if(active) requestAnimationFrame(lerp);
+}
+function handle(e){
+if(e.beta===null) return;
+tBeta=Math.max(-MAX,Math.min(MAX,(e.beta||0)*.07));
+tGamma=Math.max(-MAX,Math.min(MAX,(e.gamma||0)*.07));
+if(!active){active=true;lerp();}
+}
+if(typeof DeviceOrientationEvent.requestPermission==='function'){
+document.addEventListener('touchstart',function ask(){
+document.removeEventListener('touchstart',ask);
+DeviceOrientationEvent.requestPermission()
+.then(r=>{if(r==='granted')window.addEventListener('deviceorientation',handle);})
+.catch(()=>{});
+},{once:true});
+}else{
+window.addEventListener('deviceorientation',handle);
+}
+})();
 </script>
 
 </body>

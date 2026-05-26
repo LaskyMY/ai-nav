@@ -68,7 +68,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 
 
 /* Layout */
-.container{max-width:1200px;margin:0 auto;padding:18px 24px;position:relative;z-index:1;transform:perspective(2400px) rotateX(.25deg);-webkit-transform:perspective(2400px) rotateX(.25deg)}
+.container{max-width:1200px;margin:0 auto;padding:18px 24px;position:relative;z-index:1;will-change:transform}
 .page{display:none}
 .page.active{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)scale(.96)}to{opacity:1;transform:translateY(0)scale(1)}}
@@ -1441,6 +1441,51 @@ setInterval(()=>Weather.load(),600000);
 setInterval(()=>Automations.load(),120000);
 // PWA Service Worker
 if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js')}
+
+// ==================== MOBILE GYRO TILT ====================
+(function(){
+  const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  if (!isMobile) return;
+  if (!window.DeviceOrientationEvent) return;
+
+  const container = document.querySelector('.container');
+  if (!container) return;
+
+  let beta = 0, gamma = 0;
+  let targetBeta = 0, targetGamma = 0;
+  let active = false;
+  const MAX = 2.5; // very subtle max tilt degrees
+
+  function lerp() {
+    beta += (targetBeta - beta) * 0.04;
+    gamma += (targetGamma - gamma) * 0.04;
+    container.style.transform =
+      'perspective(2400px) rotateX(' + (-beta).toFixed(2) + 'deg) rotateY(' + gamma.toFixed(2) + 'deg)';
+    if (active) requestAnimationFrame(lerp);
+  }
+
+  function handle(e) {
+    if (e.beta === null) return;
+    // Normalize: beta = forward/back tilt, gamma = left/right tilt
+    // Clamp to subtle range
+    targetBeta = Math.max(-MAX, Math.min(MAX, (e.beta || 0) * 0.07));
+    targetGamma = Math.max(-MAX, Math.min(MAX, (e.gamma || 0) * 0.07));
+    if (!active) { active = true; lerp(); }
+  }
+
+  // iOS 13+ requires permission
+  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+    // Request on first touch
+    document.addEventListener('touchstart', function ask() {
+      document.removeEventListener('touchstart', ask);
+      DeviceOrientationEvent.requestPermission()
+        .then(r => { if (r === 'granted') window.addEventListener('deviceorientation', handle); })
+        .catch(() => {});
+    }, { once: true });
+  } else {
+    window.addEventListener('deviceorientation', handle);
+  }
+})();
 </script>
 </body>
 
