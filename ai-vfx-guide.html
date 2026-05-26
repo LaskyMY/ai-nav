@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI 游戏特效工作流 · 从零到专业</title>
+<style>
+:root{
+  --bg:#08080e; --sbg:#0d0d18; --card:rgba(255,255,255,.025);
+  --a1:#6366f1; --a2:#a5b4fc; --pink:#ec4899; --cyan:#06B6D4;
+  --tx:#e8e8ed; --tx2:#9ca3af; --tx3:#6b7280;
+  --glass:rgba(255,255,255,.03); --border:rgba(255,255,255,.06);
+  --r:16px; --spring:cubic-bezier(.34,1.56,.64,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;
+  background:var(--bg); color:var(--tx); line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── BG noise ── */
+body::before{
+  content:''; position:fixed; inset:0; z-index:-1;
+  background:radial-gradient(ellipse 80% 60% at 50% -20%,rgba(99,102,241,.06),transparent),
+             radial-gradient(ellipse 60% 50% at 80% 80%,rgba(236,72,153,.04),transparent),
+             radial-gradient(ellipse 50% 50% at 20% 60%,rgba(6,182,212,.03),transparent);
+}
+
+.container{max-width:900px;margin:0 auto;padding:40px 24px 120px}
+
+/* ── Hero ── */
+.hero{text-align:center;padding:60px 0 50px}
+.hero .badge{
+  display:inline-block;padding:4px 16px;border-radius:20px;
+  font-size:12px;font-weight:600;letter-spacing:.04em;
+  background:rgba(99,102,241,.12);color:var(--a2);margin-bottom:20px;
+  border:1px solid rgba(99,102,241,.15);
+}
+.hero h1{
+  font-size:clamp(28px,5vw,44px);font-weight:800;letter-spacing:-.02em;
+  background:linear-gradient(135deg,var(--a1),var(--pink),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:12px;line-height:1.2;
+}
+.hero .sub{
+  font-size:16px;color:var(--tx2);max-width:560px;margin:0 auto 16px;
+}
+.hero .meta{
+  font-size:12px;color:var(--tx3);
+  display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;
+}
+.hero .meta span{display:flex;align-items:center;gap:4px}
+
+/* ── Architecture Diagram (pure CSS) ── */
+.arch-diagram{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:32px 24px;margin:20px 0 48px;overflow-x:auto;
+}
+.arch-diagram h2{font-size:15px;color:var(--tx2);margin-bottom:24px;text-align:center;font-weight:500}
+.arch-flow{
+  display:flex;align-items:center;justify-content:center;gap:0;
+  flex-wrap:wrap;min-width:700px;
+}
+.arch-node{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:16px 20px;border-radius:12px;
+  background:var(--glass);border:1px solid var(--border);
+  text-align:center;min-width:100px;
+}
+.arch-node .icon{font-size:28px}
+.arch-node .label{font-size:12px;font-weight:600;color:var(--tx);white-space:nowrap}
+.arch-node .sublabel{font-size:10px;color:var(--tx3)}
+.arch-node.highlight{border-color:rgba(99,102,241,.3);background:rgba(99,102,241,.06)}
+.arch-arrow{
+  font-size:18px;color:var(--tx3);flex-shrink:0;margin:0 4px;
+  white-space:nowrap;
+}
+
+/* ── Section ── */
+.section{margin:32px 0}
+.section-title{
+  display:flex;align-items:center;gap:12px;margin-bottom:20px;
+}
+.step-num{
+  width:36px;height:36px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;font-weight:700;flex-shrink:0;
+  background:linear-gradient(135deg,var(--a1),var(--pink));color:#fff;
+}
+.step-num.done{background:rgba(16,185,129,.15);color:#10b981}
+.section-title h3{font-size:18px;font-weight:700}
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:24px;margin-bottom:16px;position:relative;overflow:hidden;
+}
+.card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent);
+}
+.card h4{font-size:15px;font-weight:600;margin-bottom:8px;color:var(--tx)}
+.card p,.card li{font-size:13.5px;color:var(--tx2)}
+.card ul,.card ol{padding-left:20px;margin:8px 0}
+.card li{margin-bottom:4px}
+
+/* ── Code Block ── */
+.code-block{
+  background:#0a0a12;border:1px solid rgba(255,255,255,.08);border-radius:10px;
+  margin:12px 0;position:relative;overflow:hidden;
+}
+.code-block .lang{
+  font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--tx3);padding:8px 14px 0;display:block;
+}
+.code-block pre{
+  padding:12px 14px;overflow-x:auto;font-size:12.5px;line-height:1.6;
+  font-family:'SF Mono','JetBrains Mono','Fira Code',monospace;
+  color:#d4d4d8;
+}
+.code-block .copy-btn{
+  position:absolute;top:8px;right:8px;
+  background:rgba(255,255,255,.06);border:none;color:var(--tx3);
+  width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:12px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
+}
+.code-block .copy-btn:hover{background:rgba(255,255,255,.12);color:#fff}
+.code-block .copy-btn.copied{background:rgba(16,185,129,.15);color:#10b981}
+.cm{color:#6b7280} .ck{color:#c084fc} .cs{color:#34d399} .cf{color:#f59e0b} .ce{color:#f87171}
+
+/* ── Info boxes ── */
+.info-box{
+  padding:12px 16px;border-radius:10px;margin:12px 0;font-size:13px;
+  display:flex;align-items:flex-start;gap:10px;line-height:1.5;
+}
+.info-box .ico{font-size:16px;flex-shrink:0;margin-top:1px}
+.info-tip{background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.12);color:#67e8f9}
+.info-warn{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.12);color:#fbbf24}
+.info-good{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.12);color:#34d399}
+
+/* ── MCP Compare Table ── */
+.mcp-table{
+  width:100%;border-collapse:collapse;font-size:13px;margin:12px 0;
+}
+.mcp-table th{
+  text-align:left;padding:10px 12px;font-size:11px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.04em;color:var(--tx3);
+  border-bottom:1px solid var(--border);
+}
+.mcp-table td{
+  padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.03);
+  vertical-align:top;
+}
+.mcp-table tr:hover td{background:rgba(255,255,255,.01)}
+.tag{
+  display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;
+}
+.tag-free{background:rgba(16,185,129,.12);color:#34d399}
+.tag-paid{background:rgba(245,158,11,.12);color:#fbbf24}
+.tag-hot{background:rgba(239,68,68,.12);color:#f87171}
+
+/* ── Progress Tracker ── */
+.progress-bar{
+  position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--a1),var(--pink),var(--cyan));
+  z-index:100;transition:width .3s;border-radius:0 2px 2px 0;
+}
+
+/* ── ToC ── */
+.toc{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:20px 24px;margin-bottom:32px;
+}
+.toc h2{font-size:14px;font-weight:600;margin-bottom:12px}
+.toc ol{list-style:none;counter-reset:toc;padding:0}
+.toc li{counter-increment:toc;margin-bottom:6px}
+.toc a{
+  font-size:13px;color:var(--tx2);text-decoration:none;
+  display:flex;align-items:center;gap:8px;padding:4px 0;
+  transition:color .2s;
+}
+.toc a:hover{color:var(--a2)}
+.toc a::before{
+  content:counter(toc);width:22px;height:22px;border-radius:6px;
+  background:rgba(99,102,241,.1);color:var(--a2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:600;flex-shrink:0;
+}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .container{padding:20px 16px 80px}
+  .arch-flow{flex-direction:column;min-width:auto}
+  .arch-arrow{transform:rotate(90deg)}
+  .mcp-table{display:block;overflow-x:auto}
+  .code-block pre{font-size:11px}
+}
+
+/* ── Print / color tokens ── */
+.token-comment{color:#6b7280}
+.token-keyword{color:#c084fc}
+.token-string{color:#34d399}
+.token-func{color:#f59e0b}
+.token-err{color:#f87171}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="container">
+
+<!-- ═══ HERO ═══ -->
+<header class="hero">
+  <div class="badge">AI-Powered Game VFX Pipeline</div>
+  <h1>AI 游戏特效工作流<br>从零搭建到专业产出</h1>
+  <p class="sub">
+    以 Claude Code 为核心载体，接入 DeepSeek V4 Pro API，
+    打通 Unreal Engine / Unity MCP，实现自然语言驱动的游戏特效生产管线
+  </p>
+  <div class="meta">
+    <span>更新于 2026-05-26</span>
+    <span>面向新手 · 每一步皆有解释</span>
+    <span>全程约 30 分钟</span>
+  </div>
+</header>
+
+<!-- ═══ ARCHITECTURE ═══ -->
+<div class="arch-diagram">
+  <h2>整体架构一览</h2>
+  <div class="arch-flow">
+    <div class="arch-node">
+      <div class="icon">🖥️</div>
+      <div class="label">Claude Code</div>
+      <div class="sublabel">核心 AI 引擎</div>
+    </div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-node highlight">
+      <div class="icon">🔄</div>
+      <div class="label">CC-Router</div>
+      <div class="sublabel">API 路由层</div>
+    </div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-node">
+      <div class="icon">🧠</div>
+      <div class="label">DeepSeek V4 Pro</div>
+      <div class="sublabel">大语言模型</div>
+    </div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-node highlight">
+      <div class="icon">🔌</div>
+      <div class="label">MCP Server</div>
+      <div class="sublabel">引擎桥接层</div>
+    </div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-node">
+      <div class="icon">🎮</div>
+      <div class="label">UE5 / Unity</div>
+      <div class="sublabel">游戏引擎</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TOC ═══ -->
+<nav class="toc">
+  <h2>目录 · 六步走完完整流程</h2>
+  <ol>
+    <li><a href="#s0">环境准备 —— Node.js / Python / Git 安装验证</a></li>
+    <li><a href="#s1">安装 Claude Code —— AI 编程核心载体</a></li>
+    <li><a href="#s2">接入 DeepSeek V4 Pro API —— 高性能 + 低成本模型</a></li>
+    <li><a href="#s3">配置 MCP Server —— 打通游戏引擎</a></li>
+    <li><a href="#s4">引擎侧插件安装 —— UE5 / Unity 端配置</a></li>
+    <li><a href="#s5">完整工作流实战 —— 从自然语言到特效产出</a></li>
+  </ol>
+</nav>
+
+<!-- ════════════════════════════════════════ -->
+<!-- STEP 0 -->
+<!-- ════════════════════════════════════════ -->
+<div class="section" id="s0">
+  <div class="section-title">
+    <div class="step-num">0</div>
+    <h3>环境准备 —— 基础工具链</h3>
+  </div>
+
+  <div class="card">
+    <h4>你需要提前安装的三样东西</h4>
+    <p>下面的检查清单确保大家站在同一起跑线。每一条都是后续步骤的硬依赖。</p>
+    <table class="mcp-table">
+      <thead><tr><th>工具</th><th>最低版本</th><th>作用</th><th>验证命令</th></tr></thead>
+      <tbody>
+        <tr>
+          <td style="font-weight:600">Node.js</td>
+          <td>&ge; 18.0</td>
+          <td>运行 Claude Code CLI 的运行时</td>
+          <td><code>node --version</code></td>
+        </tr>
+        <tr>
+          <td style="font-weight:600">Python</td>
+          <td>&ge; 3.10</td>
+          <td>部分 MCP Bridge 依赖 Python</td>
+          <td><code>python3 --version</code></td>
+        </tr>
+        <tr>
+          <td style="font-weight:600">Git</td>
+          <td>&ge; 2.30</td>
+          <td>克隆仓库、版本管理</td>
+          <td><code>git --version</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box info-tip">
+    <span class="ico">💡</span>
+    <span><strong>Windows 用户特别注意：</strong>推荐使用 WSL2（Windows Subsystem for Linux）或 PowerShell 7+。如果使用 WSL2，所有命令与 macOS/Linux 完全一致。</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<!-- STEP 1 -->
+<!-- ════════════════════════════════════════ -->
+<div class="section" id="s1">
+  <div class="section-title">
+    <div class="step-num">1</div>
+    <h3>安装 Claude Code —— AI 编程核心载体</h3>
+  </div>
+
+  <div class="card">
+    <h4>Claude Code 是什么？</h4>
+    <p>Claude Code 是 Anthropic 推出的命令行 AI 编程助手。它不是 IDE 插件，而是一个<strong>直接运行在终端里</strong>的智能代理——可以读代码、写代码、执行命令、操作文件系统。我们把它作为整个工作流的"大脑"。</p>
+  </div>
+
+  <div class="card">
+    <h4>安装步骤</h4>
+    <ol>
+      <li>打开终端（macOS: Terminal.app / Windows: PowerShell 或 WSL2）</li>
+      <li>执行全局安装命令</li>
+      <li>验证安装成功</li>
+    </ol>
+
+    <div class="code-block">
+      <span class="lang">Terminal</span>
+      <pre><span class="cm"># 全局安装 Claude Code CLI</span>
+npm install -g @anthropic-ai/claude-code
+
+<span class="cm"># 验证安装</span>
+claude --version
+<span class="cm"># 输出示例: claude-code/2.x.x (darwin-arm64, node v22.x)</span></pre>
+    </div>
+
+    <div class="info-box info-warn">
+      <span class="ico">⚠️</span>
+      <span>如果安装报权限错误（macOS/Linux），请在命令前加 <code>sudo</code>。如果网络不通（国内环境），可设置 npm 镜像：<code>npm config set registry https://registry.npmmirror.com</code></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>首次启动 &amp; 认证</h4>
+    <ol>
+      <li>在终端输入 <code>claude</code> 并回车</li>
+      <li>浏览器会自动打开 Anthropic 登录页</li>
+      <li>使用 Anthropic 账号登录（支持 Google / GitHub OAuth）</li>
+      <li>登录成功后终端会显示 "Authenticated"</li>
+      <li>如果使用第三方 API（后续步骤），可以跳过此认证</li>
+    </ol>
+    <div class="info-box info-tip">
+      <span class="ico">💡</span>
+      <span>这一步只是确保 Claude Code 本体安装正确。接下来我们会把它切换到 DeepSeek API，所以免费额度不够也完全没关系。</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<!-- STEP 2 -->
+<!-- ════════════════════════════════════════ -->
+<div class="section" id="s2">
+  <div class="section-title">
+    <div class="step-num">2</div>
+    <h3>接入 DeepSeek V4 Pro API —— 高性能低成本模型</h3>
+  </div>
+
+  <div class="card">
+    <h4>为什么要换模型？</h4>
+    <p>DeepSeek V4 Pro（即 DeepSeek-V3.1-Terminus）提供了与 Claude 高度兼容的 API，且<strong>价格仅为 Claude 的 1/5 到 1/10</strong>。对于频繁的特效生成任务，成本差距非常可观。它原生支持 Anthropic Messages API 格式，所以 Claude Code 可以无感切换。</p>
+  </div>
+
+  <div class="card">
+    <h4>Step 2.1 — 获取 DeepSeek API Key</h4>
+    <ol>
+      <li>打开 <code>https://platform.deepseek.com/api_keys</code> 注册/登录</li>
+      <li>点击「创建 API Key」，命名为 <code>claude-code-vfx</code></li>
+      <li>复制生成的 key（格式 <code>sk-xxxxxxxxxxxxxxxx</code>），妥善保存</li>
+      <li>建议先充值 ¥10-20 用作测试，API 调用按量计费</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h4>Step 2.2 — 配置 Claude Code Router（推荐方案）</h4>
+    <p><strong>Claude Code Router</strong>（CCR）是一个轻量级路由层，它拦截 Claude Code 的 API 请求，智能转发到 DeepSeek。好处是：</p>
+    <ul>
+      <li>可以在多个模型间切换（DeepSeek 编码 + Claude 审查）</li>
+      <li>不需要修改 Claude Code 本身</li>
+      <li>支持 Web UI 可视化管理</li>
+    </ul>
+
+    <div class="code-block">
+      <span class="lang">Terminal</span>
+      <pre><span class="cm"># 1. 安装 Claude Code Router</span>
+npm install -g @musistudio/claude-code-router
+
+<span class="cm"># 2. 启动 Web 配置界面</span>
+ccr ui
+<span class="cm"># 浏览器打开 http://localhost:XXXX 进行可视化配置</span></pre>
+    </div>
+
+    <p style="margin-top:12px">在 Web UI 中配置以下信息：</p>
+    <ul>
+      <li><strong>Provider Name：</strong>deepseek</li>
+      <li><strong>API Base URL：</strong><code>https://api.deepseek.com/anthropic</code></li>
+      <li><strong>API Key：</strong>填入你在 Step 2.1 获取的 sk-xxx</li>
+      <li><strong>Model：</strong><code>deepseek-chat</code>（常规）/ <code>deepseek-reasoner</code>（深度思考）</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h4>Step 2.2 替代方案 —— 直接环境变量（更简单）</h4>
+    <p>如果你不需要多模型切换，直接把环境变量写入 Shell 配置文件是最快的方式：</p>
+
+    <div class="code-block">
+      <span class="lang">~/.zshrc（或 ~/.bashrc）</span>
+      <pre><span class="cm"># DeepSeek Anthropic 兼容端点</span>
+<span class="ck">export</span> ANTHROPIC_BASE_URL=<span class="cs">"https://api.deepseek.com/anthropic"</span>
+<span class="ck">export</span> ANTHROPIC_AUTH_TOKEN=<span class="cs">"sk-你的DeepSeek_API_Key"</span>
+<span class="ck">export</span> ANTHROPIC_MODEL=<span class="cs">"deepseek-chat"</span>
+<span class="ck">export</span> ANTHROPIC_SMALL_FAST_MODEL=<span class="cs">"deepseek-chat"</span></pre>
+    </div>
+    <p>保存后执行 <code>source ~/.zshrc</code> 使其生效。之后启动 <code>claude</code> 就会自动走 DeepSeek API。</p>
+
+    <div class="info-box info-warn">
+      <span class="ico">⚠️</span>
+      <span>DeepSeek 的 Tool Calling（工具调用）能力弱于 Claude 原生模型。对于简单的代码生成完全够用，但复杂的多步编辑可能偶尔失败需要重试。这也是为什么教程推荐 <strong>Router 方案</strong>——你可以配置 fallback 到 Claude 处理复杂任务。</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>Step 2.3 — 验证 API 连通性</h4>
+    <div class="code-block">
+      <span class="lang">Terminal</span>
+      <pre><span class="cm"># 测试 DeepSeek API 是否可达</span>
+curl -X POST https://api.deepseek.com/anthropic/v1/messages \
+  -H <span class="cs">"x-api-key: sk-你的Key"</span> \
+  -H <span class="cs">"anthropic-version: 2023-06-01"</span> \
+  -H <span class="cs">"Content-Type: application/json"</span> \
+  -d <span class="cs">'{"model":"deepseek-chat","max_tokens":50,"messages":[{"role":"user","content":"Say hello"}]}'</span>
+
+<span class="cm"># 如果返回包含 "content" 的 JSON，说明连接成功</span></pre>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<!-- STEP 3 -->
+<!-- ════════════════════════════════════════ -->
+<div class="section" id="s3">
+  <div class="section-title">
+    <div class="step-num">3</div>
+    <h3>配置 MCP Server —— 打通 AI 与游戏引擎</h3>
+  </div>
+
+  <div class="card">
+    <h4>MCP（Model Context Protocol）是什么？</h4>
+    <p>MCP 是 Anthropic 提出的开放协议，让 AI 模型可以<strong>安全地调用外部工具</strong>。对游戏特效来说，MCP Server 就是一座桥——AI 通过它直接操作 Unreal Engine 或 Unity Editor，比如创建 Niagara 粒子系统、修改材质、生成蓝图节点。</p>
+    <p>一句话：<strong>没有 MCP，AI 只能给你文字建议；有了 MCP，AI 直接在引擎里帮你做特效。</strong></p>
+  </div>
+
+  <div class="card">
+    <h4>UE5 方案选择</h4>
+    <table class="mcp-table">
+      <thead><tr><th>MCP 方案</th><th>工具数</th><th>架构</th><th>费用</th><th>推荐场景</th></tr></thead>
+      <tbody>
+        <tr>
+          <td style="font-weight:600">UnrealClaudeMCP</td>
+          <td>60</td>
+          <td>原生 C++ 插件 + Python 桥</td>
+          <td><span class="tag tag-free">免费 MIT</span></td>
+          <td>喜欢开源、想完全本地化</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600">Rekall</td>
+          <td>480+</td>
+          <td>纯 C++ 引擎内</td>
+          <td><span class="tag tag-paid">FAB 付费</span></td>
+          <td>专业特效师、Niagara/Material 全覆盖</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600">Flop MCP</td>
+          <td>广泛</td>
+          <td>HTTP 远程</td>
+          <td><span class="tag tag-free">免费/付费</span></td>
+          <td>不想装插件、远程协作</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h4>Unity 方案选择</h4>
+    <table class="mcp-table">
+      <thead><tr><th>MCP 方案</th><th>工具数</th><th>架构</th><th>费用</th><th>推荐场景</th></tr></thead>
+      <tbody>
+        <tr>
+          <td style="font-weight:600">GladeKit MCP</td>
+          <td>222+</td>
+          <td>Python HTTP Bridge</td>
+          <td><span class="tag tag-free">免费 MIT</span></td>
+          <td>深度项目感知、语义搜索</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600">Coplay MCP</td>
+          <td>86</td>
+          <td>TCP Bridge</td>
+          <td><span class="tag tag-free">Beta 免费</span></td>
+          <td>社区最大、上手最快</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600">GameCodex</td>
+          <td>5 (知识)</td>
+          <td>stdio</td>
+          <td><span class="tag tag-free">免费 MIT</span></td>
+          <td>纯知识参考、无需引擎控制</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h4>推荐组合（新手最佳路径）</h4>
+    <p>Unreal Engine 用户选 <strong>UnrealClaudeMCP</strong>（免费开源，60 个工具覆盖 Niagara/蓝图/材质/动画）。Unity 用户选 <strong>GladeKit MCP</strong>（222 个工具，社区活跃）。</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<!-- STEP 4 -->
+<!-- ════════════════════════════════════════ -->
+<div class="section" id="s4">
+  <div class="section-title">
+    <div class="step-num">4</div>
+    <h3>引擎侧插件安装 —— UE5 / Unity 端配置</h3>
+  </div>
+
+  <!-- ── UE5 ── -->
+  <div class="card">
+    <h4>方案 A：Unreal Engine 5（推荐 UnrealClaudeMCP）</h4>
+
+    <p><strong>Step 4A.1 — 克隆 MCP 仓库</strong></p>
+    <div class="code-block">
+      <span class="lang">Terminal</span>
+      <pre><span class="cm"># 克隆 UnrealClaudeMCP</span>
+git clone https://github.com/NAJEMWEHBE/UnrealClaudeMCP.git
+<span class="cm"># 作用：获取 MCP Server 的完整代码，包含 C++ 插件和 Python 桥接</span></pre>
+    </div>
+
+    <p><strong>Step 4A.2 — 安装 C++ 插件到 UE 项目</strong></p>
+    <div class="code-block">
+      <span class="lang">Terminal</span>
+      <pre><span class="cm"># 将插件复制到你的 UE5 项目</span>
+cp -r UnrealClaudeMCP/Plugin/UnrealClaudeMCP <span class="cs">"你的UE项目路径"</span>/Plugins/
+
+<span class="cm"># 作用：让 UE 编辑器加载 C++ 插件，暴露编辑器 API 给外部调用</span></pre>
+    </div>
+
+    <p><strong>Step 4A.3 — 编译并启动</strong></p>
+    <ol>
+      <li>用 Visual Studio 打开你的 UE 项目，编译（Ctrl+Shift+B）</li>
+      <li>打开 UE 编辑器，确认 Plugin 已启用（Edit &rarr; Plugins &rarr; 搜索 "ClaudeMCP"）</li>
+      <li>回到终端，启动 Python 桥接</li>
+    </ol>
+
+    <div class="code-block">
+      <span class="lang">Terminal</span>
+      <pre><span class="cm"># 安装 Python 依赖</span>
+pip install -r UnrealClaudeMCP/bridge/requirements.txt
+
+<span class="cm"># 启动桥接（保持终端打开）</span>
+python UnrealClaudeMCP/bridge/unreal_claude_mcp_bridge.py
+<span class="cm"># 作用：建立 stdio-TCP 通信管道，一端连 Claude Code，一端连 UE 编辑器</span></pre>
+    </div>
+
+    <p><strong>Step 4A.4 — 注册 MCP 到 Claude Code</strong></p>
+    <div class="code-block">
+      <span class="lang">Terminal</span>
+      <pre><span class="cm"># 将 MCP Server 注册到 Claude Code</span>
+claude mcp add unreal -- python <span class="cs">"/完整路径/UnrealClaudeMCP/bridge/unreal_claude_mcp_bridge.py"</span>
+
+<span class="cm"># 作用：告诉 Claude Code "有一个叫 unreal 的工具集可用"</span>
+<span class="cm"># 之后在 Claude Code 中输入自然语言指令，它就会自动调用 UE 工具</span></pre>
+    </div>
+  </div>
+
+  <!-- ── Unity ── -->
+  <div class="card">
+    <h4>方案 B：Unity（推荐 GladeKit MCP）</h4>
+
+    <p><strong>Step 4B.1 — 安装 GladeKit MCP</strong></p>
+    <div class="code-block">
+      <span class="lang">Terminal</span>
+      <pre><span class="cm"># 通过 uvx 一键安装（uv 是 Python 的快速包管理器）</span>
+<span class="cm"># 如果没有 uv，先安装: curl -LsSf https://astral.sh/uv/install.sh | sh</span>
+
+uvx gladekit-mcp
+<span class="cm"># 作用：自动拉取 GladeKit，启动 Unity 通信桥接</span></pre>
+    </div>
+
+    <p><strong>Step 4B.2 — 安装 Unity 侧插件</strong></p>
+    <ol>
+      <li>下载 GladeKit Unity Package（从 GitHub Releases）</li>
+      <li>在 Unity Editor 中：Assets &rarr; Import Package &rarr; Custom Package</li>
+      <li>导入后，Unity 顶部菜单栏会出现 "GladeKit" 菜单</li>
+      <li>点击 GladeKit &rarr; Start Server（默认端口 8765）</li>
+    </ol>
+
+    <p><strong>Step 4B.3 — 注册到 Claude Code</strong></p>
+    <div class="code-block">
+      <span class="lang">Terminal</span>
+      <pre><span class="cm"># 注册 GladeKit MCP</span>
+claude mcp add unity -- uvx gladekit-mcp
+
+<span class="cm"># 作用：Claude Code 获得 Unity Editor 的 222+ 个操作能力</span></pre>
+    </div>
+  </div>
+
+  <!-- ── 纯知识方案 ── -->
+  <div class="card">
+    <h4>方案 C：不需要引擎控制？用 GameCodex（1 分钟配置）</h4>
+    <p>如果你只是想获得游戏特效开发的知识参考和代码建议，而不需要 AI 直接操作引擎：</p>
+    <div class="code-block">
+      <span class="lang">Terminal</span>
+      <pre><span class="cm"># 一行命令获得 957+ 篇游戏开发文档</span>
+claude mcp add gamedev -- npx -y gamecodex
+<span class="cm"># 作用：为 Claude Code 注入 UE/Unity/Godot 等 29 个引擎的策展知识</span>
+<span class="cm"># 适合：学习阶段、方案设计、代码审查</span></pre>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<!-- STEP 5 -->
+<!-- ════════════════════════════════════════ -->
+<div class="section" id="s5">
+  <div class="section-title">
+    <div class="step-num">5</div>
+    <h3>完整工作流实战 —— 从自然语言到特效产出</h3>
+  </div>
+
+  <div class="card">
+    <h4>你的第一个 AI 特效：一句话生成火焰拖尾</h4>
+    <p>以下是完整端到端流程，前面所有配置都在为这一刻服务。</p>
+
+    <p><strong>Step 5.1 — 启动完整链路</strong></p>
+    <div class="code-block">
+      <span class="lang">Terminal（分三个窗口）</span>
+      <pre><span class="cm">━━━ 窗口 1：启动 UE5 编辑器 ━━━</span>
+<span class="cm"># 打开你的 UE 项目，等待编辑器完全加载</span>
+<span class="cm"># 确认 Plugins > UnrealClaudeMCP 已启用</span>
+
+<span class="cm">━━━ 窗口 2：启动 MCP 桥接 ━━━</span>
+python UnrealClaudeMCP/bridge/unreal_claude_mcp_bridge.py
+<span class="cm"># 输出: Bridge listening on 127.0.0.1:18888</span>
+
+<span class="cm">━━━ 窗口 3：启动 Claude Code ━━━</span>
+claude
+<span class="cm"># 进入 Claude Code 交互界面</span></pre>
+    </div>
+
+    <p><strong>Step 5.2 — 发出第一条特效指令</strong></p>
+    <div class="code-block">
+      <span class="lang">Claude Code 对话</span>
+      <pre><span class="cf">你:</span> 帮我创建一个火焰拖尾的 Niagara 粒子系统。
+要求：
+- 粒子沿 X 轴正方向喷射
+- 颜色从橙黄渐变到红色再到透明
+- 生命周期 1.2 秒
+- 出生率 200 个/秒
+- 初始速度 400-600 单位/秒
+- 添加重力影响 -200 Z轴
+- 使用 Sphere 作为粒子形状
+- 保存到 /Game/VFX/Fire/Fire_Trail
+
+<span class="cf">Claude Code:</span> 我来帮你创建。首先检查当前 Niagara 系统目录...
+[调用 create_niagara_system 工具]
+[设置发射器参数: spawn_rate=200, lifetime=1.2]
+[添加 ColorOverLife 模块: 橙→红→透明]
+[添加 GravityForce 模块: Z=-200]
+[添加 SphereRenderer]
+[保存资产到指定路径]
+
+✅ 火焰拖尾 Niagara 系统已创建！
+资产路径: /Game/VFX/Fire/Fire_Trail
+文件: Fire_Trail.uasset</pre>
+    </div>
+
+    <p><strong>Step 5.3 — 迭代优化</strong></p>
+    <div class="code-block">
+      <span class="lang">Claude Code 对话</span>
+      <pre><span class="cf">你:</span> 拖尾有点短，把生命周期改成 2 秒，
+初始速度范围改成 600-1000，再给粒子加一个初始旋转动画
+
+<span class="cf">你:</span> 帮我把这个 Niagara 挂到角色蓝图里，
+在角色移动时自动生成拖尾效果
+
+<span class="cf">你:</span> 查看当前场景里所有 Niagara 系统的性能开销，
+超过 5ms 的标红</pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>常用特效指令速查</h4>
+    <table class="mcp-table">
+      <thead><tr><th>你想做什么</th><th>直接对 Claude Code 说</th></tr></thead>
+      <tbody>
+        <tr><td>创建 Niagara 粒子</td><td>"创建一个 [描述] 的 Niagara 系统，保存到 /Game/VFX/"</td></tr>
+        <tr><td>修改材质</td><td>"打开 M_Master 材质，把 Emissive 颜色改成脉冲动画"</td></tr>
+        <tr><td>写蓝图逻辑</td><td>"在 BP_Character 里添加一个 Event Tick 节点，驱动 VFX 的 Spawn"</td></tr>
+        <tr><td>性能优化</td><td>"扫描场景中所有粒子系统，列出超过 2000 粒子的，给出优化建议"</td></tr>
+        <tr><td>批量重命名</td><td>"把 /Game/VFX/Old/ 下所有资源按 FX_序号 格式重命名"</td></tr>
+        <tr><td>创建动画通知</td><td>"在攻击动画的第 0.3 秒加一个 AnimNotify 触发刀光特效"</td></tr>
+        <tr><td>参考知名效果</td><td>"参考 Elden Ring 的黄金树祷告效果，帮我设计一个类似的 Niagara 系统"</td></tr>
+        <tr><td>查找参考</td><td>"在 Magesbox 上找到 3 个评分最高的火焰刀光参考"</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h4>Unity 等效流程</h4>
+    <p>Unity 用户的工作流几乎一样，差异仅在引擎端：</p>
+    <ol>
+      <li>启动 Unity 编辑器 + GladeKit Server</li>
+      <li>启动 <code>uvx gladekit-mcp</code> 桥接</li>
+      <li>启动 <code>claude</code>（已配 DeepSeek API）</li>
+      <li>自然语言指令 &rarr; AI 调用 Unity VFX Graph / Shader Graph / Particle System API</li>
+    </ol>
+    <div class="code-block">
+      <span class="lang">Claude Code 对话 (Unity)</span>
+      <pre><span class="cf">你:</span> 用 VFX Graph 创建一个闪电链效果，
+从 Transform (0, 3, 0) 开始，向下分支 4-7 条，
+每条颜色随机蓝紫色，总生命周期 0.8 秒，
+保存为 /Assets/VFX/Lightning_Chain.vfx</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FAQ ═══ -->
+<div class="section">
+  <div class="section-title">
+    <div class="step-num done">✓</div>
+    <h3>常见问题速查</h3>
+  </div>
+
+  <div class="card">
+    <h4>Claude Code 提示 "MCP connection refused"</h4>
+    <p>检查三点：① UE/Unity 编辑器是否完全启动 ② MCP 桥接脚本是否在运行 ③ 端口是否被防火墙阻拦（macOS 一般无此问题）</p>
+  </div>
+
+  <div class="card">
+    <h4>DeepSeek API 返回报错 / 长上下文出错</h4>
+    <p>DeepSeek 建议长上下文阈值设为 60000 tokens。在 <code>~/.claude/settings.json</code> 中添加：<code>"maxContextTokens": 60000</code></p>
+  </div>
+
+  <div class="card">
+    <h4>生成的 Niagara 效果和描述不符</h4>
+    <p>正常现象。AI 目前对参数的理解是模糊的——把它当成"快速原型工具"：AI 搭架子（80%），你微调参数（20%）。效果好于从零手写。</p>
+  </div>
+
+  <div class="card">
+    <h4>UE5 插件编译失败</h4>
+    <p>确认：① Unreal Engine 版本 &ge; 5.5 ② Visual Studio 安装了 C++ 游戏开发工作负载 ③ 项目是 C++ 项目而非纯蓝图项目</p>
+  </div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<div style="text-align:center;padding:40px 0 20px;color:var(--tx3);font-size:12px">
+  <p>AI 游戏特效工作流文档 · 2026-05-26</p>
+  <p style="margin-top:4px">Made with Claude Code + DeepSeek V4 Pro · 所有配置均可免费开始</p>
+</div>
+
+</div><!-- /.container -->
+
+<!-- ═══ JS: Progress Bar + Copy Buttons ═══ -->
+<script>
+// ── Scroll Progress Bar ──
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  const pct=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100;
+  document.getElementById('progressBar').style.width=pct+'%';
+});
+
+// ── Copy Button ──
+document.querySelectorAll('.code-block').forEach(block=>{
+  const btn=document.createElement('button');
+  btn.className='copy-btn';btn.textContent='📋';btn.title='复制代码';
+  btn.addEventListener('click',()=>{
+    const text=block.querySelector('pre').innerText;
+    navigator.clipboard.writeText(text).then(()=>{
+      btn.textContent='✓';btn.classList.add('copied');
+      setTimeout(()=>{btn.textContent='📋';btn.classList.remove('copied');},1500);
+    });
+  });
+  block.appendChild(btn);
+});
+</script>
+
+</body>
+</html>
