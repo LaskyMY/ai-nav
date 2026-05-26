@@ -136,15 +136,16 @@ background:var(--bg);color:var(--tx);font-size:15px;line-height:1.65;
 <div class="stat-box"><div class="val" id="simBodies" style="color:var(--cyan)">1</div><div class="lbl">天体数</div></div>
 <div class="stat-box"><div class="val" id="simEnergy" style="color:var(--a2)">--</div><div class="lbl">总能量(相对)</div></div>
 <div class="stat-box"><div class="val" id="simDT" style="color:var(--amber)">0.5</div><div class="lbl">时间步长 dt</div></div>
-<div class="stat-box"><div class="val" id="simMethod" style="color:var(--a1)">RK4</div><div class="lbl">积分方法</div></div>
+<div class="stat-box"><div class="val" id="simMethod" style="color:var(--a1)">Verlet</div><div class="lbl">积分方法</div></div>
+<div class="stat-box"><div class="val" id="simKepler" style="color:var(--vio)">--</div><div class="lbl">轨道周期(模拟步)</div></div>
 </div>
 
 <div class="sim-wrap" id="simWrap"><canvas id="simCanvas"></canvas></div>
 
 <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
 <span style="font-size:11px;color:var(--tx3)">方法:</span>
-<button class="btn sm active" onclick="Sim.setMethod('rk4',this)">RK4</button>
-<button class="btn sm" onclick="Sim.setMethod('verlet',this)">Verlet</button>
+<button class="btn sm" onclick="Sim.setMethod('rk4',this)">RK4</button>
+<button class="btn sm active" onclick="Sim.setMethod('verlet',this)">Verlet</button>
 <button class="btn sm" onclick="Sim.setMethod('semi',this)">半隐式欧拉</button>
 <button class="btn sm" onclick="Sim.setMethod('euler',this)">显式欧拉</button>
 <span style="margin-left:8px;font-size:11px;color:var(--tx3)">速度:</span>
@@ -156,6 +157,7 @@ background:var(--bg);color:var(--tx);font-size:15px;line-height:1.65;
 <div style="display:flex;gap:6px;margin-top:6px">
 <button class="btn" onclick="Sim.addPlanet()">添加随机行星</button>
 <button class="btn" onclick="Sim.addBinary()">双星系统</button>
+<button class="btn" onclick="Sim.addSolarSystem()">太阳系</button>
 <button class="btn" onclick="Sim.addRetrograde()">逆行轨道</button>
 <button class="btn" onclick="Sim.reset()">重置</button>
 </div>
@@ -331,9 +333,10 @@ const Sim = {
   bodies: [],
   G: 800,
   dt: 0.5,
-  method: 'rk4',
+  method: 'verlet',
   trailMax: 600,
   running: true,
+  _keplerPeriod: 0,
 
   init() {
     this.canvas = document.getElementById('simCanvas');
@@ -383,7 +386,9 @@ const Sim = {
     const x = Math.cos(angle) * dist;
     const y = Math.sin(angle) * dist;
     const r = Math.sqrt(x*x + y*y);
-    const vCirc = Math.sqrt(this.G * 200 / r);
+    // Use total mass of all bodies for circular velocity
+    const totalMass = this.bodies.reduce((s,b)=>s+b.mass,0);
+    const vCirc = Math.sqrt(this.G * totalMass / r);
     const vx = -y / r * vCirc;
     const vy = x / r * vCirc;
     const colors = ['#6366f1','#ec4899','#06B6D4','#10B981','#a855f7','#f59e0b','#ef4444'];
@@ -396,10 +401,36 @@ const Sim = {
   },
 
   addBinary() {
+    // Two equal-mass stars in circular orbit around their barycenter
+    // Separation = 120, each R=60 from COM
+    // v = sqrt(G*M/(4*R)) = sqrt(800*120/240) = sqrt(400) = 20
     this.bodies = [
-      { x:-60,y:0, vx:0,vy:-1.5, mass:120, color:'#fbbf24', r:11, trail:[], fixed:false },
-      { x:60,y:0, vx:0,vy:1.5, mass:120, color:'#f59e0b', r:11, trail:[], fixed:false },
+      { x:-60,y:0, vx:0,vy:-20, mass:120, color:'#fbbf24', r:11, trail:[], fixed:false },
+      { x:60,y:0, vx:0,vy:20, mass:120, color:'#f59e0b', r:11, trail:[], fixed:false },
     ];
+    this._updateUI();
+  },
+
+  addSolarSystem() {
+    // Inner solar system with proper circular orbit velocities
+    // v = sqrt(G*M_sun/r) where M_sun=200, G=800
+    const M = 200;
+    const planets = [
+      { dist:70,  mass:0.3, color:'#94a3b8', r:3, name:'水星' },
+      { dist:110, mass:0.8, color:'#f59e0b', r:4.5, name:'金星' },
+      { dist:160, mass:1,   color:'#6366f1', r:5, name:'地球' },
+      { dist:220, mass:0.5, color:'#ef4444', r:4, name:'火星' },
+    ];
+    this.bodies = [
+      { x:0,y:0, vx:0,vy:0, mass:M, color:'#fbbf24', r:15, trail:[], fixed:true },
+    ];
+    for (const p of planets) {
+      const vCirc = Math.sqrt(this.G * M / p.dist);
+      this.bodies.push({
+        x:p.dist, y:0, vx:0, vy:vCirc,
+        mass:p.mass, color:p.color, r:p.r, trail:[], fixed:false
+      });
+    }
     this._updateUI();
   },
 
@@ -519,14 +550,35 @@ const Sim = {
 
   _updateUI() {
     document.getElementById('simBodies').textContent = this.bodies.length;
-    let ke = 0, pe = 0;
+    // Kepler: compute semi-major axis & period for outermost non-fixed body
     const moving = this.bodies.filter(b => !b.fixed);
+    const fixedTotalMass = this.bodies.filter(b => b.fixed).reduce((s,b)=>s+b.mass,0);
+    const M = fixedTotalMass > 0 ? fixedTotalMass : this.bodies.reduce((s,b)=>s+b.mass,0);
     if (moving.length > 0) {
-      for (const b of moving) ke += 0.5 * b.mass * (b.vx*b.vx + b.vy*b.vy);
-      if (ke > 0) {
-        document.getElementById('simEnergy').textContent = '稳定';
-        document.getElementById('simEnergy').style.color = 'var(--a2)';
+      // Find body farthest from center of mass
+      let best = null, bestR = 0;
+      for (const b of moving) {
+        const r = Math.sqrt(b.x*b.x + b.y*b.y);
+        if (r > bestR) { bestR = r; best = b; }
       }
+      if (best) {
+        const r = Math.sqrt(best.x*best.x + best.y*best.y);
+        const v2 = best.vx*best.vx + best.vy*best.vy;
+        const E_spec = 0.5*v2 - this.G * M / r;
+        const a = E_spec < 0 ? (-this.G * M / (2 * E_spec)) : Infinity;
+        const T = isFinite(a) ? Math.round(2 * Math.PI * Math.sqrt(a*a*a / (this.G * M)) / this.dt) : '--';
+        document.getElementById('simKepler').textContent = isFinite(a) ? ('~' + T + ' 步') : '逃逸';
+        document.getElementById('simKepler').style.color = isFinite(a) ? 'var(--vio)' : 'var(--a3)';
+        // Energy stability indicator
+        const ke = 0.5 * best.mass * v2;
+        const stability = isFinite(a) ? (a / bestR) : 0;
+        const label = isFinite(a) ? (stability > 0.85 && stability < 1.15 ? '稳定' : '漂移中') : '逃逸';
+        document.getElementById('simEnergy').textContent = label;
+        document.getElementById('simEnergy').style.color = label === '稳定' ? 'var(--a2)' : 'var(--amber)';
+      }
+    } else {
+      document.getElementById('simEnergy').textContent = '--';
+      document.getElementById('simKepler').textContent = '--';
     }
   },
 
@@ -602,7 +654,8 @@ const Sim = {
     const x = mx - this.cx;
     const y = my - this.cy;
     const r = Math.sqrt(x*x + y*y);
-    const vCirc = Math.sqrt(this.G * 200 / Math.max(r, 10)) * 0.7;
+    const totalMass = this.bodies.reduce((s,b)=>s+b.mass,0);
+    const vCirc = Math.sqrt(this.G * totalMass / Math.max(r, 10)) * 0.7;
     const vx = -y / Math.max(r, 1) * vCirc;
     const vy = x / Math.max(r, 1) * vCirc;
     const colors = ['#6366f1','#ec4899','#06B6D4','#10B981','#a855f7','#ef4444'];
