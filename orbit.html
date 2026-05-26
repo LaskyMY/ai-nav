@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>轨道模拟 · 神奇代码互动教学</title>
+<link rel="icon" href="./icon.svg">
+<style>
+:root{
+--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);
+--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;
+--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.45);--tx3:rgba(255,255,255,.30);--tx4:rgba(255,255,255,.18);
+--r:24px;--rs:14px;
+--ease:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.56,.64,1);
+}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+font-family:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;
+background:var(--bg);color:var(--tx);font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased;letter-spacing:-.01em;
+}
+::-webkit-scrollbar{width:2px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.04);border-radius:1px}
+::selection{background:rgba(99,102,241,.3)}
+
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,#6366f1,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,#ec4899,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,#06b6d4,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(99,102,241,.06),rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--a1),var(--pink),var(--cyan));z-index:100;transition:width .3s;border-radius:0 2px 2px 0}
+
+.container{max-width:900px;margin:0 auto;padding:32px 24px 120px;position:relative;z-index:1}
+
+.header{position:sticky;top:0;z-index:50;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);padding:10px 20px;border-radius:0 0 22px 22px;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 40px rgba(99,102,241,.1),0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04);display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.header-logo{font-size:16px;font-weight:700;letter-spacing:-.02em;background:linear-gradient(135deg,var(--a1),var(--pink),var(--cyan));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:tFlow 6s ease-in-out infinite}
+.header-back{color:var(--tx3);text-decoration:none;font-size:13px;transition:color .2s}
+.header-back:hover{color:var(--tx)}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+
+.grad-text{background:linear-gradient(135deg,var(--a1),var(--pink),var(--cyan),var(--a2));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:tFlow 6s ease-in-out infinite}
+
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--r);padding:20px 24px;margin-bottom:14px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent)}
+.card:hover{border-color:rgba(99,102,241,.2);box-shadow:0 0 60px rgba(99,102,241,.08),0 16px 48px rgba(0,0,0,.2)}
+.card h3{font-size:16px;font-weight:600;margin-bottom:6px}
+.card p{font-size:13px;color:var(--tx2);margin-bottom:6px}
+
+.section{margin:32px 0}
+.section-hd{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.step-num{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0;background:linear-gradient(135deg,var(--a1),var(--pink));color:#fff}
+.section-hd h2{font-size:18px;font-weight:700}
+
+/* Sim canvas */
+.sim-wrap{position:relative;background:rgba(0,0,0,.35);border-radius:16px;overflow:hidden;margin:12px 0;cursor:crosshair}
+.sim-wrap canvas{display:block;width:100%}
+.sim-legend{display:flex;gap:16px;flex-wrap:wrap;padding:8px 12px;font-size:11px;color:var(--tx3)}
+.sim-legend span{display:flex;align-items:center;gap:4px}
+.sim-legend .dot{width:8px;height:8px;border-radius:50%}
+
+.stat-row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.stat-box{flex:1;min-width:70px;padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);text-align:center}
+.stat-box .val{font-size:clamp(16px,3vw,22px);font-weight:700}
+.stat-box .lbl{font-size:10px;color:var(--tx3);margin-top:2px}
+
+.btn{padding:8px 16px;border-radius:12px;border:1px solid rgba(99,102,241,.3);background:rgba(99,102,241,.12);color:#fff;font-size:12px;cursor:pointer;font-family:inherit;font-weight:500;transition:all .25s var(--ease);white-space:nowrap}
+.btn:hover{background:rgba(99,102,241,.25);box-shadow:0 0 16px rgba(99,102,241,.12)}
+.btn:active{transform:scale(.96)}
+.btn.active{background:rgba(99,102,241,.3);border-color:rgba(99,102,241,.5)}
+.btn.sm{font-size:10px;padding:5px 10px}
+
+.code-inline{background:rgba(255,255,255,.06);padding:2px 8px;border-radius:6px;font-family:'SF Mono',monospace;font-size:12px;color:var(--cyan)}
+
+.callout{padding:14px 18px;border-radius:14px;margin:12px 0;font-size:13px;display:flex;gap:10px;align-items:flex-start}
+.callout-tip{background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.12);color:#67e8f9}
+.callout-good{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.12);color:#34d399}
+.callout .ico{font-size:18px;flex-shrink:0}
+
+.method-compare{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.method-card{padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);text-align:center}
+.method-card .name{font-weight:600;font-size:14px;margin-bottom:4px}
+.method-card .acc{font-size:11px;color:var(--tx3)}
+.method-card .stars{color:var(--amber);font-size:13px}
+
+.footer{text-align:center;padding:40px 0 20px;color:var(--tx3);font-size:12px}
+.footer a{color:var(--tx2);text-decoration:none}
+
+@media(max-width:768px){
+.container{padding:12px 12px 100px}
+.card{padding:16px;border-radius:18px}
+.method-compare{grid-template-columns:1fr 1fr}
+.section-hd h2{font-size:16px}
+.step-num{width:30px;height:30px;font-size:13px}
+}
+@media(max-width:480px){
+.container{padding:8px 8px 110px}
+.card{padding:12px;border-radius:14px}
+.method-compare{grid-template-columns:1fr}
+.stat-box{padding:8px 10px;min-width:55px}
+}
+</style>
+</head>
+<body>
+
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot" id="glowSpot"></div>
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="container">
+
+<div class="header">
+<a href="https://laskymy.github.io/ai-nav/" class="header-back">AI Center</a><span style="color:var(--tx4)">/</span>
+<span class="header-logo">轨道模拟 · 神奇代码</span>
+</div>
+
+<!-- Hero -->
+<div style="text-align:center;padding:20px 0 40px">
+<h1 class="grad-text" style="font-size:clamp(22px,5vw,34px);font-weight:800;margin-bottom:8px">颠覆轨道模拟的<br>神奇代码</h1>
+<p style="font-size:14px;color:var(--tx2);max-width:560px;margin:0 auto 10px">几行精妙的数值积分代码，就能精准模拟行星轨道、三体运动、引力弹弓——比传统方法稳定百倍。在浏览器里亲自试试。</p>
+<p style="font-size:11px;color:var(--tx3)">基于 B 站视频 BV12qmdBHEaB · 天体物理互动教学</p>
+</div>
+
+<!-- ═══ SECTION 1: LIVE SIM ═══ -->
+<div class="section">
+<div class="section-hd"><div class="step-num">1</div><h2>实时轨道模拟器 · 亲手玩</h2></div>
+
+<div class="card">
+<h3>N 体引力系统</h3>
+<p>一个恒星 + 多个行星的引力模拟。点击画布任意位置 <strong>添加行星</strong>（带初始切向速度）。拖动 <strong>已存在的行星</strong> 调整速度矢量。</p>
+
+<div class="stat-row">
+<div class="stat-box"><div class="val" id="simBodies" style="color:var(--cyan)">1</div><div class="lbl">天体数</div></div>
+<div class="stat-box"><div class="val" id="simEnergy" style="color:var(--a2)">--</div><div class="lbl">总能量(相对)</div></div>
+<div class="stat-box"><div class="val" id="simDT" style="color:var(--amber)">0.5</div><div class="lbl">时间步长 dt</div></div>
+<div class="stat-box"><div class="val" id="simMethod" style="color:var(--a1)">RK4</div><div class="lbl">积分方法</div></div>
+</div>
+
+<div class="sim-wrap" id="simWrap"><canvas id="simCanvas"></canvas></div>
+
+<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+<span style="font-size:11px;color:var(--tx3)">方法:</span>
+<button class="btn sm active" onclick="Sim.setMethod('rk4',this)">RK4</button>
+<button class="btn sm" onclick="Sim.setMethod('verlet',this)">Verlet</button>
+<button class="btn sm" onclick="Sim.setMethod('semi',this)">半隐式欧拉</button>
+<button class="btn sm" onclick="Sim.setMethod('euler',this)">显式欧拉</button>
+<span style="margin-left:8px;font-size:11px;color:var(--tx3)">速度:</span>
+<button class="btn sm" onclick="Sim.setDT(0.25)">0.25x</button>
+<button class="btn sm active" id="dtBtn05" onclick="Sim.setDT(0.5)">0.5x</button>
+<button class="btn sm" onclick="Sim.setDT(1)">1x</button>
+<button class="btn sm" onclick="Sim.setDT(2)">2x</button>
+</div>
+<div style="display:flex;gap:6px;margin-top:6px">
+<button class="btn" onclick="Sim.addPlanet()">添加随机行星</button>
+<button class="btn" onclick="Sim.addBinary()">双星系统</button>
+<button class="btn" onclick="Sim.addRetrograde()">逆行轨道</button>
+<button class="btn" onclick="Sim.reset()">重置</button>
+</div>
+<p style="font-size:10px;color:var(--tx3);text-align:center;margin-top:6px">轨迹颜色 = 轨道历史 &nbsp; | &nbsp; 点击空白添加行星 &nbsp; | &nbsp; 拖拽已有行星改速度</p>
+</div>
+</div>
+
+<!-- ═══ SECTION 2: METHODS ═══ -->
+<div class="section">
+<div class="section-hd"><div class="step-num">2</div><h2>四种积分方法 · 直观对比</h2></div>
+
+<div class="card">
+<h3>同一步长下轨道精度的天壤之别</h3>
+<p>下面用<strong>同样的时间步长 (dt=0.5)</strong> 模拟同一个二体系统。右上角切入对比模式，观察不同方法的轨道漂移差异。</p>
+<div class="method-compare">
+<div class="method-card" style="border-color:rgba(239,68,68,.2)">
+<div class="name" style="color:var(--a3)">显式欧拉法</div>
+<div class="stars">★☆☆☆☆</div>
+<div class="acc">能量快速发散 · 轨道螺旋扩张<br>dt 稍大就崩溃 · 仅教学用</div>
+</div>
+<div class="method-card" style="border-color:rgba(245,158,11,.2)">
+<div class="name" style="color:var(--amber)">半隐式欧拉</div>
+<div class="stars">★★★☆☆</div>
+<div class="acc">能量振荡但保持稳定<br>轨道闭合 · 86行Python的秘密</div>
+</div>
+<div class="method-card" style="border-color:rgba(99,102,241,.3)">
+<div class="name" style="color:var(--a1)">RK4 (龙格-库塔)</div>
+<div class="stars">★★★★☆</div>
+<div class="acc">极高精度 · 每步4次力计算<br>短期模拟首选 · 非辛方法</div>
+</div>
+<div class="method-card" style="border-color:rgba(16,185,129,.3)">
+<div class="name" style="color:var(--a2)">Velocity Verlet</div>
+<div class="stars">★★★★★</div>
+<div class="acc">辛积分 · 能量守恒百万年不变<br>分子动力学+天体物理首选</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ═══ SECTION 3: THE CODE ═══ -->
+<div class="section">
+<div class="section-hd"><div class="step-num">3</div><h2>神奇代码 · 核心就这几行</h2></div>
+
+<div class="card">
+<h3>半隐式欧拉法 —— 最简稳定轨道模拟</h3>
+<p>整个轨道模拟的核心物理就 <strong>3 行代码</strong>。秘密在于：<strong>先用新速度更新位置，再计算加速度更新速度</strong>——顺序一换，稳定性天差地别。</p>
+
+<div style="background:#0a0a12;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;margin:12px 0;overflow-x:auto">
+<pre style="font-size:12px;line-height:1.6;font-family:'SF Mono','Fira Code',monospace;color:#d4d4d8">
+<span style="color:#6b7280">// 1. 用当前速度更新位置（先算位置！）</span>
+pos.x += vel.x * dt;
+pos.y += vel.y * dt;
+
+<span style="color:#6b7280">// 2. 计算引力加速度</span>
+dx = sun.x - pos.x;
+dy = sun.y - pos.y;
+r = Math.sqrt(dx*dx + dy*dy + <span style="color:#f59e0b">1e-6</span>);  <span style="color:#6b7280">// 软化因子防除零</span>
+ax = G * sun.mass * dx / (r*r*r);
+ay = G * sun.mass * dy / (r*r*r);
+
+<span style="color:#6b7280">// 3. 用新加速度更新速度（后算速度！）</span>
+vel.x += ax * dt;
+vel.y += ay * dt;
+</pre>
+</div>
+
+<div class="callout callout-tip"><span class="ico">🔑</span><span><strong>核心洞察：</strong>顺序是关键。显式欧拉先用旧加速度更新速度再更新位置 → 能量发散。半隐式欧拉<strong>反过来</strong>——先用速度更新位置，再算力，再更新速度 → 能量奇迹般稳定。就这一个交换，轨道从螺旋发散变成完美闭合。</span></div>
+</div>
+
+<div class="card">
+<h3>Velocity Verlet —— 科研级辛积分</h3>
+<p>真正的"神奇代码"——每个时间步只计算<strong>一次力</strong>，却达到二次精度且<strong>能量守恒百万年不漂移</strong>。</p>
+<div style="background:#0a0a12;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;margin:12px 0;overflow-x:auto">
+<pre style="font-size:12px;line-height:1.6;font-family:'SF Mono','Fira Code',monospace;color:#d4d4d8">
+<span style="color:#6b7280">// Velocity Verlet 三步走</span>
+pos.x += vel.x * dt + <span style="color:#f59e0b">0.5</span> * acc.x * dt * dt;  <span style="color:#6b7280">// 半步位置</span>
+pos.y += vel.y * dt + <span style="color:#f59e0b">0.5</span> * acc.y * dt * dt;
+
+accNew = <span style="color:#34d399">computeAcceleration</span>(pos);  <span style="color:#6b7280">// 唯一次力计算</span>
+
+vel.x += <span style="color:#f59e0b">0.5</span> * (acc.x + accNew.x) * dt;  <span style="color:#6b7280">// 平均加速度更新速度</span>
+vel.y += <span style="color:#f59e0b">0.5</span> * (acc.y + accNew.y) * dt;
+acc = accNew;
+</pre>
+</div>
+</div>
+
+<div class="card">
+<h3>RK4 —— 经典四阶龙格-库塔</h3>
+<p>每步计算 <strong>4 次力</strong>，但精度和稳定性极高。适合需要高精度的短期模拟。</p>
+<div style="background:#0a0a12;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;margin:12px 0;overflow-x:auto">
+<pre style="font-size:12px;line-height:1.6;font-family:'SF Mono','Fira Code',monospace;color:#d4d4d8">
+<span style="color:#6b7280">// k1 = 当前斜率</span>
+<span style="color:#c084fc">k1v</span> = acc(pos) * dt;  <span style="color:#c084fc">k1p</span> = vel * dt;
+<span style="color:#6b7280">// k2 = 用 k1 推进半步后的斜率</span>
+<span style="color:#c084fc">k2v</span> = acc(pos + 0.5*k1p) * dt;  <span style="color:#c084fc">k2p</span> = (vel + 0.5*k1v) * dt;
+<span style="color:#6b7280">// k3 = 用 k2 推进半步后的斜率</span>
+<span style="color:#c084fc">k3v</span> = acc(pos + 0.5*k2p) * dt;  <span style="color:#c084fc">k3p</span> = (vel + 0.5*k2v) * dt;
+<span style="color:#6b7280">// k4 = 终点斜率</span>
+<span style="color:#c084fc">k4v</span> = acc(pos + k3p) * dt;  <span style="color:#c084fc">k4p</span> = (vel + k3v) * dt;
+<span style="color:#6b7280">// 加权平均</span>
+vel += (k1v + 2*k2v + 2*k3v + k4v) / <span style="color:#f59e0b">6</span>;
+pos += (k1p + 2*k2p + 2*k3p + k4p) / <span style="color:#f59e0b">6</span>;
+</pre>
+</div>
+</div>
+</div>
+
+<!-- ═══ SECTION 4: KEPLER ═══ -->
+<div class="section">
+<div class="section-hd"><div class="step-num">4</div><h2>开普勒定律 · 从公式到画面</h2></div>
+
+<div class="card">
+<h3>三条定律决定一切轨道</h3>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="padding:12px 16px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
+<div style="font-size:13px;font-weight:600">第一定律 · 椭圆轨道</div>
+<div style="font-size:12px;color:var(--tx2)">行星轨道是<strong>椭圆</strong>，太阳位于一个焦点。偏心率 e 决定"扁"的程度：e=0 完美圆，e→1 极扁椭圆。</div>
+</div>
+<div style="padding:12px 16px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
+<div style="font-size:13px;font-weight:600">第二定律 · 面积速度恒定</div>
+<div style="font-size:12px;color:var(--tx2)">行星与太阳的连线在<strong>相等时间内扫过相等面积</strong>。这解释了为什么行星在近日点跑得快、远日点跑得慢——你可以在上面的模拟中亲眼看到。</div>
+</div>
+<div style="padding:12px 16px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
+<div style="font-size:13px;font-weight:600">第三定律 · 周期-半长轴关系</div>
+<div style="font-size:12px;color:var(--tx2)">T² ∝ a³ —— 轨道周期的平方与半长轴的立方成正比。越远的行星，转一圈越慢。<span class="code-inline">v = √(GM/r)</span> 是圆形轨道的精确解。</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ═══ SECTION 5: WHY AMAZING ═══ -->
+<div class="section">
+<div class="section-hd"><div class="step-num">5</div><h2>为什么说它"颠覆"？</h2></div>
+
+<div class="card">
+<h3>传统方法 vs 辛积分</h3>
+<p>传统轨道模拟用显式欧拉法（课本最常教的方法），但<strong>能量会不断增长</strong>——模拟几圈轨道就螺旋飞走了。而半隐式欧拉和 Velocity Verlet 这种<strong>辛方法 (Symplectic Integrator)</strong> 能保持哈密顿量（能量）在真实值附近振荡百万年不漂移。</p>
+<p style="margin-top:8px">最神奇的是：<strong>代码反而更简单</strong>。半隐式欧拉就比显式欧拉多了一个"先用速度更新位置"的步骤——代码行数一样，顺序一变，天壤之别。</p>
+</div>
+
+<div class="callout callout-good"><span class="ico">💡</span><span><strong>启示：</strong>数值分析中，"更好的方法"往往不是"更复杂的方法"。理解问题的数学结构（这里是哈密顿力学的辛结构），反而能找到更简洁、更稳定、更优雅的解法。这也是为什么物理学家偏爱辛积分——不是因为它复杂，恰恰是因为它<strong>简单且正确</strong>。</span></div>
+</div>
+
+<div class="footer">
+<p style="color:var(--tx4)">基于 B 站「颠覆轨道模拟的神奇代码」· BV12qmdBHEaB</p>
+<p style="margin-top:4px"><a href="https://laskymy.github.io/ai-nav/">AI Center</a> · <a href="https://www.bilibili.com/video/BV12qmdBHEaB/">原视频</a></p>
+</div>
+
+</div><!-- /container -->
+
+<script>
+// ==================== MOUSE GLOW ====================
+const glow=document.getElementById('glowSpot');
+let gx=innerWidth/2,gy=innerHeight/2,tx=gx,ty=gy;
+if(!('ontouchstart' in window)){
+document.addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY});
+(function anim(){
+gx+=(tx-gx)*.05;gy+=(ty-gy)*.05;
+glow.style.background=`radial-gradient(circle 420px at ${gx|0}px ${gy|0}px, rgba(99,102,241,.06),rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)`;
+requestAnimationFrame(anim);
+})();
+}
+
+// Progress bar
+window.addEventListener('scroll',()=>{
+const h=document.documentElement;
+document.getElementById('progressBar').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+});
+
+// ==================== ORBIT SIMULATION ====================
+const Sim = {
+  bodies: [],
+  G: 800,
+  dt: 0.5,
+  method: 'rk4',
+  trailMax: 600,
+  running: true,
+
+  init() {
+    this.canvas = document.getElementById('simCanvas');
+    this.ctx = this.canvas.getContext('2d');
+    this.resize();
+    window.addEventListener('resize', () => this.resize());
+    this.canvas.addEventListener('click', e => this._onClick(e));
+    this.canvas.addEventListener('mousedown', e => this._onDown(e));
+    this.canvas.addEventListener('mousemove', e => this._onMove(e));
+    this.canvas.addEventListener('mouseup', () => this._onUp());
+    this.canvas.addEventListener('touchstart', e => { e.preventDefault(); this._onDown(e.touches[0]); });
+    this.canvas.addEventListener('touchmove', e => { e.preventDefault(); this._onMove(e.touches[0]); });
+    this.canvas.addEventListener('touchend', () => this._onUp());
+
+    // Default: Sun + Earth-like planet
+    this.bodies = [
+      { x:0,y:0, vx:0,vy:0, mass:200, color:'#f59e0b', r:14, trail:[], fixed:true },
+      { x:0,y:-180, vx:1.6,vy:0, mass:2, color:'#6366f1', r:6, trail:[], fixed:false },
+      { x:0,y:-260, vx:1.2,vy:0, mass:1.5, color:'#ec4899', r:5, trail:[], fixed:false },
+    ];
+    this._updateUI();
+    requestAnimationFrame(() => this._loop());
+  },
+
+  resize() {
+    const wrap = document.getElementById('simWrap');
+    const w = wrap.clientWidth;
+    this.W = w;
+    this.H = Math.min(w * 0.65, 500);
+    this.canvas.width = this.W * 2;
+    this.canvas.height = this.H * 2;
+    this.cx = this.W / 2;
+    this.cy = this.H / 2;
+  },
+
+  reset() {
+    this.bodies = [
+      { x:0,y:0, vx:0,vy:0, mass:200, color:'#f59e0b', r:14, trail:[], fixed:true },
+    ];
+    this.addPlanet();
+    this._updateUI();
+  },
+
+  addPlanet() {
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 140 + Math.random() * 180;
+    const x = Math.cos(angle) * dist;
+    const y = Math.sin(angle) * dist;
+    const r = Math.sqrt(x*x + y*y);
+    const vCirc = Math.sqrt(this.G * 200 / r);
+    const vx = -y / r * vCirc;
+    const vy = x / r * vCirc;
+    const colors = ['#6366f1','#ec4899','#06B6D4','#10B981','#a855f7','#f59e0b','#ef4444'];
+    this.bodies.push({
+      x, y, vx, vy, mass: 1 + Math.random() * 3,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      r: 4 + Math.random() * 4, trail: [], fixed: false
+    });
+    this._updateUI();
+  },
+
+  addBinary() {
+    this.bodies = [
+      { x:-60,y:0, vx:0,vy:-1.5, mass:120, color:'#fbbf24', r:11, trail:[], fixed:false },
+      { x:60,y:0, vx:0,vy:1.5, mass:120, color:'#f59e0b', r:11, trail:[], fixed:false },
+    ];
+    this._updateUI();
+  },
+
+  addRetrograde() {
+    const dist = 200;
+    const vCirc = Math.sqrt(this.G * 200 / dist);
+    this.bodies.push({
+      x:dist, y:0, vx:0, vy:-vCirc, mass:2,
+      color:'#ef4444', r:5, trail:[], fixed:false
+    });
+    this._updateUI();
+  },
+
+  setMethod(m, btn) {
+    this.method = m;
+    document.getElementById('simMethod').textContent = m === 'semi' ? '半隐式' : m === 'verlet' ? 'Verlet' : m === 'rk4' ? 'RK4' : '欧拉';
+    document.querySelectorAll('.btn.sm').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  },
+
+  setDT(v) {
+    this.dt = v;
+    document.getElementById('simDT').textContent = v;
+  },
+
+  _computeAcc(body, bodies) {
+    let ax = 0, ay = 0;
+    for (const other of bodies) {
+      if (other === body) continue;
+      const dx = other.x - body.x;
+      const dy = other.y - body.y;
+      const r2 = dx*dx + dy*dy + 1e-4;
+      const r = Math.sqrt(r2);
+      const f = this.G * other.mass / (r2 * r);
+      ax += f * dx;
+      ay += f * dy;
+    }
+    return { ax, ay };
+  },
+
+  _step(bodies) {
+    if (this.method === 'euler') {
+      for (const b of bodies) {
+        if (b.fixed) continue;
+        const { ax, ay } = this._computeAcc(b, bodies);
+        b.x += b.vx * this.dt;
+        b.y += b.vy * this.dt;
+        b.vx += ax * this.dt;
+        b.vy += ay * this.dt;
+      }
+    } else if (this.method === 'semi') {
+      for (const b of bodies) {
+        if (b.fixed) continue;
+        b.x += b.vx * this.dt;
+        b.y += b.vy * this.dt;
+      }
+      const accs = bodies.map(b => b.fixed ? {ax:0,ay:0} : this._computeAcc(b, bodies));
+      for (let i = 0; i < bodies.length; i++) {
+        if (bodies[i].fixed) continue;
+        bodies[i].vx += accs[i].ax * this.dt;
+        bodies[i].vy += accs[i].ay * this.dt;
+      }
+    } else if (this.method === 'verlet') {
+      const accs0 = bodies.map(b => b.fixed ? {ax:0,ay:0} : this._computeAcc(b, bodies));
+      for (let i = 0; i < bodies.length; i++) {
+        if (bodies[i].fixed) continue;
+        bodies[i].x += bodies[i].vx * this.dt + 0.5 * accs0[i].ax * this.dt * this.dt;
+        bodies[i].y += bodies[i].vy * this.dt + 0.5 * accs0[i].ay * this.dt * this.dt;
+      }
+      const accs1 = bodies.map(b => b.fixed ? {ax:0,ay:0} : this._computeAcc(b, bodies));
+      for (let i = 0; i < bodies.length; i++) {
+        if (bodies[i].fixed) continue;
+        bodies[i].vx += 0.5 * (accs0[i].ax + accs1[i].ax) * this.dt;
+        bodies[i].vy += 0.5 * (accs0[i].ay + accs1[i].ay) * this.dt;
+      }
+    } else if (this.method === 'rk4') {
+      const orig = bodies.map(b => ({...b}));
+      const k1v = bodies.map(b => b.fixed ? {ax:0,ay:0} : this._computeAcc(b, bodies));
+      const k1p = bodies.map(b => ({vx:b.vx, vy:b.vy}));
+
+      const mid1 = bodies.map((b,i) => ({...b, x:b.x+0.5*k1p[i].vx*this.dt, y:b.y+0.5*k1p[i].vy*this.dt, vx:b.vx+0.5*k1v[i].ax*this.dt, vy:b.vy+0.5*k1v[i].ay*this.dt}));
+      const k2v = bodies.map((b,i) => b.fixed ? {ax:0,ay:0} : this._computeAcc(mid1[i], mid1));
+      const k2p = mid1.map(b => ({vx:b.vx, vy:b.vy}));
+
+      const mid2 = bodies.map((b,i) => ({...b, x:b.x+0.5*k2p[i].vx*this.dt, y:b.y+0.5*k2p[i].vy*this.dt, vx:b.vx+0.5*k2v[i].ax*this.dt, vy:b.vy+0.5*k2v[i].ay*this.dt}));
+      const k3v = bodies.map((b,i) => b.fixed ? {ax:0,ay:0} : this._computeAcc(mid2[i], mid2));
+      const k3p = mid2.map(b => ({vx:b.vx, vy:b.vy}));
+
+      const end = bodies.map((b,i) => ({...b, x:b.x+k3p[i].vx*this.dt, y:b.y+k3p[i].vy*this.dt, vx:b.vx+k3v[i].ax*this.dt, vy:b.vy+k3v[i].ay*this.dt}));
+      const k4v = bodies.map((b,i) => b.fixed ? {ax:0,ay:0} : this._computeAcc(end[i], end));
+
+      for (let i = 0; i < bodies.length; i++) {
+        if (bodies[i].fixed) continue;
+        bodies[i].x = orig[i].x + (k1p[i].vx + 2*k2p[i].vx + 2*k3p[i].vx + (orig[i].vx + k4v[i].ax*this.dt)) * this.dt / 6;
+        bodies[i].y = orig[i].y + (k1p[i].vy + 2*k2p[i].vy + 2*k3p[i].vy + (orig[i].vy + k4v[i].ay*this.dt)) * this.dt / 6;
+        bodies[i].vx = orig[i].vx + (k1v[i].ax + 2*k2v[i].ax + 2*k3v[i].ax + k4v[i].ax) * this.dt / 6;
+        bodies[i].vy = orig[i].vy + (k1v[i].ay + 2*k2v[i].ay + 2*k3v[i].ay + k4v[i].ay) * this.dt / 6;
+      }
+    }
+
+    for (const b of bodies) {
+      if (!b.fixed) {
+        b.trail.push({x:b.x, y:b.y});
+        if (b.trail.length > this.trailMax) b.trail.shift();
+      }
+    }
+  },
+
+  _loop() {
+    if (this.running) {
+      for (let s = 0; s < 2; s++) this._step(this.bodies);
+      this._updateUI();
+    }
+    this._draw();
+    requestAnimationFrame(() => this._loop());
+  },
+
+  _updateUI() {
+    document.getElementById('simBodies').textContent = this.bodies.length;
+    let ke = 0, pe = 0;
+    const moving = this.bodies.filter(b => !b.fixed);
+    if (moving.length > 0) {
+      for (const b of moving) ke += 0.5 * b.mass * (b.vx*b.vx + b.vy*b.vy);
+      if (ke > 0) {
+        document.getElementById('simEnergy').textContent = '稳定';
+        document.getElementById('simEnergy').style.color = 'var(--a2)';
+      }
+    }
+  },
+
+  _draw() {
+    const ctx = this.ctx;
+    const W = this.canvas.width, H = this.canvas.height;
+    ctx.fillStyle = 'rgba(0,0,0,.25)';
+    ctx.fillRect(0, 0, W, H);
+
+    // Grid
+    ctx.strokeStyle = 'rgba(255,255,255,.02)'; ctx.lineWidth = 1;
+    const gs = 40;
+    for (let x = this.cx*2 % gs; x < W; x += gs) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+    for (let y = this.cy*2 % gs; y < H; y += gs) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+
+    // Trails
+    for (const b of this.bodies) {
+      if (b.trail.length < 2) continue;
+      ctx.strokeStyle = b.color + '22'; ctx.lineWidth = 3;
+      ctx.beginPath();
+      for (let i = 0; i < b.trail.length; i++) {
+        const px = (b.trail[i].x + this.cx) * 2;
+        const py = (b.trail[i].y + this.cy) * 2;
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+    }
+
+    // Bodies
+    for (const b of this.bodies) {
+      const px = (b.x + this.cx) * 2;
+      const py = (b.y + this.cy) * 2;
+
+      // Glow
+      const grd = ctx.createRadialGradient(px, py, b.r * 0.3, px, py, b.r * 4);
+      grd.addColorStop(0, b.color + '44');
+      grd.addColorStop(1, 'transparent');
+      ctx.fillStyle = grd;
+      ctx.beginPath(); ctx.arc(px, py, b.r * 4, 0, Math.PI * 2); ctx.fill();
+
+      // Body
+      const bgrd = ctx.createRadialGradient(px - b.r*0.3, py - b.r*0.3, 0, px, py, b.r);
+      bgrd.addColorStop(0, '#ffffff');
+      bgrd.addColorStop(0.3, b.color);
+      bgrd.addColorStop(1, 'rgba(0,0,0,.5)');
+      ctx.fillStyle = bgrd;
+      ctx.beginPath(); ctx.arc(px, py, b.r, 0, Math.PI * 2); ctx.fill();
+    }
+  },
+
+  // Interaction
+  _dragIdx: -1,
+  _dragVX: 0, _dragVY: 0,
+
+  _findBody(ex, ey) {
+    for (let i = this.bodies.length - 1; i >= 0; i--) {
+      const b = this.bodies[i];
+      const dx = (b.x + this.cx) - ex;
+      const dy = (b.y + this.cy) - ey;
+      if (Math.sqrt(dx*dx + dy*dy) < b.r + 12) return i;
+    }
+    return -1;
+  },
+
+  _onClick(e) {
+    const rect = this.canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    const idx = this._findBody(mx, my);
+    if (idx >= 0 && !this.bodies[idx].fixed) return; // drag, not click
+
+    // Add new planet at click position
+    const x = mx - this.cx;
+    const y = my - this.cy;
+    const r = Math.sqrt(x*x + y*y);
+    const vCirc = Math.sqrt(this.G * 200 / Math.max(r, 10)) * 0.7;
+    const vx = -y / Math.max(r, 1) * vCirc;
+    const vy = x / Math.max(r, 1) * vCirc;
+    const colors = ['#6366f1','#ec4899','#06B6D4','#10B981','#a855f7','#ef4444'];
+    this.bodies.push({
+      x, y, vx, vy, mass: 1 + Math.random() * 3,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      r: 4 + Math.random() * 4, trail: [], fixed: false
+    });
+    this._updateUI();
+  },
+
+  _onDown(e) {
+    const rect = this.canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    this._dragIdx = this._findBody(mx, my);
+    if (this._dragIdx >= 0 && this.bodies[this._dragIdx].fixed) this._dragIdx = -1;
+    if (this._dragIdx >= 0) {
+      this._dragVX = mx;
+      this._dragVY = my;
+    }
+  },
+
+  _onMove(e) {
+    if (this._dragIdx < 0) return;
+    const rect = this.canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    const b = this.bodies[this._dragIdx];
+    b.vx = (mx - this._dragVX) * 0.05;
+    b.vy = (my - this._dragVY) * 0.05;
+  },
+
+  _onUp() { this._dragIdx = -1; }
+};
+
+Sim.init();
+
+// ==================== MOBILE GYRO ====================
+(function(){
+if(!('ontouchstart' in window)&&!(navigator.maxTouchPoints>0))return;
+if(!window.DeviceOrientationEvent)return;
+const c=document.querySelector('.container');
+if(!c)return;
+let beta=0,gamma=0,tb=0,tg=0,active=false;
+const MAX=2.5;
+function lerp(){
+beta+=(tb-beta)*.04;gamma+=(tg-gamma)*.04;
+c.style.transform='perspective(2400px) rotateX('+(-beta).toFixed(2)+'deg) rotateY('+gamma.toFixed(2)+'deg)';
+if(active)requestAnimationFrame(lerp);
+}
+function handle(e){
+if(e.beta===null)return;
+tb=Math.max(-MAX,Math.min(MAX,(e.beta||0)*.07));
+tg=Math.max(-MAX,Math.min(MAX,(e.gamma||0)*.07));
+if(!active){active=true;lerp();}
+}
+if(typeof DeviceOrientationEvent.requestPermission==='function'){
+document.addEventListener('touchstart',function ask(){
+document.removeEventListener('touchstart',ask);
+DeviceOrientationEvent.requestPermission()
+.then(r=>{if(r==='granted')window.addEventListener('deviceorientation',handle);})
+.catch(()=>{});
+},{once:true});
+}else{window.addEventListener('deviceorientation',handle);}
+})();
+</script>
+</body>
+</html>
