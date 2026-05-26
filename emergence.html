@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>涌现复杂性 · 简单规则构建复杂宇宙</title>
+<link rel="icon" href="./icon.svg">
+<style>
+:root{
+--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);
+--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;
+--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.45);--tx3:rgba(255,255,255,.30);--tx4:rgba(255,255,255,.18);
+--r:24px;--rs:14px;
+--ease:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.56,.64,1);
+}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+font-family:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;
+background:var(--bg);color:var(--tx);font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased;letter-spacing:-.01em;
+}
+::-webkit-scrollbar{width:2px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.04);border-radius:1px}
+::selection{background:rgba(99,102,241,.3)}
+
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,#6366f1,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,#10B981,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,#06b6d4,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(99,102,241,.06),rgba(16,185,129,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--a2),var(--a1),var(--pink),var(--cyan));z-index:100;transition:width .3s;border-radius:0 2px 2px 0}
+
+.container{max-width:900px;margin:0 auto;padding:32px 24px 120px;position:relative;z-index:1}
+
+.header{position:sticky;top:0;z-index:50;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);padding:10px 20px;border-radius:0 0 22px 22px;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 40px rgba(16,185,129,.1),0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04);display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.header-logo{font-size:16px;font-weight:700;letter-spacing:-.02em;background:linear-gradient(135deg,var(--a2),var(--a1),var(--cyan));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:tFlow 6s ease-in-out infinite}
+.header-back{color:var(--tx3);text-decoration:none;font-size:13px;transition:color .2s}
+.header-back:hover{color:var(--tx)}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+
+.grad-text{background:linear-gradient(135deg,var(--a2),var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:tFlow 6s ease-in-out infinite}
+
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--r);padding:20px 24px;margin-bottom:14px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent)}
+.card:hover{border-color:rgba(16,185,129,.2);box-shadow:0 0 60px rgba(16,185,129,.08),0 16px 48px rgba(0,0,0,.2)}
+.card h3{font-size:15px;font-weight:600;margin-bottom:6px}
+.card p{font-size:13px;color:var(--tx2);margin-bottom:6px}
+
+.section{margin:32px 0}
+.section-hd{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.step-num{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0;background:linear-gradient(135deg,var(--a2),var(--cyan));color:#fff}
+.section-hd h2{font-size:18px;font-weight:700}
+
+.canvas-wrap{position:relative;background:rgba(0,0,0,.35);border-radius:16px;overflow:hidden;margin:12px 0;cursor:crosshair}
+.canvas-wrap canvas{display:block;width:100%}
+.sim-legend{display:flex;gap:16px;flex-wrap:wrap;padding:8px 12px;font-size:11px;color:var(--tx3)}
+.sim-legend .dot{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:4px}
+.sim-legend .dot.alive{background:var(--a2)}
+.sim-legend .dot.dead{background:rgba(255,255,255,.06)}
+
+.btn{padding:8px 16px;border-radius:12px;border:1px solid rgba(16,185,129,.3);background:rgba(16,185,129,.12);color:#fff;font-size:12px;cursor:pointer;font-family:inherit;font-weight:500;transition:all .25s var(--ease);white-space:nowrap}
+.btn:hover{background:rgba(16,185,129,.25);box-shadow:0 0 16px rgba(16,185,129,.12)}
+.btn:active{transform:scale(.96)}
+.btn.active{background:rgba(16,185,129,.3);border-color:rgba(16,185,129,.5)}
+.btn.sm{font-size:10px;padding:5px 10px}
+.btn.accent{border-color:rgba(99,102,241,.3);background:rgba(99,102,241,.12)}
+.btn.accent:hover{background:rgba(99,102,241,.25)}
+.btn.accent.active{background:rgba(99,102,241,.3);border-color:rgba(99,102,241,.5)}
+
+.ca-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+
+.stat-row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.stat-box{flex:1;min-width:70px;padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);text-align:center}
+.stat-box .val{font-size:clamp(16px,3vw,22px);font-weight:700}
+.stat-box .lbl{font-size:10px;color:var(--tx3);margin-top:2px}
+
+.callout{padding:14px 18px;border-radius:14px;margin:12px 0;font-size:13px;display:flex;gap:10px;align-items:flex-start}
+.callout-tip{background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.12);color:#67e8f9}
+.callout-good{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.12);color:#34d399}
+.callout .ico{font-size:18px;flex-shrink:0}
+
+.class-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.class-card{padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);text-align:center;cursor:pointer;transition:all .3s var(--ease)}
+.class-card:hover{border-color:rgba(16,185,129,.3);transform:translateY(-2px)}
+.class-card.sel{border-color:rgba(16,185,129,.5);box-shadow:0 0 30px rgba(16,185,129,.1)}
+.class-card .cname{font-weight:600;font-size:14px;margin-bottom:4px}
+.class-card .cdesc{font-size:11px;color:var(--tx3)}
+
+.footer{text-align:center;padding:40px 0 20px;color:var(--tx3);font-size:12px}
+.footer a{color:var(--tx2);text-decoration:none}
+
+@media(max-width:768px){
+.container{padding:12px 12px 100px}
+.card{padding:16px;border-radius:18px}
+.section-hd h2{font-size:16px}
+.step-num{width:30px;height:30px;font-size:13px}
+.class-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:480px){
+.container{padding:8px 8px 110px}
+.card{padding:12px;border-radius:14px}
+.class-grid{grid-template-columns:1fr}
+.stat-box{padding:8px 10px;min-width:55px}
+}
+</style>
+</head>
+<body>
+
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot" id="glowSpot"></div>
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="container">
+
+<div class="header">
+<a href="https://laskymy.github.io/ai-nav/" class="header-back">AI Center</a><span style="color:var(--tx4)">/</span>
+<span class="header-logo">涌现复杂性 · 简单→复杂</span>
+</div>
+
+<!-- Hero -->
+<div style="text-align:center;padding:20px 0 40px">
+<h1 class="grad-text" style="font-size:clamp(22px,5vw,34px);font-weight:800;margin-bottom:8px">涌现：简单规则<br>构建复杂宇宙</h1>
+<p style="font-size:14px;color:var(--tx2);max-width:560px;margin:0 auto 10px">一只蚂蚁很笨，一群蚂蚁能建城。水分子的规则只有几条，却能组合出雪花的无穷形态。这就是<strong>涌现</strong>——简单规则的指数级组合爆炸。</p>
+<p style="font-size:11px;color:var(--tx3)">基于 Emergent Garden「涌现复杂性」· 互动教学</p>
+</div>
+
+<!-- ═══ SECTION 1: CONWAY ═══ -->
+<div class="section">
+<div class="section-hd"><div class="step-num">1</div><h2>康威生命游戏 · 亲手画</h2></div>
+
+<div class="card">
+<h3>三条规则，无限复杂</h3>
+<p><strong>生</strong>：死细胞周围恰好3个活细胞→复活 &nbsp;|&nbsp; <strong>存</strong>：活细胞周围2或3个活细胞→存活 &nbsp;|&nbsp; <strong>亡</strong>：其余→死亡</p>
+
+<div class="stat-row">
+<div class="stat-box"><div class="val" id="golGen" style="color:var(--a2)">0</div><div class="lbl">世代</div></div>
+<div class="stat-box"><div class="val" id="golPop" style="color:var(--cyan)">0</div><div class="lbl">活细胞数</div></div>
+<div class="stat-box"><div class="val" id="golFPS" style="color:var(--amber)">10</div><div class="lbl">速度(代/秒)</div></div>
+</div>
+
+<div class="canvas-wrap" id="golWrap"><canvas id="golCanvas"></canvas></div>
+
+<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+<button class="btn active" id="golPlayBtn" onclick="GOL.toggle()">▶ 播放</button>
+<button class="btn" onclick="GOL.step()">单步</button>
+<button class="btn" onclick="GOL.clear()">清空</button>
+<button class="btn" onclick="GOL.random(30)">随机30%</button>
+<button class="btn" onclick="GOL.random(50)">随机50%</button>
+<button class="btn accent" onclick="GOL.preset('glider')">滑翔机</button>
+<button class="btn accent" onclick="GOL.preset('gosper')">Gosper机枪</button>
+<button class="btn accent" onclick="GOL.preset('pulsar')">脉冲星</button>
+</div>
+<div style="display:flex;gap:6px;margin-top:6px">
+<span style="font-size:11px;color:var(--tx3)">速度:</span>
+<button class="btn sm active" id="spdBtn10" onclick="GOL.setSpeed(10,this)">10</button>
+<button class="btn sm" onclick="GOL.setSpeed(20,this)">20</button>
+<button class="btn sm" onclick="GOL.setSpeed(40,this)">40</button>
+</div>
+<p style="font-size:10px;color:var(--tx3);text-align:center;margin-top:6px">鼠标拖拽绘制细胞 &nbsp;|&nbsp; 只有三条规则，却能产生滑翔机、机枪、甚至图灵完备的计算</p>
+</div>
+</div>
+
+<!-- ═══ SECTION 2: 1D CELLULAR AUTOMATA ═══ -->
+<div class="section">
+<div class="section-hd"><div class="step-num">2</div><h2>一维元胞自动机 · Rule 30</h2></div>
+
+<div class="card">
+<h3>最简涌现——一条线上相邻三格决定下一行</h3>
+<p>规则数字的二进制编码了8种邻域状态的结果。比如 <strong>Rule 30 = 00011110</strong>——极其简单的规则，却产生<strong>不可预测的混沌图案</strong>，被用于随机数生成器。</p>
+
+<div class="canvas-wrap" id="caWrap"><canvas id="caCanvas"></canvas></div>
+
+<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+<span style="font-size:11px;color:var(--tx3)">规则:</span>
+<button class="btn sm active" id="ruleBtn30" onclick="CA.setRule(30,this)">Rule 30</button>
+<button class="btn sm" onclick="CA.setRule(90,this)">Rule 90</button>
+<button class="btn sm" onclick="CA.setRule(110,this)">Rule 110</button>
+<button class="btn sm" onclick="CA.setRule(184,this)">Rule 184</button>
+<button class="btn sm" onclick="CA.setRule(54,this)">Rule 54</button>
+<span style="margin-left:8px;font-size:11px;color:var(--tx3)">初始:</span>
+<button class="btn" onclick="CA.initSingle()">单点</button>
+<button class="btn" onclick="CA.initRandom()">随机</button>
+<button class="btn" onclick="CA.restart()">重新开始</button>
+</div>
+</div>
+</div>
+
+<!-- ═══ SECTION 3: WOLFRAM'S 4 CLASSES ═══ -->
+<div class="section">
+<div class="section-hd"><div class="step-num">3</div><h2>沃尔夫勒姆四大分类</h2></div>
+
+<div class="card">
+<h3>斯蒂芬·沃尔夫勒姆将元胞自动机的所有行为归为四类</h3>
+<p>点击卡片查看对应规则的演化图案。只有<strong>第四类</strong>能产生真正的复杂涌现行为——生命、意识、经济都归于此类。</p>
+
+<div class="class-grid">
+<div class="class-card" onclick="CA.setRule(250,this)" data-class="1">
+<div class="cname" style="color:var(--tx3)">第1类 · 均匀死寂</div>
+<div class="cdesc">迅速收敛到全同状态<br>如 Rule 250<br>棋格 → 全白</div>
+</div>
+<div class="class-card" onclick="CA.setRule(108,this)" data-class="2">
+<div class="cname" style="color:var(--amber)">第2类 · 周期循环</div>
+<div class="cdesc">形成稳定周期结构<br>如 Rule 108<br>固定或振荡图案</div>
+</div>
+<div class="class-card" onclick="CA.setRule(30,this)" data-class="3">
+<div class="cname" style="color:var(--a3)">第3类 · 混沌随机</div>
+<div class="cdesc">产生不可预测的混沌<br>如 Rule 30<br>伪随机数生成器</div>
+</div>
+<div class="class-card sel" onclick="CA.setRule(110,this)" data-class="4">
+<div class="cname" style="color:var(--a2)">第4类 · 复杂涌现</div>
+<div class="cdesc">局部结构+长程关联<br>如 Rule 110 (图灵完备!)<br>生命、意识、雪花</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ═══ SECTION 4: EMERGENCE FORMULA ═══ -->
+<div class="section">
+<div class="section-hd"><div class="step-num">4</div><h2>涌现公式 · 指数级组合爆炸</h2></div>
+
+<div class="card">
+<h3>涌现 = 构建块 + 规则 → 指数级可能性</h3>
+<p>假如你有 <strong>N 种构建块</strong>，每条规则定义两个块的交互方式。可能的组合数 = <strong>2^(N²)</strong>——这个数字以惊人速度增长：</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:12px 0;text-align:center">
+<div style="padding:12px;border-radius:12px;background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.1)">
+<div style="font-size:22px;font-weight:800;color:var(--a1)">N=2</div><div style="font-size:12px;color:var(--tx2)">2^(4) = 16</div><div style="font-size:10px;color:var(--tx3)">种组合</div>
+</div>
+<div style="padding:12px;border-radius:12px;background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.1)">
+<div style="font-size:22px;font-weight:800;color:var(--cyan)">N=4</div><div style="font-size:12px;color:var(--tx2)">2^(16) = 65,536</div><div style="font-size:10px;color:var(--tx3)">种组合</div>
+</div>
+<div style="padding:12px;border-radius:12px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.1)">
+<div style="font-size:22px;font-weight:800;color:var(--a2)">N=8</div><div style="font-size:12px;color:var(--tx2)">2^(64) ≈ 1.8×10^19</div><div style="font-size:10px;color:var(--tx3)">种组合</div>
+</div>
+<div style="padding:12px;border-radius:12px;background:rgba(236,72,153,.06);border:1px solid rgba(236,72,153,.1)">
+<div style="font-size:22px;font-weight:800;color:var(--pink)">N=10</div><div style="font-size:12px;color:var(--tx2)">2^(100) ≈ 宇宙原子数</div><div style="font-size:10px;color:var(--tx3)">种组合</div>
+</div>
+</div>
+<p>这就是为什么<strong>简单规则 + 足够多的构建块 = 无穷无尽的涌现可能性</strong>。生命从40亿年前的几条化学规则开始，涌现出了整个生物圈。107个化学元素，几条物理定律，涌现出了你正盯着屏幕的<strong>意识</strong>。</p>
+</div>
+</div>
+
+<!-- ═══ SECTION 5: COMPUTATIONAL IRREDUCIBILITY ═══ -->
+<div class="section">
+<div class="section-hd"><div class="step-num">5</div><h2>计算不可约性</h2></div>
+
+<div class="card">
+<h3>无法走捷径——只能一步步模拟</h3>
+<p>对于第4类（复杂涌现）系统，<strong>不存在数学公式可以直接预测未来状态</strong>。你必须一步一步地模拟整个演化过程。这就是"计算不可约性"(Computational Irreducibility)。</p>
+
+<div class="callout callout-tip"><span class="ico">🔑</span><span><strong>核心洞察：</strong>如果存在一个公式可以跳过步骤直接预测第N代的结果，那就意味着涌现系统不产生真正的新信息——它只是"展开"已知信息。但第4类系统<strong>确实产生新信息</strong>。你看不到滑翔机的未来，除非你让规则运行起来。</span></div>
+
+<div class="callout callout-good"><span class="ico">💡</span><span><strong>蝴蝶效应由此而来：</strong>初始条件的微小差异，经过足够多步的不可约计算后，会导致完全不同的结果。这不是混沌独有——任何第3、第4类涌现系统都有这个特性。</span></div>
+</div>
+</div>
+
+<!-- ═══ SECTION 6: REAL WORLD ═══ -->
+<div class="section">
+<div class="section-hd"><div class="step-num">6</div><h2>涌现的培育 · 现实中的例子</h2></div>
+
+<div class="card">
+<h3>你不需要设计复杂性——你只需要设计规则</h3>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="padding:12px 16px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
+<div style="font-size:13px;font-weight:600">蚁群算法</div>
+<div style="font-size:12px;color:var(--tx2)">每只蚂蚁只遵循"沿信息素走+留下信息素"两条规则→涌现出整个蚁群的最优觅食路径。已应用于物流、网络路由。</div>
+</div>
+<div style="padding:12px 16px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
+<div style="font-size:13px;font-weight:600">神经网络</div>
+<div style="font-size:12px;color:var(--tx2)">每个神经元只是一个简单的阈值开关→数十亿个连在一起涌现出GPT-4的推理能力。你正在和涌现对话。</div>
+</div>
+<div style="padding:12px 16px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
+<div style="font-size:13px;font-weight:600">市场经济</div>
+<div style="font-size:12px;color:var(--tx2)">每个人只追求自身利益最大化→涌现出价格信号、供需平衡、整个全球供应链。没有任何中央计划者设计它。</div>
+</div>
+<div style="padding:12px 16px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
+<div style="font-size:13px;font-weight:600">雪花</div>
+<div style="font-size:12px;color:var(--tx2)">水分子只有氢键+六边形晶体结构两条规则→没有两片相同的雪花。每一片都是规则穿过亿万个分子后的独特涌现。</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="footer">
+<p style="color:var(--tx4)">基于 B 站「涌现复杂性：探索简单组合成复杂的奇妙现象」· Emergent Garden</p>
+<p style="margin-top:4px"><a href="https://laskymy.github.io/ai-nav/">AI Center</a> · <a href="https://www.bilibili.com/video/BV1qQUUBQEBH/">原视频</a></p>
+</div>
+
+</div><!-- /container -->
+
+<script>
+// ==================== MOUSE GLOW ====================
+const glow=document.getElementById('glowSpot');
+let gx=innerWidth/2,gy=innerHeight/2,tx=gx,ty=gy;
+if(!('ontouchstart' in window)){
+document.addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY});
+(function anim(){
+gx+=(tx-gx)*.05;gy+=(ty-gy)*.05;
+glow.style.background=`radial-gradient(circle 420px at ${gx|0}px ${gy|0}px, rgba(99,102,241,.06),rgba(16,185,129,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)`;
+requestAnimationFrame(anim);
+})();
+}
+
+// Progress bar
+window.addEventListener('scroll',()=>{
+const h=document.documentElement;
+document.getElementById('progressBar').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+});
+
+// ==================== GAME OF LIFE ====================
+const GOL = {
+  cols:80, rows:50, cellSize:10, speed:10, running:false, gen:0,
+  grid:null, next:null, timer:null,
+
+  init(){
+    this.canvas=document.getElementById('golCanvas');
+    this.ctx=this.canvas.getContext('2d');
+    this.grid=new Uint8Array(this.cols*this.rows);
+    this.next=new Uint8Array(this.cols*this.rows);
+    this._resize();
+    window.addEventListener('resize',()=>this._resize());
+    this._setupMouse();
+    this.preset('glider');
+    this._draw();
+  },
+
+  _resize(){
+    const wrap=document.getElementById('golWrap');
+    const w=wrap.clientWidth;
+    this.cellSize=Math.max(4,Math.floor(w/this.cols));
+    this.canvas.width=this.cols*this.cellSize;
+    this.canvas.height=this.rows*this.cellSize;
+    this.canvas.style.width=this.cols*this.cellSize+'px';
+    this.canvas.style.height=this.rows*this.cellSize+'px';
+    this._draw();
+  },
+
+  idx(c,r){return r*this.cols+c},
+
+  toggle(){
+    this.running=!this.running;
+    const btn=document.getElementById('golPlayBtn');
+    btn.textContent=this.running?'⏸ 暂停':'▶ 播放';
+    if(this.running)this._run();
+    else if(this.timer)clearTimeout(this.timer);
+  },
+
+  step(){
+    for(let i=0;i<this.grid.length;i++){
+      const c=i%this.cols,r=Math.floor(i/this.cols);
+      let n=0;
+      for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){
+        if(dr===0&&dc===0)continue;
+        const nc=c+dc,nr=r+dr;
+        if(nc>=0&&nc<this.cols&&nr>=0&&nr<this.rows)n+=this.grid[this.idx(nc,nr)];
+      }
+      this.next[i]=n===3||(this.grid[i]&&n===2)?1:0;
+    }
+    [this.grid,this.next]=[this.next,this.grid];
+    this.gen++;
+    this._updateUI();
+    this._draw();
+  },
+
+  _run(){
+    if(!this.running)return;
+    const start=performance.now();
+    this.step();
+    const elapsed=performance.now()-start;
+    const delay=Math.max(10,1000/this.speed-elapsed);
+    this.timer=setTimeout(()=>this._run(),delay);
+  },
+
+  clear(){
+    this.running=false;
+    document.getElementById('golPlayBtn').textContent='▶ 播放';
+    if(this.timer)clearTimeout(this.timer);
+    this.grid.fill(0);this.gen=0;
+    this._updateUI();
+    this._draw();
+  },
+
+  random(pct){
+    this.clear();
+    for(let i=0;i<this.grid.length;i++)this.grid[i]=Math.random()*100<pct?1:0;
+    this._draw();
+  },
+
+  preset(name){
+    this.clear();
+    const put=(x,y)=>{
+      const r=Math.floor(this.rows/2)+y;
+      const c=Math.floor(this.cols/2)+x;
+      if(c>=0&&c<this.cols&&r>=0&&r<this.rows)this.grid[this.idx(c,r)]=1;
+    };
+    if(name==='glider'){put(0,0);put(1,0);put(2,0);put(2,-1);put(1,-2);}
+    else if(name==='gosper'){
+      // Gosper glider gun
+      const pts=[[0,0],[1,0],[0,1],[2,0],[2,-1],[2,-2],[12,0],[12,-1],[12,1],[13,-4],[14,-4],[13,-2],[14,-2],[13,2],[14,2],[15,3],[15,-1],[16,-3],[16,1],[17,1],[17,-3],[17,-2],[17,-1],[18,0],[19,0],[20,0],[22,0],[22,-1],[22,-2],[23,0],[23,-1],[23,-2],[24,-3],[24,1],[26,1],[26,-1],[26,-2],[26,-3],[36,-1],[36,-2],[37,-1],[37,-2]];
+      for(const [x,y] of pts)put(x,y);
+    }
+    else if(name==='pulsar'){
+      for(let i=-6;i<=6;i++)for(let j=-6;j<=6;j++){
+        const dx=Math.abs(i),dy=Math.abs(j);
+        if((dx===2||dx===4||dx===6)&&dy!==0&&dy!==6)put(i,j);
+        if((dy===2||dy===4||dy===6)&&dx!==0&&dx!==6)put(i,j);
+      }
+    }
+    this._draw();
+    this._updateUI();
+  },
+
+  setSpeed(v,btn){
+    this.speed=v;
+    document.getElementById('golFPS').textContent=v;
+    document.querySelectorAll('#golWrap+.btn.sm').forEach(b=>b.classList.remove('active'));
+    if(btn)btn.classList.add('active');
+  },
+
+  _updateUI(){
+    document.getElementById('golGen').textContent=this.gen;
+    document.getElementById('golPop').textContent=this.grid.reduce((a,b)=>a+b,0);
+  },
+
+  _draw(){
+    const ctx=this.ctx,W=this.canvas.width,H=this.canvas.height,s=this.cellSize;
+    ctx.fillStyle='#0a0a0f';ctx.fillRect(0,0,W,H);
+    for(let i=0;i<this.grid.length;i++){
+      if(!this.grid[i])continue;
+      const c=i%this.cols,r=Math.floor(i/this.cols);
+      ctx.fillStyle='#10B981';
+      ctx.shadowColor='rgba(16,185,129,.5)';ctx.shadowBlur=4;
+      ctx.fillRect(c*s+1,r*s+1,s-1,s-1);
+      ctx.shadowBlur=0;
+    }
+    // Grid lines
+    ctx.strokeStyle='rgba(255,255,255,.02)';ctx.lineWidth=.5;
+    for(let c=0;c<=this.cols;c++){ctx.beginPath();ctx.moveTo(c*s,0);ctx.lineTo(c*s,H);ctx.stroke();}
+    for(let r=0;r<=this.rows;r++){ctx.beginPath();ctx.moveTo(0,r*s);ctx.lineTo(W,r*s);ctx.stroke();}
+  },
+
+  // Mouse drawing
+  _mouseDown:false,
+  _setupMouse(){
+    this.canvas.addEventListener('mousedown',e=>{this._mouseDown=true;this._paint(e);});
+    this.canvas.addEventListener('mousemove',e=>{if(this._mouseDown)this._paint(e);});
+    this.canvas.addEventListener('mouseup',()=>this._mouseDown=false);
+    this.canvas.addEventListener('mouseleave',()=>this._mouseDown=false);
+    this.canvas.addEventListener('touchstart',e=>{e.preventDefault();this._mouseDown=true;this._paint(e.touches[0]);});
+    this.canvas.addEventListener('touchmove',e=>{e.preventDefault();if(this._mouseDown)this._paint(e.touches[0]);});
+    this.canvas.addEventListener('touchend',()=>this._mouseDown=false);
+  },
+
+  _paint(e){
+    const rect=this.canvas.getBoundingClientRect();
+    const c=Math.floor((e.clientX-rect.left)/this.cellSize);
+    const r=Math.floor((e.clientY-rect.top)/this.cellSize);
+    if(c>=0&&c<this.cols&&r>=0&&r<this.rows){
+      // Draw 3x3 brush
+      for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){
+        const nc=c+dc,nr=r+dr;
+        if(nc>=0&&nc<this.cols&&nr>=0&&nr<this.rows)this.grid[this.idx(nc,nr)]=1;
+      }
+      this._draw();
+      this._updateUI();
+    }
+  }
+};
+GOL.init();
+
+// ==================== 1D CELLULAR AUTOMATA ====================
+const CA = {
+  cols:200, rows:80, cellSize:3,
+  rule:30, grid:null, row:0,
+
+  init(){
+    this.canvas=document.getElementById('caCanvas');
+    this.ctx=this.canvas.getContext('2d');
+    this.grid=new Uint8Array(this.cols*this.rows);
+    this._resize();
+    window.addEventListener('resize',()=>this._resize());
+    this.initSingle();
+  },
+
+  _resize(){
+    const wrap=document.getElementById('caWrap');
+    this.cellSize=Math.max(1,Math.floor(wrap.clientWidth/this.cols));
+    this.canvas.width=this.cols*this.cellSize;
+    this.canvas.height=this.rows*this.cellSize;
+    this.canvas.style.width=this.cols*this.cellSize+'px';
+    this.canvas.style.height=this.rows*this.cellSize+'px';
+  },
+
+  initSingle(){
+    this.grid.fill(0);
+    this.grid[Math.floor(this.cols/2)]=1;
+    this.row=1;
+    this._evolveTo(this.rows);
+    this._draw();
+  },
+
+  initRandom(){
+    this.grid.fill(0);
+    for(let c=0;c<this.cols;c++)this.grid[c]=Math.random()>.5?1:0;
+    this.row=1;
+    this._evolveTo(this.rows);
+    this._draw();
+  },
+
+  restart(){
+    if(this.row===1)this.initSingle();
+    else this.initRandom();
+  },
+
+  setRule(r,btn){
+    this.rule=r;
+    // Update class grid selection
+    document.querySelectorAll('.class-card').forEach(el=>el.classList.remove('sel'));
+    const classEl=document.querySelector(`[data-class]`);
+    this._recalc();
+    this._draw();
+  },
+
+  _recalc(){
+    if(this.row<=1)this.initSingle();
+    else this.initRandom();
+  },
+
+  _evolveTo(target){
+    for(;this.row<target;this.row++){
+      const prev=(this.row-1)*this.cols;
+      const cur=this.row*this.cols;
+      for(let c=0;c<this.cols;c++){
+        let pat=0;
+        for(let dc=-1;dc<=1;dc++){
+          const nc=c+dc;
+          if(nc>=0&&nc<this.cols)pat=(pat<<1)|this.grid[prev+nc];
+          else pat=(pat<<1)|0;
+        }
+        this.grid[cur+c]=(this.rule>>pat)&1;
+      }
+    }
+  },
+
+  _draw(){
+    const ctx=this.ctx,W=this.canvas.width,H=this.canvas.height,s=this.cellSize;
+    ctx.fillStyle='#0a0a0f';ctx.fillRect(0,0,W,H);
+    for(let r=0;r<this.row;r++){
+      for(let c=0;c<this.cols;c++){
+        if(this.grid[r*this.cols+c]){
+          // Color gradient from top (cyan) to bottom (purple)
+          const t=r/this.rows;
+          const R=Math.round(6+t*99);
+          const G=Math.round(182-t*80);
+          const B=Math.round(212-t*100);
+          ctx.fillStyle=`rgb(${R},${G},${B})`;
+          ctx.fillRect(c*s+.5,r*s+.5,s-.5,s-.5);
+        }
+      }
+    }
+  }
+};
+CA.init();
+
+// ==================== MOBILE GYRO ====================
+(function(){
+if(!('ontouchstart' in window)&&!(navigator.maxTouchPoints>0))return;
+if(!window.DeviceOrientationEvent)return;
+const c=document.querySelector('.container');
+if(!c)return;
+let beta=0,gamma=0,tb=0,tg=0,active=false;
+const MAX=2.5;
+function lerp(){
+beta+=(tb-beta)*.04;gamma+=(tg-gamma)*.04;
+c.style.transform='perspective(2400px) rotateX('+(-beta).toFixed(2)+'deg) rotateY('+gamma.toFixed(2)+'deg)';
+if(active)requestAnimationFrame(lerp);
+}
+function handle(e){
+if(e.beta===null)return;
+tb=Math.max(-MAX,Math.min(MAX,(e.beta||0)*.07));
+tg=Math.max(-MAX,Math.min(MAX,(e.gamma||0)*.07));
+if(!active){active=true;lerp();}
+}
+if(typeof DeviceOrientationEvent.requestPermission==='function'){
+document.addEventListener('touchstart',function ask(){
+document.removeEventListener('touchstart',ask);
+DeviceOrientationEvent.requestPermission()
+.then(r=>{if(r==='granted')window.addEventListener('deviceorientation',handle);})
+.catch(()=>{});
+},{once:true});
+}else{window.addEventListener('deviceorientation',handle);}
+})();
+</script>
+</body>
+</html>
