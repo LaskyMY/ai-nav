@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>大数定律 · 概率学互动教学</title>
+<link rel="icon" href="./icon.svg">
+<style>
+:root{
+--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);
+--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;
+--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.45);--tx3:rgba(255,255,255,.30);--tx4:rgba(255,255,255,.18);
+--r:24px;--rs:14px;
+--ease:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.56,.64,1);
+}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+font-family:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;
+background:var(--bg);color:var(--tx);font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased;letter-spacing:-.01em;
+}
+::-webkit-scrollbar{width:2px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.04);border-radius:1px}
+::selection{background:rgba(99,102,241,.3)}
+
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,#6366f1,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,#ec4899,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,#06b6d4,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(99,102,241,.06),rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--a1),var(--pink),var(--cyan));z-index:100;transition:width .3s;border-radius:0 2px 2px 0}
+
+.container{max-width:900px;margin:0 auto;padding:32px 24px 120px;position:relative;z-index:1}
+
+.header{position:sticky;top:0;z-index:50;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);padding:10px 20px;border-radius:0 0 22px 22px;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 40px rgba(99,102,241,.1),0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04);display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.header-logo{font-size:16px;font-weight:700;letter-spacing:-.02em;background:linear-gradient(135deg,var(--a1),var(--pink),var(--cyan));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:tFlow 6s ease-in-out infinite}
+.header-back{color:var(--tx3);text-decoration:none;font-size:13px;transition:color .2s}
+.header-back:hover{color:var(--tx)}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+
+.grad-text{background:linear-gradient(135deg,var(--a1),var(--pink),var(--cyan),var(--a2));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:tFlow 6s ease-in-out infinite}
+
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--r);padding:24px;margin-bottom:14px;position:relative;overflow:hidden;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent)}
+.card:hover{border-color:rgba(99,102,241,.2);box-shadow:0 0 60px rgba(99,102,241,.08),0 16px 48px rgba(0,0,0,.2)}
+.card h3{font-size:16px;font-weight:600;margin-bottom:8px}
+.card p{font-size:13.5px;color:var(--tx2);margin-bottom:8px}
+
+/* Section */
+.section{margin:32px 0}
+.section-hd{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.step-num{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0;background:linear-gradient(135deg,var(--a1),var(--pink));color:#fff}
+.section-hd h2{font-size:18px;font-weight:700}
+
+/* Canvas containers */
+.canvas-wrap{position:relative;background:rgba(0,0,0,.2);border-radius:14px;overflow:hidden;margin:12px 0}
+.canvas-wrap canvas{display:block;width:100%;height:100%}
+
+/* Stats row */
+.stat-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.stat-box{flex:1;min-width:80px;padding:12px 16px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);text-align:center}
+.stat-box .val{font-size:clamp(18px,4vw,28px);font-weight:700}
+.stat-box .lbl{font-size:11px;color:var(--tx3);margin-top:2px}
+
+/* Buttons */
+.btn{padding:10px 20px;border-radius:14px;border:1px solid rgba(99,102,241,.3);background:rgba(99,102,241,.15);color:#fff;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;transition:all .25s var(--ease);white-space:nowrap}
+.btn:hover{background:rgba(99,102,241,.25);box-shadow:0 0 20px rgba(99,102,241,.15)}
+.btn:active{transform:scale(.96)}
+.btn.danger{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.25)}
+.btn.success{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.25)}
+
+/* Bar chart */
+.bar-chart{display:flex;align-items:flex-end;gap:2px;height:180px;padding:0 4px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0}
+.bar-fill{width:100%;border-radius:4px 4px 0 0;transition:height .4s var(--spring);min-height:2px}
+.bar-label{font-size:10px;color:var(--tx3)}
+.bar-real .bar-fill{background:linear-gradient(180deg,var(--a2),rgba(16,185,129,.3))}
+.bar-fake .bar-fill{background:linear-gradient(180deg,var(--a3),rgba(239,68,68,.3))}
+
+/* Benford chart */
+.benford-chart{display:flex;align-items:flex-end;gap:3px;height:200px;padding:0 4px}
+.benford-bar{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0}
+.benford-fill{width:100%;border-radius:4px 4px 0 0;transition:height .6s var(--spring)}
+.benford-theory .benford-fill{background:linear-gradient(180deg,var(--a1),rgba(99,102,241,.3))}
+.benford-real .benford-fill{background:linear-gradient(180deg,var(--cyan),rgba(6,182,212,.3))}
+
+/* Animated dots */
+@keyframes dotPulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
+.dot-pulse{animation:dotPulse 1s ease-in-out infinite}
+
+/* Number ticker */
+@keyframes tickIn{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
+.tick{animation:tickIn .3s var(--ease)}
+
+/* Callout */
+.callout{padding:14px 18px;border-radius:14px;margin:12px 0;font-size:13px;display:flex;gap:10px;align-items:flex-start;line-height:1.5}
+.callout-tip{background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.12);color:#67e8f9}
+.callout-warn{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.12);color:#fbbf24}
+.callout-good{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.12);color:#34d399}
+.callout .ico{font-size:18px;flex-shrink:0}
+
+/* Game area */
+.game-area{padding:20px;border-radius:16px;background:rgba(0,0,0,.15);border:1px dashed rgba(255,255,255,.08)}
+.game-input{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.game-input input{flex:1;min-width:100px;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:var(--tx);font-size:14px;font-family:inherit;outline:none;transition:.25s}
+.game-input input:focus{border-color:rgba(99,102,241,.4);box-shadow:0 0 16px rgba(99,102,241,.1)}
+
+/* Timer */
+.timer-ring{display:inline-flex;align-items:center;justify-content:center;position:relative}
+.timer-ring svg{transform:rotate(-90deg)}
+.timer-ring .val{position:absolute;font-size:20px;font-weight:700}
+
+/* Mobile */
+@media(max-width:768px){
+.container{padding:12px 12px 100px}
+.card{padding:16px;border-radius:18px}
+.section-hd h2{font-size:16px}
+.step-num{width:30px;height:30px;font-size:13px}
+.bar-chart{height:130px}
+.benford-chart{height:140px}
+.header{border-radius:0 0 16px 16px;padding:8px 14px;margin-bottom:16px}
+.stat-box{padding:10px 12px}
+}
+@media(max-width:480px){
+.container{padding:8px 8px 110px}
+.card{padding:12px;border-radius:14px}
+.bar-chart{height:100px}
+.benford-chart{height:110px}
+.stat-row{gap:6px}
+.stat-box{padding:8px 10px;min-width:60px}
+.stat-box .val{font-size:16px}
+}
+
+.footer{text-align:center;padding:40px 0 20px;color:var(--tx3);font-size:12px}
+.footer a{color:var(--tx2);text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot" id="glowSpot"></div>
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="container">
+
+<div class="header">
+<a href="https://laskymy.github.io/ai-nav/" class="header-back">AI Center</a>
+<span style="color:var(--tx4)">/</span>
+<span class="header-logo">大数定律 · 概率学互动教学</span>
+</div>
+
+<!-- Hero -->
+<div style="text-align:center;padding:20px 0 40px">
+<h1 class="grad-text" style="font-size:clamp(22px,5vw,34px);font-weight:800;margin-bottom:8px">凭什么看末位数字<br>就能打假论文？</h1>
+<p style="font-size:14px;color:var(--tx2);max-width:560px;margin:0 auto 10px">从抛硬币到大数定律，从本福特定律到学术打假——用动画和互动实验，带你直观理解概率统计如何成为"数据测谎仪"</p>
+<p style="font-size:11px;color:var(--tx3)">基于 B 站「漫士」科普视频 · 概率学互动教学</p>
+</div>
+
+<!-- ═══ SECTION 1: Coin Flip ═══ -->
+<div class="section">
+<div class="section-hd"><div class="step-num">1</div><h2>抛硬币 · 感受大数定律</h2></div>
+
+<div class="card">
+<h3>大数定律是什么？</h3>
+<p>抛一枚公平硬币，理论上正面概率 50%。但<strong>只抛 10 次，可能出现 7 正 3 反</strong>——小样本下，随机波动很大。当抛硬币次数增加到 100、1000、10000 次...正面频率会<strong>越来越接近 50%</strong>。这就是<strong>大数定律</strong>：样本量越大，统计结果越稳定、越接近理论值。</p>
+<p style="color:var(--tx3);font-size:12px">这正是统计检测的基石——如果某人的实验数据在小样本下"过于完美"，反而可疑。</p>
+</div>
+
+<div class="card">
+<h3>亲自试试</h3>
+<div class="stat-row">
+<div class="stat-box"><div class="val" id="flipCount" style="color:var(--a1)">0</div><div class="lbl">总抛掷次数</div></div>
+<div class="stat-box"><div class="val" id="flipHeads" style="color:var(--a2)">0</div><div class="lbl">正面次数</div></div>
+<div class="stat-box"><div class="val" id="flipRate" style="color:var(--cyan)">--</div><div class="lbl">正面频率</div></div>
+<div class="stat-box"><div class="val" id="flipDiff" style="color:var(--amber)">--</div><div class="lbl">偏离50%</div></div>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="btn" onclick="Coin.flip(1)">抛 1 次</button>
+<button class="btn" onclick="Coin.flip(10)">抛 10 次</button>
+<button class="btn" onclick="Coin.flip(100)">抛 100 次</button>
+<button class="btn" onclick="Coin.autoFlip()" id="autoBtn">自动连续抛</button>
+<button class="btn danger" onclick="Coin.reset()">重置</button>
+</div>
+<div class="canvas-wrap" style="height:200px"><canvas id="coinCanvas"></canvas></div>
+<p style="font-size:11px;color:var(--tx3);text-align:center">蓝线 = 实际频率曲线 &nbsp; 白色虚线 = 50% 理论线 &nbsp; 样本越大，蓝线越贴近虚线</p>
+</div>
+</div>
+
+<!-- ═══ SECTION 2: Last Digit ═══ -->
+<div class="section">
+<div class="section-hd"><div class="step-num">2</div><h2>末位数字 · 人类的造假软肋</h2></div>
+
+<div class="card">
+<h3>真实测量 vs 人为编造</h3>
+<p>真实测量数据的末位数字（0-9）应该是<strong>均匀分布</strong>的——每个数字出现概率 ≈ 10%。但人类编造数据时，潜意识会偏爱某些数字（如 0、5），回避其他数字（如 7、3）。<strong>只需统计末位数字的分布，就能发现造假痕迹。</strong></p>
+</div>
+
+<div class="card">
+<h3>对比实验：真实 vs 伪造数据</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<div>
+<div style="font-size:12px;font-weight:600;color:var(--a2);margin-bottom:6px">✅ 真实测量数据</div>
+<div class="bar-chart bar-real" id="realBars" style="height:160px"></div>
+</div>
+<div>
+<div style="font-size:12px;font-weight:600;color:var(--a3);margin-bottom:6px">❌ 人工编造数据</div>
+<div class="bar-chart bar-fake" id="fakeBars" style="height:160px"></div>
+</div>
+</div>
+<div style="display:flex;gap:8px;margin-top:12px">
+<button class="btn" onclick="Digit.regenerate()">重新生成数据对比</button>
+</div>
+</div>
+
+<div class="callout callout-warn">
+<span class="ico">🔍</span>
+<span><strong>关键洞察：</strong>造假者往往能让首位数字符合本福特定律，但<strong>第二位、第三位、末位数字</strong>几乎必然会露馅。因为人脑无法同时模拟多位数字的联合分布。这就是为什么统计学家说——"你可以骗过肉眼，但骗不过数学。"</span>
+</div>
+</div>
+
+<!-- ═══ SECTION 3: Benford ═══ -->
+<div class="section">
+<div class="section-hd"><div class="step-num">3</div><h2>本福特定律 · 自然数据的指纹</h2></div>
+
+<div class="card">
+<h3>违背直觉的数字分布</h3>
+<p>直觉告诉我们：自然产生的数据，首位数字 1-9 应该均匀分布（各 11.1%）。但<strong>完全错误</strong>。现实中，数字 <strong>1</strong> 作为首位的概率约 <strong>30.1%</strong>，而 <strong>9</strong> 只有不到 <strong>4.6%</strong>。公式：<strong>P(d) = log₁₀(1 + 1/d)</strong></p>
+<p style="color:var(--tx3);font-size:12px">从河流长度、股票价格、人口数量到物理常数——几乎所有跨越多个数量级的自然数据都遵循这一规律。</p>
+</div>
+
+<div class="card">
+<h3>交互式本福特分布图</h3>
+<div class="benford-chart benford-theory" id="benfordTheory" style="height:200px"></div>
+<div style="display:flex;gap:8px;margin:12px 0">
+<button class="btn" onclick="Benford.loadReal()">加载真实数据（中国城市人口）</button>
+<button class="btn success" onclick="Benford.loadFake()">加载伪造数据</button>
+</div>
+<div class="benford-chart benford-real" id="benfordReal" style="height:200px">
+<div style="text-align:center;padding-top:80px;color:var(--tx3)">点击上方按钮加载数据</div>
+</div>
+</div>
+</div>
+
+<!-- ═══ SECTION 4: GAME ═══ -->
+<div class="section">
+<div class="section-hd"><div class="step-num">4</div><h2>挑战：你能骗过统计学吗？</h2></div>
+
+<div class="card">
+<h3>「伪造数据检测器」互动游戏</h3>
+<p>假设你是一个实验员，需要<strong>手动输入 20 个测量数据</strong>（0-100 之间的数字）。试试看能不能编出"看起来真实"的数据——系统会用统计方法检测你的数据是否可疑。</p>
+
+<div class="game-area">
+<div id="gameStatus" style="font-size:13px;color:var(--tx2);margin-bottom:12px">请输入第 <strong style="color:var(--a1)">1/20</strong> 个测量数据：</div>
+<div class="game-input">
+<input type="number" id="gameInput" min="0" max="100" placeholder="输入 0-100 的数字..." onkeydown="if(event.key==='Enter')Game.submit()">
+<button class="btn" onclick="Game.submit()">提交</button>
+<button class="btn danger" onclick="Game.reset()" style="font-size:11px">重来</button>
+</div>
+<div id="gamePrev" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:10px;min-height:24px"></div>
+</div>
+
+<div id="gameResult" style="display:none;margin-top:16px"></div>
+</div>
+</div>
+
+<!-- ═══ SECTION 5: Real Cases ═══ -->
+<div class="section">
+<div class="section-hd"><div class="step-num">5</div><h2>真实案例 · 统计学打假史</h2></div>
+
+<div class="card">
+<h3>知名造假案</h3>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="padding:12px 16px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
+<div style="font-size:13px;font-weight:600">Sanna 心理学造假案 (2016)</div>
+<div style="font-size:12px;color:var(--tx2)">社会心理学家 Lawrence Sanna 的论文数据被统计学家 Uri Simonsohn 用末位数字分布检测出异常——多组数据的末位数字分布严重偏离均匀分布。Sanna 最终承认造假，多篇论文被撤稿。</div>
+</div>
+<div style="padding:12px 16px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
+<div style="font-size:13px;font-weight:600">Pitt & Hill 研究造假案 (2016)</div>
+<div style="font-size:12px;color:var(--tx2)">研究员利用末位数字异常检测法，发现了某健康科学领域研究中的数据造假。造假者编造数据时偏爱以 0 和 5 结尾的数字——这正是人类伪造数据的典型特征。</div>
+</div>
+<div style="padding:12px 16px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
+<div style="font-size:13px;font-weight:600">Diekmann 本福特实验</div>
+<div style="font-size:12px;color:var(--tx2)">Diekmann 教授让两组人分别报告真实数据和编造数据。结果：真实数据完美符合本福特定律；编造数据的首位数字分布与理论值有显著偏差（p &lt; 0.001）。即使告知参与者在被检测，他们也难以伪造出符合本福特定律的数据。</div>
+</div>
+</div>
+</div>
+
+<div class="callout callout-good">
+<span class="ico">💡</span>
+<span><strong>核心启示：</strong>数学不会说谎。大数定律和概率分布是客观规律，人类直觉在它们面前不堪一击。这也正是为什么科学需要统计——不是因为它复杂，而是因为它<strong>诚实</strong>。</span>
+</div>
+</div>
+
+<div class="footer">
+<p style="color:var(--tx4)">基于 B 站「漫士」大数定律科普视频 · 概率学互动教学</p>
+<p style="margin-top:4px"><a href="https://laskymy.github.io/ai-nav/">AI Center</a> · <a href="https://www.bilibili.com/video/BV1TEVK6aE1G/">原视频</a></p>
+</div>
+
+</div><!-- /container -->
+
+<script>
+// ==================== MOUSE GLOW ====================
+const glow=document.getElementById('glowSpot');
+let gx=innerWidth/2,gy=innerHeight/2,tx=gx,ty=gy;
+if(!('ontouchstart' in window)){
+document.addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY});
+(function anim(){
+gx+=(tx-gx)*.05;gy+=(ty-gy)*.05;
+glow.style.background=`radial-gradient(circle 420px at ${gx|0}px ${gy|0}px, rgba(99,102,241,.06),rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)`;
+requestAnimationFrame(anim);
+})();
+}
+
+// Progress bar
+window.addEventListener('scroll',()=>{
+const h=document.documentElement;
+document.getElementById('progressBar').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+});
+
+// ==================== SECTION 1: COIN FLIP ====================
+const Coin = {
+count:0, heads:0, history:[], running:false,
+
+flip(n){
+for(let i=0;i<n;i++){
+this.count++;
+if(Math.random()<0.5) this.heads++;
+this.history.push(this.heads/this.count);
+if(this.history.length>500) this.history.shift();
+}
+this._update();
+},
+
+autoFlip(){
+if(this.running){this.running=false;document.getElementById('autoBtn').textContent='自动连续抛';return}
+this.running=true;
+document.getElementById('autoBtn').textContent='停止';
+const loop=()=>{
+if(!this.running)return;
+this.flip(5);
+setTimeout(loop,80);
+};
+loop();
+},
+
+reset(){
+this.running=false;
+this.count=0;this.heads=0;this.history=[];
+document.getElementById('autoBtn').textContent='自动连续抛';
+this._update();
+this._draw();
+},
+
+_update(){
+document.getElementById('flipCount').textContent=this.count;
+document.getElementById('flipHeads').textContent=this.heads;
+const rate=this.count>0?(this.heads/this.count*100).toFixed(1)+'%':'--';
+document.getElementById('flipRate').textContent=rate;
+const diff=this.count>0?Math.abs(this.heads/this.count-0.5)*100:0;
+document.getElementById('flipDiff').textContent=this.count>0?diff.toFixed(2)+'%':'--';
+this._draw();
+},
+
+_draw(){
+const c=document.getElementById('coinCanvas');
+const W=c.parentElement.clientWidth;
+c.width=W*2;c.height=400;
+const ctx=c.getContext('2d');
+const w=c.width,h=c.height;
+
+ctx.fillStyle='rgba(0,0,0,.15)';
+ctx.fillRect(0,0,w,h);
+
+// Grid
+ctx.strokeStyle='rgba(255,255,255,.03)';ctx.lineWidth=2;
+for(let i=0;i<5;i++){ctx.beginPath();ctx.moveTo(80,w-40-i*70);ctx.lineTo(w-20,w-40-i*70);ctx.stroke()}
+
+// 50% line
+ctx.strokeStyle='rgba(255,255,255,.15)';ctx.lineWidth=3;ctx.setLineDash([8,12]);
+ctx.beginPath();ctx.moveTo(80,w-180);ctx.lineTo(w-20,w-180);ctx.stroke();
+ctx.setLineDash([]);
+
+// History line
+if(this.history.length>1){
+ctx.strokeStyle='#6366f1';ctx.lineWidth=4;ctx.lineJoin='round';
+ctx.beginPath();
+const stepX=(w-100)/Math.max(this.history.length-1,1);
+this.history.forEach((v,i)=>{
+const x=80+i*stepX;
+const y=w-180-(v-0.5)*300;
+if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+});
+ctx.stroke();
+
+// Glow
+ctx.strokeStyle='rgba(99,102,241,.15)';ctx.lineWidth=12;
+ctx.stroke();
+}
+
+// Labels
+ctx.fillStyle='#fff';ctx.font='20px Inter,sans-serif';ctx.fillText('正面频率',20,50);
+ctx.fillStyle='rgba(255,255,255,.3)';ctx.font='16px Inter,sans-serif';
+ctx.fillText('50%',w-50,w-188);
+ctx.fillText('0%',w-50,w-40);
+}
+};
+Coin._draw();
+
+// ==================== SECTION 2: LAST DIGIT ====================
+const Digit = {
+regenerate(){
+this._build('realBars', ()=>Math.floor(Math.random()*10));
+this._build('fakeBars', ()=>{
+const r=Math.random();
+if(r<0.18) return 0;
+if(r<0.32) return 5;
+if(r<0.45) return 2;
+if(r<0.55) return 8;
+if(r<0.62) return 1;
+if(r<0.68) return 3;
+if(r<0.74) return 6;
+if(r<0.80) return 4;
+if(r<0.86) return 9;
+return 7;
+});
+},
+
+_build(id, gen){
+const counts=Array(10).fill(0);
+for(let i=0;i<200;i++) counts[gen()]++;
+const max=Math.max(...counts);
+const wrap=document.getElementById(id);
+wrap.innerHTML=counts.map((v,i)=>`<div class="bar-col">
+<div class="bar-fill" style="height:${(v/max*140)|0}px"></div>
+<div class="bar-label">${i}</div>
+</div>`).join('');
+}
+};
+Digit.regenerate();
+
+// ==================== SECTION 3: BENFORD ====================
+const Benford = {
+_theory:[30.1,17.6,12.5,9.7,7.9,6.7,5.8,5.1,4.6],
+init(){
+const wrap=document.getElementById('benfordTheory');
+wrap.innerHTML=this._theory.map((v,i)=>`<div class="benford-bar">
+<div class="benford-fill" style="height:${v*5.5|0}px"></div>
+<div class="bar-label">${i+1}</div>
+<div class="bar-label" style="color:var(--tx2);font-size:10px">${v}%</div>
+</div>`).join('');
+},
+
+loadReal(){
+const cities=[3840,2210,1750,1630,1560,1480,1350,1280,1190,1120,960,880,820,780,750,720,690,650,620,590,560,530,510,490,470,450,430,420,400,380];
+this._show('benfordReal',cities,'benford-real');
+},
+
+loadFake(){
+const fake=[];
+for(let i=0;i<30;i++) fake.push(Math.floor(Math.random()*3000)+100);
+this._show('benfordReal',fake,'benford-real');
+},
+
+_show(id, data, cls){
+const firsts=Array(9).fill(0);
+data.forEach(v=>{const d=String(v)[0];if(d!=='0')firsts[parseInt(d)-1]++});
+const total=firsts.reduce((a,b)=>a+b,0);
+const wrap=document.getElementById(id);
+wrap.innerHTML=firsts.map((v,i)=>{
+const pct=total>0?(v/total*100):0;
+const th=this._theory[i];
+const match=Math.abs(pct-th)<5;
+return `<div class="benford-bar ${cls||''}">
+<div class="benford-fill" style="height:${pct*5.5|0}px;opacity:${match?1:.4}"></div>
+<div class="bar-label">${i+1}</div>
+<div class="bar-label" style="color:${match?'var(--a2)':'var(--a3)'};font-size:10px">${pct.toFixed(1)}%</div>
+</div>`;
+}).join('');
+}
+};
+Benford.init();
+
+// ==================== SECTION 4: GAME ====================
+const Game = {
+data:[], current:0,
+
+submit(){
+const input=document.getElementById('gameInput');
+const v=parseInt(input.value);
+if(isNaN(v)||v<0||v>100){input.style.borderColor='#ef4444';setTimeout(()=>input.style.borderColor='',1000);return}
+input.style.borderColor='';
+this.data.push(v);this.current++;
+input.value='';input.focus();
+
+const prev=document.getElementById('gamePrev');
+prev.innerHTML=this.data.map((n,i)=>`<span style="padding:2px 8px;border-radius:8px;background:rgba(99,102,241,.1);font-size:12px;font-family:monospace;animation:tickIn .3s var(--ease)">${n}</span>`).join('');
+
+if(this.current>=20){
+this._analyze();
+return;
+}
+document.getElementById('gameStatus').innerHTML='请输入第 <strong style="color:var(--a1)">'+(this.current+1)+'/20</strong> 个测量数据：';
+},
+
+_analyze(){
+const lastDigits=this.data.map(v=>v%10);
+const counts=Array(10).fill(0);
+lastDigits.forEach(d=>counts[d]++);
+const expected=2; // 20/10
+let chi2=0;
+counts.forEach(c=>chi2+=(c-expected)*(c-expected)/expected);
+
+const firstDigits=[];
+this.data.forEach(v=>{const d=String(v)[0];if(d!=='0')firstDigits.push(parseInt(d))});
+const fcounts=Array(9).fill(0);
+firstDigits.forEach(d=>fcounts[d-1]++);
+
+const result=document.getElementById('gameResult');
+result.style.display='block';
+
+// Chi-square test: critical value for df=9 at p=0.05 is ~16.92
+const suspicious=chi2>16.92;
+
+result.innerHTML=`<div class="card" style="border-color:${suspicious?'rgba(239,68,68,.3)':'rgba(16,185,129,.3)'}">
+<h3 style="color:${suspicious?'var(--a3)':'var(--a2)'}">${suspicious?'⚠️ 检测到可疑数据！':'✅ 数据看起来没问题'}</h3>
+<p style="font-size:13px;color:var(--tx2)">你的数据末位数字分布分析：</p>
+<div class="bar-chart" style="height:140px">${counts.map((v,i)=>`<div class="bar-col">
+<div class="bar-fill" style="height:${v*40|0}px;background:${Math.abs(v-2)>3?'var(--a3)':'var(--a2)'}"></div>
+<div class="bar-label">${i}</div>
+<div class="bar-label" style="color:${Math.abs(v-2)>3?'var(--a3)':'var(--a2)'}">${v}次</div>
+</div>`).join('')}</div>
+<div class="stat-row">
+<div class="stat-box"><div class="val" style="color:${chi2>16.92?'var(--a3)':'var(--a2)'}">χ²=${chi2.toFixed(2)}</div><div class="lbl">卡方统计量（临界值 16.92）</div></div>
+<div class="stat-box"><div class="val" style="color:${suspicious?'var(--a3)':'var(--a2)'}">${suspicious?'p < 0.05 显著异常':'p > 0.05 无显著异常'}</div><div class="lbl">显著性检验</div></div>
+</div>
+<p style="font-size:12px;color:var(--tx3);margin-top:8px">${suspicious?'你的数据末位分布和真实随机数据有显著差异——如果这是一篇论文的原始数据，统计学家一眼就能看出来。最常见的问题：某些数字出现频率过高或过低。':'很难得！你成功编造了一组末位分布看起来合理的数据。但别高兴太早——真实造假检测还会同时检查第二位、第三位数字和本福特定律...'}</p>
+<button class="btn" onclick="Game.reset()">再试一次</button>
+</div>`;
+},
+
+reset(){
+this.data=[];this.current=0;
+document.getElementById('gameInput').value='';
+document.getElementById('gamePrev').innerHTML='';
+document.getElementById('gameResult').style.display='none';
+document.getElementById('gameStatus').innerHTML='请输入第 <strong style="color:var(--a1)">1/20</strong> 个测量数据：';
+document.getElementById('gameInput').focus();
+}
+};
+
+// ==================== MOBILE GYRO ====================
+(function(){
+if(!('ontouchstart' in window)&&!(navigator.maxTouchPoints>0))return;
+if(!window.DeviceOrientationEvent)return;
+const c=document.querySelector('.container');
+if(!c)return;
+let beta=0,gamma=0,tb=0,tg=0,active=false;
+const MAX=2.5;
+function lerp(){
+beta+=(tb-beta)*.04;gamma+=(tg-gamma)*.04;
+c.style.transform='perspective(2400px) rotateX('+(-beta).toFixed(2)+'deg) rotateY('+gamma.toFixed(2)+'deg)';
+if(active)requestAnimationFrame(lerp);
+}
+function handle(e){
+if(e.beta===null)return;
+tb=Math.max(-MAX,Math.min(MAX,(e.beta||0)*.07));
+tg=Math.max(-MAX,Math.min(MAX,(e.gamma||0)*.07));
+if(!active){active=true;lerp();}
+}
+if(typeof DeviceOrientationEvent.requestPermission==='function'){
+document.addEventListener('touchstart',function ask(){
+document.removeEventListener('touchstart',ask);
+DeviceOrientationEvent.requestPermission()
+.then(r=>{if(r==='granted')window.addEventListener('deviceorientation',handle);})
+.catch(()=>{});
+},{once:true});
+}else{window.addEventListener('deviceorientation',handle);}
+})();
+</script>
+</body>
+</html>
