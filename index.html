@@ -1446,6 +1446,18 @@ setInterval(()=>Automations.load(),120000);
 // PWA Service Worker
 if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js')}
 
+// ==================== BOTTOM NAV HORIZONTAL SCROLL ====================
+(function(){
+const nav = document.querySelector('.bottom-nav');
+if (!nav) return;
+nav.addEventListener('wheel', e => {
+if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+e.preventDefault();
+nav.scrollLeft += e.deltaY;
+}
+}, {passive: false});
+})();
+
 // ==================== MOBILE GYRO TILT ====================
 (function(){
   const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
