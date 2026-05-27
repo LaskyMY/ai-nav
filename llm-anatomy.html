@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>LLM 解剖学 · 从模型架构到 Token</title>
+<link rel="icon" href="./icon.svg">
+<style>
+:root{
+--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);
+--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;
+--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.45);--tx3:rgba(255,255,255,.30);--tx4:rgba(255,255,255,.18);
+--r:24px;--rs:14px;
+--ease:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.56,.64,1);
+}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+font-family:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;
+background:var(--bg);color:var(--tx);font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased;letter-spacing:-.01em;
+}
+::-webkit-scrollbar{width:2px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.04);border-radius:1px}
+::selection{background:rgba(99,102,241,.3)}
+
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,#6366f1,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,#ec4899,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,#F59E0B,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(99,102,241,.06),rgba(236,72,153,.035) 18%,rgba(245,158,11,.02) 42%,transparent 70%)}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--a1),var(--pink),var(--amber),var(--cyan),var(--a2));z-index:100;transition:width .3s;border-radius:0 2px 2px 0}
+
+.container{max-width:900px;margin:0 auto;padding:32px 24px 120px;position:relative;z-index:1}
+
+.header{position:sticky;top:0;z-index:50;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);padding:10px 20px;border-radius:0 0 22px 22px;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 40px rgba(99,102,241,.1),0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04);display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.header-logo{font-size:16px;font-weight:700;letter-spacing:-.02em;background:linear-gradient(135deg,var(--a1),var(--pink),var(--amber),var(--cyan));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:tFlow 6s ease-in-out infinite}
+.header-back{color:var(--tx3);text-decoration:none;font-size:13px;transition:color .2s}
+.header-back:hover{color:var(--tx)}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+
+.grad-text{background:linear-gradient(135deg,var(--a1),var(--pink),var(--amber),var(--cyan),var(--a2));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:tFlow 6s ease-in-out infinite}
+
+/* ── Zoom Journey ── */
+.level{position:relative;margin:40px 0;padding-left:60px}
+.level::before{content:'';position:absolute;left:23px;top:0;bottom:-40px;width:2px;background:rgba(255,255,255,.06)}
+.level:last-child::before{display:none}
+.level-dot{position:absolute;left:12px;top:0;width:24px;height:24px;border-radius:50%;z-index:2;transition:all .5s var(--spring)}
+.level-dot.l1{background:var(--vio);box-shadow:0 0 30px rgba(168,85,247,.5)}
+.level-dot.l2{background:var(--a1);box-shadow:0 0 30px rgba(99,102,241,.5)}
+.level-dot.l3{background:var(--cyan);box-shadow:0 0 30px rgba(6,182,212,.5)}
+.level-dot.l4{background:var(--a2);box-shadow:0 0 30px rgba(16,185,129,.5)}
+.level-dot.l5{background:var(--amber);box-shadow:0 0 30px rgba(245,158,11,.5)}
+.level-dot.l6{background:var(--a3);box-shadow:0 0 30px rgba(239,68,68,.5)}
+
+.level-tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:.04em;margin-bottom:6px}
+.level-tag.l1{background:rgba(168,85,247,.15);color:#c084fc}
+.level-tag.l2{background:rgba(99,102,241,.15);color:#818cf8}
+.level-tag.l3{background:rgba(6,182,212,.15);color:#22d3ee}
+.level-tag.l4{background:rgba(16,185,129,.15);color:#34d399}
+.level-tag.l5{background:rgba(245,158,11,.15);color:#fbbf24}
+.level-tag.l6{background:rgba(239,68,68,.15);color:#f87171}
+
+.level-title{font-size:22px;font-weight:800;margin:4px 0 6px}
+.level-desc{font-size:13px;color:var(--tx3);margin-bottom:14px}
+
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.concept-card{padding:16px 18px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);cursor:pointer;transition:all .35s var(--ease);position:relative;overflow:hidden}
+.concept-card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.concept-card.expanded{z-index:5}
+.concept-card .cname{font-weight:700;font-size:14px;margin-bottom:2px}
+.concept-card .cen{font-size:11px;color:var(--tx4);margin-bottom:2px}
+.concept-card .cdesc{font-size:11px;color:var(--tx3);max-height:0;overflow:hidden;transition:max-height .4s var(--ease),margin .3s}
+.concept-card:hover .cdesc,.concept-card.expanded .cdesc{max-height:120px;margin-top:6px}
+.concept-card .cdot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:6px;vertical-align:middle}
+
+/* Connection lines between concepts */
+.concept-card::before{content:'';position:absolute;top:-8px;left:50%;width:1px;height:8px;background:rgba(255,255,255,.04);transform:translateX(-50%)}
+
+/* Scale indicator */
+.scale-bar{display:flex;align-items:center;gap:0;margin:30px 0;position:relative}
+.scale-seg{flex:1;height:4px;transition:all .5s}
+.scale-seg:nth-child(1){background:var(--vio);border-radius:4px 0 0 4px}
+.scale-seg:nth-child(2){background:var(--a1)}
+.scale-seg:nth-child(3){background:var(--cyan)}
+.scale-seg:nth-child(4){background:var(--a2)}
+.scale-seg:nth-child(5){background:var(--amber)}
+.scale-seg:nth-child(6){background:var(--a3);border-radius:0 4px 4px 0}
+.scale-label{display:flex;justify-content:space-between;font-size:10px;color:var(--tx4);margin-top:4px}
+
+/* Floating stat */
+.flash-stat{text-align:center;padding:16px;border-radius:14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);margin:16px 0;animation:fadeUp .6s var(--ease) both}
+.flash-stat .big{font-size:clamp(24px,6vw,40px);font-weight:900;background:linear-gradient(135deg,var(--a1),var(--pink),var(--amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.flash-stat .lbl{font-size:13px;color:var(--tx3);margin-top:2px}
+
+/* Card */
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--r);padding:20px 24px;margin-bottom:14px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent)}
+.card h3{font-size:15px;font-weight:600;margin-bottom:6px}
+.card p{font-size:13px;color:var(--tx2);margin-bottom:6px}
+
+/* Pipeline steps */
+.pipe{display:flex;flex-wrap:wrap;gap:4px;align-items:center;justify-content:center;margin:16px 0}
+.pipe-step{padding:8px 14px;border-radius:10px;font-size:12px;font-weight:600;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:var(--tx2);text-align:center;transition:all .3s}
+.pipe-step:hover{transform:translateY(-2px)}
+.pipe-arrow{color:var(--tx4);font-size:16px;margin:0 2px}
+
+.callout{padding:14px 18px;border-radius:14px;margin:12px 0;font-size:13px;display:flex;gap:10px;align-items:flex-start}
+.callout-tip{background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.12);color:#67e8f9}
+.callout .ico{font-size:18px;flex-shrink:0}
+
+.footer{text-align:center;padding:40px 0 20px;color:var(--tx3);font-size:12px}
+.footer a{color:var(--tx2);text-decoration:none}
+
+@media(max-width:768px){
+.container{padding:12px 12px 100px}
+.level{padding-left:44px}
+.level::before{left:15px}
+.level-dot{left:4px}
+.concept-grid{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+.container{padding:8px 8px 110px}
+.level{padding-left:36px}
+.level-title{font-size:18px}
+.concept-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot" id="glowSpot"></div>
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="container">
+
+<div class="header">
+<a href="https://laskymy.github.io/ai-nav/" class="header-back">AI Center</a><span style="color:var(--tx4)">/</span>
+<span class="header-logo">LLM 解剖学 · 大 → 小</span>
+</div>
+
+<!-- Hero -->
+<div style="text-align:center;padding:20px 0 30px">
+<h1 class="grad-text" style="font-size:clamp(24px,5vw,38px);font-weight:900;margin-bottom:8px">LLM 解剖学<br>从万亿参数到单个Token</h1>
+<p style="font-size:14px;color:var(--tx2);max-width:540px;margin:0 auto 10px">沿这条垂直轴线往下走——从最宏观的<strong>模型架构</strong>，一路穿透到最微观的<strong>token字节</strong>。每层都是下面层次的组合涌现。</p>
+
+<div class="scale-bar">
+<div class="scale-seg" style="flex:3"></div>
+<div class="scale-seg" style="flex:2.5"></div>
+<div class="scale-seg" style="flex:2"></div>
+<div class="scale-seg" style="flex:1.5"></div>
+<div class="scale-seg" style="flex:1"></div>
+<div class="scale-seg" style="flex:0.6"></div>
+</div>
+<div class="scale-label"><span>模型架构</span><span>训练范式</span><span>网络组件</span><span>参数矩阵</span><span>推理计算</span><span>Token</span></div>
+</div>
+
+<!-- ═══════════ LEVEL 1 ═══════════ -->
+<div class="level">
+<div class="level-dot l1"></div>
+<span class="level-tag l1">LEVEL 1 · 万亿参数级</span>
+<h2 class="level-title">模型架构 · 一切的开端</h2>
+<p class="level-desc">这是LLM最宏观的一层——决定模型"长什么样"。目前所有主流LLM（GPT-4、Claude、Gemini、DeepSeek）都基于同一个核心发明。</p>
+
+<div class="concept-grid">
+<div class="concept-card" style="border-color:rgba(168,85,247,.25)" onclick="this.classList.toggle('expanded')">
+<div class="cname"><span class="cdot" style="background:var(--vio)"></span>Transformer</div>
+<div class="cen">2017 · Vaswani et al.</div>
+<div class="cdesc">一切的基础。用<strong>Self-Attention</strong>替代RNN的循环结构，让模型能同时看到所有token的位置关系。训练并行化成为可能 → 参数规模从此爆炸。GPT中的"T"就是Transformer。</div>
+</div>
+<div class="concept-card" style="border-color:rgba(168,85,247,.2)" onclick="this.classList.toggle('expanded')">
+<div class="cname"><span class="cdot" style="background:var(--vio)"></span>Decoder-only</div>
+<div class="cen">GPT系列 · 自回归生成</div>
+<div class="cdesc">只保留Transformer的Decoder部分。从左到右逐token预测下一个词。GPT-4、Claude、Llama、DeepSeek全是这个架构。<strong>Encoder-Decoder</strong>(T5、BART)则保留两部分用于翻译/摘要。ChatGPT的"G"是Generative——生成式。</div>
+</div>
+<div class="concept-card" style="border-color:rgba(168,85,247,.15)" onclick="this.classList.toggle('expanded')">
+<div class="cname"><span class="cdot" style="background:var(--vio)"></span>MoE · 混合专家</div>
+<div class="cen">Mixture of Experts</div>
+<div class="cdesc">把一个大模型拆成多个"专家"子模型。每个token只激活部分专家（如DeepSeek-V3: 671B总参数 → 每token仅激活37B）。<strong>稀疏激活</strong>让模型能做到万亿参数但推理成本可控。GPT-4也被传使用MoE。</div>
+</div>
+<div class="concept-card" style="border-color:rgba(168,85,247,.1)" onclick="this.classList.toggle('expanded')">
+<div class="cname"><span class="cdot" style="background:var(--vio)"></span>Attention</div>
+<div class="cen">Scaled Dot-Product</div>
+<div class="cdesc">整个Transformer的心脏。Q·K^T/√d → Softmax → ×V。让每个token能<strong>动态关注</strong>序列中所有其他token。公式虽简，复杂度O(n²)随长度爆炸——这就是上下文窗口消耗巨量算力的根源。</div>
+</div>
+</div>
+</div>
+
+<!-- ═══════════ LEVEL 2 ═══════════ -->
+<div class="level">
+<div class="level-dot l2"></div>
+<span class="level-tag l2">LEVEL 2 · 千卡GPU集群级</span>
+<h2 class="level-title">训练范式 · 它怎么学</h2>
+<p class="level-desc">有了架构，下一步是"教"模型。一个LLM不是一步训练完的——它经历多个阶段，每个阶段用不同的数据和目标。</p>
+
+<div class="card">
+<h3>LLM训练四阶段</h3>
+<div class="pipe">
+<div class="pipe-step" style="border-color:rgba(99,102,241,.3)">Pre-training<div style="font-size:10px;color:var(--tx4);font-weight:400">海量语料·自监督</div></div>
+<span class="pipe-arrow">→</span>
+<div class="pipe-step" style="border-color:rgba(6,182,212,.3)">SFT<div style="font-size:10px;color:var(--tx4);font-weight:400">指令微调·监督</div></div>
+<span class="pipe-arrow">→</span>
+<div class="pipe-step" style="border-color:rgba(16,185,129,.3)">RLHF<div style="font-size:10px;color:var(--tx4);font-weight:400">人类反馈强化</div></div>
+<span class="pipe-arrow">→</span>
+<div class="pipe-step" style="border-color:rgba(245,158,11,.3)">DPO<div style="font-size:10px;color:var(--tx4);font-weight:400">直接偏好优化</div></div>
+</div>
+<p style="font-size:11px;color:var(--tx3)">Pre-training占训练算力的 <strong>99%+</strong>，消耗数万GPU·月的算力。SFT/RLHF/DPO 只需几天到几周。但后三个阶段<strong>决定了模型好不好用</strong>——是否对齐人类意图。</p>
+</div>
+
+<div class="concept-grid">
+<div class="concept-card" style="border-color:rgba(99,102,241,.2)" onclick="this.classList.toggle('expanded')">
+<div class="cname"><span class="cdot" style="background:var(--a1)"></span>Pre-training</div>
+<div class="cen">自监督学习 · Next Token</div>
+<div class="cdesc">给模型喂<strong>万亿级token</strong>的文本，任务简单到极致：<strong>预测下一个token</strong>。就是"下一个字是什么？"反复问了万亿次。数据来自网页(C4/CommonCrawl)、代码(GitHub)、书籍、论文。输出：Base Model（基座模型）——还不会聊天，只会续写。</div>
+</div>
+<div class="concept-card" style="border-color:rgba(6,182,212,.2)" onclick="this.classList.toggle('expanded')">
+<div class="cname"><span class="cdot" style="background:var(--cyan)"></span>SFT · 指令微调</div>
+<div class="cen">Supervised Fine-Tuning</div>
+<div class="cdesc">用<strong>高质量对话示例</strong>(human-written)教模型问答格式。"用户问什么→AI怎么答"。数据量远小于预训练(几十万条对话)，但让模型从"续写器"变成"助手"。这就是为什么Base Model只会补全而ChatGPT会聊天。</div>
+</div>
+<div class="concept-card" style="border-color:rgba(16,185,129,.2)" onclick="this.classList.toggle('expanded')">
+<div class="cname"><span class="cdot" style="background:var(--a2)"></span>RLHF</div>
+<div class="cen">人类反馈强化学习</div>
+<div class="cdesc">人对多个回答<strong>排序打分</strong>→训练一个奖励模型→用PPO强化学习微调LLM。让模型学会偏好人类喜欢的回答风格（有用、无害、诚实）。Claude的"Constitutional AI"是RLHF的变体——用AI替代人类做排序。</div>
+</div>
+<div class="concept-card" style="border-color:rgba(245,158,11,.2)" onclick="this.classList.toggle('expanded')">
+<div class="cname"><span class="cdot" style="background:var(--amber)"></span>DPO</div>
+<div class="cen">Direct Preference Optimization</div>
+<div class="cdesc">2023年的突破——<strong>不需要先训练奖励模型</strong>，直接从偏好数据优化。把RLHF的两步(训奖励模型→PPO)合并为一步。更稳定、更快、更简单。Llama 3、Qwen等都用DPO做最终对齐。</div>
+</div>
+</div>
+</div>
+
+<!-- ═══════════ LEVEL 3 ═══════════ -->
+<div class="level">
+<div class="level-dot l3"></div>
+<span class="level-tag l3">LEVEL 3 · 数十层深度</span>
+<h2 class="level-title">网络组件 · 一层层拆开看</h2>
+<p class="level-desc">现在钻入一层Transformer block内部。每个Block = Attention + FFN + LayerNorm + Residual。GPT-4据说有120层这样的Block堆叠。</p>
+
+<div class="concept-grid">
+<div class="concept-card" style="border-color:rgba(6,182,212,.25)" onclick="this.classList.toggle('expanded')">
+<div class="cname"><span class="cdot" style="background:var(--cyan)"></span>Multi-Head Attention</div>
+<div class="cen">多头注意力</div>
+<div class="cdesc">把Attention复制<strong>N份</strong>(GPT-3有96个头)，每头关注不同的语义关系。一个头可能关注<strong>语法结构</strong>，另一个关注<strong>指代关系</strong>，另一个关注<strong>语义相似性</strong>。多头的输出拼接后做一次线性变换→送入FFN。</div>
+</div>
+<div class="concept-card" style="border-color:rgba(6,182,212,.2)" onclick="this.classList.toggle('expanded')">
+<div class="cname"><span class="cdot" style="background:var(--cyan)"></span>FFN · 前馈网络</div>
+<div class="cen">Feed-Forward Network</div>
+<div class="cdesc">每个token经过Attention后，独立通过一个<strong>两层MLP</strong>：升维→激活→降维。例如升到4倍维度再压回来。这里存储了模型大部分的<strong>事实知识</strong>（研究表明FFN层是知识存储的主要位置）。</div>
+</div>
+<div class="concept-card" style="border-color:rgba(6,182,212,.15)" onclick="this.classList.toggle('expanded')">
+<div class="cname"><span class="cdot" style="background:var(--cyan)"></span>Layer Normalization</div>
+<div class="cen">层归一化</div>
+<div class="cdesc">对每层的输出做归一化——均值0方差1。没有它，深层网络的梯度会<strong>爆炸或消失</strong>。现代LLM用<strong>RMS Norm</strong>(只除均方根，不算均值)替代经典LayerNorm——更快，效果几乎一样。Llama和DeepSeek都用RMS Norm。</div>
+</div>
+<div class="concept-card" style="border-color:rgba(6,182,212,.1)" onclick="this.classList.toggle('expanded')">
+<div class="cname"><span class="cdot" style="background:var(--cyan)"></span>Residual Connection</div>
+<div class="cen">残差连接 · 跳跃线</div>
+<div class="cdesc">每层的输入<strong>直接加到输出上</strong> → output = Layer(input) + input。让信号可以"跳过"任何一层直达后面。这使得<strong>120层的网络也能训练</strong>——梯度通过残差路径畅通无阻地回传。ResNet (2015)的遗产。</div>
+</div>
+</div>
+
+<div class="callout callout-tip"><span class="ico">🔑</span><span><strong>一层的完整流程：</strong>输入 → (Multi-Head Attention → Add残差 → RMS Norm) → (FFN → Add残差 → RMS Norm) → 输出到下一层。这个pattern重复N次(N=层数)。</span></div>
+</div>
+
+<!-- ═══════════ LEVEL 4 ═══════════ -->
+<div class="level">
+<div class="level-dot l4"></div>
+<span class="level-tag l4">LEVEL 4 · 数十亿参数</span>
+<h2 class="level-title">参数矩阵 · 模型的"数字记忆"</h2>
+<p class="level-desc">每一层的Attention和FFN最终都存储为<strong>巨大的矩阵</strong>。这些矩阵中的浮点数是模型从数据中学到的"知识"。</p>
+
+<div class="flash-stat">
+<div class="big">1,760,000,000,000</div>
+<div class="lbl">GPT-4 估算参数量 (1.76万亿) · 每个参数是一个float16浮点数 · 约占 3.5TB 显存</div>
+</div>
+
+<div class="concept-grid">
+<div class="concept-card" style="border-color:rgba(16,185,129,.25)" onclick="this.classList.toggle('expanded')">
+<div class="cname"><span class="cdot" style="background:var(--a2)"></span>Weights · 权重</div>
+<div class="cen">模型的核心记忆</div>
+<div class="cdesc">每个矩阵元素是一个<strong>浮点数</strong>（如0.042或-1.357）。QKV投影矩阵、FFN的上下投影矩阵——全是权重。训练就是不断调整这些数字以减小预测误差。GPT-4的1.76T参数=1.76万亿个这样的数字。</div>
+</div>
+<div class="concept-card" style="border-color:rgba(16,185,129,.2)" onclick="this.classList.toggle('expanded')">
+<div class="cname"><span class="cdot" style="background:var(--a2)"></span>Embedding · 嵌入</div>
+<div class="cen">Token → 向量</div>
+<div class="cdesc">模型第一层：把离散的token ID映射到<strong>连续向量空间</strong>（如768维或4096维）。语义相近的词向量也相近。嵌入矩阵大小 = 词表大小 × 嵌入维度。GPT-3词表50257 × 12288维 ≈ 6亿参数仅用于嵌入。</div>
+</div>
+<div class="concept-card" style="border-color:rgba(16,185,129,.15)" onclick="this.classList.toggle('expanded')">
+<div class="cname"><span class="cdot" style="background:var(--a2)"></span>LoRA · 低秩适配</div>
+<div class="cen">Low-Rank Adaptation</div>
+<div class="cdesc">微调时不碰原权重，在旁路加<strong>两个小矩阵</strong>(A×B，秩r=8~64)。参数量仅原模型的<strong>0.1%~1%</strong>却能达到接近全量微调的效果。让普通人在一张4090上就能微调Llama 70B。QLoRA进一步量化到4bit。</div>
+</div>
+<div class="concept-card" style="border-color:rgba(16,185,129,.1)" onclick="this.classList.toggle('expanded')">
+<div class="cname"><span class="cdot" style="background:var(--a2)"></span>Quantization</div>
+<div class="cen">量化 · 16bit→4bit</div>
+<div class="cdesc">把参数从FP16(2字节)压缩到INT4(0.5字节)，模型体积缩小<strong>4倍</strong>。GPTQ、AWQ、GGUF(q4_K_M/q5_K_M)是主流方案。4bit量化后的70B模型可以在24GB显存的单卡上跑——这就是本地跑大模型的秘密。</div>
+</div>
+</div>
+</div>
+
+<!-- ═══════════ LEVEL 5 ═══════════ -->
+<div class="level">
+<div class="level-dot l5"></div>
+<span class="level-tag l5">LEVEL 5 · 逐token生成</span>
+<h2 class="level-title">推理过程 · 一个字一个字地想</h2>
+<p class="level-desc">训练好的模型如何实际"说话"？每生成一个新token，都要完整跑一遍整个网络。看似流畅的对话背后是上千次完整的前向传播。</p>
+
+<div class="concept-grid">
+<div class="concept-card" style="border-color:rgba(245,158,11,.25)" onclick="this.classList.toggle('expanded')">
+<div class="cname"><span class="cdot" style="background:var(--amber)"></span>Context Window</div>
+<div class="cen">上下文窗口</div>
+<div class="cdesc">模型能"一次看到"的最大token数。GPT-4 Turbo 128K、Claude 200K、Gemini 1M。窗口越大→Attention矩阵越巨大(O(n²))→显存消耗指数增长。这就是为什么<strong>长文本非常贵</strong>。超过窗口的历史对话会被截断。</div>
+</div>
+<div class="concept-card" style="border-color:rgba(245,158,11,.2)" onclick="this.classList.toggle('expanded')">
+<div class="cname"><span class="cdot" style="background:var(--amber)"></span>KV Cache</div>
+<div class="cen">键值缓存</div>
+<div class="cdesc">每次生成新token时，之前所有token的Key和Value矩阵<strong>复用不重算</strong>。否则对话越长生成越慢。KV Cache是推理显存的主要消耗者——长对话下KV Cache可比模型权重还大。vLLM的PagedAttention专门优化这个。</div>
+</div>
+<div class="concept-card" style="border-color:rgba(245,158,11,.15)" onclick="this.classList.toggle('expanded')">
+<div class="cname"><span class="cdot" style="background:var(--amber)"></span>Logits → Softmax</div>
+<div class="cen">从分数到概率</div>
+<div class="cdesc">最后一层输出<strong>logits向量</strong>(每个词表token一个分数，如词表50000维)。Softmax将这些分数转换为概率分布：P(token_i) = e^logit_i / Σe^logit。所有token的概率之和=1。这就是模型对"下一个字该是什么"的全部信念。</div>
+</div>
+<div class="concept-card" style="border-color:rgba(245,158,11,.1)" onclick="this.classList.toggle('expanded')">
+<div class="cname"><span class="cdot" style="background:var(--amber)"></span>Sampling</div>
+<div class="cen">温度 · Top-p · Top-k</div>
+<div class="cdesc"><strong>Temperature</strong>: T→0 贪婪选最高概率(机械重复)；T→1 保留原始分布(更随机)。<strong>Top-p</strong>: 只从累积概率≥p的最小token集合中采样。p=0.9→过滤掉最离谱的10%。<strong>Top-k</strong>: 只保留概率最高的k个token。三者组合控制生成文本的<strong>确定性vs创造性</strong>。</div>
+</div>
+</div>
+</div>
+
+<!-- ═══════════ LEVEL 6 ═══════════ -->
+<div class="level">
+<div class="level-dot l6"></div>
+<span class="level-tag l6">LEVEL 6 · 最小原子</span>
+<h2 class="level-title">Token · 模型的"原子"</h2>
+<p class="level-desc">一切——万亿参数、120层深度、数万GPU——最终都是为了在数十亿token上做一件简单的事：<strong>预测下一个token</strong>。</p>
+
+<div class="flash-stat">
+<div class="big">Llama</div>
+<div class="lbl">"Llama" 这个单词被分词为 [L] [lam] [a] → 3个token。汉字通常1字=1~2个token</div>
+</div>
+
+<div class="concept-grid">
+<div class="concept-card" style="border-color:rgba(239,68,68,.25)" onclick="this.classList.toggle('expanded')">
+<div class="cname"><span class="cdot" style="background:var(--a3)"></span>Tokenizer</div>
+<div class="cen">分词器 · 文本→数字</div>
+<div class="cdesc">把人类文本切成token序列并映射为整数ID。主流算法：<strong>BPE</strong>(Byte Pair Encoding，GPT系列用)、<strong>SentencePiece</strong>(Llama、T5用)。"Hello world!" → [15496, 995, 0]。没有tokenizer，模型不识字。</div>
+</div>
+<div class="concept-card" style="border-color:rgba(239,68,68,.2)" onclick="this.classList.toggle('expanded')">
+<div class="cname"><span class="cdot" style="background:var(--a3)"></span>BPE · 字节对编码</div>
+<div class="cen">Byte Pair Encoding</div>
+<div class="cdesc">从<strong>字节级</strong>开始，反复合并最频繁的相邻字节对→形成子词(subword)。高频词保持完整(e.g. "the")，低频词被切碎(e.g. "antidisestablishmentarianism" → 多个子词)。平衡了<strong>词表大小</strong>和<strong>编码效率</strong>。OOV(未登录词)问题被彻底解决——所有Unicode都能用字节表示。</div>
+</div>
+<div class="concept-card" style="border-color:rgba(239,68,68,.15)" onclick="this.classList.toggle('expanded')">
+<div class="cname"><span class="cdot" style="background:var(--a3)"></span>Vocabulary · 词表</div>
+<div class="cen">模型的"字典"</div>
+<div class="cdesc">所有可能token的集合。GPT-2词表50257、Llama 32000、DeepSeek-V3 129280。<strong>词表大小直接影响logits层的计算量</strong>——每一步都要为词表中每个token算一个分数。多语言模型需要更大词表。</div>
+</div>
+<div class="concept-card" style="border-color:rgba(239,68,68,.1)" onclick="this.classList.toggle('expanded')">
+<div class="cname"><span class="cdot" style="background:var(--a3)"></span>Token ID</div>
+<div class="cen">每个token的数字身份</div>
+<div class="cdesc">最终，一个token就是一个<strong>整数</strong>。"the" = 278, "。" = 511, "GPT" = [383, 12, 344]。这个整数送入Embedding层→变成向量→开始在整个网络中流转。从万亿参数到最终输出，<strong>起点和终点都是这一个小小的整数</strong>。</div>
+</div>
+</div>
+
+<div class="callout callout-tip"><span class="ico">💡</span><span><strong>完整链路回顾：</strong>你的输入→Tokenizer切成token IDs→Embedding变向量→120层Transformer(Attention+FFN+Norm+Residual重复)→最后一层输出logits→Softmax变概率→Sampling选一个token ID→Tokenizer解码回文字→显示在屏幕上。每个字的背后，模型都跑了<strong>一次完整的万亿参数前向传播</strong>。</span></div>
+</div>
+
+<!-- ═══════════ BONUS: KEY CONCEPTS MAP ═══════════ -->
+<div class="card" style="text-align:center">
+<h3>关键词关联图</h3>
+<p style="font-size:11px;color:var(--tx3)">每一层的概念都与上下层紧密关联——上层定义"框架"，下层填充"内容"</p>
+<div style="display:flex;flex-direction:column;gap:6px;margin:16px 0;font-size:12px">
+<div style="padding:8px 12px;border-radius:8px;background:rgba(168,85,247,.06);color:#c084fc">Transformer → Attention机制 → QKV投影(W_q,W_k,W_v) → 权重矩阵 → Logits → Token概率</div>
+<div style="padding:8px 12px;border-radius:8px;background:rgba(99,102,241,.06);color:#818cf8">Pre-training → 预测下一个token → 计算Loss → 反向传播 → 更新权重 → 下一轮迭代</div>
+<div style="padding:8px 12px;border-radius:8px;background:rgba(6,182,212,.06);color:#22d3ee">Decoder Block → Multi-Head Self-Attention + FFN → Residual + LayerNorm → Stack × N层</div>
+<div style="padding:8px 12px;border-radius:8px;background:rgba(16,185,129,.06);color:#34d399">Embedding(token→向量) → 穿过所有层 → 最终向量 → Unembedding(向量→词表logits) → Softmax</div>
+<div style="padding:8px 12px;border-radius:8px;background:rgba(245,158,11,.06);color:#fbbf24">推理时：输入token → 查Embedding → 跑N层 → Logits → Sample → 新token → 拼回输入 → 循环生成</div>
+<div style="padding:8px 12px;border-radius:8px;background:rgba(239,68,68,.06);color:#f87171">BPE Tokenizer → Token IDs → Embedding矩阵查表 → d_model维向量 → 整个模型的唯一输入</div>
+</div>
+</div>
+
+<div class="footer">
+<p style="color:var(--tx4)">LLM 解剖学 · 从万亿参数到单个Token的层级递进 · 教学参考</p>
+<p style="margin-top:4px"><a href="https://laskymy.github.io/ai-nav/">AI Center</a></p>
+</div>
+
+</div><!-- /container -->
+
+<script>
+// ==================== MOUSE GLOW ====================
+const glow=document.getElementById('glowSpot');
+let gx=innerWidth/2,gy=innerHeight/2,tx=gx,ty=gy;
+if(!('ontouchstart' in window)){
+document.addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY});
+(function anim(){
+gx+=(tx-gx)*.05;gy+=(ty-gy)*.05;
+glow.style.background=`radial-gradient(circle 420px at ${gx|0}px ${gy|0}px, rgba(99,102,241,.06),rgba(236,72,153,.035) 18%,rgba(245,158,11,.02) 42%,transparent 70%)`;
+requestAnimationFrame(anim);
+})();
+}
+
+// Progress bar
+window.addEventListener('scroll',()=>{
+const h=document.documentElement;
+document.getElementById('progressBar').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+});
+
+// Intersection Observer — animate level dots on scroll
+(function(){
+const dots = document.querySelectorAll('.level-dot');
+const observer = new IntersectionObserver(entries => {
+entries.forEach(e => {
+if(e.isIntersecting){
+e.target.style.transform='scale(1.5)';
+setTimeout(()=>e.target.style.transform='scale(1)',300);
+}
+});
+}, {threshold:0.5});
+dots.forEach(d => observer.observe(d));
+})();
+
+// ==================== MOBILE GYRO ====================
+(function(){
+if(!('ontouchstart' in window)&&!(navigator.maxTouchPoints>0))return;
+if(!window.DeviceOrientationEvent)return;
+const c=document.querySelector('.container');
+if(!c)return;
+let beta=0,gamma=0,tb=0,tg=0,active=false;
+const MAX=2.5;
+function lerp(){
+beta+=(tb-beta)*.04;gamma+=(tg-gamma)*.04;
+c.style.transform='perspective(2400px) rotateX('+(-beta).toFixed(2)+'deg) rotateY('+gamma.toFixed(2)+'deg)';
+if(active)requestAnimationFrame(lerp);
+}
+function handle(e){
+if(e.beta===null)return;
+tb=Math.max(-MAX,Math.min(MAX,(e.beta||0)*.07));
+tg=Math.max(-MAX,Math.min(MAX,(e.gamma||0)*.07));
+if(!active){active=true;lerp();}
+}
+if(typeof DeviceOrientationEvent.requestPermission==='function'){
+document.addEventListener('touchstart',function ask(){
+document.removeEventListener('touchstart',ask);
+DeviceOrientationEvent.requestPermission()
+.then(r=>{if(r==='granted')window.addEventListener('deviceorientation',handle);})
+.catch(()=>{});
+},{once:true});
+}else{window.addEventListener('deviceorientation',handle);}
+})();
+</script>
+</body>
+</html>
