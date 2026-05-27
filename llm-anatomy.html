@@ -112,6 +112,30 @@ background:var(--bg);color:var(--tx);font-size:15px;line-height:1.65;
 .callout-tip{background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.12);color:#67e8f9}
 .callout .ico{font-size:18px;flex-shrink:0}
 
+/* Tokenizer demo */
+.token-input{width:100%;padding:12px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:#fff;font-size:16px;font-family:inherit;outline:none;transition:all .3s}
+.token-input:focus{border-color:rgba(239,68,68,.3);box-shadow:0 0 20px rgba(239,68,68,.08)}
+.token-row{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0;align-items:flex-start}
+.token-chip{padding:6px 12px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;transition:all .25s var(--spring);position:relative}
+.token-chip:hover{transform:scale(1.08);z-index:2}
+.token-chip .tid{display:block;font-size:9px;opacity:.6;margin-top:1px;text-align:center}
+.token-colors:nth-child(8n+1){background:rgba(99,102,241,.25);border:1px solid rgba(99,102,241,.4);color:#c7d2fe}
+.token-colors:nth-child(8n+2){background:rgba(236,72,153,.25);border:1px solid rgba(236,72,153,.4);color:#fbcfe8}
+.token-colors:nth-child(8n+3){background:rgba(6,182,212,.25);border:1px solid rgba(6,182,212,.4);color:#67e8f9}
+.token-colors:nth-child(8n+4){background:rgba(16,185,129,.25);border:1px solid rgba(16,185,129,.4);color:#6ee7b7}
+.token-colors:nth-child(8n+5){background:rgba(245,158,11,.25);border:1px solid rgba(245,158,11,.4);color:#fde68a}
+.token-colors:nth-child(8n+6){background:rgba(168,85,247,.25);border:1px solid rgba(168,85,247,.4);color:#d8b4fe}
+.token-colors:nth-child(8n+7){background:rgba(239,68,68,.25);border:1px solid rgba(239,68,68,.4);color:#fecaca}
+.token-colors:nth-child(8n+8){background:rgba(52,211,153,.25);border:1px solid rgba(52,211,153,.4);color:#a7f3d0}
+
+/* NN demo */
+.nn-canvas-wrap{background:rgba(0,0,0,.35);border-radius:16px;overflow:hidden;margin:12px 0;cursor:pointer}
+.nn-canvas-wrap canvas{display:block;width:100%}
+.nn-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;max-width:200px;margin:0 auto}
+.nn-cell{aspect-ratio:1;border-radius:6px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);cursor:pointer;transition:all .15s var(--ease)}
+.nn-cell.on{background:rgba(99,102,241,.6);border-color:rgba(99,102,241,.6);box-shadow:0 0 10px rgba(99,102,241,.3)}
+.nn-result{text-align:center;font-size:18px;font-weight:700;margin-top:8px}
+
 .footer{text-align:center;padding:40px 0 20px;color:var(--tx3);font-size:12px}
 .footer a{color:var(--tx2);text-decoration:none}
 
@@ -387,6 +411,44 @@ background:var(--bg);color:var(--tx);font-size:15px;line-height:1.65;
 </div>
 </div>
 
+<!-- ═══════════ GAME 1: TOKENIZER PLAYGROUND ═══════════ -->
+<div class="card">
+<h3>动手试试：实时分词器</h3>
+<p style="font-size:13px;color:var(--tx2)">输入任意文字（中英文皆可），看它如何被"切碎"成token。每个色块=一个token，下方数字是模拟的token ID。</p>
+<div class="input-row" style="display:flex;gap:8px;margin:12px 0">
+<input class="token-input" id="tokenInput" value="Hello World! 你好世界，LLM很有趣。" placeholder="输入任意文字..." oninput="Tokenizer.run()">
+</div>
+<div class="token-row" id="tokenRow"></div>
+<div style="font-size:11px;color:var(--tx3);text-align:center;margin-top:4px">
+共 <strong id="tokenCount" style="color:var(--a3)">0</strong> 个token ·
+英文常见词=1~2 token · 汉字=1~2 token · 标点独立成token
+</div>
+</div>
+
+<!-- ═══════════ GAME 2: NN FORWARD PASS ═══════════ -->
+<div class="card">
+<h3>神经网络文字识别 · 交互演示</h3>
+<p style="font-size:13px;color:var(--tx2)">在下方的5×5网格里<strong>点击画出图案</strong>（比如画个数字"7"或字母"A"），神经网络会实时计算每层神经元的激活值。线条粗细=权重，圆圈大小=激活强度。</p>
+
+<div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:12px 0">
+<div style="flex-shrink:0">
+<div class="nn-grid" id="nnGrid"></div>
+<div style="display:flex;gap:6px;margin-top:6px;justify-content:center">
+<button class="btn" onclick="NN.clear()" style="font-size:10px">清空</button>
+<button class="btn" onclick="NN.preset('7')" style="font-size:10px">预设"7"</button>
+<button class="btn" onclick="NN.preset('A')" style="font-size:10px">预设"A"</button>
+<button class="btn" onclick="NN.preset('+')" style="font-size:10px">预设"+"</button>
+</div>
+</div>
+<div class="nn-canvas-wrap" id="nnWrap" style="flex:1;min-width:280px"><canvas id="nnCanvas"></canvas></div>
+</div>
+
+<div class="nn-result" id="nnResult">
+<span style="color:var(--tx3)">点击网格画图案，观察信号在网络中的流动</span>
+</div>
+<p style="font-size:10px;color:var(--tx3);text-align:center;margin-top:8px">模拟3层MLP: 输入层(25个像素) → 隐藏层(8个神经元) → 输出层(4个类别: 7 / A / + / 未知)</p>
+</div>
+
 <div class="footer">
 <p style="color:var(--tx4)">LLM 解剖学 · 从万亿参数到单个Token的层级递进 · 教学参考</p>
 <p style="margin-top:4px"><a href="https://laskymy.github.io/ai-nav/">AI Center</a></p>
@@ -426,6 +488,215 @@ setTimeout(()=>e.target.style.transform='scale(1)',300);
 }, {threshold:0.5});
 dots.forEach(d => observer.observe(d));
 })();
+
+// ==================== TOKENIZER PLAYGROUND ====================
+const Tokenizer = {
+  // Simulated vocabulary: common English subwords + Chinese chars
+  _vocab: new Map([
+    ['Hello','15496'],[' World','1917'],['!','0'],['你好','24498'],['世界','15382'],['，','161'],
+    ['LLM','321'],['很','9987'],['有趣','14678'],['。','7'],['the','278'],[' a','257'],
+    [' is','318'],[' in','287'],[' of','286'],[' and','290'],[' to','284'],[' it','340'],
+    [' he','339'],[' she','441'],[' they','442'],[' we','343'],[' you','345'],
+    [' I','312'],['Th','1582'],['is','318'],['at','279'],['er','295'],['on','319'],
+    ['ing','280'],['ed','296'],['tion','1214'],['able','1238'],['ly','307'],
+    ['AI','9527'],['GPT','7834'],['机器','22001'],['学习','18963'],['深度','17004'],
+  ]),
+  run(){
+    let text = document.getElementById('tokenInput').value;
+    if (!text) { document.getElementById('tokenRow').innerHTML=''; document.getElementById('tokenCount').textContent='0'; return; }
+    const tokens = this._tokenize(text);
+    document.getElementById('tokenCount').textContent = tokens.length;
+    document.getElementById('tokenRow').innerHTML = tokens.map((t,i) =>
+      '<div class="token-chip token-colors"><span>'+t.text.replace(/ /g,'␣')+'</span><span class="tid">#'+t.id+'</span></div>'
+    ).join('');
+  },
+  _tokenize(text){
+    const tokens = [];
+    let i = 0;
+    while (i < text.length) {
+      let matched = false;
+      // Try longest match first (greedy, like BPE)
+      for (let len = Math.min(12, text.length - i); len >= 1; len--) {
+        const sub = text.slice(i, i + len);
+        if (this._vocab.has(sub)) {
+          tokens.push({text:sub, id:this._vocab.get(sub)});
+          i += len; matched = true; break;
+        }
+      }
+      if (!matched) {
+        // Unknown char → assign ID from charCode
+        const ch = text[i];
+        tokens.push({text:ch, id:ch.codePointAt(0)});
+        i++;
+      }
+    }
+    return tokens;
+  }
+};
+Tokenizer.run();
+
+// ==================== NEURAL NETWORK DEMO ====================
+const NN = {
+  // 3-layer MLP: 25 input → 8 hidden → 4 output
+  inputSize: 25, hiddenSize: 8, outputSize: 4,
+  pixels: new Array(25).fill(0),
+  // Pretrained-like weights (synthetic but produces meaningful results)
+  W1: null, W2: null,
+  hiddenActs: null, outputActs: null, animFrame: 0,
+
+  init(){
+    this._initWeights();
+    this._buildGrid();
+    this.canvas = document.getElementById('nnCanvas');
+    this.ctx = this.canvas.getContext('2d');
+    this._resize();
+    window.addEventListener('resize', () => this._resize());
+    this._draw();
+  },
+
+  _initWeights(){
+    // Seeded pseudo-random weights
+    const rng = s => { let x=Math.sin(s)*10000; return x-Math.floor(x); };
+    this.W1 = new Float32Array(this.inputSize * this.hiddenSize);
+    this.W2 = new Float32Array(this.hiddenSize * this.outputSize);
+    for (let i=0;i<this.W1.length;i++) this.W1[i]=(rng(i*7+1)-.5)*2;
+    for (let i=0;i<this.W2.length;i++) this.W2[i]=(rng(i*13+3)-.5)*2;
+  },
+
+  _buildGrid(){
+    const grid = document.getElementById('nnGrid');
+    grid.innerHTML = '';
+    for (let i=0;i<this.inputSize;i++){
+      const cell = document.createElement('div');
+      cell.className = 'nn-cell'+(this.pixels[i]?' on':'');
+      cell.addEventListener('mousedown',e=>{e.preventDefault();this._toggle(i);});
+      cell.addEventListener('touchstart',e=>{e.preventDefault();this._toggle(i);});
+      cell.addEventListener('mouseenter',e=>{if(e.buttons)this._set(i,1);});
+      grid.appendChild(cell);
+    }
+  },
+
+  _toggle(i){ this.pixels[i]=this.pixels[i]?0:1; this._updateGrid(); this._forward(); },
+  _set(i,v){ if(this.pixels[i]!==v){this.pixels[i]=v;this._updateGrid();this._forward();}},
+
+  _updateGrid(){
+    const cells = document.getElementById('nnGrid').children;
+    for (let i=0;i<this.inputSize;i++) cells[i].classList.toggle('on',!!this.pixels[i]);
+  },
+
+  clear(){ this.pixels.fill(0); this._updateGrid(); this._forward(); },
+
+  preset(p){
+    this.clear();
+    const m = {
+      '7':[0,1,1,1,1, 0,0,0,0,1, 0,0,0,1,0, 0,0,1,0,0, 0,1,0,0,0],
+      'A':[0,0,1,0,0, 0,1,0,1,0, 1,0,0,0,1, 1,1,1,1,1, 1,0,0,0,1],
+      '+':[0,0,1,0,0, 0,0,1,0,0, 1,1,1,1,1, 0,0,1,0,0, 0,0,1,0,0],
+    }[p];
+    if(m){ for(let i=0;i<this.inputSize;i++) this.pixels[i]=m[i]; }
+    this._updateGrid(); this._forward();
+  },
+
+  _forward(){
+    // Input → Hidden: ReLU(W1 @ input)
+    this.hiddenActs = new Float32Array(this.hiddenSize);
+    for (let h=0;h<this.hiddenSize;h++){
+      let sum=0;
+      for (let i=0;i<this.inputSize;i++) sum+=this.pixels[i]*this.W1[i*this.hiddenSize+h];
+      this.hiddenActs[h]=Math.max(0,sum)*0.3;
+    }
+    // Hidden → Output: softmax(W2 @ hidden)
+    this.outputActs = new Float32Array(this.outputSize);
+    let max=-Infinity;
+    for (let o=0;o<this.outputSize;o++){
+      let sum=0;
+      for (let h=0;h<this.hiddenSize;h++) sum+=this.hiddenActs[h]*this.W2[h*this.outputSize+o];
+      this.outputActs[o]=sum;
+      if(sum>max)max=sum;
+    }
+    let denom=0;
+    for (let o=0;o<this.outputSize;o++){ this.outputActs[o]=Math.exp(this.outputActs[o]-max); denom+=this.outputActs[o]; }
+    for (let o=0;o<this.outputSize;o++) this.outputActs[o]/=denom;
+
+    this._updateResult();
+    this._draw();
+  },
+
+  _updateResult(){
+    const labels=['7','A','+','未知'];
+    let best=0, bestVal=0;
+    for (let o=0;o<this.outputSize;o++){ if(this.outputActs[o]>bestVal){bestVal=this.outputActs[o];best=o;} }
+    const hasInput=this.pixels.some(v=>v);
+    document.getElementById('nnResult').innerHTML = hasInput ?
+      '识别结果: <strong style="color:var(--a1);font-size:28px">'+labels[best]+'</strong> (置信度 '+(bestVal*100).toFixed(0)+'%)'+
+      '<div style="font-size:11px;color:var(--tx3);margin-top:2px">'+
+      labels.map((l,i)=>l+': '+(this.outputActs[i]*100).toFixed(1)+'%').join(' · ')+'</div>'
+      : '<span style="color:var(--tx3)">点击网格画图案，观察信号在网络中的流动</span>';
+  },
+
+  _resize(){
+    const wrap=document.getElementById('nnWrap');
+    const w=wrap.clientWidth;
+    this.W=Math.max(280,w);
+    this.H=Math.min(220,this.W*.6);
+    this.canvas.width=this.W*2;
+    this.canvas.height=this.H*2;
+    this._draw();
+  },
+
+  _draw(){
+    const ctx=this.ctx,W=this.canvas.width,H=this.canvas.height;
+    ctx.fillStyle='#0a0a0f';ctx.fillRect(0,0,W,H);
+
+    if(!this.hiddenActs)return;
+    const padX=30,padY=30;
+    const usableW=W-padX*2,usableH=H-padY*2;
+    const lx=[padX,padX+usableW*.45,padX+usableW*.82];
+    const sizes=[this.inputSize,this.hiddenSize,this.outputSize];
+
+    // Connection lines
+    for (let l=0;l<2;l++){
+      for (let i=0;i<sizes[l];i++){
+        const y1=padY+(i+.5)*usableH/sizes[l];
+        const act1=l===0?this.pixels[i]:this.hiddenActs[i];
+        for (let j=0;j<sizes[l+1];j++){
+          const y2=padY+(j+.5)*usableH/sizes[l+1];
+          const act2=l===0?this.hiddenActs[j]:this.outputActs[j];
+          const w=l===0?this.W1[i*this.hiddenSize+j]:this.W2[i*this.outputSize+j];
+          const alpha=Math.min(1,Math.abs(w)*act1*act2*2+.02);
+          ctx.strokeStyle=w>0?`rgba(99,102,241,${alpha})`:`rgba(239,68,68,${alpha})`;
+          ctx.lineWidth=Math.max(.5,Math.abs(w)*act1*3);
+          ctx.beginPath();ctx.moveTo(lx[l],y1);ctx.lineTo(lx[l+1],y2);ctx.stroke();
+        }
+      }
+    }
+
+    // Neurons
+    for (let l=0;l<3;l++){
+      for (let i=0;i<sizes[l];i++){
+        const x=lx[l],y=padY+(i+.5)*usableH/sizes[l];
+        const act=l===0?this.pixels[i]:(l===1?this.hiddenActs[i]:this.outputActs[i]);
+        const maxR=l===0?6:(l===1?9:14);
+        const r=3+act*maxR;
+        const grad=ctx.createRadialGradient(x,y,0,x,y,r);
+        const c=l===0?'#06B6D4':(l===1?'#6366f1':'#ec4899');
+        grad.addColorStop(0,c);grad.addColorStop(1,'transparent');
+        ctx.fillStyle=grad;ctx.beginPath();ctx.arc(x,y,r*2,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle=c;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+        if(l===2&&act>.1){
+          ctx.fillStyle='#fff';ctx.font='bold 12px Inter,sans-serif';ctx.textAlign='right';
+          const labels=['7','A','+','?'];
+          ctx.fillText(labels[i]+' '+(act*100).toFixed(0)+'%',x+16,y+4);
+        }
+      }
+    }
+
+    // Layer labels
+    ctx.fillStyle='rgba(255,255,255,.25)';ctx.font='10px Inter,sans-serif';ctx.textAlign='center';
+    ctx.fillText('输入层',lx[0],H-4);ctx.fillText('隐藏层',lx[1],H-4);ctx.fillText('输出层',lx[2],H-4);
+  }
+};
+NN.init();
 
 // ==================== MOBILE GYRO ====================
 (function(){
