@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0a0000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Cadillac OBD Dashboard</title>
+<link rel="icon" href="./icon.svg">
+<style>
+:root{
+--bg:#050102;--red:#e11d30;--red-glow:rgba(225,29,48,.6);--amber:#f59e0b;--amber-glow:rgba(245,158,11,.5);
+--white:#f0ece6;--white2:rgba(240,236,230,.7);--white3:rgba(240,236,230,.35);--white4:rgba(240,236,230,.12);
+--chrome:linear-gradient(180deg,rgba(255,255,255,.08) 0%,rgba(255,255,255,.02) 50%,rgba(255,255,255,.06) 100%);
+}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);touch-action:manipulation}
+body{
+font-family:'Inter','SF Pro Display',-apple-system,sans-serif;
+color:var(--white);-webkit-font-smoothing:antialiased;
+user-select:none;-webkit-user-select:none;
+background:radial-gradient(ellipse at 50% 50%,#120406 0%,#050102 70%);
+}
+
+/* ── Startup overlay ── */
+#startupOverlay{
+position:fixed;inset:0;z-index:1000;background:#000;
+display:flex;flex-direction:column;align-items:center;justify-content:center;
+transition:opacity .8s ease-out;
+}
+#startupOverlay.hide{opacity:0;pointer-events:none}
+.startup-logo{width:120px;height:120px;margin-bottom:20px}
+.startup-logo svg{width:100%;height:100%}
+.startup-brand{font-size:20px;font-weight:200;letter-spacing:.15em;color:#888;margin-bottom:8px}
+.startup-name{font-size:32px;font-weight:800;letter-spacing:.06em;background:linear-gradient(180deg,#fff 0%,#c00 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+.startup-sub{font-size:11px;color:#555;letter-spacing:.2em}
+.startup-bar{width:200px;height:2px;background:rgba(255,255,255,.06);margin-top:30px;border-radius:1px;overflow:hidden}
+.startup-bar-fill{height:100%;background:var(--red);width:0;transition:width 1.5s cubic-bezier(.22,1,.36,1)}
+.startup-hint{font-size:10px;color:#444;margin-top:12px;letter-spacing:.1em;opacity:0;transition:opacity .5s}
+.startup-hint.show{opacity:1}
+
+/* ── Main canvas ── */
+#dashCanvas{position:fixed;inset:0;width:100%;height:100%}
+
+/* ── Overlay UI ── */
+#uiOverlay{
+position:fixed;inset:0;pointer-events:none;z-index:10;
+display:flex;flex-direction:column;justify-content:space-between;
+}
+
+/* Top bar */
+.top-bar{display:flex;justify-content:space-between;align-items:flex-start;padding:16px 20px}
+.top-left{display:flex;flex-direction:column;gap:2px}
+.top-label{font-size:10px;color:var(--white3);letter-spacing:.08em}
+.top-value{font-size:16px;font-weight:700;letter-spacing:.02em}
+.top-right{text-align:right}
+.connection-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+.connection-dot.connected{background:var(--red);box-shadow:0 0 8px var(--red-glow);animation:pulse 2s ease-in-out infinite}
+.connection-dot.disconnected{background:#333}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.connection-label{font-size:9px;color:var(--white3);letter-spacing:.06em}
+
+/* Center: gear + speed */
+.center-display{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none}
+.gear-indicator{font-size:clamp(48px,10vw,80px);font-weight:900;line-height:1;letter-spacing:-.04em;
+background:linear-gradient(180deg,#fff 0%,#e11d30 70%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+filter:drop-shadow(0 0 20px var(--red-glow));transition:all .3s var(--ease)}
+.gear-indicator.shifting{transform:scale(1.15);filter:drop-shadow(0 0 40px var(--red-glow)) brightness(1.5)}
+.digital-speed{font-size:clamp(28px,5vw,48px);font-weight:300;letter-spacing:.04em;color:var(--white);margin-top:-8px}
+.speed-unit{font-size:12px;color:var(--white3);letter-spacing:.1em}
+
+/* Bottom bar */
+.bottom-bar{display:flex;justify-content:space-around;padding:16px 20px 24px}
+.mini-stat{text-align:center}
+.mini-stat .val{font-size:13px;font-weight:700;letter-spacing:.02em}
+.mini-stat .lbl{font-size:9px;color:var(--white3);letter-spacing:.06em;margin-top:1px}
+
+/* ── Warning lights ── */
+.warning-strip{position:absolute;top:50%;right:16px;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.warn-light{width:24px;height:24px;border-radius:50%;border:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:12px;opacity:.2;transition:all .3s}
+.warn-light.on{opacity:1;box-shadow:0 0 12px currentColor}
+
+/* ── Connect button ── */
+#connectBtn{
+position:fixed;bottom:30px;right:20px;z-index:20;pointer-events:all;
+padding:10px 20px;border-radius:24px;border:1px solid rgba(225,29,48,.4);
+background:rgba(225,29,48,.1);color:var(--white);font-size:12px;font-weight:600;
+font-family:inherit;letter-spacing:.04em;cursor:pointer;
+backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+transition:all .3s var(--ease);
+}
+#connectBtn:hover{background:rgba(225,29,48,.25);box-shadow:0 0 30px var(--red-glow)}
+#connectBtn:active{transform:scale(.95)}
+#connectBtn.connected{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.4)}
+
+/* ── Shift lights ── */
+#shiftLights{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:5;display:flex;gap:4px;pointer-events:none}
+.shift-led{width:10px;height:24px;border-radius:3px;background:rgba(255,255,255,.06);transition:all .1s}
+.shift-led.green{background:#10b981;box-shadow:0 0 8px rgba(16,185,129,.6)}
+.shift-led.amber{background:#f59e0b;box-shadow:0 0 8px rgba(245,158,11,.6)}
+.shift-led.red{background:#e11d30;box-shadow:0 0 12px rgba(225,29,48,.8);animation:flashLED .3s ease-in-out infinite alternate}
+@keyframes flashLED{to{background:#fff;box-shadow:0 0 20px #fff}}
+
+/* ── Ease ── */
+:root{--ease:cubic-bezier(.22,1,.36,1)}
+
+/* ── Performance mode ── */
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<!-- Startup Sequence -->
+<div id="startupOverlay">
+<div class="startup-logo">
+<svg viewBox="0 0 120 120" fill="none">
+<path d="M20 90L60 20l40 70" stroke="#e11d30" stroke-width="1.5" fill="none"/>
+<path d="M35 80h50" stroke="#e11d30" stroke-width="1" opacity=".5"/>
+<path d="M32 70h56" stroke="#e11d30" stroke-width="1" opacity=".3"/>
+<circle cx="60" cy="60" r="50" stroke="rgba(255,255,255,.06)" stroke-width="1" fill="none"/>
+<circle cx="60" cy="60" r="40" stroke="rgba(225,29,48,.1)" stroke-width=".5" fill="none"/>
+</svg>
+</div>
+<div class="startup-brand">CADILLAC</div>
+<div class="startup-name">OBD PERFORMANCE</div>
+<div class="startup-sub">RACING DASHBOARD</div>
+<div class="startup-bar"><div class="startup-bar-fill" id="startupFill"></div></div>
+<div class="startup-hint" id="startupHint">系统就绪 · 等待连接</div>
+</div>
+
+<!-- Main Canvas -->
+<canvas id="dashCanvas"></canvas>
+
+<!-- Shift Lights -->
+<div id="shiftLights">
+<div class="shift-led"></div><div class="shift-led"></div><div class="shift-led"></div>
+<div class="shift-led"></div><div class="shift-led"></div>
+<div class="shift-led"></div><div class="shift-led"></div><div class="shift-led"></div>
+<div class="shift-led"></div><div class="shift-led"></div>
+</div>
+
+<!-- UI Overlay -->
+<div id="uiOverlay">
+<div class="top-bar">
+<div class="top-left">
+<span class="top-label">机油压力</span>
+<span class="top-value" id="oilVal" style="color:#f59e0b">-- PSI</span>
+<span class="top-label" style="margin-top:6px">冷却液温</span>
+<span class="top-value" id="coolantVal" style="color:#06b6d4">-- °C</span>
+</div>
+<div class="top-right">
+<span class="connection-dot disconnected" id="connDot"></span><span class="connection-label" id="connLabel">模拟模式</span>
+</div>
+</div>
+
+<div class="center-display">
+<div class="gear-indicator" id="gearDisplay">P</div>
+<div class="digital-speed"><span id="speedDigital">0</span> <span class="speed-unit">KM/H</span></div>
+</div>
+
+<div class="warning-strip" id="warningStrip">
+<div class="warn-light" style="color:#e11d30" title="机油压力低">!</div>
+<div class="warn-light" style="color:#f59e0b" title="检查引擎">E</div>
+<div class="warn-light" style="color:#06b6d4" title="远光灯">B</div>
+</div>
+
+<div class="bottom-bar">
+<div class="mini-stat"><div class="val" id="fuelVal">--%</div><div class="lbl">油量</div></div>
+<div class="mini-stat"><div class="val" id="voltVal" style="color:#10b981">--V</div><div class="lbl">电压</div></div>
+<div class="mini-stat"><div class="val" id="throttleVal" style="color:#f59e0b">--%</div><div class="lbl">节气门</div></div>
+<div class="mini-stat"><div class="val" id="loadVal" style="color:#06b6d4">--%</div><div class="lbl">负荷</div></div>
+</div>
+</div>
+
+<button id="connectBtn" onclick="OBD.toggleConnection()">连接 OBD</button>
+
+<script>
+// =====================================================
+// CADILLAC OBD RACING DASHBOARD
+// =====================================================
+
+const $ = id => document.getElementById(id);
+const TWO_PI = Math.PI * 2;
+const DEG = Math.PI / 180;
+
+// ── State ──
+const State = {
+  // Display values (lerped)
+  rpm: 0, speed: 0, oilPsi: 40, coolantC: 85, fuelPct: 65,
+  voltage: 13.8, throttle: 15, load: 25,
+  // Raw target values
+  rpmTarget: 800, speedTarget: 0, oilTarget: 40, coolantTarget: 85,
+  fuelTarget: 65, voltTarget: 13.8, throttleTarget: 15, loadTarget: 25,
+  // Gear
+  gear: 'P', prevGear: 'P', gearShifting: false,
+  // Derived
+  rpmPct: 0, maxRpm: 7000, redline: 6500,
+  // Timing
+  lastTime: 0, dt: 0, frameCount: 0,
+  // Connection
+  connected: false, btDevice: null, btServer: null, btChar: null,
+};
+
+// ── Canvas Setup ──
+const canvas = $('dashCanvas');
+const ctx = canvas.getContext('2d');
+let W, H, cx, cy;
+
+function resize(){
+  const dpr = Math.min(window.devicePixelRatio || 1, 2); // cap for perf
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.scale(dpr, dpr);
+  cx = W / 2; cy = H / 2;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// ── Drawing Utilities ──
+function drawGlow(x, y, r, color, alpha){
+  const g = ctx.createRadialGradient(x, y, r*.2, x, y, r);
+  g.addColorStop(0, color.replace(')', `,${alpha})`).replace('rgb', 'rgba'));
+  g.addColorStop(1, 'transparent');
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, TWO_PI); ctx.fill();
+}
+
+// Convert a hex color + alpha to rgba string
+function rgba(hex, a){ const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16); return `rgba(${r},${g},${b},${a})`; }
+
+// ── Gauge Drawing ──
+function drawTachometer(x, y, r){
+  // This is the main center gauge — RPM 0-8000, with redline at 6500
+  const rpm = State.rpm;
+  const rpmPct = Math.max(0, Math.min(1, rpm / State.maxRpm));
+  const startAngle = DEG * 225; // start from ~7 o'clock
+  const sweepAngle = DEG * 270; // sweep 270 degrees
+
+  // Outer shadow ring
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,.8)'; ctx.shadowBlur = 40;
+  ctx.fillStyle = 'rgba(20,20,22,.9)';
+  ctx.beginPath(); ctx.arc(x, y, r, 0, TWO_PI); ctx.fill();
+  ctx.restore();
+
+  // Outer chrome ring
+  ctx.strokeStyle = 'rgba(255,255,255,.08)'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.arc(x, y, r-5, 0, TWO_PI); ctx.stroke();
+
+  // Inner chrome ring
+  const innerR = r - 14;
+  ctx.strokeStyle = 'rgba(255,255,255,.04)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.arc(x, y, innerR, 0, TWO_PI); ctx.stroke();
+
+  // Tick marks
+  const tickCount = 40; // every 200 RPM
+  for (let i = 0; i <= tickCount; i++){
+    const pct = i / tickCount;
+    const angle = startAngle + pct * sweepAngle;
+    const isMajor = i % 5 === 0;
+    const isRedline = i >= 32.5; // 6500+
+    const outerR = isMajor ? r - 18 : r - 22;
+    const innerR2 = isMajor ? r - 45 : r - 38;
+    const tColor = isRedline ? 'rgba(225,29,48,.8)' : (isMajor ? 'rgba(255,255,255,.5)' : 'rgba(255,255,255,.15)');
+    ctx.strokeStyle = tColor; ctx.lineWidth = isMajor ? 2 : 1;
+    ctx.beginPath();
+    ctx.moveTo(x + Math.cos(angle) * outerR, y + Math.sin(angle) * outerR);
+    ctx.lineTo(x + Math.cos(angle) * innerR2, y + Math.sin(angle) * innerR2);
+    ctx.stroke();
+
+    // Number labels
+    if (isMajor){
+      const labelR = r - 58;
+      const lx = x + Math.cos(angle) * labelR;
+      const ly = y + Math.sin(angle) * labelR;
+      ctx.fillStyle = isRedline ? '#e11d30' : 'rgba(255,255,255,.35)';
+      ctx.font = `${Math.round(r/14)}px Inter,sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(i * 200 / 1000, lx, ly);
+    }
+  }
+
+  // Redline arc
+  const redlineAngle = startAngle + (32.5 / 40) * sweepAngle;
+  ctx.strokeStyle = 'rgba(225,29,48,.3)'; ctx.lineWidth = 8;
+  ctx.beginPath(); ctx.arc(x, y, r-30, redlineAngle, startAngle + sweepAngle); ctx.stroke();
+
+  // Inner face
+  const faceR = r - 54;
+  const faceGrad = ctx.createRadialGradient(x-10, y-10, 0, x, y, faceR);
+  faceGrad.addColorStop(0, '#1a1a1e');
+  faceGrad.addColorStop(1, '#0a0a0d');
+  ctx.fillStyle = faceGrad;
+  ctx.beginPath(); ctx.arc(x, y, faceR, 0, TWO_PI); ctx.fill();
+
+  // RPM digital readout
+  ctx.fillStyle = '#fff'; ctx.font = `bold ${Math.round(r/6)}px Inter,sans-serif`; ctx.textAlign = 'center';
+  ctx.fillText(Math.round(rpm), x, y + r*.05);
+  ctx.fillStyle = 'rgba(255,255,255,.3)'; ctx.font = `${Math.round(r/14)}px Inter,sans-serif`;
+  ctx.fillText('RPM ×1000', x, y + r*.2);
+
+  // Cadillac wreath icon (stylized)
+  ctx.strokeStyle = 'rgba(225,29,48,.15)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.arc(x, y - r*.55, r*.08, 0, TWO_PI); ctx.stroke();
+  ctx.fillStyle = 'rgba(225,29,48,.3)';
+  ctx.beginPath(); ctx.arc(x, y - r*.55, r*.04, 0, TWO_PI); ctx.fill();
+
+  // Draw needle
+  drawNeedle(x, y, rpmPct, startAngle, sweepAngle, r-60, '#e11d30', 4);
+}
+
+function drawSpeedometer(x, y, r){
+  const speed = State.speed;
+  const speedPct = Math.max(0, Math.min(1, speed / 260));
+  const startAngle = DEG * 225;
+  const sweepAngle = DEG * 270;
+
+  // Outer
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,.6)'; ctx.shadowBlur = 25;
+  ctx.fillStyle = 'rgba(20,20,22,.9)';
+  ctx.beginPath(); ctx.arc(x, y, r, 0, TWO_PI); ctx.fill();
+  ctx.restore();
+
+  ctx.strokeStyle = 'rgba(255,255,255,.06)'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(x, y, r-4, 0, TWO_PI); ctx.stroke();
+
+  // Ticks
+  const tickCount = 26;
+  for (let i=0;i<=tickCount;i++){
+    const pct=i/tickCount, angle=startAngle+pct*sweepAngle;
+    const isMajor=i%5===0;
+    ctx.strokeStyle=isMajor?'rgba(255,255,255,.4)':'rgba(255,255,255,.12)';
+    ctx.lineWidth=isMajor?2:1;
+    ctx.beginPath();
+    ctx.moveTo(x+Math.cos(angle)*(r-14),y+Math.sin(angle)*(r-14));
+    ctx.lineTo(x+Math.cos(angle)*(isMajor?r-36:r-28),y+Math.sin(angle)*(isMajor?r-36:r-28));
+    ctx.stroke();
+    if(isMajor){
+      const lx=x+Math.cos(angle)*(r-46),ly=y+Math.sin(angle)*(r-46);
+      ctx.fillStyle='rgba(255,255,255,.3)'; ctx.font=`${Math.round(r/12)}px Inter,sans-serif`;
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(i*10,lx,ly);
+    }
+  }
+
+  const faceR=r-42;
+  const faceGrad=ctx.createRadialGradient(x-6,y-6,0,x,y,faceR);
+  faceGrad.addColorStop(0,'#1a1a1e');faceGrad.addColorStop(1,'#0a0a0d');
+  ctx.fillStyle=faceGrad;
+  ctx.beginPath();ctx.arc(x,y,faceR,0,TWO_PI);ctx.fill();
+
+  ctx.fillStyle='#fff';ctx.font=`bold ${Math.round(r/7)}px Inter,sans-serif`;ctx.textAlign='center';
+  ctx.fillText(Math.round(speed),x,y+r*.05);
+  ctx.fillStyle='rgba(255,255,255,.25)';ctx.font=`${Math.round(r/14)}px Inter,sans-serif`;
+  ctx.fillText('KM/H',x,y+r*.22);
+
+  drawNeedle(x,y,speedPct,startAngle,sweepAngle,r-48,'#f0ece6',2.5);
+}
+
+function drawOilTempGauge(x, y, r){
+  const oilPct = Math.max(0, Math.min(1, State.oilPsi / 100));
+  const tempPct = Math.max(0, Math.min(1, (State.coolantC - 40) / 100));
+  const startAngle = DEG * 200;
+  const sweepAngle = DEG * 140;
+
+  // Outer
+  ctx.fillStyle='rgba(20,20,22,.9)';
+  ctx.beginPath();ctx.arc(x,y,r,0,TWO_PI);ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,.06)';ctx.lineWidth=2;
+  ctx.beginPath();ctx.arc(x,y,r-4,0,TWO_PI);ctx.stroke();
+
+  // Split face - upper: oil, lower: temp
+  // Oil pressure (upper half arc)
+  for(let i=0;i<=14;i++){
+    const pct=i/14,angle=startAngle+pct*sweepAngle;
+    const isMajor=i%7===0;
+    ctx.strokeStyle=isMajor?'rgba(245,158,11,.4)':'rgba(255,255,255,.1)';ctx.lineWidth=isMajor?2:1;
+    ctx.beginPath();
+    ctx.moveTo(x+Math.cos(angle)*(r-12),y+Math.sin(angle)*(r-12));
+    ctx.lineTo(x+Math.cos(angle)*(isMajor?r-30:r-24),y+Math.sin(angle)*(isMajor?r-30:r-24));
+    ctx.stroke();
+  }
+  // Temp (lower half arc, mirrored)
+  const tStart=DEG*160,tSweep=DEG*140;
+  for(let i=0;i<=14;i++){
+    const pct=i/14,angle=tStart+pct*tSweep;
+    const isMajor=i%7===0;
+    ctx.strokeStyle=isMajor?'rgba(6,182,212,.4)':'rgba(255,255,255,.1)';ctx.lineWidth=isMajor?2:1;
+    ctx.beginPath();
+    ctx.moveTo(x+Math.cos(angle)*(r-12),y+Math.sin(angle)*(r-12));
+    ctx.lineTo(x+Math.cos(angle)*(isMajor?r-30:r-24),y+Math.sin(angle)*(isMajor?r-30:r-24));
+    ctx.stroke();
+  }
+
+  const faceR=r-26;
+  ctx.fillStyle='#0a0a0d';ctx.beginPath();ctx.arc(x,y,faceR,0,TWO_PI);ctx.fill();
+
+  // Labels
+  ctx.fillStyle=rgba('#f59e0b',.8);ctx.font=`bold ${Math.round(r/8)}px Inter,sans-serif`;ctx.textAlign='center';
+  ctx.fillText(Math.round(State.oilPsi),x,y-r*.15);
+  ctx.fillStyle='rgba(255,255,255,.2)';ctx.font=`${Math.round(r/14)}px Inter,sans-serif`;
+  ctx.fillText('OIL PSI',x,y+r*.1);
+
+  ctx.fillStyle=rgba('#06b6d4',.8);ctx.font=`bold ${Math.round(r/8)}px Inter,sans-serif`;ctx.textAlign='center';
+  ctx.fillText(Math.round(State.coolantC)+'°',x,y+r*.45);
+  ctx.fillStyle='rgba(255,255,255,.2)';ctx.font=`${Math.round(r/14)}px Inter,sans-serif`;
+  ctx.fillText('COOLANT',x,y+r*.65);
+
+  // Mini needles
+  drawNeedle(x,y,oilPct,DEG*200,DEG*140,r-32,'#f59e0b',2);
+  drawNeedle(x,y,tempPct,DEG*160,DEG*140,r-32,'#06b6d4',2);
+}
+
+function drawNeedle(x, y, pct, startAngle, sweepAngle, length, color, width){
+  const angle = startAngle + pct * sweepAngle;
+  const tipX = x + Math.cos(angle) * length;
+  const tipY = y + Math.sin(angle) * length;
+
+  // Needle glow
+  ctx.save();
+  ctx.shadowColor = color; ctx.shadowBlur = 8;
+  ctx.strokeStyle = color; ctx.lineWidth = width; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(tipX, tipY); ctx.stroke();
+  ctx.restore();
+
+  // Center cap
+  const capGrad = ctx.createRadialGradient(x-1,y-1,0,x,y,width*3);
+  capGrad.addColorStop(0,'#fff');capGrad.addColorStop(.5,'#333');capGrad.addColorStop(1,'#0a0a0a');
+  ctx.fillStyle = capGrad;
+  ctx.beginPath(); ctx.arc(x, y, width*3, 0, TWO_PI); ctx.fill();
+
+  // Center dot
+  ctx.fillStyle = '#e11d30';
+  ctx.beginPath(); ctx.arc(x, y, width*.8, 0, TWO_PI); ctx.fill();
+}
+
+// ── Background grid & particles ──
+let bgParticles = [];
+function initBgParticles(){
+  bgParticles = [];
+  for (let i=0;i<30;i++){
+    bgParticles.push({
+      x:Math.random()*W, y:Math.random()*H,
+      vx:(Math.random()-.5)*.3, vy:(Math.random()-.5)*.3,
+      r:Math.random()*1.5, alpha:Math.random()*.15,
+    });
+  }
+}
+initBgParticles();
+
+function drawBackground(){
+  // Subtle grid
+  ctx.strokeStyle='rgba(255,255,255,.012)';ctx.lineWidth=.5;
+  const gs=40;
+  for(let x=gs;x<W;x+=gs){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  for(let y=gs;y<H;y+=gs){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+
+  // Particles
+  for(const p of bgParticles){
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+    ctx.fillStyle=`rgba(225,29,48,${p.alpha})`;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,TWO_PI);ctx.fill();
+  }
+}
+
+// ── Main Render Loop ──
+function render(timestamp){
+  if (!State.lastTime) State.lastTime = timestamp;
+  State.dt = Math.min((timestamp - State.lastTime) / 1000, .1);
+  State.lastTime = timestamp;
+  State.frameCount++;
+
+  // Lerp display values toward targets
+  const lerpFactor = 1 - Math.exp(-12 * State.dt); // spring-like
+  State.rpm += (State.rpmTarget - State.rpm) * lerpFactor;
+  State.speed += (State.speedTarget - State.speed) * lerpFactor;
+  State.oilPsi += (State.oilTarget - State.oilPsi) * lerpFactor;
+  State.coolantC += (State.coolantTarget - State.coolantC) * lerpFactor;
+  State.fuelPct += (State.fuelTarget - State.fuelPct) * lerpFactor;
+  State.voltage += (State.voltTarget - State.voltage) * lerpFactor;
+  State.throttle += (State.throttleTarget - State.throttle) * lerpFactor;
+  State.load += (State.loadTarget - State.load) * lerpFactor;
+
+  State.rpmPct = State.rpm / State.maxRpm;
+
+  // Clear
+  ctx.clearRect(0, 0, W, H);
+
+  // Background
+  drawBackground();
+
+  // Responsive layout
+  const isPortrait = H > W;
+  const scale = Math.min(W / 420, H / 780);
+
+  if (isPortrait){
+    // Mobile portrait layout
+    const mainR = Math.min(W*.38, H*.18);
+    const mainY = H*.32;
+    drawTachometer(cx, mainY, mainR);
+
+    const sideR = mainR*.6;
+    const sideY = H*.62;
+    drawSpeedometer(cx*.28, sideY, sideR);
+    drawOilTempGauge(cx*1.72, sideY, sideR);
+  } else {
+    // Desktop landscape layout
+    const mainR = Math.min(W*.25, H*.38);
+    const mainY = H*.48;
+    drawTachometer(cx, mainY, mainR);
+
+    const sideR = mainR*.65;
+    const sideY = H*.48;
+    drawSpeedometer(cx*.22, sideY, sideR);
+    drawOilTempGauge(cx*1.78, sideY, sideR);
+  }
+
+  // Red ambient glow at center
+  drawGlow(cx, cy, Math.min(W,H)*.5, 'rgb(225,29,48)', .03);
+
+  // Update shift lights
+  updateShiftLights();
+
+  // Update digital readouts
+  if (State.frameCount % 3 === 0){
+    $('oilVal').textContent = Math.round(State.oilPsi) + ' PSI';
+    $('coolantVal').textContent = Math.round(State.coolantC) + '°C';
+    $('speedDigital').textContent = Math.round(State.speed);
+    $('fuelVal').textContent = Math.round(State.fuelPct) + '%';
+    $('voltVal').textContent = State.voltage.toFixed(1) + 'V';
+    $('throttleVal').textContent = Math.round(State.throttle) + '%';
+    $('loadVal').textContent = Math.round(State.load) + '%';
+  }
+
+  // Update gear display with shifting animation
+  $('gearDisplay').textContent = State.gear;
+  if (State.gearShifting){
+    $('gearDisplay').classList.add('shifting');
+    if (State.frameCount % 6 === 0) State.gearShifting = false;
+  } else {
+    $('gearDisplay').classList.remove('shifting');
+  }
+
+  requestAnimationFrame(render);
+}
+
+// ── Shift Lights ──
+function updateShiftLights(){
+  const leds = document.querySelectorAll('#shiftLights .shift-led');
+  const pct = State.rpmPct;
+  leds.forEach((led,i)=>{
+    const t = i/leds.length;
+    led.className='shift-led';
+    if(pct>t+.05) led.classList.add('green');
+    if(pct>t+.15) led.classList.add('amber');
+    if(pct>t+.25) led.classList.add('red');
+  });
+}
+
+// ── Gear Detection ──
+function detectGear(rpm, speed){
+  if (speed < 1 && rpm < 1200) return 'P';
+  if (speed < 1) return 'N';
+  // Rough gear detection based on RPM/speed ratio
+  const ratio = speed > 0 ? rpm / speed : 0;
+  if (ratio > 55) return '1';
+  if (ratio > 35) return '2';
+  if (ratio > 24) return '3';
+  if (ratio > 18) return '4';
+  if (ratio > 13) return '5';
+  if (ratio > 9) return '6';
+  if (ratio > 6) return '7';
+  return '8';
+}
+
+// ── OBD Data Layer ──
+const OBD = {
+  connected: false,
+  pidInterval: null,
+  simMode: true,
+
+  toggleConnection(){
+    if (this.connected){
+      this.disconnect();
+    } else {
+      this.connect();
+    }
+  },
+
+  async connect(){
+    try {
+      if (!('bluetooth' in navigator)){
+        alert('您的浏览器不支持 Web Bluetooth。请使用 Chrome/Edge 浏览器。');
+        return;
+      }
+
+      const device = await navigator.bluetooth.requestDevice({
+        filters: [
+          {namePrefix: 'OBD'},
+          {namePrefix: 'ELM'},
+          {namePrefix: 'Vgate'},
+          {namePrefix: 'Veepeak'},
+          {namePrefix: 'Carista'},
+          {namePrefix: 'BlueDriver'},
+        ],
+        optionalServices: [
+          '00001101-0000-1000-8000-00805f9b34fb', // Standard Serial
+          '0000fff0-0000-1000-8000-00805f9b34fb', // OBD SPP
+          'e7810a71-73ae-499d-8c15-faa9aef0c3f2', // Nordic UART
+        ],
+      });
+
+      State.btDevice = device;
+      device.addEventListener('gattserverdisconnected', () => OBD.onDisconnect());
+
+      const server = await device.gatt.connect();
+      State.btServer = server;
+
+      // Try to find the OBD serial characteristic
+      let char = null;
+      const serviceUuids = [
+        '00001101-0000-1000-8000-00805f9b34fb',
+        '0000fff0-0000-1000-8000-00805f9b34fb',
+      ];
+
+      for (const suuid of serviceUuids){
+        try {
+          const service = await server.getPrimaryService(suuid);
+          const chars = await service.getCharacteristics();
+          // Look for notify/write characteristics
+          for (const c of chars){
+            if (c.properties.write || c.properties.writeWithoutResponse){
+              char = c; break;
+            }
+          }
+          if (char) break;
+        } catch(e){ continue; }
+      }
+
+      if (!char){
+        alert('未找到 OBD 串口特征。请确认适配器支持标准 ELM327 蓝牙协议。');
+        return;
+      }
+
+      State.btChar = char;
+
+      // Initialize ELM327
+      await this.sendCommand('ATZ\r'); // Reset
+      await this.delay(500);
+      await this.sendCommand('ATE0\r'); // Echo off
+      await this.delay(100);
+      await this.sendCommand('ATL0\r'); // Linefeed off
+      await this.delay(100);
+      await this.sendCommand('ATS0\r'); // Spaces off
+      await this.delay(100);
+      await this.sendCommand('ATH1\r'); // Headers on
+      await this.delay(100);
+      await this.sendCommand('ATSP0\r'); // Auto protocol
+
+      this.connected = true;
+      State.connected = true;
+      this.simMode = false;
+      this.startPolling();
+      this.updateUI();
+
+    } catch(e){
+      console.error('OBD connection failed:', e);
+      if (e.message.includes('cancelled') || e.message.includes('Cancelled')){
+        // User cancelled - stay in sim mode
+      } else {
+        alert('连接失败: ' + e.message + '\n\n将保持模拟模式。');
+      }
+    }
+  },
+
+  async sendCommand(cmd){
+    if (!State.btChar) return;
+    const encoder = new TextEncoder();
+    await State.btChar.writeValue(encoder.encode(cmd));
+  },
+
+  delay(ms){ return new Promise(r => setTimeout(r, ms)); },
+
+  async readPID(pid){
+    try {
+      await this.sendCommand(`01${pid}\r`);
+      // Response comes via notification - simplified here
+      // In production, you'd set up a notification listener
+    } catch(e){}
+  },
+
+  startPolling(){
+    // Poll key PIDs at different rates
+    // Fast PIDs (every 200ms): RPM, Speed, Throttle
+    this.pidInterval = setInterval(() => {
+      if (!this.connected) return;
+      this.readPID('0C'); // RPM
+      this.readPID('0D'); // Speed
+      this.readPID('11'); // Throttle
+    }, 200);
+
+    // Slow PIDs (every 1s): temps, pressures
+    setInterval(() => {
+      if (!this.connected) return;
+      this.readPID('05'); // Coolant
+      this.readPID('0A'); // Fuel pressure
+      this.readPID('04'); // Engine load
+      this.readPID('42'); // Battery voltage
+    }, 1000);
+  },
+
+  disconnect(){
+    this.connected = false;
+    State.connected = false;
+    this.simMode = true;
+    if (this.pidInterval) clearInterval(this.pidInterval);
+    if (State.btServer) {
+      State.btServer.disconnect();
+      State.btServer = null;
+    }
+    this.updateUI();
+  },
+
+  onDisconnect(){
+    OBD.connected = false;
+    State.connected = false;
+    OBD.simMode = true;
+    if (OBD.pidInterval) clearInterval(OBD.pidInterval);
+    OBD.updateUI();
+  },
+
+  updateUI(){
+    const btn = $('connectBtn');
+    const dot = $('connDot');
+    const label = $('connLabel');
+    if (this.connected){
+      btn.textContent = '断开 OBD';
+      btn.classList.add('connected');
+      dot.className = 'connection-dot connected';
+      label.textContent = '已连接';
+    } else {
+      btn.textContent = '连接 OBD';
+      btn.classList.remove('connected');
+      dot.className = 'connection-dot disconnected';
+      label.textContent = '模拟模式';
+    }
+  },
+};
+
+// ── Simulation Engine ──
+const Sim = {
+  mode: 'idle', // idle, driving, racing
+  simRpm: 800, simSpeed: 0, simGear: 'P',
+  accelInput: 0, brakeInput: 0,
+  gearChangeTimer: 0, gearChangeCooldown: 0,
+
+  update(dt){
+    if (!OBD.simMode) return; // only simulate when not connected to real OBD
+
+    // Random driving simulation
+    this.accelInput += (Math.random() - .48) * dt * .3;
+    this.accelInput = Math.max(0, Math.min(1, this.accelInput));
+
+    if (Math.random() < dt * .02 && this.simSpeed > 10){
+      this.brakeInput = Math.random() < .5 ? Math.random() : 0;
+    }
+
+    const targetRpm = this._calcRpm();
+    State.rpmTarget = targetRpm;
+    State.speedTarget = this.simSpeed;
+
+    // Detect gear
+    const gear = detectGear(State.rpm, this.simSpeed);
+    if (gear !== this.simGear && this.gearChangeCooldown <= 0){
+      State.prevGear = this.simGear;
+      this.simGear = gear;
+      State.gear = gear;
+      State.gearShifting = true;
+      this.gearChangeCooldown = .8;
+    }
+    this.gearChangeCooldown -= dt;
+
+    // Sim parameters
+    State.oilTarget = 35 + this.simSpeed * .3 + (Math.random() - .5) * 3;
+    State.coolantTarget = 80 + this.simSpeed * .15 + (Math.random() - .5) * 2;
+    State.fuelTarget = Math.max(5, State.fuelPct - dt * .002);
+    State.voltTarget = 13.5 + (State.rpm > 1500 ? .8 : 0) + (Math.random() - .5) * .3;
+    State.throttleTarget = this.accelInput * 100;
+    State.loadTarget = 15 + this.accelInput * 70 + (Math.random() - .5) * 10;
+  },
+
+  _calcRpm(){
+    if (this.simGear === 'P'){
+      this.simRpm += (800 - this.simRpm) * .05;
+      this.simSpeed *= .95;
+      return this.simRpm;
+    }
+    if (this.simGear === 'N'){
+      this.simRpm += (1500 - this.simRpm) * .05;
+      return this.simRpm;
+    }
+
+    // Driving: accel increases RPM and speed
+    const accelForce = this.accelInput * 2000;
+    const brakeForce = this.brakeInput * 3000;
+    const drag = this.simSpeed * .02;
+
+    this.simSpeed += (accelForce - brakeForce - drag) * .016;
+    this.simSpeed = Math.max(0, Math.min(260, this.simSpeed));
+
+    // Gear-based RPM calculation
+    const gearRatios = {1:12, 2:8, 3:5.5, 4:4, 5:3, 6:2.3, 7:1.8, 8:1.4};
+    const ratio = gearRatios[this.simGear] || 3;
+    let rpm = this.simSpeed * ratio * 35 + 800;
+    rpm = Math.max(700, Math.min(7200, rpm + (Math.random() - .5) * 100));
+
+    return rpm;
+  },
+};
+
+// ── Warning Lights ──
+function updateWarnings(){
+  const strip = $('warningStrip');
+  const lights = strip.querySelectorAll('.warn-light');
+  // Oil pressure warning
+  lights[0].classList.toggle('on', State.oilPsi < 12 && State.rpm > 1000);
+  // Check engine (just decorative in sim)
+  lights[1].classList.toggle('on', false);
+  // High beam decorative
+  lights[2].classList.toggle('on', State.speed > 120);
+}
+
+// ── Startup Sequence ──
+function runStartup(){
+  setTimeout(() => $('startupFill').style.width = '100%', 200);
+
+  // Simulate gauge sweep during startup
+  let sweepPhase = 0;
+  const sweepInterval = setInterval(() => {
+    sweepPhase++;
+    if (sweepPhase < 30){
+      // Sweep up
+      const pct = sweepPhase / 30;
+      State.rpmTarget = 8000 * pct;
+      State.speedTarget = 260 * pct;
+    } else if (sweepPhase < 60){
+      // Sweep back
+      const pct = (sweepPhase - 30) / 30;
+      State.rpmTarget = 8000 * (1 - pct);
+      State.speedTarget = 260 * (1 - pct);
+    } else {
+      clearInterval(sweepInterval);
+      State.rpmTarget = 800;
+      State.speedTarget = 0;
+      State.gear = 'P';
+      // Show hint
+      setTimeout(() => {
+        $('startupHint').classList.add('show');
+        setTimeout(() => {
+          $('startupOverlay').classList.add('hide');
+          setTimeout(() => $('startupOverlay').remove(), 800);
+        }, 800);
+      }, 400);
+    }
+  }, 30);
+}
+
+// ── Main Loop ──
+function gameLoop(timestamp){
+  Sim.update(State.dt);
+  if (State.frameCount % 20 === 0) updateWarnings();
+}
+
+// Wrap render to include game loop
+const _origRender = render;
+render = function(timestamp){
+  gameLoop(timestamp);
+  _origRender(timestamp);
+};
+
+// ── Init ──
+runStartup();
+requestAnimationFrame(render);
+
+// ── Handle visibility change (pause when tab hidden) ──
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden){
+    State.lastTime = 0;
+  }
+});
+
+// ── Keyboard shortcuts for demo ──
+document.addEventListener('keydown', e => {
+  if (!OBD.simMode) return;
+  switch(e.key.toLowerCase()){
+    case 'a': Sim.accelInput = Math.min(1, Sim.accelInput + .15); break;
+    case 'z': Sim.accelInput = Math.max(0, Sim.accelInput - .15); break;
+    case 'b': Sim.brakeInput = Sim.brakeInput > 0 ? 0 : .8; break;
+    case '1': Sim.simGear='1'; State.gear='1'; State.gearShifting=true; break;
+    case '2': Sim.simGear='2'; State.gear='2'; State.gearShifting=true; break;
+    case '3': Sim.simGear='3'; State.gear='3'; State.gearShifting=true; break;
+    case '4': Sim.simGear='4'; State.gear='4'; State.gearShifting=true; break;
+    case '5': Sim.simGear='5'; State.gear='5'; State.gearShifting=true; break;
+    case '6': Sim.simGear='6'; State.gear='6'; State.gearShifting=true; break;
+    case 'p': Sim.simGear='P'; State.gear='P'; Sim.simSpeed=0; break;
+    case 'n': Sim.simGear='N'; State.gear='N'; break;
+  }
+});
+
+// ── Touch throttle (drag right half of screen up/down) ──
+let touchActive = false;
+document.addEventListener('touchstart', e => {
+  if (e.touches.length === 1 && e.touches[0].clientX > W * .5){
+    touchActive = true;
+  }
+});
+document.addEventListener('touchmove', e => {
+  if (!touchActive || !OBD.simMode) return;
+  const t = e.touches[0];
+  // Map Y position to throttle: top=full throttle, bottom=idle
+  Sim.accelInput = Math.max(0, Math.min(1, 1 - t.clientY / H));
+});
+document.addEventListener('touchend', () => {
+  touchActive = false;
+  if (OBD.simMode) Sim.accelInput *= .3; // release throttle
+});
+
+console.log('%c🏎️ Cadillac OBD Racing Dashboard %cReady',
+  'color:#e11d30;font-size:16px;font-weight:bold','color:#fff');
+console.log('%cWeb Bluetooth API %c| %cELM327 OBD-II %c| %cSimulation Mode',
+  'color:#f59e0b','color:#888','color:#06b6d4','color:#888','color:#10b981');
+console.log('%cPress A/Z for throttle, B for brake, 1-6 for gears, P/N for park/neutral',
+  'color:#888;font-size:11px');
+console.log('%cOn mobile: drag right half of screen for throttle control',
+  'color:#888;font-size:11px');
+</script>
+</body>
+</html>
