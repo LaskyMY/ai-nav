@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>普行男养成计划</title>
+<link rel="icon" href="./icon.svg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.6;min-height:100vh;padding-bottom:calc(100px + env(safe-area-inset-bottom,0));-webkit-font-smoothing:antialiased;overflow-x:hidden;letter-spacing:-.01em}
+::-webkit-scrollbar{width:2px;height:2px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.04);border-radius:1px}
+::selection{background:rgba(6,182,212,.3)}
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--cyan) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--a2) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(6,182,212,.05),rgba(99,102,241,.04) 20%,rgba(16,185,129,.02) 45%,transparent 70%)}
+.header{position:sticky;top:0;z-index:50;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-top:none;padding:10px 20px;border-radius:0 0 22px 22px;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 40px rgba(6,182,212,.1),0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04)}
+.header-in{max-width:800px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.header-logo{font-size:17px;font-weight:700;white-space:nowrap;letter-spacing:-.02em;background:linear-gradient(135deg,var(--cyan),var(--a1),var(--a2));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 6s ease-in-out infinite}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+.back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.container{max-width:800px;margin:0 auto;padding:18px 20px;position:relative;z-index:1;will-change:transform}
+.hero{text-align:center;padding:24px 0 10px}
+.hero h1{font-size:26px;font-weight:700;letter-spacing:-.03em;margin-bottom:6px;background:linear-gradient(135deg,var(--cyan),var(--a1));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 4s ease-in-out infinite}
+.hero .sub{color:var(--tx2);font-size:14px}
+.tags{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.tag{background:rgba(6,182,212,.12);color:var(--cyan);font-size:11px;padding:4px 12px;border-radius:8px;font-weight:500;border:1px solid rgba(6,182,212,.2)}
+.section-title{font-size:15px;font-weight:600;color:var(--tx2);margin:24px 0 12px;padding-left:4px;letter-spacing:-.01em}
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:14px 18px;transition:all .35s var(--ease);box-shadow:0 0 60px rgba(6,182,212,.04),0 4px 24px rgba(0,0,0,.1);position:relative;overflow:hidden;margin-bottom:10px;display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--tx);cursor:pointer}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.card:hover{border-color:rgba(6,182,212,.2);transform:translateY(-2px);box-shadow:0 0 80px rgba(6,182,212,.1),0 0 40px rgba(99,102,241,.05),0 16px 48px rgba(0,0,0,.15)}
+.card:active{transform:scale(.98)!important;transition:transform .12s ease!important}
+.card-num{display:inline-flex;min-width:32px;height:32px;padding:0 6px;border-radius:10px;background:rgba(6,182,212,.12);text-align:center;line-height:32px;font-weight:700;font-size:13px;color:var(--cyan);border:1px solid rgba(6,182,212,.15);align-items:center;justify-content:center;flex-shrink:0}
+.card-info{flex:1;min-width:0}
+.card-info h4{font-size:14px;font-weight:600;margin-bottom:2px;letter-spacing:-.01em}
+.card-info .meta{font-size:11px;color:var(--tx3)}
+.card-arrow{color:var(--tx4);flex-shrink:0}
+.s-badge{display:inline-block;padding:1px 8px;border-radius:5px;font-size:10px;font-weight:600;margin-right:6px}
+.s-out{background:rgba(6,182,212,.15);color:var(--cyan);border:1px solid rgba(6,182,212,.2)}
+.s-abil{background:rgba(99,102,241,.15);color:var(--a1);border:1px solid rgba(99,102,241,.2)}
+.s-think{background:rgba(16,185,129,.15);color:var(--a2);border:1px solid rgba(16,185,129,.2)}
+.s-end{background:rgba(245,158,11,.15);color:var(--amber);border:1px solid rgba(245,158,11,.2)}
+.bottom-nav{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0));left:50%;transform:translateX(-50%);width:calc(100% - 28px);max-width:440px;height:58px;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-radius:22px;display:flex;justify-content:center;align-items:center;gap:16px;z-index:100;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 50px rgba(99,102,241,.12),0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.04)}
+.nav-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:var(--tx3);padding:6px 14px;border-radius:14px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .3s var(--ease);-webkit-tap-highlight-color:transparent;text-decoration:none}
+.nav-btn:hover{background:rgba(255,255,255,.08);color:var(--tx2)}
+.nav-btn svg{width:14px;height:14px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)scale(.96)}to{opacity:1;transform:translateY(0)scale(1)}}
+.card{animation:fadeUp .5s var(--ease) both}
+.card:nth-child(1){animation-delay:.03s}.card:nth-child(2){animation-delay:.06s}.card:nth-child(3){animation-delay:.09s}.card:nth-child(4){animation-delay:.12s}.card:nth-child(5){animation-delay:.15s}.card:nth-child(6){animation-delay:.18s}.card:nth-child(7){animation-delay:.21s}.card:nth-child(8){animation-delay:.24s}.card:nth-child(9){animation-delay:.27s}.card:nth-child(10){animation-delay:.30s}.card:nth-child(11){animation-delay:.33s}.card:nth-child(12){animation-delay:.36s}.card:nth-child(13){animation-delay:.39s}.card:nth-child(14){animation-delay:.42s}.card:nth-child(15){animation-delay:.45s}.card:nth-child(16){animation-delay:.48s}.card:nth-child(17){animation-delay:.51s}.card:nth-child(18){animation-delay:.54s}.card:nth-child(19){animation-delay:.57s}.card:nth-child(20){animation-delay:.60s}.card:nth-child(21){animation-delay:.63s}
+@media(max-width:480px){.hero h1{font-size:22px}.card{padding:12px 14px}}
+</style>
+</head>
+<body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot"></div>
+<div class="header"><div class="header-in"><a class="back-btn" href="./index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">普行男养成计划</span></div></div>
+<div class="container" id="mainContainer">
+<div class="hero"><h1>普行男养成计划</h1><p class="sub">普通男生也可以被人喜欢 · 21集完整指南</p><div class="tags"><span class="tag">自我提升</span><span class="tag">外形管理</span><span class="tag">社交能力</span><span class="tag">情商</span></div></div>
+
+<div class="section-title"><span class="s-badge s-out">序</span> 开篇</div>
+<a class="card" href="./puxing-01.html"><span class="card-num">1</span><div class="card-info"><h4>普信？普行！普通男生也可以被人喜欢！</h4><span class="meta">BV12W4y147cz · 8分钟</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+
+<div class="section-title"><span class="s-badge s-out">外形篇</span> 7集 · 从审美到穿搭</div>
+<a class="card" href="./puxing-02.html"><span class="card-num">2</span><div class="card-info"><h4>男性审美提升：教你一个全网最简单的操作</h4><span class="meta">BV1VG4y1t75f · 5分钟</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+<a class="card" href="./puxing-03.html"><span class="card-num">3</span><div class="card-info"><h4>怎么做一个"干净清爽"的男生？</h4><span class="meta">BV1RG4y1o7BN · 7分钟</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+<a class="card" href="./puxing-04.html"><span class="card-num">4</span><div class="card-info"><h4>5分钟教你男生零基础穿搭基本原则</h4><span class="meta">BV1zM411k7qB · 5分钟</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+<a class="card" href="./puxing-05.html"><span class="card-num">5</span><div class="card-info"><h4>零基础保姆级穿搭教学！穿搭单品一键配置</h4><span class="meta">BV1R14y1H7ak · 4分钟</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+<a class="card" href="./puxing-06.html"><span class="card-num">6</span><div class="card-info"><h4>懒人专用的男性穿搭尺码选择攻略</h4><span class="meta">BV1Eh4y197HC · 8分钟</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+<a class="card" href="./puxing-07.html"><span class="card-num">7</span><div class="card-info"><h4>穿搭答疑：冬天不会穿搭？穿搭实践中会踩哪些雷？</h4><span class="meta">BV1sR4y1C7cU · 6分钟</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+<a class="card" href="./puxing-08.html"><span class="card-num">8</span><div class="card-info"><h4>矮个子男生更需要有外形危机感</h4><span class="meta">BV1Gd4y1t7YD · 5分钟</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+
+<div class="section-title"><span class="s-badge s-abil">能力篇</span> 9集 · 硬核技能培养</div>
+<a class="card" href="./puxing-09.html"><span class="card-num">9</span><div class="card-info"><h4>为什么聊天没话题？信息汲取与聊天话题</h4><span class="meta">BV1QR4y1o7Ei · 6分钟</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+<a class="card" href="./puxing-10.html"><span class="card-num">10</span><div class="card-info"><h4>普通男生想被更多人喜欢认可，只有唯一的途径</h4><span class="meta">BV1bK411R7cp · 6分钟</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+<a class="card" href="./puxing-11.html"><span class="card-num">11</span><div class="card-info"><h4>开屏开得好，人缘差不了 · 自我展示</h4><span class="meta">BV1wD4y1e7fd · 5分钟</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+<a class="card" href="./puxing-12.html"><span class="card-num">12</span><div class="card-info"><h4>如何发好朋友圈？个人社媒内容红黑榜</h4><span class="meta">BV1fV4y1w7cj · 6分钟</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+<a class="card" href="./puxing-13.html"><span class="card-num">13</span><div class="card-info"><h4>直男不会拍照？5分钟零基础上手的拍照基本流程</h4><span class="meta">BV11Y411U739 · 5分钟</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+<a class="card" href="./puxing-14.html"><span class="card-num">14</span><div class="card-info"><h4>圈子太小？超硬核交友逻辑方法！10分钟变身社交达人</h4><span class="meta">BV1cW4y157Jh · 10分钟</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+<a class="card" href="./puxing-15.html"><span class="card-num">15</span><div class="card-info"><h4>音乐小白学什么乐器好？唱歌&乐器</h4><span class="meta">BV1fP4y1C7q7 · 10分钟</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+<a class="card" href="./puxing-16.html"><span class="card-num">16</span><div class="card-info"><h4>打游戏脱单的终极奥义！游戏&运动</h4><span class="meta">BV1D8411P7w7 · 6分钟</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+<a class="card" href="./puxing-17.html"><span class="card-num">17</span><div class="card-info"><h4>逻辑不清、表达混乱怎么改善？逻辑思维核心方法</h4><span class="meta">BV1DR4y1a7hK · 24分钟</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+
+<div class="section-title"><span class="s-badge s-think">思想行为篇</span> 3集 · 内在修炼</div>
+<a class="card" href="./puxing-18.html"><span class="card-num">18</span><div class="card-info"><h4>"女生为什么又生气了？"——男性共情能力如何培养</h4><span class="meta">BV19T411X7c5 · 8分钟</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+<a class="card" href="./puxing-19.html"><span class="card-num">19</span><div class="card-info"><h4>警惕男性软性羊尾 · 性意识</h4><span class="meta">BV1W8411T7eY · 7分钟</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+<a class="card" href="./puxing-20.html"><span class="card-num">20</span><div class="card-info"><h4>嘴笨无趣情商低？不会说话到底怎么挽救</h4><span class="meta">BV1aM4y1Z7it · 6分钟</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+
+<div class="section-title"><span class="s-badge s-end">结语</span> 终点也是起点</div>
+<a class="card" href="./puxing-21.html"><span class="card-num">21</span><div class="card-info"><h4>愿你不再自卑，年少有为</h4><span class="meta">BV12b411D7z4 · 5分钟</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+</div>
+
+<div class="bottom-nav"><a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>主页</a></div>
+<script>(function(){const s=document.querySelector('.glow-spot');let r;window.addEventListener('mousemove',e=>{if(!r){r=requestAnimationFrame(()=>{s.style.background='radial-gradient(circle 420px at '+e.clientX+'px '+e.clientY+'px,rgba(6,182,212,.05),rgba(99,102,241,.04) 20%,rgba(16,185,129,.02) 45%,transparent 70%)';r=null;});}},{passive:true});})();(function(){if(!('ontouchstart' in window))return;const c=document.getElementById('mainContainer');let gx=0,gy=0,tx=0,ty=0;const m=2.5;if(typeof DeviceOrientationEvent!=='undefined'&&'requestPermission' in DeviceOrientationEvent){document.addEventListener('click',function r(){DeviceOrientationEvent.requestPermission().then(p=>{if(p==='granted')window.addEventListener('deviceorientation',o);});document.removeEventListener('click',r);},{once:true});}else{window.addEventListener('deviceorientation',o);}function o(e){if(e.beta!==null){tx=e.gamma||0;ty=e.beta||0;}}function l(){gx+=(tx*0.04-gx)*0.04;gy+=(ty*0.04-gy)*0.04;c.style.transform='perspective(1000px) rotateX('+(-Math.max(-m,Math.min(m,gy)))+'deg) rotateY('+Math.max(-m,Math.min(m,gx))+'deg)';requestAnimationFrame(l);}l();})();</script>
+</body>
+</html>
