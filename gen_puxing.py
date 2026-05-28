@@ -26,6 +26,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
 .back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
 .back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.home-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.home-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
 .container{max-width:800px;margin:0 auto;padding:18px 20px;position:relative;z-index:1;will-change:transform}
 .hero{text-align:center;padding:24px 0 10px}
 .hero h1{font-size:26px;font-weight:700;letter-spacing:-.03em;margin-bottom:6px;background:linear-gradient(135deg,var(--accent),var(--a1));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 4s ease-in-out infinite}
@@ -150,7 +152,7 @@ def make_page(n, total, title, subtitle, tags, cards, accent_class="s-cyan"):
 <body class="{accent_class}">
 <div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot"></div>
-<div class="header"><div class="header-in"><a class="back-btn" href="./knowledge.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">普行男养成计划</span></div></div>
+<div class="header"><div class="header-in"><a class="back-btn" href="./puxing-man.html" title="返回目录"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">普行男养成计划</span><a class="home-btn" href="./index.html" title="返回主页" style="margin-left:auto"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></a></div></div>
 <div class="container" id="mainContainer">
 <div class="hero"><h1>{title}</h1><p class="sub">{subtitle}</p><div class="tags">{tags_html}</div></div>
 <div class="progress"><span>{n}</span> / {total}</div>

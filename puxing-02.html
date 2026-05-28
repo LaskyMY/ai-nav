@@ -30,6 +30,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
 .back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
 .back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.home-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.home-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
 .container{max-width:800px;margin:0 auto;padding:18px 20px;position:relative;z-index:1;will-change:transform}
 .hero{text-align:center;padding:24px 0 10px}
 .hero h1{font-size:26px;font-weight:700;letter-spacing:-.03em;margin-bottom:6px;background:linear-gradient(135deg,var(--accent),var(--a1));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 4s ease-in-out infinite}
@@ -118,8 +120,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
 @media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
 
-/* mini-games */
-.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort{margin-top:10px;position:relative;z-index:1}
+/* mini-games v3 — quiz4/scale/spot/trap edition */
+.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort,.mg-quiz4,.mg-scale,.mg-spot,.mg-trap{margin-top:10px;position:relative;z-index:1}
 .mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
 .mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:var(--accent-border, rgba(99,102,241,.2))}
 .mg-body{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.03);margin-top:6px;line-height:1.5}
@@ -153,21 +155,56 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .mg-msg{font-size:12px;color:var(--tx2);margin-top:4px}
 .mg-sort-q{font-size:13px;color:var(--tx);margin-bottom:6px;font-weight:500}
 .mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
-@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
+/* quiz4 */
+.mg-q4-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.mg-q4-q{font-size:12px;color:var(--tx2);margin:0;line-height:1.5}
+.mg-q4-counter{font-size:11px;color:var(--tx3);min-width:24px;text-align:center}
+.mg-q4-opt{display:block;width:100%;text-align:left;padding:8px 12px;margin:4px 0;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-q4-opt:hover{background:rgba(255,255,255,.08);color:var(--tx);border-color:var(--accent-border, rgba(99,102,241,.2))}
+.mg-q4-opt.correct{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:var(--a2)}
+.mg-q4-opt.wrong{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:var(--a3)}
+.mg-q4-explain{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:6px;line-height:1.5}
+.mg-q4-explain.show{display:block;animation:fadeUp .3s var(--ease) both}
+.mg-q4-icon{font-size:14px}
+/* scale */
+.mg-scale-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);flex-wrap:wrap;gap:4px}
+.mg-scale-q{font-size:11px;color:var(--tx2);flex:1;min-width:120px;line-height:1.4}
+.mg-scale-btns{display:flex;gap:4px;flex-shrink:0}
+.mg-scale-btn{width:32px;height:32px;padding:0;border-radius:50%;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:unset;margin:0;display:flex;align-items:center;justify-content:center}
+.mg-scale-btn.sel{background:var(--accent,var(--a1));color:#fff;border-color:var(--accent,var(--a1));transform:scale(1.15)}
+.mg-scale-score{font-size:13px;color:var(--tx);font-weight:600;margin:6px 0}
+.mg-scale-result{display:none;font-size:12px;color:var(--a1);padding:8px 12px;border-radius:8px;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.15);margin-top:6px;line-height:1.5}
+.mg-scale-result.show{display:block;animation:fadeUp .4s var(--ease) both}
+/* spot */
+.mg-spot-cards{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mg-spot-card{padding:8px 10px;border-radius:8px;border:1px solid var(--card-border);font-size:11px;color:var(--tx2);cursor:pointer;background:rgba(255,255,255,.02);transition:all .2s;line-height:1.4;min-height:50px;-webkit-tap-highlight-color:transparent}
+.mg-spot-card:hover{border-color:var(--accent-border, rgba(99,102,241,.2));background:rgba(255,255,255,.05)}
+.mg-spot-card.correct{border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:var(--a2)}
+.mg-spot-card.wrong{border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.08);color:var(--a3)}
+.mg-spot-fb{display:none;font-size:12px;margin-top:6px;line-height:1.5}
+.mg-spot-fb.show{display:block;animation:fadeUp .3s var(--ease) both}
+/* trap */
+.mg-trap-step{font-size:10px;color:var(--tx3);margin-bottom:4px}
+.mg-trap-prompt{font-size:12px;color:var(--tx2);margin-bottom:6px;line-height:1.5;font-weight:500}
+.mg-trap-choices{display:flex;flex-direction:column;gap:4px}
+.mg-trap-reveal{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:8px;line-height:1.5;border-left:3px solid var(--accent,var(--a1))}
+.mg-trap-reveal.show{display:block;animation:fadeUp .4s var(--ease) both}
+.mg-trap-next{display:block;margin-top:8px;width:100%;text-align:center}
+@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}.mg-spot-cards{grid-template-columns:1fr}.mg-scale-row{flex-direction:column;align-items:flex-start;gap:6px}}
 
 </style>
 </head>
 <body class="s-green">
 <div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot"></div>
-<div class="header"><div class="header-in"><a class="back-btn" href="./knowledge.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">普行男养成计划</span></div></div>
+<div class="header"><div class="header-in"><a class="back-btn" href="./puxing-man.html" title="返回目录"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">普行男养成计划</span><a class="home-btn" href="./index.html" title="返回主页" style="margin-left:auto"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></a></div></div>
 <div class="container" id="mainContainer">
 <div class="hero"><h1>外形篇·审美：男性审美提升</h1><p class="sub">BV1VG4y1t75f · 5分钟 · 外形篇 1/7</p><div class="tags"><span class="tag">外形篇</span><span class="tag">审美</span><span class="tag">形象提升</span></div></div>
 <div class="progress"><span>2</span> / 21</div>
 <div class="page-nav"><a href="./puxing-01.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-03.html">下一篇 →</a></div>
-<div class="card"><span class="card-num">1</span><h3>👁️ 审美是可以学习的</h3><p>很多人觉得"审美是天生的"，但事实是审美可以通过大量观看优秀作品来训练。关键在于建立自己的"审美参考库"——收集你觉得好看的穿搭、发型、配色，找出其中的共同规律。</p><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！看100张好穿搭，大脑自动提取规律。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">审美是天生的吗？</p><button class="mg-btn">可以后天学习，通过看大量优秀作品训练</button><button class="mg-btn">完全天生无法改变</button><span class="mg-feedback"></span></div></div>
-<div class="card"><span class="card-num">2</span><h3>📱 全网最简单的操作</h3><p>打开小红书 / Instagram / Pinterest，搜索"男生穿搭"，保存100张你觉得顺眼的图片。然后问自己：这些图有什么共同点？颜色搭配？版型选择？你已经在不知不觉中建立审美框架了。</p><div class="takeaway"><span class="ta-icon">🔑</span><span>审美提升的本质不是"学规则"，而是"看足够多的好样本"。大脑会自动提取规律——你不需要刻意背诵任何穿搭法则。</span></div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 审美训练操作步骤</button><div class="mg-body">去小红书/Ins/Pinterest搜"男生穿搭"，保存100张你觉得好看的图。然后找出共同规律：颜色搭配？版型？风格？大脑已经帮你做了90%的工作。</div></div></div>
-<div class="card"><span class="card-num">3</span><h3>📶 从模仿到内化：三个阶段</h3><p>审美提升分三个阶段，大多数人卡在"不知道自己适合什么"——这是因为模仿得还不够多。</p><div class="step-flow"><div style="text-align:center;flex-shrink:0"><div class="step-dot">1</div><div class="step-label">模仿照搬</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">2</div><div class="step-label">理解规律</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">3</div><div class="step-label">形成风格</div></div></div><div class="takeaway"><span class="ta-icon">💡</span><span>别急着"找到自己的风格"，先老老实实模仿100套搭配。风格是在大量模仿后自然浮现的，不是凭空设计的。</span></div><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！先模仿100套搭配，风格会自然浮现。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">审美提升分哪三个阶段？</p><button class="mg-btn">模仿照搬 → 理解规律 → 形成风格</button><button class="mg-btn">大量阅读 → 考试检验 → 实际应用</button><span class="mg-feedback"></span></div></div>
+<div class="card"><span class="card-num">1</span><h3>👁️ 审美是可以学习的</h3><p>很多人觉得"审美是天生的"，但事实是审美可以通过大量观看优秀作品来训练。关键在于建立自己的"审美参考库"——收集你觉得好看的穿搭、发型、配色，找出其中的共同规律。</p><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 审美=信息输入量。\"没审美\"本质是\"看的好东西太少\"。刷 100 张穿搭图，大脑自动提取颜色、版型、搭配规律。不需要天赋，需要刻意输入。", "📌 完全天生，后天无法改变 —— 这不是最佳答案。", "📌 只跟家庭背景有关——出身好的审美自然好 —— 这不是最佳答案。", "📌 男性不需要审美——这是女性才需要关心的 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 审美能力是天生的吗？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 可以后天训练——看 100 张好穿搭后大脑自动提取规律</button><button class="mg-q4-opt">🅱️ 完全天生，后天无法改变</button><button class="mg-q4-opt">©️ 只跟家庭背景有关——出身好的审美自然好</button><button class="mg-q4-opt">🅳 男性不需要审美——这是女性才需要关心的</button><div class="mg-q4-explain"></div></div></div>
+<div class="card"><span class="card-num">2</span><h3>📱 全网最简单的操作</h3><p>打开小红书 / Instagram / Pinterest，搜索"男生穿搭"，保存100张你觉得顺眼的图片。然后问自己：这些图有什么共同点？颜色搭配？版型选择？你已经在不知不觉中建立审美框架了。</p><div class="takeaway"><span class="ta-icon">🔑</span><span>审美提升的本质不是"学规则"，而是"看足够多的好样本"。大脑会自动提取规律——你不需要刻意背诵任何穿搭法则。</span></div><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 模仿是最快的。在你还不懂\"为什么好看\"之前，先复制\"已经好看了的\"。保存 50 张搭配图→分析共同规律→直接照搬。三个月后你的审美会自然提升。", "📌 先学色彩理论——理解配色原理再动手 —— 这不是最佳答案。", "📌 去商场请导购帮你搭——她们是专业的 —— 这不是最佳答案。", "📌 看时尚杂志和走秀——从高端时尚中找灵感 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 想快速提升穿衣审美，最有效的方法是？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 大量模仿：保存 50 套你喜欢的搭配，照搬着穿</button><button class="mg-q4-opt">🅱️ 先学色彩理论——理解配色原理再动手</button><button class="mg-q4-opt">©️ 去商场请导购帮你搭——她们是专业的</button><button class="mg-q4-opt">🅳 看时尚杂志和走秀——从高端时尚中找灵感</button><div class="mg-q4-explain"></div></div></div>
+<div class="card"><span class="card-num">3</span><h3>📶 从模仿到内化：三个阶段</h3><p>审美提升分三个阶段，大多数人卡在"不知道自己适合什么"——这是因为模仿得还不够多。</p><div class="step-flow"><div style="text-align:center;flex-shrink:0"><div class="step-dot">1</div><div class="step-label">模仿照搬</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">2</div><div class="step-label">理解规律</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">3</div><div class="step-label">形成风格</div></div></div><div class="takeaway"><span class="ta-icon">💡</span><span>别急着"找到自己的风格"，先老老实实模仿100套搭配。风格是在大量模仿后自然浮现的，不是凭空设计的。</span></div><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 先模仿（照搬已验证的好看搭配）→再理解（这些搭配为什么好看？颜色、版型、比例）→最后形成自己的风格（在理解的基础上个性化）。大多数人卡在\"只模仿不理解\"或\"想形成风格但没模仿过\"。", "📌 大量阅读→考试检验→实际应用 —— 这不是最佳答案。", "📌 理论学习→名师指导→独立创作 —— 这不是最佳答案。", "📌 买贵的→看多的→自然就会了 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 审美提升的正确三阶段是什么？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 模仿照搬→理解规律→形成风格</button><button class="mg-q4-opt">🅱️ 大量阅读→考试检验→实际应用</button><button class="mg-q4-opt">©️ 理论学习→名师指导→独立创作</button><button class="mg-q4-opt">🅳 买贵的→看多的→自然就会了</button><div class="mg-q4-explain"></div></div></div>
 <div class="page-nav"><a href="./puxing-01.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-03.html">下一篇 →</a></div>
 </div>
 <div class="bottom-nav"><a class="nav-btn" href="./puxing-man.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>目录</a><a class="nav-btn" href="./knowledge.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>百科</a><a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>首页</a></div>

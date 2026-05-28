@@ -30,6 +30,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
 .back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
 .back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.home-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.home-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
 .container{max-width:800px;margin:0 auto;padding:18px 20px;position:relative;z-index:1;will-change:transform}
 .hero{text-align:center;padding:24px 0 10px}
 .hero h1{font-size:26px;font-weight:700;letter-spacing:-.03em;margin-bottom:6px;background:linear-gradient(135deg,var(--accent),var(--a1));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 4s ease-in-out infinite}
@@ -118,8 +120,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
 @media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
 
-/* mini-games */
-.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort{margin-top:10px;position:relative;z-index:1}
+/* mini-games v3 — quiz4/scale/spot/trap edition */
+.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort,.mg-quiz4,.mg-scale,.mg-spot,.mg-trap{margin-top:10px;position:relative;z-index:1}
 .mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
 .mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:var(--accent-border, rgba(99,102,241,.2))}
 .mg-body{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.03);margin-top:6px;line-height:1.5}
@@ -153,21 +155,56 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .mg-msg{font-size:12px;color:var(--tx2);margin-top:4px}
 .mg-sort-q{font-size:13px;color:var(--tx);margin-bottom:6px;font-weight:500}
 .mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
-@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
+/* quiz4 */
+.mg-q4-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.mg-q4-q{font-size:12px;color:var(--tx2);margin:0;line-height:1.5}
+.mg-q4-counter{font-size:11px;color:var(--tx3);min-width:24px;text-align:center}
+.mg-q4-opt{display:block;width:100%;text-align:left;padding:8px 12px;margin:4px 0;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-q4-opt:hover{background:rgba(255,255,255,.08);color:var(--tx);border-color:var(--accent-border, rgba(99,102,241,.2))}
+.mg-q4-opt.correct{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:var(--a2)}
+.mg-q4-opt.wrong{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:var(--a3)}
+.mg-q4-explain{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:6px;line-height:1.5}
+.mg-q4-explain.show{display:block;animation:fadeUp .3s var(--ease) both}
+.mg-q4-icon{font-size:14px}
+/* scale */
+.mg-scale-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);flex-wrap:wrap;gap:4px}
+.mg-scale-q{font-size:11px;color:var(--tx2);flex:1;min-width:120px;line-height:1.4}
+.mg-scale-btns{display:flex;gap:4px;flex-shrink:0}
+.mg-scale-btn{width:32px;height:32px;padding:0;border-radius:50%;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:unset;margin:0;display:flex;align-items:center;justify-content:center}
+.mg-scale-btn.sel{background:var(--accent,var(--a1));color:#fff;border-color:var(--accent,var(--a1));transform:scale(1.15)}
+.mg-scale-score{font-size:13px;color:var(--tx);font-weight:600;margin:6px 0}
+.mg-scale-result{display:none;font-size:12px;color:var(--a1);padding:8px 12px;border-radius:8px;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.15);margin-top:6px;line-height:1.5}
+.mg-scale-result.show{display:block;animation:fadeUp .4s var(--ease) both}
+/* spot */
+.mg-spot-cards{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mg-spot-card{padding:8px 10px;border-radius:8px;border:1px solid var(--card-border);font-size:11px;color:var(--tx2);cursor:pointer;background:rgba(255,255,255,.02);transition:all .2s;line-height:1.4;min-height:50px;-webkit-tap-highlight-color:transparent}
+.mg-spot-card:hover{border-color:var(--accent-border, rgba(99,102,241,.2));background:rgba(255,255,255,.05)}
+.mg-spot-card.correct{border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:var(--a2)}
+.mg-spot-card.wrong{border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.08);color:var(--a3)}
+.mg-spot-fb{display:none;font-size:12px;margin-top:6px;line-height:1.5}
+.mg-spot-fb.show{display:block;animation:fadeUp .3s var(--ease) both}
+/* trap */
+.mg-trap-step{font-size:10px;color:var(--tx3);margin-bottom:4px}
+.mg-trap-prompt{font-size:12px;color:var(--tx2);margin-bottom:6px;line-height:1.5;font-weight:500}
+.mg-trap-choices{display:flex;flex-direction:column;gap:4px}
+.mg-trap-reveal{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:8px;line-height:1.5;border-left:3px solid var(--accent,var(--a1))}
+.mg-trap-reveal.show{display:block;animation:fadeUp .4s var(--ease) both}
+.mg-trap-next{display:block;margin-top:8px;width:100%;text-align:center}
+@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}.mg-spot-cards{grid-template-columns:1fr}.mg-scale-row{flex-direction:column;align-items:flex-start;gap:6px}}
 
 </style>
 </head>
 <body class="s-green">
 <div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot"></div>
-<div class="header"><div class="header-in"><a class="back-btn" href="./knowledge.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">普行男养成计划</span></div></div>
+<div class="header"><div class="header-in"><a class="back-btn" href="./puxing-man.html" title="返回目录"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">普行男养成计划</span><a class="home-btn" href="./index.html" title="返回主页" style="margin-left:auto"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></a></div></div>
 <div class="container" id="mainContainer">
 <div class="hero"><h1>外形篇·形象管理：怎么做一个"干净清爽"的男生？</h1><p class="sub">BV1RG4y1o7BN · 7分钟 · 外形篇 2/7</p><div class="tags"><span class="tag">外形篇</span><span class="tag">形象管理</span><span class="tag">干净清爽</span></div></div>
 <div class="progress"><span>3</span> / 21</div>
 <div class="page-nav"><a href="./puxing-02.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-04.html">下一篇 →</a></div>
-<div class="card"><span class="card-num">1</span><h3>✨ "干净清爽"是第一要求</h3><p>在女生对男生外形的评价中，"干净清爽"是出现频率最高的词——甚至超过"帅"。一个干净的外表传递的信息是：我在乎自己，我有基本的生活自理能力。</p><div class="big-num">No.1</div><div class="big-num-label">女生最看重的男性外形特质</div><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！"干净清爽"远高于"帅"——在乎自己比天生条件重要。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">女生最看重的外形特质是？</p><button class="mg-btn">干净清爽</button><button class="mg-btn">长得帅</button><span class="mg-feedback"></span></div></div>
-<div class="card"><span class="card-num">2</span><h3>🪥 基础三件套：洗、剪、护</h3><p>每天洗澡（尤其运动后）、2-3周剪一次头发、用适合自己的护肤品（至少：洁面+保湿+防晒）。指甲剪短干净、眉毛修整、鼻毛修剪——这些细节对方一定会注意到。</p><ul class="checklist"><li>每天洗澡 + 运动后立即冲洗</li><li>2-3周理发一次，保持清爽发型</li><li>基础护肤三步：洁面 → 保湿 → 防晒</li><li>指甲每周修剪，保持短而干净</li><li>眉毛修杂毛，鼻毛定期修剪</li></ul><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！三步就够：清洁、锁水、防晒——防晒最重要。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">基础护肤三步是什么？</p><button class="mg-btn">洁面 → 保湿 → 防晒</button><button class="mg-btn">洗脸 → 爽肤水 → 面膜</button><span class="mg-feedback"></span></div></div>
-<div class="card"><span class="card-num">3</span><h3>🌸 气味管理同样重要</h3><p>选择一款清淡的香水或身体喷雾，不用太浓。洗衣液选有持久清香的。口腔卫生：刷牙+牙线+漱口水。</p><div class="takeaway"><span class="ta-icon">👃</span><span>气味是最容易被忽视但影响最大的细节。你不需要闻起来像香水店，但绝对不能有异味。清淡 > 浓烈，干净 > 掩盖。</span></div><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！清淡永远比浓烈好。你不需要像香水店，但绝对不能有异味。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">气味管理的黄金原则？</p><button class="mg-btn">清淡 > 浓烈，干净 > 掩盖</button><button class="mg-btn">越香越好</button><span class="mg-feedback"></span></div></div>
+<div class="card"><span class="card-num">1</span><h3>✨ "干净清爽"是第一要求</h3><p>在女生对男生外形的评价中，"干净清爽"是出现频率最高的词——甚至超过"帅"。一个干净的外表传递的信息是：我在乎自己，我有基本的生活自理能力。</p><div class="big-num">No.1</div><div class="big-num-label">女生最看重的男性外形特质</div><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 \"干净清爽\"碾压一切。指甲修剪干净、没有体味、头发不油腻——这些比五官重要得多。一个干净清爽的普通长相>一个邋遢的帅哥。", "📌 身高——越高越好 —— 这不是最佳答案。", "📌 长得帅——五官端正最重要 —— 这不是最佳答案。", "📌 穿着贵——穿名牌就是品味好 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 女性最看重男性的外形特质是什么？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 干净清爽——远高于"长得帅"</button><button class="mg-q4-opt">🅱️ 身高——越高越好</button><button class="mg-q4-opt">©️ 长得帅——五官端正最重要</button><button class="mg-q4-opt">🅳 穿着贵——穿名牌就是品味好</button><div class="mg-q4-explain"></div></div></div>
+<div class="card"><span class="card-num">2</span><h3>🪥 基础三件套：洗、剪、护</h3><p>每天洗澡（尤其运动后）、2-3周剪一次头发、用适合自己的护肤品（至少：洁面+保湿+防晒）。指甲剪短干净、眉毛修整、鼻毛修剪——这些细节对方一定会注意到。</p><ul class="checklist"><li>每天洗澡 + 运动后立即冲洗</li><li>2-3周理发一次，保持清爽发型</li><li>基础护肤三步：洁面 → 保湿 → 防晒</li><li>指甲每周修剪，保持短而干净</li><li>眉毛修杂毛，鼻毛定期修剪</li></ul><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 三步就够。防晒是最被低估但最重要的一步——UV 是皮肤老化的头号元凶。基础洁面+保湿+防晒，坚持三个月，你就能看到明显变化。", "📌 洗脸→爽肤水→面膜——早晚各一次 —— 这不是最佳答案。", "📌 去角质→精华→面霜——顺序不能乱 —— 这不是最佳答案。", "📌 男生不需要护肤——清水洗脸就够了 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 基础护肤最核心的三个步骤？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 洁面→保湿→防晒。防晒是重中之重</button><button class="mg-q4-opt">🅱️ 洗脸→爽肤水→面膜——早晚各一次</button><button class="mg-q4-opt">©️ 去角质→精华→面霜——顺序不能乱</button><button class="mg-q4-opt">🅳 男生不需要护肤——清水洗脸就够了</button><div class="mg-q4-explain"></div></div></div>
+<div class="card"><span class="card-num">3</span><h3>🌸 气味管理同样重要</h3><p>选择一款清淡的香水或身体喷雾，不用太浓。洗衣液选有持久清香的。口腔卫生：刷牙+牙线+漱口水。</p><div class="takeaway"><span class="ta-icon">👃</span><span>气味是最容易被忽视但影响最大的细节。你不需要闻起来像香水店，但绝对不能有异味。清淡 > 浓烈，干净 > 掩盖。</span></div><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 没人讨厌\"没味道\"——但很多人讨厌\"太香\"。干净的皂香或淡香水，靠近半米才能闻到的浓度最合适。千万不要用浓香掩盖体味——那只会创造一种更难闻的混合味道。", "📌 越香越好——盖住所有异味 —— 这不是最佳答案。", "📌 不臭就行——男生不需要特别打理 —— 这不是最佳答案。", "📌 每天喷香水——这是最基本的社交礼仪 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 体味管理最重要的是？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 清淡>浓烈——干净的皂香>任何香水</button><button class="mg-q4-opt">🅱️ 越香越好——盖住所有异味</button><button class="mg-q4-opt">©️ 不臭就行——男生不需要特别打理</button><button class="mg-q4-opt">🅳 每天喷香水——这是最基本的社交礼仪</button><div class="mg-q4-explain"></div></div></div>
 <div class="page-nav"><a href="./puxing-02.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-04.html">下一篇 →</a></div>
 </div>
 <div class="bottom-nav"><a class="nav-btn" href="./puxing-man.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>目录</a><a class="nav-btn" href="./knowledge.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>百科</a><a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>首页</a></div>

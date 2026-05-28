@@ -30,6 +30,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
 .back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
 .back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.home-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.home-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
 .container{max-width:800px;margin:0 auto;padding:18px 20px;position:relative;z-index:1;will-change:transform}
 .hero{text-align:center;padding:24px 0 10px}
 .hero h1{font-size:26px;font-weight:700;letter-spacing:-.03em;margin-bottom:6px;background:linear-gradient(135deg,var(--accent),var(--a1));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 4s ease-in-out infinite}
@@ -118,8 +120,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
 @media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
 
-/* mini-games */
-.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort{margin-top:10px;position:relative;z-index:1}
+/* mini-games v3 — quiz4/scale/spot/trap edition */
+.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort,.mg-quiz4,.mg-scale,.mg-spot,.mg-trap{margin-top:10px;position:relative;z-index:1}
 .mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
 .mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:var(--accent-border, rgba(99,102,241,.2))}
 .mg-body{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.03);margin-top:6px;line-height:1.5}
@@ -153,24 +155,59 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .mg-msg{font-size:12px;color:var(--tx2);margin-top:4px}
 .mg-sort-q{font-size:13px;color:var(--tx);margin-bottom:6px;font-weight:500}
 .mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
-@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
+/* quiz4 */
+.mg-q4-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.mg-q4-q{font-size:12px;color:var(--tx2);margin:0;line-height:1.5}
+.mg-q4-counter{font-size:11px;color:var(--tx3);min-width:24px;text-align:center}
+.mg-q4-opt{display:block;width:100%;text-align:left;padding:8px 12px;margin:4px 0;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-q4-opt:hover{background:rgba(255,255,255,.08);color:var(--tx);border-color:var(--accent-border, rgba(99,102,241,.2))}
+.mg-q4-opt.correct{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:var(--a2)}
+.mg-q4-opt.wrong{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:var(--a3)}
+.mg-q4-explain{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:6px;line-height:1.5}
+.mg-q4-explain.show{display:block;animation:fadeUp .3s var(--ease) both}
+.mg-q4-icon{font-size:14px}
+/* scale */
+.mg-scale-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);flex-wrap:wrap;gap:4px}
+.mg-scale-q{font-size:11px;color:var(--tx2);flex:1;min-width:120px;line-height:1.4}
+.mg-scale-btns{display:flex;gap:4px;flex-shrink:0}
+.mg-scale-btn{width:32px;height:32px;padding:0;border-radius:50%;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:unset;margin:0;display:flex;align-items:center;justify-content:center}
+.mg-scale-btn.sel{background:var(--accent,var(--a1));color:#fff;border-color:var(--accent,var(--a1));transform:scale(1.15)}
+.mg-scale-score{font-size:13px;color:var(--tx);font-weight:600;margin:6px 0}
+.mg-scale-result{display:none;font-size:12px;color:var(--a1);padding:8px 12px;border-radius:8px;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.15);margin-top:6px;line-height:1.5}
+.mg-scale-result.show{display:block;animation:fadeUp .4s var(--ease) both}
+/* spot */
+.mg-spot-cards{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mg-spot-card{padding:8px 10px;border-radius:8px;border:1px solid var(--card-border);font-size:11px;color:var(--tx2);cursor:pointer;background:rgba(255,255,255,.02);transition:all .2s;line-height:1.4;min-height:50px;-webkit-tap-highlight-color:transparent}
+.mg-spot-card:hover{border-color:var(--accent-border, rgba(99,102,241,.2));background:rgba(255,255,255,.05)}
+.mg-spot-card.correct{border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:var(--a2)}
+.mg-spot-card.wrong{border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.08);color:var(--a3)}
+.mg-spot-fb{display:none;font-size:12px;margin-top:6px;line-height:1.5}
+.mg-spot-fb.show{display:block;animation:fadeUp .3s var(--ease) both}
+/* trap */
+.mg-trap-step{font-size:10px;color:var(--tx3);margin-bottom:4px}
+.mg-trap-prompt{font-size:12px;color:var(--tx2);margin-bottom:6px;line-height:1.5;font-weight:500}
+.mg-trap-choices{display:flex;flex-direction:column;gap:4px}
+.mg-trap-reveal{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:8px;line-height:1.5;border-left:3px solid var(--accent,var(--a1))}
+.mg-trap-reveal.show{display:block;animation:fadeUp .4s var(--ease) both}
+.mg-trap-next{display:block;margin-top:8px;width:100%;text-align:center}
+@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}.mg-spot-cards{grid-template-columns:1fr}.mg-scale-row{flex-direction:column;align-items:flex-start;gap:6px}}
 
 </style>
 </head>
 <body class="s-green">
 <div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot"></div>
-<div class="header"><div class="header-in"><a class="back-btn" href="./knowledge.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">普行男养成计划</span></div></div>
+<div class="header"><div class="header-in"><a class="back-btn" href="./puxing-man.html" title="返回目录"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">普行男养成计划</span><a class="home-btn" href="./index.html" title="返回主页" style="margin-left:auto"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></a></div></div>
 <div class="container" id="mainContainer">
 <div class="hero"><h1>答疑·穿搭问题：穿搭实践中会踩哪些雷？</h1><p class="sub">BV1sR4y1C7cU · 6分钟 · 外形篇 6/7</p><div class="tags"><span class="tag">外形篇</span><span class="tag">穿搭答疑</span><span class="tag">避雷</span></div></div>
 <div class="progress"><span>7</span> / 21</div>
 <div class="page-nav"><a href="./puxing-06.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-08.html">下一篇 →</a></div>
-<div class="card"><span class="card-num">1</span><h3>⚡ 雷区一：运动风 ≠ 运动服</h3><p>运动风格是"看起来像会去运动的人"，不是"穿着运动服到处走"。区别在于：运动风格会混搭休闲单品，而全套运动服 = 刚从健身房出来。</p><div class="cmp-row"><div class="cmp-do"><div class="cmp-label">✓ 应该这样</div><p>运动卫衣 + 休闲裤 + 小白鞋（运动风格混搭）</p></div><div class="cmp-dont"><div class="cmp-label">✗ 不要这样</div><p>全套运动品牌 + 运动裤 + 跑鞋（像刚从健身房出来）</p></div></div><div class="mg-scenario" data-mg="scenario"><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">运动风格正确的打开方式？</p><button class="mg-btn" data-outcome="对！混搭才叫风格，全套=刚从健身房出来。">运动卫衣 + 休闲裤 + 小白鞋</button><button class="mg-btn" data-outcome="全套运动服是功能着装，不适合日常社交。">全套运动服</button><div class="mg-outcome"></div></div></div>
+<div class="card"><span class="card-num">1</span><h3>⚡ 雷区一：运动风 ≠ 运动服</h3><p>运动风格是"看起来像会去运动的人"，不是"穿着运动服到处走"。区别在于：运动风格会混搭休闲单品，而全套运动服 = 刚从健身房出来。</p><div class="cmp-row"><div class="cmp-do"><div class="cmp-label">✓ 应该这样</div><p>运动卫衣 + 休闲裤 + 小白鞋（运动风格混搭）</p></div><div class="cmp-dont"><div class="cmp-label">✗ 不要这样</div><p>全套运动品牌 + 运动裤 + 跑鞋（像刚从健身房出来）</p></div></div><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 运动风格 ≠ 穿全套运动服。正确做法:运动卫衣（运动元素）+ 休闲裤（日常元素）+ 小白鞋（中和）= 好看的混搭。全套运动服 = \"我刚从跑步机下来\"。", "📌 全套运动服——这样最方便最舒适 —— 这不是最佳答案。", "📌 运动服不能作为日常穿搭——只在运动时穿 —— 这不是最佳答案。", "📌 买贵的运动品牌——贵的设计自然好看 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 运动风格怎么穿才能不显得"刚从健身房出来"？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 混搭:运动卫衣 + 休闲裤 + 小白鞋——风格=运动元素混搭</button><button class="mg-q4-opt">🅱️ 全套运动服——这样最方便最舒适</button><button class="mg-q4-opt">©️ 运动服不能作为日常穿搭——只在运动时穿</button><button class="mg-q4-opt">🅳 买贵的运动品牌——贵的设计自然好看</button><div class="mg-q4-explain"></div></div></div>
 <div class="card"><span class="card-num">2</span><h3>🧥 雷区二：冬天裹成"粽子"</h3><p>冬天穿搭的核心是"层次感"而非"厚度"。三层法则：内层贴身保暖、中层锁温、外层防风。这样穿既保暖又能脱，不会显得臃肿。</p><div class="step-flow"><div style="text-align:center;flex-shrink:0"><div class="step-dot">1</div><div class="step-label">内层
 贴身保暖</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">2</div><div class="step-label">中层
 针织锁温</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">3</div><div class="step-label">外层
-防风外套</div></div></div><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！三层法则暖而不肿——比胡乱叠加更显瘦。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">冬天不显臃肿的关键？</p><button class="mg-btn">层次感：内贴身+中锁温+外防风</button><button class="mg-btn">多穿几件厚毛衣叠在一起</button><span class="mg-feedback"></span></div></div>
-<div class="card"><span class="card-num">3</span><h3>👟 雷区三：忽略鞋子的重要性</h3><p>很多人精心搭配了衣服，却穿了一双脏兮兮的旧球鞋。鞋子是整体造型的"句号"——一双干净合脚的鞋能拯救一身平庸的搭配。</p><div class="takeaway"><span class="ta-icon">👞</span><span>鞋子是你全身穿搭的"句号"。投资两双好鞋，保持它们干净，定期轮换。一双脏鞋可以毁掉一身精心搭配。</span></div><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！投资两双好鞋并保持干净——比你想的重要得多。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">鞋子为什么是穿搭的"句号"？</p><button class="mg-btn">鞋子是终点，脏鞋毁全身</button><button class="mg-btn">没人看鞋子</button><span class="mg-feedback"></span></div></div>
+防风外套</div></div></div><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 不是穿得多就暖。三层法则:贴身层（排汗）+ 中间层（抓绒/薄羽绒/毛衣锁温）+ 外层（防风外套）。暖不臃肿。胡乱叠加=臃肿还不一定暖。", "📌 多穿几件厚毛衣——厚度=温度 —— 这不是最佳答案。", "📌 买一件超厚羽绒服——一件搞定 —— 这不是最佳答案。", "📌 冬天保暖最重要——臃肿点无所谓 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 冬天怎么穿才能既保暖又不臃肿？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 三层法则:内贴身 + 中锁温 + 外防风——暖而不肿</button><button class="mg-q4-opt">🅱️ 多穿几件厚毛衣——厚度=温度</button><button class="mg-q4-opt">©️ 买一件超厚羽绒服——一件搞定</button><button class="mg-q4-opt">🅳 冬天保暖最重要——臃肿点无所谓</button><div class="mg-q4-explain"></div></div></div>
+<div class="card"><span class="card-num">3</span><h3>👟 雷区三：忽略鞋子的重要性</h3><p>很多人精心搭配了衣服，却穿了一双脏兮兮的旧球鞋。鞋子是整体造型的"句号"——一双干净合脚的鞋能拯救一身平庸的搭配。</p><div class="takeaway"><span class="ta-icon">👞</span><span>鞋子是你全身穿搭的"句号"。投资两双好鞋，保持它们干净，定期轮换。一双脏鞋可以毁掉一身精心搭配。</span></div><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 配饰是\"点缀\"——多了变\"装饰品展览\"。原则:1)全身最多 2 个配饰；2)配饰之间不互相竞争（大手表+大项链=打架）；3)简单款 > 复杂款。一块干净的手表就够了。", "📌 越多越好——配饰显示品味 —— 这不是最佳答案。", "📌 男生不需要配饰——那是女人的事 —— 这不是最佳答案。", "📌 配饰必须贵——便宜的还不如不戴 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 配饰（手表/项链/帽子）的正确使用原则？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 少即是多——最多 2 个配饰，且不能互相抢戏</button><button class="mg-q4-opt">🅱️ 越多越好——配饰显示品味</button><button class="mg-q4-opt">©️ 男生不需要配饰——那是女人的事</button><button class="mg-q4-opt">🅳 配饰必须贵——便宜的还不如不戴</button><div class="mg-q4-explain"></div></div></div>
 <div class="page-nav"><a href="./puxing-06.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-08.html">下一篇 →</a></div>
 </div>
 <div class="bottom-nav"><a class="nav-btn" href="./puxing-man.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>目录</a><a class="nav-btn" href="./knowledge.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>百科</a><a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>首页</a></div>

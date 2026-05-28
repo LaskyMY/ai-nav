@@ -30,6 +30,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
 .back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
 .back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.home-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.home-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
 .container{max-width:800px;margin:0 auto;padding:18px 20px;position:relative;z-index:1;will-change:transform}
 .hero{text-align:center;padding:24px 0 10px}
 .hero h1{font-size:26px;font-weight:700;letter-spacing:-.03em;margin-bottom:6px;background:linear-gradient(135deg,var(--accent),var(--a1));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 4s ease-in-out infinite}
@@ -118,8 +120,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
 @media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
 
-/* mini-games */
-.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort{margin-top:10px;position:relative;z-index:1}
+/* mini-games v3 — quiz4/scale/spot/trap edition */
+.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort,.mg-quiz4,.mg-scale,.mg-spot,.mg-trap{margin-top:10px;position:relative;z-index:1}
 .mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
 .mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:var(--accent-border, rgba(99,102,241,.2))}
 .mg-body{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.03);margin-top:6px;line-height:1.5}
@@ -153,21 +155,56 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .mg-msg{font-size:12px;color:var(--tx2);margin-top:4px}
 .mg-sort-q{font-size:13px;color:var(--tx);margin-bottom:6px;font-weight:500}
 .mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
-@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
+/* quiz4 */
+.mg-q4-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.mg-q4-q{font-size:12px;color:var(--tx2);margin:0;line-height:1.5}
+.mg-q4-counter{font-size:11px;color:var(--tx3);min-width:24px;text-align:center}
+.mg-q4-opt{display:block;width:100%;text-align:left;padding:8px 12px;margin:4px 0;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-q4-opt:hover{background:rgba(255,255,255,.08);color:var(--tx);border-color:var(--accent-border, rgba(99,102,241,.2))}
+.mg-q4-opt.correct{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:var(--a2)}
+.mg-q4-opt.wrong{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:var(--a3)}
+.mg-q4-explain{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:6px;line-height:1.5}
+.mg-q4-explain.show{display:block;animation:fadeUp .3s var(--ease) both}
+.mg-q4-icon{font-size:14px}
+/* scale */
+.mg-scale-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);flex-wrap:wrap;gap:4px}
+.mg-scale-q{font-size:11px;color:var(--tx2);flex:1;min-width:120px;line-height:1.4}
+.mg-scale-btns{display:flex;gap:4px;flex-shrink:0}
+.mg-scale-btn{width:32px;height:32px;padding:0;border-radius:50%;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:unset;margin:0;display:flex;align-items:center;justify-content:center}
+.mg-scale-btn.sel{background:var(--accent,var(--a1));color:#fff;border-color:var(--accent,var(--a1));transform:scale(1.15)}
+.mg-scale-score{font-size:13px;color:var(--tx);font-weight:600;margin:6px 0}
+.mg-scale-result{display:none;font-size:12px;color:var(--a1);padding:8px 12px;border-radius:8px;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.15);margin-top:6px;line-height:1.5}
+.mg-scale-result.show{display:block;animation:fadeUp .4s var(--ease) both}
+/* spot */
+.mg-spot-cards{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mg-spot-card{padding:8px 10px;border-radius:8px;border:1px solid var(--card-border);font-size:11px;color:var(--tx2);cursor:pointer;background:rgba(255,255,255,.02);transition:all .2s;line-height:1.4;min-height:50px;-webkit-tap-highlight-color:transparent}
+.mg-spot-card:hover{border-color:var(--accent-border, rgba(99,102,241,.2));background:rgba(255,255,255,.05)}
+.mg-spot-card.correct{border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:var(--a2)}
+.mg-spot-card.wrong{border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.08);color:var(--a3)}
+.mg-spot-fb{display:none;font-size:12px;margin-top:6px;line-height:1.5}
+.mg-spot-fb.show{display:block;animation:fadeUp .3s var(--ease) both}
+/* trap */
+.mg-trap-step{font-size:10px;color:var(--tx3);margin-bottom:4px}
+.mg-trap-prompt{font-size:12px;color:var(--tx2);margin-bottom:6px;line-height:1.5;font-weight:500}
+.mg-trap-choices{display:flex;flex-direction:column;gap:4px}
+.mg-trap-reveal{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:8px;line-height:1.5;border-left:3px solid var(--accent,var(--a1))}
+.mg-trap-reveal.show{display:block;animation:fadeUp .4s var(--ease) both}
+.mg-trap-next{display:block;margin-top:8px;width:100%;text-align:center}
+@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}.mg-spot-cards{grid-template-columns:1fr}.mg-scale-row{flex-direction:column;align-items:flex-start;gap:6px}}
 
 </style>
 </head>
 <body class="s-indigo">
 <div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot"></div>
-<div class="header"><div class="header-in"><a class="back-btn" href="./knowledge.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">普行男养成计划</span></div></div>
+<div class="header"><div class="header-in"><a class="back-btn" href="./puxing-man.html" title="返回目录"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">普行男养成计划</span><a class="home-btn" href="./index.html" title="返回主页" style="margin-left:auto"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></a></div></div>
 <div class="container" id="mainContainer">
 <div class="hero"><h1>能力篇·游戏&运动：打游戏脱单的终极奥义</h1><p class="sub">BV1D8411P7w7 · 6分钟 · 能力篇 8/9</p><div class="tags"><span class="tag">能力篇</span><span class="tag">游戏</span><span class="tag">运动</span></div></div>
 <div class="progress"><span>16</span> / 21</div>
 <div class="page-nav"><a href="./puxing-15.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-17.html">下一篇 →</a></div>
-<div class="card"><span class="card-num">1</span><h3>🎮 游戏不只是"玩"</h3><p>游戏是当今最自然的社交场景之一。但"打得好"不是关键——"打得有趣"才是。你是那个赢了就嘲讽对方、输了就骂队友的人？还是那个输了也能开玩笑、赢了会夸队友的人？</p><div class="cmp-row"><div class="cmp-do"><div class="cmp-label">✓ 应该这样</div><p>输了开玩笑自嘲，赢了夸队友，不管输赢都有趣</p></div><div class="cmp-dont"><div class="cmp-label">✗ 不要这样</div><p>赢了嘲讽对面，输了骂队友甩锅，情绪失控</p></div></div><div class="mg-scenario" data-mg="scenario"><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">游戏中输了最好的表现是？</p><button class="mg-btn" data-outcome="对！输得起比赢得漂亮更吸引人。游戏态度=人品展示。">开玩笑自嘲+夸对手</button><button class="mg-btn" data-outcome="输了骂队友=展示你不会处理情绪。">骂队友甩锅给网速</button><div class="mg-outcome"></div></div></div>
-<div class="card"><span class="card-num">2</span><h3>⚽ 运动是最好的"外形+社交"双修</h3><p>规律运动不仅改善体型（提升外形），还能加入运动社群（扩大社交圈）。</p><ul class="checklist"><li>羽毛球：男女皆可，容易约，互动性强</li><li>攀岩：室内攀岩馆越来越多，有趣且易互动</li><li>飞盘/橄榄球：团队运动，天然社交场景</li><li>健身：改善体型 + 健身房也是社交场所</li></ul><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！选运动也要考虑社交属性——容易约>纯个人运动。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">社交属性最强的运动？</p><button class="mg-btn">羽毛球：男女皆可、容易约、互动强</button><button class="mg-btn">跑步：一个人就行</button><span class="mg-feedback"></span></div></div>
-<div class="card"><span class="card-num">3</span><h3>💑 CPDD的正确打开方式</h3><p>在游戏中找对象的重点不是"找"，而是"展示自己"。你的游戏ID、头像、聊天风格、朋友圈都是展示面。</p><div class="takeaway"><span class="ta-icon">🎯</span><span>与其到处CPDD，不如先把自己打造成一个"在游戏里让人觉得有趣的人"。吸引力是吸引来的，不是求来的。</span></div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🎮 CPDD正确方式</button><div class="mg-body">与其到处"CPDD"，不如把自己打造成"游戏里有趣的人"。你的一切都在替你说话——展示有趣比求关注有效100倍。</div></div></div>
+<div class="card"><span class="card-num">1</span><h3>🎮 游戏不只是"玩"</h3><p>游戏是当今最自然的社交场景之一。但"打得好"不是关键——"打得有趣"才是。你是那个赢了就嘲讽对方、输了就骂队友的人？还是那个输了也能开玩笑、赢了会夸队友的人？</p><div class="cmp-row"><div class="cmp-do"><div class="cmp-label">✓ 应该这样</div><p>输了开玩笑自嘲，赢了夸队友，不管输赢都有趣</p></div><div class="cmp-dont"><div class="cmp-label">✗ 不要这样</div><p>赢了嘲讽对面，输了骂队友甩锅，情绪失控</p></div></div><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 输得起 > 赢得漂亮。输了但自嘲+夸对手:展示了你把游戏当游戏、情绪稳定、能欣赏他人的能力。输了但甩锅/骂队友:展示了情绪失控和不愿承担责任。游戏态度=人品窗口。", "📌 沉默不说话——冷静下来再说 —— 这不是最佳答案。", "📌 分析输在哪——跟队友复盘找到问题 —— 这不是最佳答案。", "📌 马上开下一把——用赢来弥补输的挫败 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 游戏中输了，最好的表现是什么？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 开玩笑自嘲 + 夸对手——"这波确实你打得好，我学到了"</button><button class="mg-q4-opt">🅱️ 沉默不说话——冷静下来再说</button><button class="mg-q4-opt">©️ 分析输在哪——跟队友复盘找到问题</button><button class="mg-q4-opt">🅳 马上开下一把——用赢来弥补输的挫败</button><div class="mg-q4-explain"></div></div></div>
+<div class="card"><span class="card-num">2</span><h3>⚽ 运动是最好的"外形+社交"双修</h3><p>规律运动不仅改善体型（提升外形），还能加入运动社群（扩大社交圈）。</p><ul class="checklist"><li>羽毛球：男女皆可，容易约，互动性强</li><li>攀岩：室内攀岩馆越来越多，有趣且易互动</li><li>飞盘/橄榄球：团队运动，天然社交场景</li><li>健身：改善体型 + 健身房也是社交场所</li></ul><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 选运动要考虑:容易约吗？男女都能参与吗？互动性强吗？羽毛球:男女皆宜、技术门槛低、2 人或 4 人都能打、容易约——是最佳社交运动之一。飞盘也是好的选择。", "📌 跑步——一个人就能完成，时间灵活 —— 这不是最佳答案。", "📌 篮球/足球——团队运动最能交朋友 —— 这不是最佳答案。", "📌 健身房——一个人练就是社交 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 想通过运动扩大社交圈——选什么运动最好？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 羽毛球/飞盘——男女皆可、容易约、互动性强</button><button class="mg-q4-opt">🅱️ 跑步——一个人就能完成，时间灵活</button><button class="mg-q4-opt">©️ 篮球/足球——团队运动最能交朋友</button><button class="mg-q4-opt">🅳 健身房——一个人练就是社交</button><div class="mg-q4-explain"></div></div></div>
+<div class="card"><span class="card-num">3</span><h3>💑 CPDD的正确打开方式</h3><p>在游戏中找对象的重点不是"找"，而是"展示自己"。你的游戏ID、头像、聊天风格、朋友圈都是展示面。</p><div class="takeaway"><span class="ta-icon">🎯</span><span>与其到处CPDD，不如先把自己打造成一个"在游戏里让人觉得有趣的人"。吸引力是吸引来的，不是求来的。</span></div><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 被 DD > 主动 DD。与其苦苦喊\"CPDD\"，不如把游戏打得幽默有风格——\"这个人有意思，想跟他一起玩\"。\"有趣\"是最高吸引力——游戏搭子是，人生也是。", "📌 到处喊\"CPDD\"——总会有人回的 —— 这不是最佳答案。", "📌 打得好——技术是最好的招牌 —— 这不是最佳答案。", "📌 多充钱——装备好了自然有人搭 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 游戏里的 CPDD（找游戏搭子）正确方式？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 把游戏打得有趣、性格好玩——别人会因为想跟你玩而主动来 DD</button><button class="mg-q4-opt">🅱️ 到处喊"CPDD"——总会有人回的</button><button class="mg-q4-opt">©️ 打得好——技术是最好的招牌</button><button class="mg-q4-opt">🅳 多充钱——装备好了自然有人搭</button><div class="mg-q4-explain"></div></div></div>
 <div class="page-nav"><a href="./puxing-15.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-17.html">下一篇 →</a></div>
 </div>
 <div class="bottom-nav"><a class="nav-btn" href="./puxing-man.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>目录</a><a class="nav-btn" href="./knowledge.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>百科</a><a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>首页</a></div>

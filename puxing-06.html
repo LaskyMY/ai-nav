@@ -30,6 +30,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
 .back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
 .back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.home-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.home-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
 .container{max-width:800px;margin:0 auto;padding:18px 20px;position:relative;z-index:1;will-change:transform}
 .hero{text-align:center;padding:24px 0 10px}
 .hero h1{font-size:26px;font-weight:700;letter-spacing:-.03em;margin-bottom:6px;background:linear-gradient(135deg,var(--accent),var(--a1));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 4s ease-in-out infinite}
@@ -118,8 +120,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
 @media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
 
-/* mini-games */
-.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort{margin-top:10px;position:relative;z-index:1}
+/* mini-games v3 — quiz4/scale/spot/trap edition */
+.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort,.mg-quiz4,.mg-scale,.mg-spot,.mg-trap{margin-top:10px;position:relative;z-index:1}
 .mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
 .mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:var(--accent-border, rgba(99,102,241,.2))}
 .mg-body{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.03);margin-top:6px;line-height:1.5}
@@ -153,21 +155,56 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .mg-msg{font-size:12px;color:var(--tx2);margin-top:4px}
 .mg-sort-q{font-size:13px;color:var(--tx);margin-bottom:6px;font-weight:500}
 .mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
-@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
+/* quiz4 */
+.mg-q4-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.mg-q4-q{font-size:12px;color:var(--tx2);margin:0;line-height:1.5}
+.mg-q4-counter{font-size:11px;color:var(--tx3);min-width:24px;text-align:center}
+.mg-q4-opt{display:block;width:100%;text-align:left;padding:8px 12px;margin:4px 0;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-q4-opt:hover{background:rgba(255,255,255,.08);color:var(--tx);border-color:var(--accent-border, rgba(99,102,241,.2))}
+.mg-q4-opt.correct{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:var(--a2)}
+.mg-q4-opt.wrong{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:var(--a3)}
+.mg-q4-explain{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:6px;line-height:1.5}
+.mg-q4-explain.show{display:block;animation:fadeUp .3s var(--ease) both}
+.mg-q4-icon{font-size:14px}
+/* scale */
+.mg-scale-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);flex-wrap:wrap;gap:4px}
+.mg-scale-q{font-size:11px;color:var(--tx2);flex:1;min-width:120px;line-height:1.4}
+.mg-scale-btns{display:flex;gap:4px;flex-shrink:0}
+.mg-scale-btn{width:32px;height:32px;padding:0;border-radius:50%;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:unset;margin:0;display:flex;align-items:center;justify-content:center}
+.mg-scale-btn.sel{background:var(--accent,var(--a1));color:#fff;border-color:var(--accent,var(--a1));transform:scale(1.15)}
+.mg-scale-score{font-size:13px;color:var(--tx);font-weight:600;margin:6px 0}
+.mg-scale-result{display:none;font-size:12px;color:var(--a1);padding:8px 12px;border-radius:8px;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.15);margin-top:6px;line-height:1.5}
+.mg-scale-result.show{display:block;animation:fadeUp .4s var(--ease) both}
+/* spot */
+.mg-spot-cards{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mg-spot-card{padding:8px 10px;border-radius:8px;border:1px solid var(--card-border);font-size:11px;color:var(--tx2);cursor:pointer;background:rgba(255,255,255,.02);transition:all .2s;line-height:1.4;min-height:50px;-webkit-tap-highlight-color:transparent}
+.mg-spot-card:hover{border-color:var(--accent-border, rgba(99,102,241,.2));background:rgba(255,255,255,.05)}
+.mg-spot-card.correct{border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:var(--a2)}
+.mg-spot-card.wrong{border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.08);color:var(--a3)}
+.mg-spot-fb{display:none;font-size:12px;margin-top:6px;line-height:1.5}
+.mg-spot-fb.show{display:block;animation:fadeUp .3s var(--ease) both}
+/* trap */
+.mg-trap-step{font-size:10px;color:var(--tx3);margin-bottom:4px}
+.mg-trap-prompt{font-size:12px;color:var(--tx2);margin-bottom:6px;line-height:1.5;font-weight:500}
+.mg-trap-choices{display:flex;flex-direction:column;gap:4px}
+.mg-trap-reveal{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:8px;line-height:1.5;border-left:3px solid var(--accent,var(--a1))}
+.mg-trap-reveal.show{display:block;animation:fadeUp .4s var(--ease) both}
+.mg-trap-next{display:block;margin-top:8px;width:100%;text-align:center}
+@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}.mg-spot-cards{grid-template-columns:1fr}.mg-scale-row{flex-direction:column;align-items:flex-start;gap:6px}}
 
 </style>
 </head>
 <body class="s-green">
 <div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot"></div>
-<div class="header"><div class="header-in"><a class="back-btn" href="./knowledge.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">普行男养成计划</span></div></div>
+<div class="header"><div class="header-in"><a class="back-btn" href="./puxing-man.html" title="返回目录"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">普行男养成计划</span><a class="home-btn" href="./index.html" title="返回主页" style="margin-left:auto"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></a></div></div>
 <div class="container" id="mainContainer">
 <div class="hero"><h1>外形篇·尺码选择：懒人专用的穿搭尺码攻略</h1><p class="sub">BV1Eh4y197HC · 8分钟 · 外形篇 5/7</p><div class="tags"><span class="tag">外形篇</span><span class="tag">尺码</span><span class="tag">购物技巧</span></div></div>
 <div class="progress"><span>6</span> / 21</div>
 <div class="page-nav"><a href="./puxing-05.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-07.html">下一篇 →</a></div>
-<div class="card"><span class="card-num">1</span><h3>📏 为什么你总买错尺码？</h3><p>不同品牌的M码可能差出一个尺码。只看S/M/L/XL是买衣服最大的坑。你需要记住自己的三个关键数据：胸围、腰围、肩宽。网购时只看厘米/英寸，不看字母尺码。</p><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！不同品牌M码能差一个尺码。S/M/L是世界上最不靠谱的度量衡。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">网购最靠谱的尺码方式是？</p><button class="mg-btn">看厘米/英寸数据，不看S/M/L</button><button class="mg-btn">认准字母尺码</button><span class="mg-feedback"></span></div></div>
-<div class="card"><span class="card-num">2</span><h3>📐 不用尺量的懒人方法</h3><p>找一件你穿着最合身的衣服，平铺测量：肩宽、胸宽、衣长、袖长。每次网购时对照卖家提供的尺码表，找出最接近你"完美衣服"数据的那个尺码。一劳永逸。</p><ul class="checklist"><li>找出一件最合身的衣服作为"基准款"</li><li>平铺测量：肩宽、胸宽、衣长、袖长 四个数据</li><li>每次网购对照尺码表，选最接近基准数据的尺码</li><li>不同品类（T恤/衬衫/外套）各建立一套基准</li></ul><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">📐 懒人测量法</button><div class="mg-body">找最合身的一件衣服平铺测量：肩宽、胸宽、衣长、袖长——这四个数据就是你的"基准尺码"。网购时对照卖家尺码表选最接近的。一劳永逸。</div></div></div>
-<div class="card"><span class="card-num">3</span><h3>✅ 不同单品的合身标准</h3><p>T恤：肩线在肩膀边缘，下摆在臀部中间。衬衫：扣上最上面一颗扣子后能塞进一个手指。裤子：不用腰带也不会掉，大腿和小腿处有适度空间但不松垮。</p><div class="takeaway"><span class="ta-icon">🎯</span><span>记住你自己的三个数字：胸围、腰围、肩宽。忽略 S/M/L，只看厘米/英寸。字母尺码是世界上最不靠谱的度量衡。</span></div><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！肩线位置是T恤的第一标准。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">T恤合身的判断标准？</p><button class="mg-btn">肩线在肩膀边缘，下摆在臀部中间</button><button class="mg-btn">能穿进去就行</button><span class="mg-feedback"></span></div></div>
+<div class="card"><span class="card-num">1</span><h3>📏 为什么你总买错尺码？</h3><p>不同品牌的M码可能差出一个尺码。只看S/M/L/XL是买衣服最大的坑。你需要记住自己的三个关键数据：胸围、腰围、肩宽。网购时只看厘米/英寸，不看字母尺码。</p><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 S/M/L 是世界上最不靠谱的度量衡——不同品牌 M 码胸围能差 10cm。唯一靠谱的方法:量好自己的肩宽、胸围、衣长，网购时直接对照卖家尺码表。", "📌 认准 S/M/L——买了多年都知道自己穿什么号 —— 这不是最佳答案。", "📌 看模特图——模特穿多大我就买多大 —— 这不是最佳答案。", "📌 买最大号然后改小——安全不出错 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 网购衣服最靠谱的尺码方式是什么？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 看厘米/英寸数据——不同品牌 S/M/L 能差一个尺码</button><button class="mg-q4-opt">🅱️ 认准 S/M/L——买了多年都知道自己穿什么号</button><button class="mg-q4-opt">©️ 看模特图——模特穿多大我就买多大</button><button class="mg-q4-opt">🅳 买最大号然后改小——安全不出错</button><div class="mg-q4-explain"></div></div></div>
+<div class="card"><span class="card-num">2</span><h3>📐 不用尺量的懒人方法</h3><p>找一件你穿着最合身的衣服，平铺测量：肩宽、胸宽、衣长、袖长。每次网购时对照卖家提供的尺码表，找出最接近你"完美衣服"数据的那个尺码。一劳永逸。</p><ul class="checklist"><li>找出一件最合身的衣服作为"基准款"</li><li>平铺测量：肩宽、胸宽、衣长、袖长 四个数据</li><li>每次网购对照尺码表，选最接近基准数据的尺码</li><li>不同品类（T恤/衬衫/外套）各建立一套基准</li></ul><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 懒人法:找衣柜里最合身的一件衣服，平铺测量四个数据:肩宽、胸宽、衣长、袖长。之后网购直接对照这组数据选择。一劳永逸。", "📌 记住身高体重去问客服推荐尺码 —— 这不是最佳答案。", "📌 每次都买两个号——退掉不合适的那个 —— 这不是最佳答案。", "📌 去实体店试穿然后记下品牌和尺码 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 如何建立自己的"尺码基准"？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 找最合身的一件平铺测量肩宽/胸围/衣长/袖长</button><button class="mg-q4-opt">🅱️ 记住身高体重去问客服推荐尺码</button><button class="mg-q4-opt">©️ 每次都买两个号——退掉不合适的那个</button><button class="mg-q4-opt">🅳 去实体店试穿然后记下品牌和尺码</button><div class="mg-q4-explain"></div></div></div>
+<div class="card"><span class="card-num">3</span><h3>✅ 不同单品的合身标准</h3><p>T恤：肩线在肩膀边缘，下摆在臀部中间。衬衫：扣上最上面一颗扣子后能塞进一个手指。裤子：不用腰带也不会掉，大腿和小腿处有适度空间但不松垮。</p><div class="takeaway"><span class="ta-icon">🎯</span><span>记住你自己的三个数字：胸围、腰围、肩宽。忽略 S/M/L，只看厘米/英寸。字母尺码是世界上最不靠谱的度量衡。</span></div><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 三个关键点:1)肩线刚好在肩膀边缘（过了=太大，不到=太小）；2)下摆到臀部中间位置；3)袖子到手肘上方约 2-3cm。宽松 ≠ 合身。\"舒服\"不能替代\"好看\"。", "📌 只要能穿进去就是合身 —— 这不是最佳答案。", "📌 稍微宽松一点比较舒服——大一号没关系 —— 这不是最佳答案。", "📌 紧身最好——能显出肌肉线条 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 T 恤合身的判断标准是什么？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 肩线在肩膀边缘、下摆在臀部中间、袖子到手肘上方 2-3cm</button><button class="mg-q4-opt">🅱️ 只要能穿进去就是合身</button><button class="mg-q4-opt">©️ 稍微宽松一点比较舒服——大一号没关系</button><button class="mg-q4-opt">🅳 紧身最好——能显出肌肉线条</button><div class="mg-q4-explain"></div></div></div>
 <div class="page-nav"><a href="./puxing-05.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-07.html">下一篇 →</a></div>
 </div>
 <div class="bottom-nav"><a class="nav-btn" href="./puxing-man.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>目录</a><a class="nav-btn" href="./knowledge.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>百科</a><a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>首页</a></div>

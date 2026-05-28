@@ -30,6 +30,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
 .back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
 .back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.home-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.home-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
 .container{max-width:800px;margin:0 auto;padding:18px 20px;position:relative;z-index:1;will-change:transform}
 .hero{text-align:center;padding:24px 0 10px}
 .hero h1{font-size:26px;font-weight:700;letter-spacing:-.03em;margin-bottom:6px;background:linear-gradient(135deg,var(--accent),var(--a1));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 4s ease-in-out infinite}
@@ -118,8 +120,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
 @media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
 
-/* mini-games */
-.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort{margin-top:10px;position:relative;z-index:1}
+/* mini-games v3 — quiz4/scale/spot/trap edition */
+.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort,.mg-quiz4,.mg-scale,.mg-spot,.mg-trap{margin-top:10px;position:relative;z-index:1}
 .mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
 .mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:var(--accent-border, rgba(99,102,241,.2))}
 .mg-body{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.03);margin-top:6px;line-height:1.5}
@@ -153,21 +155,56 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .mg-msg{font-size:12px;color:var(--tx2);margin-top:4px}
 .mg-sort-q{font-size:13px;color:var(--tx);margin-bottom:6px;font-weight:500}
 .mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
-@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
+/* quiz4 */
+.mg-q4-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.mg-q4-q{font-size:12px;color:var(--tx2);margin:0;line-height:1.5}
+.mg-q4-counter{font-size:11px;color:var(--tx3);min-width:24px;text-align:center}
+.mg-q4-opt{display:block;width:100%;text-align:left;padding:8px 12px;margin:4px 0;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-q4-opt:hover{background:rgba(255,255,255,.08);color:var(--tx);border-color:var(--accent-border, rgba(99,102,241,.2))}
+.mg-q4-opt.correct{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:var(--a2)}
+.mg-q4-opt.wrong{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:var(--a3)}
+.mg-q4-explain{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:6px;line-height:1.5}
+.mg-q4-explain.show{display:block;animation:fadeUp .3s var(--ease) both}
+.mg-q4-icon{font-size:14px}
+/* scale */
+.mg-scale-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);flex-wrap:wrap;gap:4px}
+.mg-scale-q{font-size:11px;color:var(--tx2);flex:1;min-width:120px;line-height:1.4}
+.mg-scale-btns{display:flex;gap:4px;flex-shrink:0}
+.mg-scale-btn{width:32px;height:32px;padding:0;border-radius:50%;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:unset;margin:0;display:flex;align-items:center;justify-content:center}
+.mg-scale-btn.sel{background:var(--accent,var(--a1));color:#fff;border-color:var(--accent,var(--a1));transform:scale(1.15)}
+.mg-scale-score{font-size:13px;color:var(--tx);font-weight:600;margin:6px 0}
+.mg-scale-result{display:none;font-size:12px;color:var(--a1);padding:8px 12px;border-radius:8px;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.15);margin-top:6px;line-height:1.5}
+.mg-scale-result.show{display:block;animation:fadeUp .4s var(--ease) both}
+/* spot */
+.mg-spot-cards{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mg-spot-card{padding:8px 10px;border-radius:8px;border:1px solid var(--card-border);font-size:11px;color:var(--tx2);cursor:pointer;background:rgba(255,255,255,.02);transition:all .2s;line-height:1.4;min-height:50px;-webkit-tap-highlight-color:transparent}
+.mg-spot-card:hover{border-color:var(--accent-border, rgba(99,102,241,.2));background:rgba(255,255,255,.05)}
+.mg-spot-card.correct{border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:var(--a2)}
+.mg-spot-card.wrong{border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.08);color:var(--a3)}
+.mg-spot-fb{display:none;font-size:12px;margin-top:6px;line-height:1.5}
+.mg-spot-fb.show{display:block;animation:fadeUp .3s var(--ease) both}
+/* trap */
+.mg-trap-step{font-size:10px;color:var(--tx3);margin-bottom:4px}
+.mg-trap-prompt{font-size:12px;color:var(--tx2);margin-bottom:6px;line-height:1.5;font-weight:500}
+.mg-trap-choices{display:flex;flex-direction:column;gap:4px}
+.mg-trap-reveal{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:8px;line-height:1.5;border-left:3px solid var(--accent,var(--a1))}
+.mg-trap-reveal.show{display:block;animation:fadeUp .4s var(--ease) both}
+.mg-trap-next{display:block;margin-top:8px;width:100%;text-align:center}
+@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}.mg-spot-cards{grid-template-columns:1fr}.mg-scale-row{flex-direction:column;align-items:flex-start;gap:6px}}
 
 </style>
 </head>
 <body class="s-indigo">
 <div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot"></div>
-<div class="header"><div class="header-in"><a class="back-btn" href="./knowledge.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">普行男养成计划</span></div></div>
+<div class="header"><div class="header-in"><a class="back-btn" href="./puxing-man.html" title="返回目录"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">普行男养成计划</span><a class="home-btn" href="./index.html" title="返回主页" style="margin-left:auto"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></a></div></div>
 <div class="container" id="mainContainer">
 <div class="hero"><h1>能力篇·交友扩圈：圈子太小？超硬核交友逻辑方法</h1><p class="sub">BV1cW4y157Jh · 10分钟 · 能力篇 6/9</p><div class="tags"><span class="tag">能力篇</span><span class="tag">交友扩圈</span><span class="tag">社交方法</span></div></div>
 <div class="progress"><span>14</span> / 21</div>
 <div class="page-nav"><a href="./puxing-13.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-15.html">下一篇 →</a></div>
-<div class="card"><span class="card-num">1</span><h3>🔻 交友是一个"漏斗模型"</h3><p>认识100人 → 加联系方式50人 → 深度交流10人 → 成为朋友3人 → 发展为亲密关系1人。你不能跳过前面的步骤直接要到结果。圈子小是因为漏斗的入口太小。</p><div class="step-flow"><div style="text-align:center;flex-shrink:0"><div class="step-dot">100</div><div class="step-label">认识</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">50</div><div class="step-label">加好友</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">10</div><div class="step-label">深聊</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">3</div><div class="step-label">成朋友</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">1</div><div class="step-label">亲密</div></div></div><div class="takeaway"><span class="ta-icon">📊</span><span>漏斗逻辑：如果你只想认识1个人就成功，概率几乎为零。扩大入口，让概率为你工作。</span></div><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！扩大入口让概率为你工作——3个人想1个结果是赌博。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">交友漏斗模型的正确顺序？</p><button class="mg-btn">100认识→50加好友→10深聊→3成朋友→1亲密</button><button class="mg-btn">3认识→深聊→成朋友→亲密</button><span class="mg-feedback"></span></div></div>
-<div class="card"><span class="card-num">2</span><h3>🌐 扩大接触面：从线上到线下</h3><p>线上：兴趣社群（豆瓣小组、QQ群、Discord）、社交App（Bumble和青藤之恋更适合认真交友）、活动平台（Meetup、活动行）。线下：兴趣班、运动社团、志愿者活动、桌游局。</p><div class="mg-scenario" data-mg="scenario"><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">加微信后怎么破冰？</p><button class="mg-btn" data-outcome="对！具体（时间+地点+活动）远胜模糊——对方只需答去/不去。">48h内发起具体邀约</button><button class="mg-btn" data-outcome=""有空出来玩" = 永远不会发生的邀约。">"有空出来玩"</button><div class="mg-outcome"></div></div></div>
-<div class="card"><span class="card-num">3</span><h3>⚡ 从"认识"到"朋友"的关键一步</h3><p>大多数人的社交卡在"加了微信后再也没说过话"。破冰方法：在加微信后48小时内发起一个具体邀约。</p><div class="cmp-row"><div class="cmp-do"><div class="cmp-label">✓ 应该这样</div><p>加微信48小时内："周六下午有个xx展，要不要一起去？"（具体邀约）</p></div><div class="cmp-dont"><div class="cmp-label">✗ 不要这样</div><p>"有空出来玩啊"然后三个月没下文（模糊邀约 = 永远不会发生的邀约）</p></div></div><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！不同平台定位不同——Bumble让女生先发消息，青藤审核较严。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">最适合认真交友的App？</p><button class="mg-btn">Bumble / 青藤之恋</button><button class="mg-btn">Tinder / 探探</button><span class="mg-feedback"></span></div></div>
+<div class="card"><span class="card-num">1</span><h3>🔻 交友是一个"漏斗模型"</h3><p>认识100人 → 加联系方式50人 → 深度交流10人 → 成为朋友3人 → 发展为亲密关系1人。你不能跳过前面的步骤直接要到结果。圈子小是因为漏斗的入口太小。</p><div class="step-flow"><div style="text-align:center;flex-shrink:0"><div class="step-dot">100</div><div class="step-label">认识</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">50</div><div class="step-label">加好友</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">10</div><div class="step-label">深聊</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">3</div><div class="step-label">成朋友</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">1</div><div class="step-label">亲密</div></div></div><div class="takeaway"><span class="ta-icon">📊</span><span>漏斗逻辑：如果你只想认识1个人就成功，概率几乎为零。扩大入口，让概率为你工作。</span></div><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 交友是概率游戏。不是\"找到对的人\"，而是\"让对的概率变大\"。漏斗:100 人认识→50 加好友→10 有深聊→3 成朋友→1 亲密。关键:扩大入口。3 人里找一个结果 = 赌博。", "📌 3 认识→都深聊→找一个最合适的——质量大于数量 —— 这不是最佳答案。", "📌 参加一个社团就够了——深入一个圈子 —— 这不是最佳答案。", "📌 线上交友最效率——App 解决一切 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 交友漏斗模型的正确逻辑是什么？哪个环节最关键？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 100 认识→50 加好友→10 深聊→3 成朋友→1 亲密——扩入口是关键</button><button class="mg-q4-opt">🅱️ 3 认识→都深聊→找一个最合适的——质量大于数量</button><button class="mg-q4-opt">©️ 参加一个社团就够了——深入一个圈子</button><button class="mg-q4-opt">🅳 线上交友最效率——App 解决一切</button><div class="mg-q4-explain"></div></div></div>
+<div class="card"><span class="card-num">2</span><h3>🌐 扩大接触面：从线上到线下</h3><p>线上：兴趣社群（豆瓣小组、QQ群、Discord）、社交App（Bumble和青藤之恋更适合认真交友）、活动平台（Meetup、活动行）。线下：兴趣班、运动社团、志愿者活动、桌游局。</p><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 具体 > 模糊。48h 内发起一个具体话题:时间+地点+活动——对方只需回答去/不去。\"有空出来玩\"=永远不会发生的邀约。", "📌 \"有空出来玩啊\" —— 这不是最佳答案。", "📌 什么都不说——等对方先开口 —— 这不是最佳答案。", "📌 \"你好，我叫 XX，很高兴认识你\" —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 刚加微信后最有效的破冰方式？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 48h 内发"上次聊到的 XX，我刚好看到一个相关的，分享给你"</button><button class="mg-q4-opt">🅱️ "有空出来玩啊"</button><button class="mg-q4-opt">©️ 什么都不说——等对方先开口</button><button class="mg-q4-opt">🅳 "你好，我叫 XX，很高兴认识你"</button><div class="mg-q4-explain"></div></div></div>
+<div class="card"><span class="card-num">3</span><h3>⚡ 从"认识"到"朋友"的关键一步</h3><p>大多数人的社交卡在"加了微信后再也没说过话"。破冰方法：在加微信后48小时内发起一个具体邀约。</p><div class="cmp-row"><div class="cmp-do"><div class="cmp-label">✓ 应该这样</div><p>加微信48小时内："周六下午有个xx展，要不要一起去？"（具体邀约）</p></div><div class="cmp-dont"><div class="cmp-label">✗ 不要这样</div><p>"有空出来玩啊"然后三个月没下文（模糊邀约 = 永远不会发生的邀约）</p></div></div><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 平台定位决定了用户类型。Bumble（女生先发消息，过滤骚扰）+ 青藤（审核严格、社区质量高）适合认真交友。Tinder/探探=快餐式社交——人多但认真度低。", "📌 Tinder / 探探——人多机会多 —— 这不是最佳答案。", "📌 所有 App 都一样——看你怎么用 —— 这不是最佳答案。", "📌 线下活动最好——App 不可靠 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 最适合认真交友的 App 平台是？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ Bumble / 青藤之恋——高质量认真交友</button><button class="mg-q4-opt">🅱️ Tinder / 探探——人多机会多</button><button class="mg-q4-opt">©️ 所有 App 都一样——看你怎么用</button><button class="mg-q4-opt">🅳 线下活动最好——App 不可靠</button><div class="mg-q4-explain"></div></div></div>
 <div class="page-nav"><a href="./puxing-13.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-15.html">下一篇 →</a></div>
 </div>
 <div class="bottom-nav"><a class="nav-btn" href="./puxing-man.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>目录</a><a class="nav-btn" href="./knowledge.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>百科</a><a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>首页</a></div>

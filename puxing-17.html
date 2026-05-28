@@ -30,6 +30,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
 .back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
 .back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.home-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.home-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
 .container{max-width:800px;margin:0 auto;padding:18px 20px;position:relative;z-index:1;will-change:transform}
 .hero{text-align:center;padding:24px 0 10px}
 .hero h1{font-size:26px;font-weight:700;letter-spacing:-.03em;margin-bottom:6px;background:linear-gradient(135deg,var(--accent),var(--a1));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 4s ease-in-out infinite}
@@ -118,8 +120,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
 @media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
 
-/* mini-games */
-.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort{margin-top:10px;position:relative;z-index:1}
+/* mini-games v3 — quiz4/scale/spot/trap edition */
+.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort,.mg-quiz4,.mg-scale,.mg-spot,.mg-trap{margin-top:10px;position:relative;z-index:1}
 .mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
 .mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:var(--accent-border, rgba(99,102,241,.2))}
 .mg-body{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.03);margin-top:6px;line-height:1.5}
@@ -153,25 +155,60 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .mg-msg{font-size:12px;color:var(--tx2);margin-top:4px}
 .mg-sort-q{font-size:13px;color:var(--tx);margin-bottom:6px;font-weight:500}
 .mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
-@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
+/* quiz4 */
+.mg-q4-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.mg-q4-q{font-size:12px;color:var(--tx2);margin:0;line-height:1.5}
+.mg-q4-counter{font-size:11px;color:var(--tx3);min-width:24px;text-align:center}
+.mg-q4-opt{display:block;width:100%;text-align:left;padding:8px 12px;margin:4px 0;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-q4-opt:hover{background:rgba(255,255,255,.08);color:var(--tx);border-color:var(--accent-border, rgba(99,102,241,.2))}
+.mg-q4-opt.correct{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:var(--a2)}
+.mg-q4-opt.wrong{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:var(--a3)}
+.mg-q4-explain{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:6px;line-height:1.5}
+.mg-q4-explain.show{display:block;animation:fadeUp .3s var(--ease) both}
+.mg-q4-icon{font-size:14px}
+/* scale */
+.mg-scale-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);flex-wrap:wrap;gap:4px}
+.mg-scale-q{font-size:11px;color:var(--tx2);flex:1;min-width:120px;line-height:1.4}
+.mg-scale-btns{display:flex;gap:4px;flex-shrink:0}
+.mg-scale-btn{width:32px;height:32px;padding:0;border-radius:50%;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:unset;margin:0;display:flex;align-items:center;justify-content:center}
+.mg-scale-btn.sel{background:var(--accent,var(--a1));color:#fff;border-color:var(--accent,var(--a1));transform:scale(1.15)}
+.mg-scale-score{font-size:13px;color:var(--tx);font-weight:600;margin:6px 0}
+.mg-scale-result{display:none;font-size:12px;color:var(--a1);padding:8px 12px;border-radius:8px;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.15);margin-top:6px;line-height:1.5}
+.mg-scale-result.show{display:block;animation:fadeUp .4s var(--ease) both}
+/* spot */
+.mg-spot-cards{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mg-spot-card{padding:8px 10px;border-radius:8px;border:1px solid var(--card-border);font-size:11px;color:var(--tx2);cursor:pointer;background:rgba(255,255,255,.02);transition:all .2s;line-height:1.4;min-height:50px;-webkit-tap-highlight-color:transparent}
+.mg-spot-card:hover{border-color:var(--accent-border, rgba(99,102,241,.2));background:rgba(255,255,255,.05)}
+.mg-spot-card.correct{border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:var(--a2)}
+.mg-spot-card.wrong{border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.08);color:var(--a3)}
+.mg-spot-fb{display:none;font-size:12px;margin-top:6px;line-height:1.5}
+.mg-spot-fb.show{display:block;animation:fadeUp .3s var(--ease) both}
+/* trap */
+.mg-trap-step{font-size:10px;color:var(--tx3);margin-bottom:4px}
+.mg-trap-prompt{font-size:12px;color:var(--tx2);margin-bottom:6px;line-height:1.5;font-weight:500}
+.mg-trap-choices{display:flex;flex-direction:column;gap:4px}
+.mg-trap-reveal{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:8px;line-height:1.5;border-left:3px solid var(--accent,var(--a1))}
+.mg-trap-reveal.show{display:block;animation:fadeUp .4s var(--ease) both}
+.mg-trap-next{display:block;margin-top:8px;width:100%;text-align:center}
+@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}.mg-spot-cards{grid-template-columns:1fr}.mg-scale-row{flex-direction:column;align-items:flex-start;gap:6px}}
 
 </style>
 </head>
 <body class="s-indigo">
 <div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot"></div>
-<div class="header"><div class="header-in"><a class="back-btn" href="./knowledge.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">普行男养成计划</span></div></div>
+<div class="header"><div class="header-in"><a class="back-btn" href="./puxing-man.html" title="返回目录"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">普行男养成计划</span><a class="home-btn" href="./index.html" title="返回主页" style="margin-left:auto"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></a></div></div>
 <div class="container" id="mainContainer">
 <div class="hero"><h1>能力篇·逻辑思维：逻辑不清、表达混乱怎么改善？</h1><p class="sub">BV1DR4y1a7hK · 24分钟 · 能力篇 9/9</p><div class="tags"><span class="tag">能力篇</span><span class="tag">逻辑思维</span><span class="tag">表达能力</span></div></div>
 <div class="progress"><span>17</span> / 21</div>
 <div class="page-nav"><a href="./puxing-16.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-18.html">下一篇 →</a></div>
-<div class="card"><span class="card-num">1</span><h3>🧠 逻辑思维是底层能力</h3><p>聊天没条理、工作时说不清需求、吵架时被对方带跑——这些问题的根源都是逻辑思维不足。逻辑不是"聪明人"的专属，而是一种可以刻意训练的思维方式。</p><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！先说结论再展开——大多数人反过来，听众早没耐心了。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">结构化表达的四个步骤？</p><button class="mg-btn">结论先行→分点论述→举例说明→总结</button><button class="mg-btn">背景→详细分析→感受→结束</button><span class="mg-feedback"></span></div></div>
+<div class="card"><span class="card-num">1</span><h3>🧠 逻辑思维是底层能力</h3><p>聊天没条理、工作时说不清需求、吵架时被对方带跑——这些问题的根源都是逻辑思维不足。逻辑不是"聪明人"的专属，而是一种可以刻意训练的思维方式。</p><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 结论先行 = 90% 的条理问题被解决。听众没有耐心听 5 分钟背景再等你的结论。先说结论→让人知道你在说什么→再用 2-3 个点展开。\"先说结论\"是结构化表达中最重要的一步。", "📌 多读书——阅读量上来了表达自然好 —— 这不是最佳答案。", "📌 多说话——练习多了就流畅了 —— 这不是最佳答案。", "📌 先打草稿——想好再说 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 表达混乱、说话没条理——最有效的改善方法是什么？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 结论先行→分点论述→举例说明→总结——先说结论再说理由</button><button class="mg-q4-opt">🅱️ 多读书——阅读量上来了表达自然好</button><button class="mg-q4-opt">©️ 多说话——练习多了就流畅了</button><button class="mg-q4-opt">🅳 先打草稿——想好再说</button><div class="mg-q4-explain"></div></div></div>
 <div class="card"><span class="card-num">2</span><h3>🏗️ 核心方法：结构化表达</h3><p>结论先行 → 分点论述 → 举例说明 → 总结。比如："我觉得这部电影很好看（结论），原因有三点：第一...第二...第三...（分点），比如那个反转镜头...（举例），所以我会推荐去看（总结）。"</p><div class="step-flow"><div style="text-align:center;flex-shrink:0"><div class="step-dot">1</div><div class="step-label">结论
 先行</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">2</div><div class="step-label">分点
 论述</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">3</div><div class="step-label">举例
 说明</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">4</div><div class="step-label">总结
-收尾</div></div></div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">📝 日常训练方法</button><div class="mg-body">每天选一个话题用手机录音讲3分钟，回听找逻辑漏洞。坚持一个月，表达力飞跃。</div></div></div>
-<div class="card"><span class="card-num">3</span><h3>📝 日常训练方法</h3><p>每天选一个话题，用手机录音讲3分钟，然后回听——你会发现自己的逻辑漏洞。阅读时主动总结"作者的核心观点是什么？论据是什么？论证有没有问题？"</p><ul class="checklist"><li>每天选一个话题，录音讲3分钟，回听找逻辑漏洞</li><li>阅读后总结：核心观点 → 论据 → 论证是否成立</li><li>用"第一、第二、第三"结构化表达日常观点</li><li>和朋友辩论时先复述对方观点再回应（确保你听懂了）</li></ul><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！被动阅读只积累信息，主动阅读才训练思维。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">阅读时训练逻辑的最佳方法？</p><button class="mg-btn">主动总结：观点→论据→论证是否成立</button><button class="mg-btn">快速浏览获取信息即可</button><span class="mg-feedback"></span></div></div>
+收尾</div></div></div><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 \"录音回听\"是最高效的训练法。因为:1)低成本（每天 3 分钟）；2)即时反馈（听到自己的逻辑漏洞赤裸裸）；3)渐进改善（坚持一个月变化明显）。你听到自己说的才知道有多没条理。", "📌 刷逻辑题——训练推理能力 —— 这不是最佳答案。", "📌 看辩论赛——学习高手的思维方式 —— 这不是最佳答案。", "📌 写日记——写作是最好的思维训练 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 日常训练逻辑思维最简单有效的方法？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 每天选一个话题用手机录音讲 3 分钟——回听找逻辑漏洞</button><button class="mg-q4-opt">🅱️ 刷逻辑题——训练推理能力</button><button class="mg-q4-opt">©️ 看辩论赛——学习高手的思维方式</button><button class="mg-q4-opt">🅳 写日记——写作是最好的思维训练</button><div class="mg-q4-explain"></div></div></div>
+<div class="card"><span class="card-num">3</span><h3>📝 日常训练方法</h3><p>每天选一个话题，用手机录音讲3分钟，然后回听——你会发现自己的逻辑漏洞。阅读时主动总结"作者的核心观点是什么？论据是什么？论证有没有问题？"</p><ul class="checklist"><li>每天选一个话题，录音讲3分钟，回听找逻辑漏洞</li><li>阅读后总结：核心观点 → 论据 → 论证是否成立</li><li>用"第一、第二、第三"结构化表达日常观点</li><li>和朋友辩论时先复述对方观点再回应（确保你听懂了）</li></ul><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 被动阅读 = 只积累信息。主动阅读 = 训练思维。每读完一段问自己:1)作者在说什么？2)ta 用了什么来证明？3)这个论证成立吗？这三个问题把你从\"信息的容器\"变成\"思维的加工者\"。", "📌 做读书笔记——摘抄好句子加深理解 —— 这不是最佳答案。", "📌 快速浏览——量大了质自然就上来了 —— 这不是最佳答案。", "📌 跟人讨论读过的书——在辩论中深化理解 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 阅读时怎样训练逻辑思维而不是被动接收信息？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 主动总结:作者的观点是什么→用了什么论据→论证是否成立</button><button class="mg-q4-opt">🅱️ 做读书笔记——摘抄好句子加深理解</button><button class="mg-q4-opt">©️ 快速浏览——量大了质自然就上来了</button><button class="mg-q4-opt">🅳 跟人讨论读过的书——在辩论中深化理解</button><div class="mg-q4-explain"></div></div></div>
 <div class="page-nav"><a href="./puxing-16.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-18.html">下一篇 →</a></div>
 </div>
 <div class="bottom-nav"><a class="nav-btn" href="./puxing-man.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>目录</a><a class="nav-btn" href="./knowledge.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>百科</a><a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>首页</a></div>

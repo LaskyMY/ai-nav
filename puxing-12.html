@@ -30,6 +30,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
 .back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
 .back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.home-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.home-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
 .container{max-width:800px;margin:0 auto;padding:18px 20px;position:relative;z-index:1;will-change:transform}
 .hero{text-align:center;padding:24px 0 10px}
 .hero h1{font-size:26px;font-weight:700;letter-spacing:-.03em;margin-bottom:6px;background:linear-gradient(135deg,var(--accent),var(--a1));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 4s ease-in-out infinite}
@@ -118,8 +120,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
 @media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
 
-/* mini-games */
-.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort{margin-top:10px;position:relative;z-index:1}
+/* mini-games v3 — quiz4/scale/spot/trap edition */
+.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort,.mg-quiz4,.mg-scale,.mg-spot,.mg-trap{margin-top:10px;position:relative;z-index:1}
 .mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
 .mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:var(--accent-border, rgba(99,102,241,.2))}
 .mg-body{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.03);margin-top:6px;line-height:1.5}
@@ -153,21 +155,56 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .mg-msg{font-size:12px;color:var(--tx2);margin-top:4px}
 .mg-sort-q{font-size:13px;color:var(--tx);margin-bottom:6px;font-weight:500}
 .mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
-@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
+/* quiz4 */
+.mg-q4-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.mg-q4-q{font-size:12px;color:var(--tx2);margin:0;line-height:1.5}
+.mg-q4-counter{font-size:11px;color:var(--tx3);min-width:24px;text-align:center}
+.mg-q4-opt{display:block;width:100%;text-align:left;padding:8px 12px;margin:4px 0;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-q4-opt:hover{background:rgba(255,255,255,.08);color:var(--tx);border-color:var(--accent-border, rgba(99,102,241,.2))}
+.mg-q4-opt.correct{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:var(--a2)}
+.mg-q4-opt.wrong{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:var(--a3)}
+.mg-q4-explain{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:6px;line-height:1.5}
+.mg-q4-explain.show{display:block;animation:fadeUp .3s var(--ease) both}
+.mg-q4-icon{font-size:14px}
+/* scale */
+.mg-scale-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);flex-wrap:wrap;gap:4px}
+.mg-scale-q{font-size:11px;color:var(--tx2);flex:1;min-width:120px;line-height:1.4}
+.mg-scale-btns{display:flex;gap:4px;flex-shrink:0}
+.mg-scale-btn{width:32px;height:32px;padding:0;border-radius:50%;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:unset;margin:0;display:flex;align-items:center;justify-content:center}
+.mg-scale-btn.sel{background:var(--accent,var(--a1));color:#fff;border-color:var(--accent,var(--a1));transform:scale(1.15)}
+.mg-scale-score{font-size:13px;color:var(--tx);font-weight:600;margin:6px 0}
+.mg-scale-result{display:none;font-size:12px;color:var(--a1);padding:8px 12px;border-radius:8px;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.15);margin-top:6px;line-height:1.5}
+.mg-scale-result.show{display:block;animation:fadeUp .4s var(--ease) both}
+/* spot */
+.mg-spot-cards{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mg-spot-card{padding:8px 10px;border-radius:8px;border:1px solid var(--card-border);font-size:11px;color:var(--tx2);cursor:pointer;background:rgba(255,255,255,.02);transition:all .2s;line-height:1.4;min-height:50px;-webkit-tap-highlight-color:transparent}
+.mg-spot-card:hover{border-color:var(--accent-border, rgba(99,102,241,.2));background:rgba(255,255,255,.05)}
+.mg-spot-card.correct{border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:var(--a2)}
+.mg-spot-card.wrong{border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.08);color:var(--a3)}
+.mg-spot-fb{display:none;font-size:12px;margin-top:6px;line-height:1.5}
+.mg-spot-fb.show{display:block;animation:fadeUp .3s var(--ease) both}
+/* trap */
+.mg-trap-step{font-size:10px;color:var(--tx3);margin-bottom:4px}
+.mg-trap-prompt{font-size:12px;color:var(--tx2);margin-bottom:6px;line-height:1.5;font-weight:500}
+.mg-trap-choices{display:flex;flex-direction:column;gap:4px}
+.mg-trap-reveal{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:8px;line-height:1.5;border-left:3px solid var(--accent,var(--a1))}
+.mg-trap-reveal.show{display:block;animation:fadeUp .4s var(--ease) both}
+.mg-trap-next{display:block;margin-top:8px;width:100%;text-align:center}
+@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}.mg-spot-cards{grid-template-columns:1fr}.mg-scale-row{flex-direction:column;align-items:flex-start;gap:6px}}
 
 </style>
 </head>
 <body class="s-indigo">
 <div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot"></div>
-<div class="header"><div class="header-in"><a class="back-btn" href="./knowledge.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">普行男养成计划</span></div></div>
+<div class="header"><div class="header-in"><a class="back-btn" href="./puxing-man.html" title="返回目录"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">普行男养成计划</span><a class="home-btn" href="./index.html" title="返回主页" style="margin-left:auto"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></a></div></div>
 <div class="container" id="mainContainer">
 <div class="hero"><h1>能力篇·社媒运营：如何发好朋友圈？</h1><p class="sub">BV1fV4y1w7cj · 6分钟 · 能力篇 4/9</p><div class="tags"><span class="tag">能力篇</span><span class="tag">朋友圈</span><span class="tag">社媒运营</span></div></div>
 <div class="progress"><span>12</span> / 21</div>
 <div class="page-nav"><a href="./puxing-11.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-13.html">下一篇 →</a></div>
-<div class="card"><span class="card-num">1</span><h3>📱 朋友圈是你的第二张脸</h3><p>在这个时代，加了微信后第一件事就是翻对方朋友圈。如果你的朋友圈是空白、全是转发、或者充满负能量——这已经替你"说了"很多话。经营好朋友圈就是经营你的社交形象。</p><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！空白朋友圈本身就是一种"展示"——展示你没什么可展示的。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">朋友圈为什么是"第二张脸"？</p><button class="mg-btn">加了微信后第一件事就是翻朋友圈</button><button class="mg-btn">没什么影响</button><span class="mg-feedback"></span></div></div>
-<div class="card"><span class="card-num">2</span><h3>✅ 朋友圈内容红黑榜</h3><div class="cmp-row"><div class="cmp-do"><div class="cmp-label">✓ 应该这样</div><p>展示兴趣爱好、记录有趣生活瞬间、分享有价值的观点、偶尔幽默自嘲</p></div><div class="cmp-dont"><div class="cmp-label">✗ 不要这样</div><p>频繁发牢骚/负能量、刷屏广告、过于私密的情绪宣泄、炫耀式凡尔赛</p></div></div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">✅ 发圈前自问</button><div class="mg-body">"别人看到这条会觉得有意思吗？"否=别发。三原则：有信息量、有审美感、或有趣味性——满足任一即可。</div></div></div>
-<div class="card"><span class="card-num">3</span><h3>⏱️ 频率与质量</h3><p>不需要每天发，但建议每周至少1-2条高质量内容。一条好的朋友圈应该满足：有信息量、有审美感、或有趣味性。</p><div class="takeaway"><span class="ta-icon">📝</span><span>发之前问自己：别人看到这条会觉得"这个人有意思"吗？如果答案是否定的——别发。</span></div><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！少而精 > 多而杂。一条好朋友圈比十句自我介绍管用。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">建议的发圈频率？</p><button class="mg-btn">每周1-2条高质量内容</button><button class="mg-btn">每天3条保持存在感</button><span class="mg-feedback"></span></div></div>
+<div class="card"><span class="card-num">1</span><h3>📱 朋友圈是你的第二张脸</h3><p>在这个时代，加了微信后第一件事就是翻对方朋友圈。如果你的朋友圈是空白、全是转发、或者充满负能量——这已经替你"说了"很多话。经营好朋友圈就是经营你的社交形象。</p><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 加微信 → 翻朋友圈 = 标准流程。对方可能花 30 秒翻完你最近半年——这 30 秒决定了 ta 对你的看法。空白/三天可见/全是转发 = \"第二张脸在说:没什么好看的\"。", "📌 朋友圈跟脸没有可比性——这是夸张说法 —— 这不是最佳答案。", "📌 因为朋友圈有照片——跟脸一样是视觉信息 —— 这不是最佳答案。", "📌 朋友圈反映你的社交圈——圈子定义了你 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 朋友圈为什么被称为"第二张脸"？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 加微信后第一件事就是翻朋友圈——朋友圈是你的无声自我介绍</button><button class="mg-q4-opt">🅱️ 朋友圈跟脸没有可比性——这是夸张说法</button><button class="mg-q4-opt">©️ 因为朋友圈有照片——跟脸一样是视觉信息</button><button class="mg-q4-opt">🅳 朋友圈反映你的社交圈——圈子定义了你</button><div class="mg-q4-explain"></div></div></div>
+<div class="card"><span class="card-num">2</span><h3>✅ 朋友圈内容红黑榜</h3><div class="cmp-row"><div class="cmp-do"><div class="cmp-label">✓ 应该这样</div><p>展示兴趣爱好、记录有趣生活瞬间、分享有价值的观点、偶尔幽默自嘲</p></div><div class="cmp-dont"><div class="cmp-label">✗ 不要这样</div><p>频繁发牢骚/负能量、刷屏广告、过于私密的情绪宣泄、炫耀式凡尔赛</p></div></div><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 三原则:有信息量、有审美感、或有趣味性——满足其一即可。自问\"别人看了会觉得有意思吗？\"不是问你自己觉得有意思——是你站在对方的角度想。", "📌 \"这条朋友圈看起来高级吗？\"——不够高级不发 —— 这不是最佳答案。", "📌 \"会不会有人觉得我在炫耀？\"——有风险就不发 —— 这不是最佳答案。", "📌 \"这条能获得多少赞？\"——预估点赞数不够不发 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 发朋友圈前最好的自问自检是什么？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ "别人看到这条会觉得有意思吗？"——不是就删掉</button><button class="mg-q4-opt">🅱️ "这条朋友圈看起来高级吗？"——不够高级不发</button><button class="mg-q4-opt">©️ "会不会有人觉得我在炫耀？"——有风险就不发</button><button class="mg-q4-opt">🅳 "这条能获得多少赞？"——预估点赞数不够不发</button><div class="mg-q4-explain"></div></div></div>
+<div class="card"><span class="card-num">3</span><h3>⏱️ 频率与质量</h3><p>不需要每天发，但建议每周至少1-2条高质量内容。一条好的朋友圈应该满足：有信息量、有审美感、或有趣味性。</p><div class="takeaway"><span class="ta-icon">📝</span><span>发之前问自己：别人看到这条会觉得"这个人有意思"吗？如果答案是否定的——别发。</span></div><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 少而精 > 多而杂。每周 1-2 条有质量的内容刚好——既有存在感又不造成疲劳。一条好朋友圈 = 在每个人心里刷了一次\"这个人有意思\"。", "📌 每天 3 条保持存在感——频率就是影响力 —— 这不是最佳答案。", "📌 想发就发不用规划——生活化才真实 —— 这不是最佳答案。", "📌 一个月一条——稀缺才珍贵 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 适合的朋友圈发布频率？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 每周 1-2 条高质量内容——少而精 > 多而杂</button><button class="mg-q4-opt">🅱️ 每天 3 条保持存在感——频率就是影响力</button><button class="mg-q4-opt">©️ 想发就发不用规划——生活化才真实</button><button class="mg-q4-opt">🅳 一个月一条——稀缺才珍贵</button><div class="mg-q4-explain"></div></div></div>
 <div class="page-nav"><a href="./puxing-11.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-13.html">下一篇 →</a></div>
 </div>
 <div class="bottom-nav"><a class="nav-btn" href="./puxing-man.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>目录</a><a class="nav-btn" href="./knowledge.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>百科</a><a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>首页</a></div>

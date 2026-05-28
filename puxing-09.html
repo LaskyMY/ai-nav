@@ -30,6 +30,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
 .back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
 .back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.home-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.home-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
 .container{max-width:800px;margin:0 auto;padding:18px 20px;position:relative;z-index:1;will-change:transform}
 .hero{text-align:center;padding:24px 0 10px}
 .hero h1{font-size:26px;font-weight:700;letter-spacing:-.03em;margin-bottom:6px;background:linear-gradient(135deg,var(--accent),var(--a1));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 4s ease-in-out infinite}
@@ -118,8 +120,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
 @media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
 
-/* mini-games */
-.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort{margin-top:10px;position:relative;z-index:1}
+/* mini-games v3 — quiz4/scale/spot/trap edition */
+.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort,.mg-quiz4,.mg-scale,.mg-spot,.mg-trap{margin-top:10px;position:relative;z-index:1}
 .mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
 .mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:var(--accent-border, rgba(99,102,241,.2))}
 .mg-body{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.03);margin-top:6px;line-height:1.5}
@@ -153,25 +155,60 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .mg-msg{font-size:12px;color:var(--tx2);margin-top:4px}
 .mg-sort-q{font-size:13px;color:var(--tx);margin-bottom:6px;font-weight:500}
 .mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
-@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
+/* quiz4 */
+.mg-q4-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.mg-q4-q{font-size:12px;color:var(--tx2);margin:0;line-height:1.5}
+.mg-q4-counter{font-size:11px;color:var(--tx3);min-width:24px;text-align:center}
+.mg-q4-opt{display:block;width:100%;text-align:left;padding:8px 12px;margin:4px 0;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-q4-opt:hover{background:rgba(255,255,255,.08);color:var(--tx);border-color:var(--accent-border, rgba(99,102,241,.2))}
+.mg-q4-opt.correct{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:var(--a2)}
+.mg-q4-opt.wrong{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:var(--a3)}
+.mg-q4-explain{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:6px;line-height:1.5}
+.mg-q4-explain.show{display:block;animation:fadeUp .3s var(--ease) both}
+.mg-q4-icon{font-size:14px}
+/* scale */
+.mg-scale-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);flex-wrap:wrap;gap:4px}
+.mg-scale-q{font-size:11px;color:var(--tx2);flex:1;min-width:120px;line-height:1.4}
+.mg-scale-btns{display:flex;gap:4px;flex-shrink:0}
+.mg-scale-btn{width:32px;height:32px;padding:0;border-radius:50%;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:unset;margin:0;display:flex;align-items:center;justify-content:center}
+.mg-scale-btn.sel{background:var(--accent,var(--a1));color:#fff;border-color:var(--accent,var(--a1));transform:scale(1.15)}
+.mg-scale-score{font-size:13px;color:var(--tx);font-weight:600;margin:6px 0}
+.mg-scale-result{display:none;font-size:12px;color:var(--a1);padding:8px 12px;border-radius:8px;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.15);margin-top:6px;line-height:1.5}
+.mg-scale-result.show{display:block;animation:fadeUp .4s var(--ease) both}
+/* spot */
+.mg-spot-cards{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mg-spot-card{padding:8px 10px;border-radius:8px;border:1px solid var(--card-border);font-size:11px;color:var(--tx2);cursor:pointer;background:rgba(255,255,255,.02);transition:all .2s;line-height:1.4;min-height:50px;-webkit-tap-highlight-color:transparent}
+.mg-spot-card:hover{border-color:var(--accent-border, rgba(99,102,241,.2));background:rgba(255,255,255,.05)}
+.mg-spot-card.correct{border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:var(--a2)}
+.mg-spot-card.wrong{border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.08);color:var(--a3)}
+.mg-spot-fb{display:none;font-size:12px;margin-top:6px;line-height:1.5}
+.mg-spot-fb.show{display:block;animation:fadeUp .3s var(--ease) both}
+/* trap */
+.mg-trap-step{font-size:10px;color:var(--tx3);margin-bottom:4px}
+.mg-trap-prompt{font-size:12px;color:var(--tx2);margin-bottom:6px;line-height:1.5;font-weight:500}
+.mg-trap-choices{display:flex;flex-direction:column;gap:4px}
+.mg-trap-reveal{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:8px;line-height:1.5;border-left:3px solid var(--accent,var(--a1))}
+.mg-trap-reveal.show{display:block;animation:fadeUp .4s var(--ease) both}
+.mg-trap-next{display:block;margin-top:8px;width:100%;text-align:center}
+@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}.mg-spot-cards{grid-template-columns:1fr}.mg-scale-row{flex-direction:column;align-items:flex-start;gap:6px}}
 
 </style>
 </head>
 <body class="s-indigo">
 <div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot"></div>
-<div class="header"><div class="header-in"><a class="back-btn" href="./knowledge.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">普行男养成计划</span></div></div>
+<div class="header"><div class="header-in"><a class="back-btn" href="./puxing-man.html" title="返回目录"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">普行男养成计划</span><a class="home-btn" href="./index.html" title="返回主页" style="margin-left:auto"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></a></div></div>
 <div class="container" id="mainContainer">
 <div class="hero"><h1>能力篇·信息汲取：为什么聊天没话题？</h1><p class="sub">BV1QR4y1o7Ei · 6分钟 · 能力篇 1/9</p><div class="tags"><span class="tag">能力篇</span><span class="tag">聊天话题</span><span class="tag">信息汲取</span></div></div>
 <div class="progress"><span>9</span> / 21</div>
 <div class="page-nav"><a href="./puxing-08.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-10.html">下一篇 →</a></div>
-<div class="card"><span class="card-num">1</span><h3>🗣️ 没话题的底层原因</h3><p>你聊不下去不是因为嘴笨，而是因为"输入太少"。一个每天只看游戏直播和搞笑视频的人，和一个每天阅读、观影、体验生活的人——后者永远不缺话题。信息输入的质量决定聊天输出的质量。</p><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！输入质量决定输出质量——输入杂而不精=没有可聊的内容。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">聊天没话题的根本原因是？</p><button class="mg-btn">信息输入太少</button><button class="mg-btn">嘴太笨</button><span class="mg-feedback"></span></div></div>
+<div class="card"><span class="card-num">1</span><h3>🗣️ 没话题的底层原因</h3><p>你聊不下去不是因为嘴笨，而是因为"输入太少"。一个每天只看游戏直播和搞笑视频的人，和一个每天阅读、观影、体验生活的人——后者永远不缺话题。信息输入的质量决定聊天输出的质量。</p><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 输入质量决定输出质量。大脑是\"输出=输入的提纯+重组\"的机器。你只输入垃圾（刷短视频、看八卦），输出也只会是垃圾。输入丰富多元→输出自然有料。", "📌 嘴笨口才差——天生的表达能力缺陷 —— 这不是最佳答案。", "📌 性格内向不爱说话——跟信息量无关 —— 这不是最佳答案。", "📌 社交焦虑——不是没话说是不敢说 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 聊天没话题、说话干巴巴的根本原因是什么？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 信息输入太少——输入决定输出，肚子里没货怎么聊</button><button class="mg-q4-opt">🅱️ 嘴笨口才差——天生的表达能力缺陷</button><button class="mg-q4-opt">©️ 性格内向不爱说话——跟信息量无关</button><button class="mg-q4-opt">🅳 社交焦虑——不是没话说是不敢说</button><div class="mg-q4-explain"></div></div></div>
 <div class="card"><span class="card-num">2</span><h3>📡 建立你的信息输入系统</h3><p>每天至少30分钟的高质量信息摄入：读一篇深度文章、看一段知识类视频、听一集播客。关注3-5个不同领域的优质内容创作者。</p><div class="step-flow"><div style="text-align:center;flex-shrink:0"><div class="step-dot">1</div><div class="step-label">每日30min
 高质量输入</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">2</div><div class="step-label">跨领域
 3-5个方向</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">3</div><div class="step-label">记录金句
 和观点</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">4</div><div class="step-label">用自己的话
-复述输出</div></div></div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">📡 建立信息输入系统</button><div class="mg-body">每天30分钟：一篇深度文章+一段知识视频+一集播客。关注3-5个不同领域创作者。关键是多样性。</div></div></div>
-<div class="card"><span class="card-num">3</span><h3>🔄 从"输入"到"输出"</h3><p>看了一个有趣的内容后，试着用自己的话讲给别人听。这既是练习表达能力，也是巩固记忆。那些看起来"什么都能聊"的人，本质上是积累了足够多的可输出内容。</p><div class="takeaway"><span class="ta-icon">💡</span><span>聊天素材 = 信息输入 × 复述练习。每天30分钟高质量阅读 + 1次复述输出，一个月后你会发现自己"突然有话题了"。</span></div><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！复述最强记忆+表达训练——"什么都能聊"的人本质是积累了足够多可输出内容。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">从输入到输出的关键步骤？</p><button class="mg-btn">用自己的话复述给别人听</button><button class="mg-btn">默默记在心里</button><span class="mg-feedback"></span></div></div>
+复述输出</div></div></div><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 每天 30 分钟:一篇深度文章（公众号/专栏）+ 一段知识视频（B站/YouTube）+ 一集播客（通勤时）。关键是多样性——不同领域交叉才有\"意料之外的连接\"。", "📌 大量刷短视频——碎片信息积累多了就是知识 —— 这不是最佳答案。", "📌 只看自己感兴趣的内容——兴趣是最好的老师 —— 这不是最佳答案。", "📌 报课系统学习——需要老师引导才能有效输入 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 如何建立高效的信息输入系统？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 每天 30 分钟:一篇深度文章 + 一个知识视频 + 关注 3-5 个不同领域创作者</button><button class="mg-q4-opt">🅱️ 大量刷短视频——碎片信息积累多了就是知识</button><button class="mg-q4-opt">©️ 只看自己感兴趣的内容——兴趣是最好的老师</button><button class="mg-q4-opt">🅳 报课系统学习——需要老师引导才能有效输入</button><div class="mg-q4-explain"></div></div></div>
+<div class="card"><span class="card-num">3</span><h3>🔄 从"输入"到"输出"</h3><p>看了一个有趣的内容后，试着用自己的话讲给别人听。这既是练习表达能力，也是巩固记忆。那些看起来"什么都能聊"的人，本质上是积累了足够多的可输出内容。</p><div class="takeaway"><span class="ta-icon">💡</span><span>聊天素材 = 信息输入 × 复述练习。每天30分钟高质量阅读 + 1次复述输出，一个月后你会发现自己"突然有话题了"。</span></div><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 复述 > 记笔记 > 重复阅读。只有当你\"用自己的话讲给别人听\"时，你才知道自己是不是真的懂了。\"能说\"本质是输出——而输出能力是通过输出练习的。", "📌 默默记住——大脑会自动整合信息 —— 这不是最佳答案。", "📌 记笔记——写下来就不会忘了 —— 这不是最佳答案。", "📌 多看几遍——重复是最有效的记忆方法 —— 这不是最佳答案。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 把输入的内容变成自己能说的——最关键的步骤？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 用自己的话复述一遍——复述是记忆和表达的最佳训练</button><button class="mg-q4-opt">🅱️ 默默记住——大脑会自动整合信息</button><button class="mg-q4-opt">©️ 记笔记——写下来就不会忘了</button><button class="mg-q4-opt">🅳 多看几遍——重复是最有效的记忆方法</button><div class="mg-q4-explain"></div></div></div>
 <div class="page-nav"><a href="./puxing-08.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-10.html">下一篇 →</a></div>
 </div>
 <div class="bottom-nav"><a class="nav-btn" href="./puxing-man.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>目录</a><a class="nav-btn" href="./knowledge.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>百科</a><a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>首页</a></div>

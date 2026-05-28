@@ -25,7 +25,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .header-logo{font-size:17px;font-weight:700;white-space:nowrap;letter-spacing:-.02em;background:linear-gradient(135deg,var(--pink),var(--amber),var(--a1));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 6s ease-in-out infinite}
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
 .back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
-.back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}.home-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none;margin-left:auto}.home-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
 .container{max-width:800px;margin:0 auto;padding:18px 20px;position:relative;z-index:1;will-change:transform}
 .hero{text-align:center;padding:24px 0 10px}
 .hero h1{font-size:26px;font-weight:700;letter-spacing:-.03em;margin-bottom:6px;background:linear-gradient(135deg,var(--pink),var(--amber));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 4s ease-in-out infinite}
@@ -49,8 +49,10 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .card:nth-child(1){animation-delay:.03s}.card:nth-child(2){animation-delay:.07s}.card:nth-child(3){animation-delay:.11s}.card:nth-child(4){animation-delay:.15s}.card:nth-child(5){animation-delay:.19s}.card:nth-child(6){animation-delay:.23s}.card:nth-child(7){animation-delay:.27s}.card:nth-child(8){animation-delay:.31s}.card:nth-child(9){animation-delay:.35s}.card:nth-child(10){animation-delay:.39s}.card:nth-child(11){animation-delay:.43s}.card:nth-child(12){animation-delay:.47s}
 @media(max-width:480px){.hero h1{font-size:22px}.card{padding:14px}}
 
-/* mini-games */
-.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort{margin-top:10px;position:relative;z-index:1}
+
+
+/* mini-games v3 — quiz4/scale/spot/trap edition */
+.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort,.mg-quiz4,.mg-scale,.mg-spot,.mg-trap{margin-top:10px;position:relative;z-index:1}
 .mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
 .mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:var(--accent-border, rgba(99,102,241,.2))}
 .mg-body{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.03);margin-top:6px;line-height:1.5}
@@ -84,40 +86,75 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .mg-msg{font-size:12px;color:var(--tx2);margin-top:4px}
 .mg-sort-q{font-size:13px;color:var(--tx);margin-bottom:6px;font-weight:500}
 .mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
-@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
+/* quiz4 */
+.mg-q4-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.mg-q4-q{font-size:12px;color:var(--tx2);margin:0;line-height:1.5}
+.mg-q4-counter{font-size:11px;color:var(--tx3);min-width:24px;text-align:center}
+.mg-q4-opt{display:block;width:100%;text-align:left;padding:8px 12px;margin:4px 0;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-q4-opt:hover{background:rgba(255,255,255,.08);color:var(--tx);border-color:var(--accent-border, rgba(99,102,241,.2))}
+.mg-q4-opt.correct{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:var(--a2)}
+.mg-q4-opt.wrong{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:var(--a3)}
+.mg-q4-explain{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:6px;line-height:1.5}
+.mg-q4-explain.show{display:block;animation:fadeUp .3s var(--ease) both}
+.mg-q4-icon{font-size:14px}
+/* scale */
+.mg-scale-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);flex-wrap:wrap;gap:4px}
+.mg-scale-q{font-size:11px;color:var(--tx2);flex:1;min-width:120px;line-height:1.4}
+.mg-scale-btns{display:flex;gap:4px;flex-shrink:0}
+.mg-scale-btn{width:32px;height:32px;padding:0;border-radius:50%;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:unset;margin:0;display:flex;align-items:center;justify-content:center}
+.mg-scale-btn.sel{background:var(--accent,var(--a1));color:#fff;border-color:var(--accent,var(--a1));transform:scale(1.15)}
+.mg-scale-score{font-size:13px;color:var(--tx);font-weight:600;margin:6px 0}
+.mg-scale-result{display:none;font-size:12px;color:var(--a1);padding:8px 12px;border-radius:8px;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.15);margin-top:6px;line-height:1.5}
+.mg-scale-result.show{display:block;animation:fadeUp .4s var(--ease) both}
+/* spot */
+.mg-spot-cards{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mg-spot-card{padding:8px 10px;border-radius:8px;border:1px solid var(--card-border);font-size:11px;color:var(--tx2);cursor:pointer;background:rgba(255,255,255,.02);transition:all .2s;line-height:1.4;min-height:50px;-webkit-tap-highlight-color:transparent}
+.mg-spot-card:hover{border-color:var(--accent-border, rgba(99,102,241,.2));background:rgba(255,255,255,.05)}
+.mg-spot-card.correct{border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:var(--a2)}
+.mg-spot-card.wrong{border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.08);color:var(--a3)}
+.mg-spot-fb{display:none;font-size:12px;margin-top:6px;line-height:1.5}
+.mg-spot-fb.show{display:block;animation:fadeUp .3s var(--ease) both}
+/* trap */
+.mg-trap-step{font-size:10px;color:var(--tx3);margin-bottom:4px}
+.mg-trap-prompt{font-size:12px;color:var(--tx2);margin-bottom:6px;line-height:1.5;font-weight:500}
+.mg-trap-choices{display:flex;flex-direction:column;gap:4px}
+.mg-trap-reveal{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:8px;line-height:1.5;border-left:3px solid var(--accent,var(--a1))}
+.mg-trap-reveal.show{display:block;animation:fadeUp .4s var(--ease) both}
+.mg-trap-next{display:block;margin-top:8px;width:100%;text-align:center}
+@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}.mg-spot-cards{grid-template-columns:1fr}.mg-scale-row{flex-direction:column;align-items:flex-start;gap:6px}}
 
 </style>
 </head>
 <body>
 <div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot"></div>
-<div class="header"><div class="header-in"><a class="back-btn" href="./knowledge.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">常见误解</span></div></div>
+<div class="header"><div class="header-in"><a class="back-btn" href="./knowledge.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">常见误解</span><a class="home-btn" href="./index.html" title="返回主页"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></a></div></div>
 <div class="container" id="mainContainer">
 <div class="hero"><h1>3分钟解释每一种常见误解 (2)</h1><p class="sub">你以为你知道，但其实不是这样</p><div class="tags"><span class="tag">科学扫盲</span><span class="tag">批判性思维</span><span class="tag">知识纠正</span></div></div>
 
-<div class="card"><span class="card-num">1</span><h3>人类只用了10%的大脑？</h3><p>这个误解源自19世纪的错误解读，被电影和营销广泛传播。脑成像研究清楚显示：你在做几乎任何事时，大脑的所有区域都有活动——只是某些区域更活跃。演化不会浪费90%的高能耗器官。</p><div class="truth">真相：你时刻在使用整个大脑，只是不同区域的活动程度不同。</div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 真相是？</button><div class="mg-body">大脑的所有区域都活跃，只是不同任务激活不同区域的比例不同。没有"90%未使用"这回事——进化不会浪费那么多能量维持无用组织。这个谣言可能来自19世纪心理学家William James的"我们只用了10%潜能"被误传。</div></div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 真相是？</button><div class="mg-body">大脑的所有区域都活跃，只是不同任务激活不同区域的比例不同。没有"90%未使用"这回事——进化不会浪费那么多能量维持无用组织。这个谣言可能来自19世纪心理学家William James的"我们只用了10%潜能"被误传。</div></div></div>
+<div class="card"><span class="card-num">1</span><h3>人类只用了10%的大脑？</h3><p>这个误解源自19世纪的错误解读，被电影和营销广泛传播。脑成像研究清楚显示：你在做几乎任何事时，大脑的所有区域都有活动——只是某些区域更活跃。演化不会浪费90%的高能耗器官。</p><div class="truth">真相：你时刻在使用整个大脑，只是不同区域的活动程度不同。</div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">💡 🔍 真相是？</button><div class="mg-body">大脑的所有区域都活跃，只是不同任务激活不同区域的比例不同。没有"90%未使用"这回事——进化不会浪费那么多能量维持无用组织。这个谣言可能来自19世纪心理学家William James的"我们只用了10%潜能"被误传。</div></div></div></div></div></div>
 
-<div class="card"><span class="card-num">2</span><h3>左脑=逻辑，右脑=创意？</h3><p>没有证据表明人们是"左脑型"或"右脑型"。虽然某些功能确有偏侧化(如语言主要在左半球)，但任何复杂任务都需要左右半球协作完成。</p><div class="truth">真相：你使用整个大脑来完成任何有意义的任务。</div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 真相是？</button><div class="mg-body">舌头所有区域都能感受所有味觉（甜酸苦咸鲜）。所谓"舌头上不同区域尝不同味道"的"味觉地图"来自1901年的错误翻译——原论文说的是"不同区域灵敏度的细微差异"，被简化成了"分区专属"。</div></div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 真相是？</button><div class="mg-body">舌头所有区域都能感受所有味觉（甜酸苦咸鲜）。所谓"舌头上不同区域尝不同味道"的"味觉地图"来自1901年的错误翻译——原论文说的是"不同区域灵敏度的细微差异"，被简化成了"分区专属"。</div></div></div>
+<div class="card"><span class="card-num">2</span><h3>左脑=逻辑，右脑=创意？</h3><p>没有证据表明人们是"左脑型"或"右脑型"。虽然某些功能确有偏侧化(如语言主要在左半球)，但任何复杂任务都需要左右半球协作完成。</p><div class="truth">真相：你使用整个大脑来完成任何有意义的任务。</div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">💡 🔍 真相是？</button><div class="mg-body">舌头所有区域都能感受所有味觉（甜酸苦咸鲜）。所谓"舌头上不同区域尝不同味道"的"味觉地图"来自1901年的错误翻译——原论文说的是"不同区域灵敏度的细微差异"，被简化成了"分区专属"。</div></div></div></div></div></div>
 
-<div class="card"><span class="card-num">3</span><h3>糖导致儿童多动？</h3><p>至少有12项双盲安慰剂对照研究证明糖的摄入与儿童行为之间没有因果关系。那为什么这个误解如此普遍？因为人们常常在已经兴奋的场合(生日派对)给孩子糖——环境导致了多动。</p><div class="truth">真相：家长的主观预期比糖本身更能解释"糖兴奋"现象。</div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 真相是？</button><div class="mg-body">变色龙变色主要是为了体温调节和交流——不是伪装。不同颜色反映不同情绪和体温状态。这也是动物界最被误解的冷知识之一。</div></div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 真相是？</button><div class="mg-body">变色龙变色主要是为了体温调节和交流——不是伪装。不同颜色反映不同情绪和体温状态。这也是动物界最被误解的冷知识之一。</div></div></div>
+<div class="card"><span class="card-num">3</span><h3>糖导致儿童多动？</h3><p>至少有12项双盲安慰剂对照研究证明糖的摄入与儿童行为之间没有因果关系。那为什么这个误解如此普遍？因为人们常常在已经兴奋的场合(生日派对)给孩子糖——环境导致了多动。</p><div class="truth">真相：家长的主观预期比糖本身更能解释"糖兴奋"现象。</div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">💡 🔍 真相是？</button><div class="mg-body">变色龙变色主要是为了体温调节和交流——不是伪装。不同颜色反映不同情绪和体温状态。这也是动物界最被误解的冷知识之一。</div></div></div></div></div></div>
 
-<div class="card"><span class="card-num">4</span><h3>北极星是天空中最亮的星？</h3><p>北极星(勾陈一)甚至不在最亮的前20颗星之列——它的视星等约为2.0。天狼星(Sirius)才是夜空中最亮的恒星。北极星特殊在于它的位置几乎在北极正上方。</p><div class="truth">真相：北极星不是因为亮度特殊，而是因为位置特殊。</div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 真相是？</button><div class="mg-body">糖不会导致儿童多动——几十项双盲研究表明糖与儿童行为之间没有因果关系。真正的原因可能是：吃糖的场合（生日派对、节日）本身就让孩子兴奋，家长把"场合的兴奋"归因于"糖的影响"。</div></div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 真相是？</button><div class="mg-body">糖不会导致儿童多动——几十项双盲研究表明糖与儿童行为之间没有因果关系。真正的原因可能是：吃糖的场合（生日派对、节日）本身就让孩子兴奋，家长把"场合的兴奋"归因于"糖的影响"。</div></div></div>
+<div class="card"><span class="card-num">4</span><h3>北极星是天空中最亮的星？</h3><p>北极星(勾陈一)甚至不在最亮的前20颗星之列——它的视星等约为2.0。天狼星(Sirius)才是夜空中最亮的恒星。北极星特殊在于它的位置几乎在北极正上方。</p><div class="truth">真相：北极星不是因为亮度特殊，而是因为位置特殊。</div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">💡 🔍 真相是？</button><div class="mg-body">糖不会导致儿童多动——几十项双盲研究表明糖与儿童行为之间没有因果关系。真正的原因可能是：吃糖的场合（生日派对、节日）本身就让孩子兴奋，家长把"场合的兴奋"归因于"糖的影响"。</div></div></div></div></div></div>
 
-<div class="card"><span class="card-num">5</span><h3>味觉地图是真的吗？</h3><p>你也许看过那个图：甜在舌尖、苦在舌根、酸咸在两侧。这是对20世纪初一篇德文论文的严重误译。舌头的每个区域都能感知所有基本味道。</p><div class="truth">真相：味蕾遍布全舌，没有分区专门的味觉区域。</div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 真相是？</button><div class="mg-body">维京人从未戴过有角的头盔——没有考古证据。角盔形象来自19世纪歌剧《尼伯龙根的指环》的服装设计，被流行文化不断强化。</div></div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 真相是？</button><div class="mg-body">维京人从未戴过有角的头盔——没有考古证据。角盔形象来自19世纪歌剧《尼伯龙根的指环》的服装设计，被流行文化不断强化。</div></div></div>
+<div class="card"><span class="card-num">5</span><h3>味觉地图是真的吗？</h3><p>你也许看过那个图：甜在舌尖、苦在舌根、酸咸在两侧。这是对20世纪初一篇德文论文的严重误译。舌头的每个区域都能感知所有基本味道。</p><div class="truth">真相：味蕾遍布全舌，没有分区专门的味觉区域。</div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">💡 🔍 真相是？</button><div class="mg-body">维京人从未戴过有角的头盔——没有考古证据。角盔形象来自19世纪歌剧《尼伯龙根的指环》的服装设计，被流行文化不断强化。</div></div></div></div></div></div>
 
-<div class="card"><span class="card-num">6</span><h3>金鱼的记忆只有3秒？</h3><p>大量实验证明金鱼的记忆可以持续数月——它们能被训练识别颜色模式、记住食物投放时间和穿越迷宫。3秒记忆的说法可能是为了让养在小鱼缸里"看起来不那么残忍"。</p><div class="truth">真相：金鱼可以记住几个月前的训练内容。</div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 真相是？</button><div class="mg-body">公牛对红色没有特殊反应——它们是色盲（红绿色盲），无法区分红色和绿色。斗牛士的红色布是为了掩盖血迹，公牛对布的运动本身有反应。</div></div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 真相是？</button><div class="mg-body">公牛对红色没有特殊反应——它们是色盲（红绿色盲），无法区分红色和绿色。斗牛士的红色布是为了掩盖血迹，公牛对布的运动本身有反应。</div></div></div>
+<div class="card"><span class="card-num">6</span><h3>金鱼的记忆只有3秒？</h3><p>大量实验证明金鱼的记忆可以持续数月——它们能被训练识别颜色模式、记住食物投放时间和穿越迷宫。3秒记忆的说法可能是为了让养在小鱼缸里"看起来不那么残忍"。</p><div class="truth">真相：金鱼可以记住几个月前的训练内容。</div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">💡 🔍 真相是？</button><div class="mg-body">公牛对红色没有特殊反应——它们是色盲（红绿色盲），无法区分红色和绿色。斗牛士的红色布是为了掩盖血迹，公牛对布的运动本身有反应。</div></div></div></div></div></div>
 
-<div class="card"><span class="card-num">7</span><h3>真空吸力是因为"真空抽吸"？</h3><p>真空不"吸"任何东西。你喝吸管里的饮料不是因为你"吸"上来的——而是大气压将液体推进了低压区域。这听起来像文字游戏，但对理解物理很重要。</p><div class="truth">真相：大气压力推动了液体，不是真空在"吸"。</div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 真相是？</button><div class="mg-body">拿破仑并不矮——他身高约168cm（5尺6寸），在当时法国男性中属于平均身高。误解来自英法单位换算错误+英国宣传漫画的丑化。</div></div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 真相是？</button><div class="mg-body">拿破仑并不矮——他身高约168cm（5尺6寸），在当时法国男性中属于平均身高。误解来自英法单位换算错误+英国宣传漫画的丑化。</div></div></div>
+<div class="card"><span class="card-num">7</span><h3>真空吸力是因为"真空抽吸"？</h3><p>真空不"吸"任何东西。你喝吸管里的饮料不是因为你"吸"上来的——而是大气压将液体推进了低压区域。这听起来像文字游戏，但对理解物理很重要。</p><div class="truth">真相：大气压力推动了液体，不是真空在"吸"。</div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">💡 🔍 真相是？</button><div class="mg-body">拿破仑并不矮——他身高约168cm（5尺6寸），在当时法国男性中属于平均身高。误解来自英法单位换算错误+英国宣传漫画的丑化。</div></div></div></div></div></div>
 
-<div class="card"><span class="card-num">8</span><h3>头发和指甲死后继续生长？</h3><p>这个误解源于：死后皮肤干燥脱水收缩，使得指甲和发根暴露更多部分——看起来像"长了"。实际没有任何细胞活动，不可能有生长。</p><div class="truth">真相：皮肤收缩让已经存在的头发和指甲露出更多。</div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 真相是？</button><div class="mg-body">太空中看不到长城——宇航员反复确认肉眼无法从近地轨道分辨。国际空间站的高度（~400km）约等于从纽约看费城的一根头发。能看到的是城市灯光、大型农田和沙漠。</div></div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 真相是？</button><div class="mg-body">太空中看不到长城——宇航员反复确认肉眼无法从近地轨道分辨。国际空间站的高度（~400km）约等于从纽约看费城的一根头发。能看到的是城市灯光、大型农田和沙漠。</div></div></div>
+<div class="card"><span class="card-num">8</span><h3>头发和指甲死后继续生长？</h3><p>这个误解源于：死后皮肤干燥脱水收缩，使得指甲和发根暴露更多部分——看起来像"长了"。实际没有任何细胞活动，不可能有生长。</p><div class="truth">真相：皮肤收缩让已经存在的头发和指甲露出更多。</div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">💡 🔍 真相是？</button><div class="mg-body">太空中看不到长城——宇航员反复确认肉眼无法从近地轨道分辨。国际空间站的高度（~400km）约等于从纽约看费城的一根头发。能看到的是城市灯光、大型农田和沙漠。</div></div></div></div></div></div>
 
-<div class="card"><span class="card-num">9</span><h3>狗只能看到黑白？</h3><p>狗有二色视觉(类似红绿色盲)——它们能看到蓝色和黄色，只是无法区分红色和绿色。没有人类那种三色视觉鲜艳，但绝对不是黑白。</p><div class="truth">真相：狗能看到蓝黄两色，只是看不到红绿。</div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 真相是？</button><div class="mg-body">金鱼的记忆力很好——研究表明它们能记住几个月前学到的东西，并能够区分不同的人脸。误解可能仅仅因为"金鱼脑"这个说法太方便了。</div></div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 真相是？</button><div class="mg-body">金鱼的记忆力很好——研究表明它们能记住几个月前学到的东西，并能够区分不同的人脸。误解可能仅仅因为"金鱼脑"这个说法太方便了。</div></div></div>
+<div class="card"><span class="card-num">9</span><h3>狗只能看到黑白？</h3><p>狗有二色视觉(类似红绿色盲)——它们能看到蓝色和黄色，只是无法区分红色和绿色。没有人类那种三色视觉鲜艳，但绝对不是黑白。</p><div class="truth">真相：狗能看到蓝黄两色，只是看不到红绿。</div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">💡 🔍 真相是？</button><div class="mg-body">金鱼的记忆力很好——研究表明它们能记住几个月前学到的东西，并能够区分不同的人脸。误解可能仅仅因为"金鱼脑"这个说法太方便了。</div></div></div></div></div></div>
 
-<div class="card"><span class="card-num">10</span><h3>在中世纪人们认为地球是平的？</h3><p>从古希腊(至少亚里士多德时代起)，受过教育的人就知道地球是球形的。中世纪的欧洲大学教这个，航海家也依赖球形地球导航。哥伦布的争议不在于"地球是平的还是圆的"，而在于地球有多大。</p><div class="truth">真相：地球是球形的知识两千多年前就已经确立了。</div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 真相是？</button><div class="mg-body">蝙蝠的视力相当好——有些种类甚至能看到紫外线。它们不是"瞎"，只是额外进化出了回声定位能力作为夜间狩猎工具。大型果蝠根本不使用回声定位，完全依靠视力。</div></div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 真相是？</button><div class="mg-body">蝙蝠的视力相当好——有些种类甚至能看到紫外线。它们不是"瞎"，只是额外进化出了回声定位能力作为夜间狩猎工具。大型果蝠根本不使用回声定位，完全依靠视力。</div></div></div>
+<div class="card"><span class="card-num">10</span><h3>在中世纪人们认为地球是平的？</h3><p>从古希腊(至少亚里士多德时代起)，受过教育的人就知道地球是球形的。中世纪的欧洲大学教这个，航海家也依赖球形地球导航。哥伦布的争议不在于"地球是平的还是圆的"，而在于地球有多大。</p><div class="truth">真相：地球是球形的知识两千多年前就已经确立了。</div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">💡 🔍 真相是？</button><div class="mg-body">蝙蝠的视力相当好——有些种类甚至能看到紫外线。它们不是"瞎"，只是额外进化出了回声定位能力作为夜间狩猎工具。大型果蝠根本不使用回声定位，完全依靠视力。</div></div></div></div></div></div>
 
-<div class="card"><span class="card-num">11</span><h3>变色龙变色是为了伪装？</h3><p>变色龙变色的主要功能是调节体温和社交信号(求偶、威胁)，而非背景伪装。它们本身的外表颜色就是伪装色——变色更多是一种"交流"方式。</p><div class="truth">真相：变色龙变色主要是为了温度调节和社交信号。</div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 真相是？</button><div class="mg-body">爱因斯坦在数学方面一直很优秀——他自己辟谣过："我15岁前就掌握了微积分。" 幼年时期他确实在语言发展上有延迟（3岁才会说话），但数学成绩从来没有差过。</div></div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 真相是？</button><div class="mg-body">爱因斯坦在数学方面一直很优秀——他自己辟谣过："我15岁前就掌握了微积分。" 幼年时期他确实在语言发展上有延迟（3岁才会说话），但数学成绩从来没有差过。</div></div></div>
+<div class="card"><span class="card-num">11</span><h3>变色龙变色是为了伪装？</h3><p>变色龙变色的主要功能是调节体温和社交信号(求偶、威胁)，而非背景伪装。它们本身的外表颜色就是伪装色——变色更多是一种"交流"方式。</p><div class="truth">真相：变色龙变色主要是为了温度调节和社交信号。</div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">💡 🔍 真相是？</button><div class="mg-body">爱因斯坦在数学方面一直很优秀——他自己辟谣过："我15岁前就掌握了微积分。" 幼年时期他确实在语言发展上有延迟（3岁才会说话），但数学成绩从来没有差过。</div></div></div></div></div></div>
 
-<div class="card"><span class="card-num">12</span><h3>钻石由压实的煤形成？</h3><p>绝大多数天然钻石形成于地球深处(约150-200公里)的极高温高压环境，时间远早于地球上存在植物(因此没有煤)的年代——约10-33亿年前。煤是近3亿年内的植物遗骸。</p><div class="truth">真相：钻石形成于比煤更古老、更深的碳源。</div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 真相是？</button><div class="mg-body">电椅的发明者不是爱迪生（他没有发明电椅），而且交流电/直流电之争中两人都有宣传过度。电椅是爱迪生公司的员工Harold P. Brown设计的——他是爱迪生阵营的，目的是用交流电执行死刑来污名化交流电。</div></div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🔍 真相是？</button><div class="mg-body">电椅的发明者不是爱迪生（他没有发明电椅），而且交流电/直流电之争中两人都有宣传过度。电椅是爱迪生公司的员工Harold P. Brown设计的——他是爱迪生阵营的，目的是用交流电执行死刑来污名化交流电。</div></div></div>
+<div class="card"><span class="card-num">12</span><h3>钻石由压实的煤形成？</h3><p>绝大多数天然钻石形成于地球深处(约150-200公里)的极高温高压环境，时间远早于地球上存在植物(因此没有煤)的年代——约10-33亿年前。煤是近3亿年内的植物遗骸。</p><div class="truth">真相：钻石形成于比煤更古老、更深的碳源。</div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">💡 🔍 真相是？</button><div class="mg-body">电椅的发明者不是爱迪生（他没有发明电椅），而且交流电/直流电之争中两人都有宣传过度。电椅是爱迪生公司的员工Harold P. Brown设计的——他是爱迪生阵营的，目的是用交流电执行死刑来污名化交流电。</div></div></div></div></div></div>
 </div>
 
 <div class="bottom-nav"><a class="nav-btn" href="./knowledge.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>百科</a><a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>首页</a></div>
