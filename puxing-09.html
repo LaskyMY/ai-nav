@@ -81,6 +81,80 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .card{animation:fadeUp .5s var(--ease) both}
 .card:nth-child(1){animation-delay:.03s}.card:nth-child(2){animation-delay:.07s}.card:nth-child(3){animation-delay:.11s}.card:nth-child(4){animation-delay:.15s}.card:nth-child(5){animation-delay:.19s}.card:nth-child(6){animation-delay:.23s}.card:nth-child(7){animation-delay:.27s}.card:nth-child(8){animation-delay:.31s}
 @media(max-width:480px){.hero h1{font-size:22px}.card{padding:14px}.cmp-row{grid-template-columns:1fr}.big-num{font-size:32px}.step-flow{gap:4px}.step-dot{width:26px;height:26px;font-size:11px}}
+/* mini-games */
+.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort{margin-top:10px;position:relative;z-index:1}
+.mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:var(--accent-border)}
+.mg-body{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.03);margin-top:6px;line-height:1.5}
+.mg-body.show{display:block;animation:fadeUp .3s var(--ease) both}
+.mg-btn.correct{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.35);color:var(--a2)}
+.mg-btn.wrong{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.35);color:var(--a3);animation:shake .4s}
+.mg-feedback{display:block;font-size:12px;margin-top:6px;padding:4px 0}
+.mg-right{color:var(--a2)}.mg-wrong{color:var(--a3)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+.mg-flip{perspective:600px;height:80px;cursor:pointer}
+.mg-flip-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.mg-flip.flipped .mg-flip-inner{transform:rotateY(180deg)}
+.mg-front,.mg-back{position:absolute;inset:0;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;border-radius:12px;font-size:13px;padding:10px;text-align:center}
+.mg-front{background:var(--accent-bg);border:1px solid var(--accent-border);color:var(--tx);font-weight:600}
+.mg-back{background:rgba(255,255,255,.05);border:1px solid var(--card-border);color:var(--tx2);transform:rotateY(180deg);line-height:1.4;font-size:12px}
+.mg-slider{display:flex;flex-direction:column;gap:6px}
+.mg-slider input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:rgba(255,255,255,.1);outline:none}
+.mg-slider input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid rgba(255,255,255,.2)}
+.mg-slider-label{font-size:13px;color:var(--tx2);text-align:center;font-weight:500}
+.mg-match{display:flex;gap:12px;flex-wrap:wrap}
+.mg-match-l,.mg-match-r{flex:1;min-width:100px;display:flex;flex-direction:column;gap:5px}
+.mg-match .mg-opt{padding:6px 10px;border-radius:8px;border:1px solid var(--card-border);font-size:12px;color:var(--tx2);cursor:pointer;text-align:center;transition:all .2s}
+.mg-match .mg-opt:hover{background:rgba(255,255,255,.06)}
+.mg-match .mg-opt.sel{border-color:var(--a1);background:rgba(99,102,241,.1);color:var(--tx)}
+.mg-match .mg-opt.ok{border-color:var(--a2);background:rgba(16,185,129,.1);color:var(--a2);pointer-events:none}
+.mg-match .mg-opt.bad{border-color:var(--a3);background:rgba(239,68,68,.1);color:var(--a3)}
+.mg-match-msg{font-size:12px;color:var(--a2);text-align:center;margin-top:6px;width:100%}
+.mg-outcome{display:none;font-size:13px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.04);margin-top:8px;line-height:1.5}
+.mg-outcome.show{display:block}
+.mg-count{font-size:28px;font-weight:700;color:var(--accent);margin:0 6px;min-width:30px;display:inline-block;text-align:center}
+.mg-msg{font-size:12px;color:var(--tx2);margin-top:4px}
+.mg-sort-q{font-size:13px;color:var(--tx);margin-bottom:6px;font-weight:500}
+.mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
+@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
+
+/* mini-games */
+.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort{margin-top:10px;position:relative;z-index:1}
+.mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:var(--accent-border, rgba(99,102,241,.2))}
+.mg-body{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.03);margin-top:6px;line-height:1.5}
+.mg-body.show{display:block;animation:fadeUp .3s var(--ease) both}
+.mg-btn.correct{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.35);color:var(--a2)}
+.mg-btn.wrong{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.35);color:var(--a3);animation:shake .4s}
+.mg-feedback{display:block;font-size:12px;margin-top:6px;padding:4px 0}
+.mg-right{color:var(--a2)}.mg-wrong{color:var(--a3)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+.mg-flip{perspective:600px;height:80px;cursor:pointer}
+.mg-flip-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.mg-flip.flipped .mg-flip-inner{transform:rotateY(180deg)}
+.mg-front,.mg-back{position:absolute;inset:0;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;border-radius:12px;font-size:13px;padding:10px;text-align:center}
+.mg-front{background:var(--accent-bg, rgba(99,102,241,.1));border:1px solid var(--accent-border, rgba(99,102,241,.2));color:var(--tx);font-weight:600}
+.mg-back{background:rgba(255,255,255,.05);border:1px solid var(--card-border);color:var(--tx2);transform:rotateY(180deg);line-height:1.4;font-size:12px}
+.mg-slider{display:flex;flex-direction:column;gap:6px}
+.mg-slider input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:rgba(255,255,255,.1);outline:none}
+.mg-slider input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent,var(--a1));cursor:pointer;border:2px solid rgba(255,255,255,.2)}
+.mg-slider-label{font-size:13px;color:var(--tx2);text-align:center;font-weight:500}
+.mg-match{display:flex;gap:12px;flex-wrap:wrap}
+.mg-match-l,.mg-match-r{flex:1;min-width:100px;display:flex;flex-direction:column;gap:5px}
+.mg-match .mg-opt{padding:6px 10px;border-radius:8px;border:1px solid var(--card-border);font-size:12px;color:var(--tx2);cursor:pointer;text-align:center;transition:all .2s}
+.mg-match .mg-opt:hover{background:rgba(255,255,255,.06)}
+.mg-match .mg-opt.sel{border-color:var(--a1);background:rgba(99,102,241,.1);color:var(--tx)}
+.mg-match .mg-opt.ok{border-color:var(--a2);background:rgba(16,185,129,.1);color:var(--a2);pointer-events:none}
+.mg-match .mg-opt.bad{border-color:var(--a3);background:rgba(239,68,68,.1);color:var(--a3)}
+.mg-match-msg{font-size:12px;color:var(--a2);text-align:center;margin-top:6px;width:100%}
+.mg-outcome{display:none;font-size:13px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.04);margin-top:8px;line-height:1.5}
+.mg-outcome.show{display:block}
+.mg-count{font-size:28px;font-weight:700;color:var(--accent,var(--a1));margin:0 6px;min-width:30px;display:inline-block;text-align:center}
+.mg-msg{font-size:12px;color:var(--tx2);margin-top:4px}
+.mg-sort-q{font-size:13px;color:var(--tx);margin-bottom:6px;font-weight:500}
+.mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
+@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
+
 </style>
 </head>
 <body class="s-indigo">
@@ -91,16 +165,17 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <div class="hero"><h1>能力篇·信息汲取：为什么聊天没话题？</h1><p class="sub">BV1QR4y1o7Ei · 6分钟 · 能力篇 1/9</p><div class="tags"><span class="tag">能力篇</span><span class="tag">聊天话题</span><span class="tag">信息汲取</span></div></div>
 <div class="progress"><span>9</span> / 21</div>
 <div class="page-nav"><a href="./puxing-08.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-10.html">下一篇 →</a></div>
-<div class="card"><span class="card-num">1</span><h3>🗣️ 没话题的底层原因</h3><p>你聊不下去不是因为嘴笨，而是因为"输入太少"。一个每天只看游戏直播和搞笑视频的人，和一个每天阅读、观影、体验生活的人——后者永远不缺话题。信息输入的质量决定聊天输出的质量。</p></div>
+<div class="card"><span class="card-num">1</span><h3>🗣️ 没话题的底层原因</h3><p>你聊不下去不是因为嘴笨，而是因为"输入太少"。一个每天只看游戏直播和搞笑视频的人，和一个每天阅读、观影、体验生活的人——后者永远不缺话题。信息输入的质量决定聊天输出的质量。</p><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！输入质量决定输出质量——输入杂而不精=没有可聊的内容。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">聊天没话题的根本原因是？</p><button class="mg-btn">信息输入太少</button><button class="mg-btn">嘴太笨</button><span class="mg-feedback"></span></div></div>
 <div class="card"><span class="card-num">2</span><h3>📡 建立你的信息输入系统</h3><p>每天至少30分钟的高质量信息摄入：读一篇深度文章、看一段知识类视频、听一集播客。关注3-5个不同领域的优质内容创作者。</p><div class="step-flow"><div style="text-align:center;flex-shrink:0"><div class="step-dot">1</div><div class="step-label">每日30min
 高质量输入</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">2</div><div class="step-label">跨领域
 3-5个方向</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">3</div><div class="step-label">记录金句
 和观点</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">4</div><div class="step-label">用自己的话
-复述输出</div></div></div></div>
-<div class="card"><span class="card-num">3</span><h3>🔄 从"输入"到"输出"</h3><p>看了一个有趣的内容后，试着用自己的话讲给别人听。这既是练习表达能力，也是巩固记忆。那些看起来"什么都能聊"的人，本质上是积累了足够多的可输出内容。</p><div class="takeaway"><span class="ta-icon">💡</span><span>聊天素材 = 信息输入 × 复述练习。每天30分钟高质量阅读 + 1次复述输出，一个月后你会发现自己"突然有话题了"。</span></div></div>
+复述输出</div></div></div><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">📡 建立信息输入系统</button><div class="mg-body">每天30分钟：一篇深度文章+一段知识视频+一集播客。关注3-5个不同领域创作者。关键是多样性。</div></div></div>
+<div class="card"><span class="card-num">3</span><h3>🔄 从"输入"到"输出"</h3><p>看了一个有趣的内容后，试着用自己的话讲给别人听。这既是练习表达能力，也是巩固记忆。那些看起来"什么都能聊"的人，本质上是积累了足够多的可输出内容。</p><div class="takeaway"><span class="ta-icon">💡</span><span>聊天素材 = 信息输入 × 复述练习。每天30分钟高质量阅读 + 1次复述输出，一个月后你会发现自己"突然有话题了"。</span></div><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！复述最强记忆+表达训练——"什么都能聊"的人本质是积累了足够多可输出内容。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">从输入到输出的关键步骤？</p><button class="mg-btn">用自己的话复述给别人听</button><button class="mg-btn">默默记在心里</button><span class="mg-feedback"></span></div></div>
 <div class="page-nav"><a href="./puxing-08.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-10.html">下一篇 →</a></div>
 </div>
-<div class="bottom-nav"><a class="nav-btn" href="./puxing-man.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>目录</a><a class="nav-btn" href="./knowledge.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>百科</a></div>
+<div class="bottom-nav"><a class="nav-btn" href="./puxing-man.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>目录</a><a class="nav-btn" href="./knowledge.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>百科</a><a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>首页</a></div>
 <script>(function(){const s=document.querySelector('.glow-spot');let r;window.addEventListener('mousemove',e=>{if(!r){r=requestAnimationFrame(()=>{s.style.background='radial-gradient(circle 420px at '+e.clientX+'px '+e.clientY+'px,rgba(6,182,212,.05),rgba(99,102,241,.04) 20%,rgba(16,185,129,.02) 45%,transparent 70%)';r=null;});}},{passive:true});})();(function(){if(!('ontouchstart' in window))return;const c=document.getElementById('mainContainer');let gx=0,gy=0,tx=0,ty=0;const m=2.5;if(typeof DeviceOrientationEvent!=='undefined'&&'requestPermission' in DeviceOrientationEvent){document.addEventListener('click',function r(){DeviceOrientationEvent.requestPermission().then(p=>{if(p==='granted')window.addEventListener('deviceorientation',o);});document.removeEventListener('click',r);},{once:true});}else{window.addEventListener('deviceorientation',o);}function o(e){if(e.beta!==null){tx=e.gamma||0;ty=e.beta||0;}}function l(){gx+=(tx*0.04-gx)*0.04;gy+=(ty*0.04-gy)*0.04;c.style.transform='perspective(1000px) rotateX('+(-Math.max(-m,Math.min(m,gy)))+'deg) rotateY('+Math.max(-m,Math.min(m,gx))+'deg)';requestAnimationFrame(l);}l();})();</script>
+<script src="./mini-games.js"></script>
 </body>
 </html>

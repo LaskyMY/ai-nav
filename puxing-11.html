@@ -81,6 +81,80 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .card{animation:fadeUp .5s var(--ease) both}
 .card:nth-child(1){animation-delay:.03s}.card:nth-child(2){animation-delay:.07s}.card:nth-child(3){animation-delay:.11s}.card:nth-child(4){animation-delay:.15s}.card:nth-child(5){animation-delay:.19s}.card:nth-child(6){animation-delay:.23s}.card:nth-child(7){animation-delay:.27s}.card:nth-child(8){animation-delay:.31s}
 @media(max-width:480px){.hero h1{font-size:22px}.card{padding:14px}.cmp-row{grid-template-columns:1fr}.big-num{font-size:32px}.step-flow{gap:4px}.step-dot{width:26px;height:26px;font-size:11px}}
+/* mini-games */
+.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort{margin-top:10px;position:relative;z-index:1}
+.mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:var(--accent-border)}
+.mg-body{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.03);margin-top:6px;line-height:1.5}
+.mg-body.show{display:block;animation:fadeUp .3s var(--ease) both}
+.mg-btn.correct{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.35);color:var(--a2)}
+.mg-btn.wrong{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.35);color:var(--a3);animation:shake .4s}
+.mg-feedback{display:block;font-size:12px;margin-top:6px;padding:4px 0}
+.mg-right{color:var(--a2)}.mg-wrong{color:var(--a3)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+.mg-flip{perspective:600px;height:80px;cursor:pointer}
+.mg-flip-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.mg-flip.flipped .mg-flip-inner{transform:rotateY(180deg)}
+.mg-front,.mg-back{position:absolute;inset:0;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;border-radius:12px;font-size:13px;padding:10px;text-align:center}
+.mg-front{background:var(--accent-bg);border:1px solid var(--accent-border);color:var(--tx);font-weight:600}
+.mg-back{background:rgba(255,255,255,.05);border:1px solid var(--card-border);color:var(--tx2);transform:rotateY(180deg);line-height:1.4;font-size:12px}
+.mg-slider{display:flex;flex-direction:column;gap:6px}
+.mg-slider input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:rgba(255,255,255,.1);outline:none}
+.mg-slider input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid rgba(255,255,255,.2)}
+.mg-slider-label{font-size:13px;color:var(--tx2);text-align:center;font-weight:500}
+.mg-match{display:flex;gap:12px;flex-wrap:wrap}
+.mg-match-l,.mg-match-r{flex:1;min-width:100px;display:flex;flex-direction:column;gap:5px}
+.mg-match .mg-opt{padding:6px 10px;border-radius:8px;border:1px solid var(--card-border);font-size:12px;color:var(--tx2);cursor:pointer;text-align:center;transition:all .2s}
+.mg-match .mg-opt:hover{background:rgba(255,255,255,.06)}
+.mg-match .mg-opt.sel{border-color:var(--a1);background:rgba(99,102,241,.1);color:var(--tx)}
+.mg-match .mg-opt.ok{border-color:var(--a2);background:rgba(16,185,129,.1);color:var(--a2);pointer-events:none}
+.mg-match .mg-opt.bad{border-color:var(--a3);background:rgba(239,68,68,.1);color:var(--a3)}
+.mg-match-msg{font-size:12px;color:var(--a2);text-align:center;margin-top:6px;width:100%}
+.mg-outcome{display:none;font-size:13px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.04);margin-top:8px;line-height:1.5}
+.mg-outcome.show{display:block}
+.mg-count{font-size:28px;font-weight:700;color:var(--accent);margin:0 6px;min-width:30px;display:inline-block;text-align:center}
+.mg-msg{font-size:12px;color:var(--tx2);margin-top:4px}
+.mg-sort-q{font-size:13px;color:var(--tx);margin-bottom:6px;font-weight:500}
+.mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
+@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
+
+/* mini-games */
+.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort{margin-top:10px;position:relative;z-index:1}
+.mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:var(--accent-border, rgba(99,102,241,.2))}
+.mg-body{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.03);margin-top:6px;line-height:1.5}
+.mg-body.show{display:block;animation:fadeUp .3s var(--ease) both}
+.mg-btn.correct{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.35);color:var(--a2)}
+.mg-btn.wrong{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.35);color:var(--a3);animation:shake .4s}
+.mg-feedback{display:block;font-size:12px;margin-top:6px;padding:4px 0}
+.mg-right{color:var(--a2)}.mg-wrong{color:var(--a3)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+.mg-flip{perspective:600px;height:80px;cursor:pointer}
+.mg-flip-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.mg-flip.flipped .mg-flip-inner{transform:rotateY(180deg)}
+.mg-front,.mg-back{position:absolute;inset:0;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;border-radius:12px;font-size:13px;padding:10px;text-align:center}
+.mg-front{background:var(--accent-bg, rgba(99,102,241,.1));border:1px solid var(--accent-border, rgba(99,102,241,.2));color:var(--tx);font-weight:600}
+.mg-back{background:rgba(255,255,255,.05);border:1px solid var(--card-border);color:var(--tx2);transform:rotateY(180deg);line-height:1.4;font-size:12px}
+.mg-slider{display:flex;flex-direction:column;gap:6px}
+.mg-slider input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:rgba(255,255,255,.1);outline:none}
+.mg-slider input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent,var(--a1));cursor:pointer;border:2px solid rgba(255,255,255,.2)}
+.mg-slider-label{font-size:13px;color:var(--tx2);text-align:center;font-weight:500}
+.mg-match{display:flex;gap:12px;flex-wrap:wrap}
+.mg-match-l,.mg-match-r{flex:1;min-width:100px;display:flex;flex-direction:column;gap:5px}
+.mg-match .mg-opt{padding:6px 10px;border-radius:8px;border:1px solid var(--card-border);font-size:12px;color:var(--tx2);cursor:pointer;text-align:center;transition:all .2s}
+.mg-match .mg-opt:hover{background:rgba(255,255,255,.06)}
+.mg-match .mg-opt.sel{border-color:var(--a1);background:rgba(99,102,241,.1);color:var(--tx)}
+.mg-match .mg-opt.ok{border-color:var(--a2);background:rgba(16,185,129,.1);color:var(--a2);pointer-events:none}
+.mg-match .mg-opt.bad{border-color:var(--a3);background:rgba(239,68,68,.1);color:var(--a3)}
+.mg-match-msg{font-size:12px;color:var(--a2);text-align:center;margin-top:6px;width:100%}
+.mg-outcome{display:none;font-size:13px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.04);margin-top:8px;line-height:1.5}
+.mg-outcome.show{display:block}
+.mg-count{font-size:28px;font-weight:700;color:var(--accent,var(--a1));margin:0 6px;min-width:30px;display:inline-block;text-align:center}
+.mg-msg{font-size:12px;color:var(--tx2);margin-top:4px}
+.mg-sort-q{font-size:13px;color:var(--tx);margin-bottom:6px;font-weight:500}
+.mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
+@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
+
 </style>
 </head>
 <body class="s-indigo">
@@ -91,12 +165,13 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <div class="hero"><h1>能力篇·自我展示：开屏开得好，人缘差不了</h1><p class="sub">BV1wD4y1e7fd · 5分钟 · 能力篇 3/9</p><div class="tags"><span class="tag">能力篇</span><span class="tag">自我展示</span><span class="tag">第一印象</span></div></div>
 <div class="progress"><span>11</span> / 21</div>
 <div class="page-nav"><a href="./puxing-10.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-12.html">下一篇 →</a></div>
-<div class="card"><span class="card-num">1</span><h3>🦚 "孔雀开屏"效应</h3><p>自然界中雄性通过展示来吸引雌性——人类社会也一样。你的外形、谈吐、朋友圈、社交账号都是你的"屏"。开屏不是炫耀，而是让别人有机会看到你的价值。</p></div>
-<div class="card"><span class="card-num">2</span><h3>🪪 你的"个人名片"是什么？</h3><p>当一个陌生人第一次了解你时，ta能在3分钟内看到什么？你的朋友圈是三天可见且空空如也？还是展示着你的生活、爱好和价值观？</p><ul class="checklist"><li>朋友圈：至少展示最近半年的精彩生活</li><li>头像：清晰、干净、有审美感的个人照</li><li>签名：简短有趣，反映你的态度或幽默感</li><li>社交账号：展示你的兴趣和特长（摄影/音乐/运动等）</li></ul></div>
-<div class="card"><span class="card-num">3</span><h3>👁️ 展示而非告诉</h3><p>"我很幽默" → 不如展示你有趣的朋友圈文案。"我爱运动" → 不如放一张运动照片。"我很有品位" → 不如展示你的穿搭和生活方式。行动永远比语言更有说服力。</p><div class="takeaway"><span class="ta-icon">📸</span><span>黄金法则：不要说你是什么样的人，展示出来。一张照片胜过一百句自我介绍。</span></div></div>
+<div class="card"><span class="card-num">1</span><h3>🦚 "孔雀开屏"效应</h3><p>自然界中雄性通过展示来吸引雌性——人类社会也一样。你的外形、谈吐、朋友圈、社交账号都是你的"屏"。开屏不是炫耀，而是让别人有机会看到你的价值。</p><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！不开屏没人知道你有这些羽毛——展示价值是必要的。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">"孔雀开屏"在社交中意味着？</p><button class="mg-btn">主动展示价值让别人了解你</button><button class="mg-btn">炫耀让人讨厌</button><span class="mg-feedback"></span></div></div>
+<div class="card"><span class="card-num">2</span><h3>🪪 你的"个人名片"是什么？</h3><p>当一个陌生人第一次了解你时，ta能在3分钟内看到什么？你的朋友圈是三天可见且空空如也？还是展示着你的生活、爱好和价值观？</p><ul class="checklist"><li>朋友圈：至少展示最近半年的精彩生活</li><li>头像：清晰、干净、有审美感的个人照</li><li>签名：简短有趣，反映你的态度或幽默感</li><li>社交账号：展示你的兴趣和特长（摄影/音乐/运动等）</li></ul><div class="mg-reveal" data-mg="reveal"><button class="mg-btn">🪪 3分钟法则</button><div class="mg-body">陌生人第一面了解你时，3分钟内能看到什么？空白朋友圈=失去了80%的机会。让每次被查看都是一次正面的自我介绍。</div></div></div>
+<div class="card"><span class="card-num">3</span><h3>👁️ 展示而非告诉</h3><p>"我很幽默" → 不如展示你有趣的朋友圈文案。"我爱运动" → 不如放一张运动照片。"我很有品位" → 不如展示你的穿搭和生活方式。行动永远比语言更有说服力。</p><div class="takeaway"><span class="ta-icon">📸</span><span>黄金法则：不要说你是什么样的人，展示出来。一张照片胜过一百句自我介绍。</span></div><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！一张照片 > 一百句自我介绍。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">"展示"vs"告诉"的区别？</p><button class="mg-btn">展示=发运动照。告诉=说"我爱运动"</button><button class="mg-btn">两者没区别</button><span class="mg-feedback"></span></div></div>
 <div class="page-nav"><a href="./puxing-10.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-12.html">下一篇 →</a></div>
 </div>
-<div class="bottom-nav"><a class="nav-btn" href="./puxing-man.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>目录</a><a class="nav-btn" href="./knowledge.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>百科</a></div>
+<div class="bottom-nav"><a class="nav-btn" href="./puxing-man.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>目录</a><a class="nav-btn" href="./knowledge.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>百科</a><a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>首页</a></div>
 <script>(function(){const s=document.querySelector('.glow-spot');let r;window.addEventListener('mousemove',e=>{if(!r){r=requestAnimationFrame(()=>{s.style.background='radial-gradient(circle 420px at '+e.clientX+'px '+e.clientY+'px,rgba(6,182,212,.05),rgba(99,102,241,.04) 20%,rgba(16,185,129,.02) 45%,transparent 70%)';r=null;});}},{passive:true});})();(function(){if(!('ontouchstart' in window))return;const c=document.getElementById('mainContainer');let gx=0,gy=0,tx=0,ty=0;const m=2.5;if(typeof DeviceOrientationEvent!=='undefined'&&'requestPermission' in DeviceOrientationEvent){document.addEventListener('click',function r(){DeviceOrientationEvent.requestPermission().then(p=>{if(p==='granted')window.addEventListener('deviceorientation',o);});document.removeEventListener('click',r);},{once:true});}else{window.addEventListener('deviceorientation',o);}function o(e){if(e.beta!==null){tx=e.gamma||0;ty=e.beta||0;}}function l(){gx+=(tx*0.04-gx)*0.04;gy+=(ty*0.04-gy)*0.04;c.style.transform='perspective(1000px) rotateX('+(-Math.max(-m,Math.min(m,gy)))+'deg) rotateY('+Math.max(-m,Math.min(m,gx))+'deg)';requestAnimationFrame(l);}l();})();</script>
+<script src="./mini-games.js"></script>
 </body>
 </html>

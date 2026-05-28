@@ -81,6 +81,80 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .card{animation:fadeUp .5s var(--ease) both}
 .card:nth-child(1){animation-delay:.03s}.card:nth-child(2){animation-delay:.07s}.card:nth-child(3){animation-delay:.11s}.card:nth-child(4){animation-delay:.15s}.card:nth-child(5){animation-delay:.19s}.card:nth-child(6){animation-delay:.23s}.card:nth-child(7){animation-delay:.27s}.card:nth-child(8){animation-delay:.31s}
 @media(max-width:480px){.hero h1{font-size:22px}.card{padding:14px}.cmp-row{grid-template-columns:1fr}.big-num{font-size:32px}.step-flow{gap:4px}.step-dot{width:26px;height:26px;font-size:11px}}
+/* mini-games */
+.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort{margin-top:10px;position:relative;z-index:1}
+.mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:var(--accent-border)}
+.mg-body{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.03);margin-top:6px;line-height:1.5}
+.mg-body.show{display:block;animation:fadeUp .3s var(--ease) both}
+.mg-btn.correct{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.35);color:var(--a2)}
+.mg-btn.wrong{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.35);color:var(--a3);animation:shake .4s}
+.mg-feedback{display:block;font-size:12px;margin-top:6px;padding:4px 0}
+.mg-right{color:var(--a2)}.mg-wrong{color:var(--a3)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+.mg-flip{perspective:600px;height:80px;cursor:pointer}
+.mg-flip-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.mg-flip.flipped .mg-flip-inner{transform:rotateY(180deg)}
+.mg-front,.mg-back{position:absolute;inset:0;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;border-radius:12px;font-size:13px;padding:10px;text-align:center}
+.mg-front{background:var(--accent-bg);border:1px solid var(--accent-border);color:var(--tx);font-weight:600}
+.mg-back{background:rgba(255,255,255,.05);border:1px solid var(--card-border);color:var(--tx2);transform:rotateY(180deg);line-height:1.4;font-size:12px}
+.mg-slider{display:flex;flex-direction:column;gap:6px}
+.mg-slider input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:rgba(255,255,255,.1);outline:none}
+.mg-slider input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid rgba(255,255,255,.2)}
+.mg-slider-label{font-size:13px;color:var(--tx2);text-align:center;font-weight:500}
+.mg-match{display:flex;gap:12px;flex-wrap:wrap}
+.mg-match-l,.mg-match-r{flex:1;min-width:100px;display:flex;flex-direction:column;gap:5px}
+.mg-match .mg-opt{padding:6px 10px;border-radius:8px;border:1px solid var(--card-border);font-size:12px;color:var(--tx2);cursor:pointer;text-align:center;transition:all .2s}
+.mg-match .mg-opt:hover{background:rgba(255,255,255,.06)}
+.mg-match .mg-opt.sel{border-color:var(--a1);background:rgba(99,102,241,.1);color:var(--tx)}
+.mg-match .mg-opt.ok{border-color:var(--a2);background:rgba(16,185,129,.1);color:var(--a2);pointer-events:none}
+.mg-match .mg-opt.bad{border-color:var(--a3);background:rgba(239,68,68,.1);color:var(--a3)}
+.mg-match-msg{font-size:12px;color:var(--a2);text-align:center;margin-top:6px;width:100%}
+.mg-outcome{display:none;font-size:13px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.04);margin-top:8px;line-height:1.5}
+.mg-outcome.show{display:block}
+.mg-count{font-size:28px;font-weight:700;color:var(--accent);margin:0 6px;min-width:30px;display:inline-block;text-align:center}
+.mg-msg{font-size:12px;color:var(--tx2);margin-top:4px}
+.mg-sort-q{font-size:13px;color:var(--tx);margin-bottom:6px;font-weight:500}
+.mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
+@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
+
+/* mini-games */
+.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort{margin-top:10px;position:relative;z-index:1}
+.mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:var(--accent-border, rgba(99,102,241,.2))}
+.mg-body{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.03);margin-top:6px;line-height:1.5}
+.mg-body.show{display:block;animation:fadeUp .3s var(--ease) both}
+.mg-btn.correct{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.35);color:var(--a2)}
+.mg-btn.wrong{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.35);color:var(--a3);animation:shake .4s}
+.mg-feedback{display:block;font-size:12px;margin-top:6px;padding:4px 0}
+.mg-right{color:var(--a2)}.mg-wrong{color:var(--a3)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+.mg-flip{perspective:600px;height:80px;cursor:pointer}
+.mg-flip-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.mg-flip.flipped .mg-flip-inner{transform:rotateY(180deg)}
+.mg-front,.mg-back{position:absolute;inset:0;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;border-radius:12px;font-size:13px;padding:10px;text-align:center}
+.mg-front{background:var(--accent-bg, rgba(99,102,241,.1));border:1px solid var(--accent-border, rgba(99,102,241,.2));color:var(--tx);font-weight:600}
+.mg-back{background:rgba(255,255,255,.05);border:1px solid var(--card-border);color:var(--tx2);transform:rotateY(180deg);line-height:1.4;font-size:12px}
+.mg-slider{display:flex;flex-direction:column;gap:6px}
+.mg-slider input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:rgba(255,255,255,.1);outline:none}
+.mg-slider input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent,var(--a1));cursor:pointer;border:2px solid rgba(255,255,255,.2)}
+.mg-slider-label{font-size:13px;color:var(--tx2);text-align:center;font-weight:500}
+.mg-match{display:flex;gap:12px;flex-wrap:wrap}
+.mg-match-l,.mg-match-r{flex:1;min-width:100px;display:flex;flex-direction:column;gap:5px}
+.mg-match .mg-opt{padding:6px 10px;border-radius:8px;border:1px solid var(--card-border);font-size:12px;color:var(--tx2);cursor:pointer;text-align:center;transition:all .2s}
+.mg-match .mg-opt:hover{background:rgba(255,255,255,.06)}
+.mg-match .mg-opt.sel{border-color:var(--a1);background:rgba(99,102,241,.1);color:var(--tx)}
+.mg-match .mg-opt.ok{border-color:var(--a2);background:rgba(16,185,129,.1);color:var(--a2);pointer-events:none}
+.mg-match .mg-opt.bad{border-color:var(--a3);background:rgba(239,68,68,.1);color:var(--a3)}
+.mg-match-msg{font-size:12px;color:var(--a2);text-align:center;margin-top:6px;width:100%}
+.mg-outcome{display:none;font-size:13px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.04);margin-top:8px;line-height:1.5}
+.mg-outcome.show{display:block}
+.mg-count{font-size:28px;font-weight:700;color:var(--accent,var(--a1));margin:0 6px;min-width:30px;display:inline-block;text-align:center}
+.mg-msg{font-size:12px;color:var(--tx2);margin-top:4px}
+.mg-sort-q{font-size:13px;color:var(--tx);margin-bottom:6px;font-weight:500}
+.mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
+@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
+
 </style>
 </head>
 <body class="s-green">
@@ -91,15 +165,16 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <div class="hero"><h1>答疑·穿搭问题：穿搭实践中会踩哪些雷？</h1><p class="sub">BV1sR4y1C7cU · 6分钟 · 外形篇 6/7</p><div class="tags"><span class="tag">外形篇</span><span class="tag">穿搭答疑</span><span class="tag">避雷</span></div></div>
 <div class="progress"><span>7</span> / 21</div>
 <div class="page-nav"><a href="./puxing-06.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-08.html">下一篇 →</a></div>
-<div class="card"><span class="card-num">1</span><h3>⚡ 雷区一：运动风 ≠ 运动服</h3><p>运动风格是"看起来像会去运动的人"，不是"穿着运动服到处走"。区别在于：运动风格会混搭休闲单品，而全套运动服 = 刚从健身房出来。</p><div class="cmp-row"><div class="cmp-do"><div class="cmp-label">✓ 应该这样</div><p>运动卫衣 + 休闲裤 + 小白鞋（运动风格混搭）</p></div><div class="cmp-dont"><div class="cmp-label">✗ 不要这样</div><p>全套运动品牌 + 运动裤 + 跑鞋（像刚从健身房出来）</p></div></div></div>
+<div class="card"><span class="card-num">1</span><h3>⚡ 雷区一：运动风 ≠ 运动服</h3><p>运动风格是"看起来像会去运动的人"，不是"穿着运动服到处走"。区别在于：运动风格会混搭休闲单品，而全套运动服 = 刚从健身房出来。</p><div class="cmp-row"><div class="cmp-do"><div class="cmp-label">✓ 应该这样</div><p>运动卫衣 + 休闲裤 + 小白鞋（运动风格混搭）</p></div><div class="cmp-dont"><div class="cmp-label">✗ 不要这样</div><p>全套运动品牌 + 运动裤 + 跑鞋（像刚从健身房出来）</p></div></div><div class="mg-scenario" data-mg="scenario"><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">运动风格正确的打开方式？</p><button class="mg-btn" data-outcome="对！混搭才叫风格，全套=刚从健身房出来。">运动卫衣 + 休闲裤 + 小白鞋</button><button class="mg-btn" data-outcome="全套运动服是功能着装，不适合日常社交。">全套运动服</button><div class="mg-outcome"></div></div></div>
 <div class="card"><span class="card-num">2</span><h3>🧥 雷区二：冬天裹成"粽子"</h3><p>冬天穿搭的核心是"层次感"而非"厚度"。三层法则：内层贴身保暖、中层锁温、外层防风。这样穿既保暖又能脱，不会显得臃肿。</p><div class="step-flow"><div style="text-align:center;flex-shrink:0"><div class="step-dot">1</div><div class="step-label">内层
 贴身保暖</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">2</div><div class="step-label">中层
 针织锁温</div></div><div class="step-bar"></div><div style="text-align:center;flex-shrink:0"><div class="step-dot">3</div><div class="step-label">外层
-防风外套</div></div></div></div>
-<div class="card"><span class="card-num">3</span><h3>👟 雷区三：忽略鞋子的重要性</h3><p>很多人精心搭配了衣服，却穿了一双脏兮兮的旧球鞋。鞋子是整体造型的"句号"——一双干净合脚的鞋能拯救一身平庸的搭配。</p><div class="takeaway"><span class="ta-icon">👞</span><span>鞋子是你全身穿搭的"句号"。投资两双好鞋，保持它们干净，定期轮换。一双脏鞋可以毁掉一身精心搭配。</span></div></div>
+防风外套</div></div></div><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！三层法则暖而不肿——比胡乱叠加更显瘦。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">冬天不显臃肿的关键？</p><button class="mg-btn">层次感：内贴身+中锁温+外防风</button><button class="mg-btn">多穿几件厚毛衣叠在一起</button><span class="mg-feedback"></span></div></div>
+<div class="card"><span class="card-num">3</span><h3>👟 雷区三：忽略鞋子的重要性</h3><p>很多人精心搭配了衣服，却穿了一双脏兮兮的旧球鞋。鞋子是整体造型的"句号"——一双干净合脚的鞋能拯救一身平庸的搭配。</p><div class="takeaway"><span class="ta-icon">👞</span><span>鞋子是你全身穿搭的"句号"。投资两双好鞋，保持它们干净，定期轮换。一双脏鞋可以毁掉一身精心搭配。</span></div><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！投资两双好鞋并保持干净——比你想的重要得多。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">鞋子为什么是穿搭的"句号"？</p><button class="mg-btn">鞋子是终点，脏鞋毁全身</button><button class="mg-btn">没人看鞋子</button><span class="mg-feedback"></span></div></div>
 <div class="page-nav"><a href="./puxing-06.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-08.html">下一篇 →</a></div>
 </div>
-<div class="bottom-nav"><a class="nav-btn" href="./puxing-man.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>目录</a><a class="nav-btn" href="./knowledge.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>百科</a></div>
+<div class="bottom-nav"><a class="nav-btn" href="./puxing-man.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>目录</a><a class="nav-btn" href="./knowledge.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>百科</a><a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>首页</a></div>
 <script>(function(){const s=document.querySelector('.glow-spot');let r;window.addEventListener('mousemove',e=>{if(!r){r=requestAnimationFrame(()=>{s.style.background='radial-gradient(circle 420px at '+e.clientX+'px '+e.clientY+'px,rgba(6,182,212,.05),rgba(99,102,241,.04) 20%,rgba(16,185,129,.02) 45%,transparent 70%)';r=null;});}},{passive:true});})();(function(){if(!('ontouchstart' in window))return;const c=document.getElementById('mainContainer');let gx=0,gy=0,tx=0,ty=0;const m=2.5;if(typeof DeviceOrientationEvent!=='undefined'&&'requestPermission' in DeviceOrientationEvent){document.addEventListener('click',function r(){DeviceOrientationEvent.requestPermission().then(p=>{if(p==='granted')window.addEventListener('deviceorientation',o);});document.removeEventListener('click',r);},{once:true});}else{window.addEventListener('deviceorientation',o);}function o(e){if(e.beta!==null){tx=e.gamma||0;ty=e.beta||0;}}function l(){gx+=(tx*0.04-gx)*0.04;gy+=(ty*0.04-gy)*0.04;c.style.transform='perspective(1000px) rotateX('+(-Math.max(-m,Math.min(m,gy)))+'deg) rotateY('+Math.max(-m,Math.min(m,gx))+'deg)';requestAnimationFrame(l);}l();})();</script>
+<script src="./mini-games.js"></script>
 </body>
 </html>

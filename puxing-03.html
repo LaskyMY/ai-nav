@@ -81,6 +81,80 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .card{animation:fadeUp .5s var(--ease) both}
 .card:nth-child(1){animation-delay:.03s}.card:nth-child(2){animation-delay:.07s}.card:nth-child(3){animation-delay:.11s}.card:nth-child(4){animation-delay:.15s}.card:nth-child(5){animation-delay:.19s}.card:nth-child(6){animation-delay:.23s}.card:nth-child(7){animation-delay:.27s}.card:nth-child(8){animation-delay:.31s}
 @media(max-width:480px){.hero h1{font-size:22px}.card{padding:14px}.cmp-row{grid-template-columns:1fr}.big-num{font-size:32px}.step-flow{gap:4px}.step-dot{width:26px;height:26px;font-size:11px}}
+/* mini-games */
+.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort{margin-top:10px;position:relative;z-index:1}
+.mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:var(--accent-border)}
+.mg-body{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.03);margin-top:6px;line-height:1.5}
+.mg-body.show{display:block;animation:fadeUp .3s var(--ease) both}
+.mg-btn.correct{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.35);color:var(--a2)}
+.mg-btn.wrong{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.35);color:var(--a3);animation:shake .4s}
+.mg-feedback{display:block;font-size:12px;margin-top:6px;padding:4px 0}
+.mg-right{color:var(--a2)}.mg-wrong{color:var(--a3)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+.mg-flip{perspective:600px;height:80px;cursor:pointer}
+.mg-flip-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.mg-flip.flipped .mg-flip-inner{transform:rotateY(180deg)}
+.mg-front,.mg-back{position:absolute;inset:0;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;border-radius:12px;font-size:13px;padding:10px;text-align:center}
+.mg-front{background:var(--accent-bg);border:1px solid var(--accent-border);color:var(--tx);font-weight:600}
+.mg-back{background:rgba(255,255,255,.05);border:1px solid var(--card-border);color:var(--tx2);transform:rotateY(180deg);line-height:1.4;font-size:12px}
+.mg-slider{display:flex;flex-direction:column;gap:6px}
+.mg-slider input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:rgba(255,255,255,.1);outline:none}
+.mg-slider input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid rgba(255,255,255,.2)}
+.mg-slider-label{font-size:13px;color:var(--tx2);text-align:center;font-weight:500}
+.mg-match{display:flex;gap:12px;flex-wrap:wrap}
+.mg-match-l,.mg-match-r{flex:1;min-width:100px;display:flex;flex-direction:column;gap:5px}
+.mg-match .mg-opt{padding:6px 10px;border-radius:8px;border:1px solid var(--card-border);font-size:12px;color:var(--tx2);cursor:pointer;text-align:center;transition:all .2s}
+.mg-match .mg-opt:hover{background:rgba(255,255,255,.06)}
+.mg-match .mg-opt.sel{border-color:var(--a1);background:rgba(99,102,241,.1);color:var(--tx)}
+.mg-match .mg-opt.ok{border-color:var(--a2);background:rgba(16,185,129,.1);color:var(--a2);pointer-events:none}
+.mg-match .mg-opt.bad{border-color:var(--a3);background:rgba(239,68,68,.1);color:var(--a3)}
+.mg-match-msg{font-size:12px;color:var(--a2);text-align:center;margin-top:6px;width:100%}
+.mg-outcome{display:none;font-size:13px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.04);margin-top:8px;line-height:1.5}
+.mg-outcome.show{display:block}
+.mg-count{font-size:28px;font-weight:700;color:var(--accent);margin:0 6px;min-width:30px;display:inline-block;text-align:center}
+.mg-msg{font-size:12px;color:var(--tx2);margin-top:4px}
+.mg-sort-q{font-size:13px;color:var(--tx);margin-bottom:6px;font-weight:500}
+.mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
+@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
+
+/* mini-games */
+.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort{margin-top:10px;position:relative;z-index:1}
+.mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:var(--accent-border, rgba(99,102,241,.2))}
+.mg-body{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.03);margin-top:6px;line-height:1.5}
+.mg-body.show{display:block;animation:fadeUp .3s var(--ease) both}
+.mg-btn.correct{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.35);color:var(--a2)}
+.mg-btn.wrong{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.35);color:var(--a3);animation:shake .4s}
+.mg-feedback{display:block;font-size:12px;margin-top:6px;padding:4px 0}
+.mg-right{color:var(--a2)}.mg-wrong{color:var(--a3)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+.mg-flip{perspective:600px;height:80px;cursor:pointer}
+.mg-flip-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.mg-flip.flipped .mg-flip-inner{transform:rotateY(180deg)}
+.mg-front,.mg-back{position:absolute;inset:0;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;border-radius:12px;font-size:13px;padding:10px;text-align:center}
+.mg-front{background:var(--accent-bg, rgba(99,102,241,.1));border:1px solid var(--accent-border, rgba(99,102,241,.2));color:var(--tx);font-weight:600}
+.mg-back{background:rgba(255,255,255,.05);border:1px solid var(--card-border);color:var(--tx2);transform:rotateY(180deg);line-height:1.4;font-size:12px}
+.mg-slider{display:flex;flex-direction:column;gap:6px}
+.mg-slider input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:rgba(255,255,255,.1);outline:none}
+.mg-slider input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent,var(--a1));cursor:pointer;border:2px solid rgba(255,255,255,.2)}
+.mg-slider-label{font-size:13px;color:var(--tx2);text-align:center;font-weight:500}
+.mg-match{display:flex;gap:12px;flex-wrap:wrap}
+.mg-match-l,.mg-match-r{flex:1;min-width:100px;display:flex;flex-direction:column;gap:5px}
+.mg-match .mg-opt{padding:6px 10px;border-radius:8px;border:1px solid var(--card-border);font-size:12px;color:var(--tx2);cursor:pointer;text-align:center;transition:all .2s}
+.mg-match .mg-opt:hover{background:rgba(255,255,255,.06)}
+.mg-match .mg-opt.sel{border-color:var(--a1);background:rgba(99,102,241,.1);color:var(--tx)}
+.mg-match .mg-opt.ok{border-color:var(--a2);background:rgba(16,185,129,.1);color:var(--a2);pointer-events:none}
+.mg-match .mg-opt.bad{border-color:var(--a3);background:rgba(239,68,68,.1);color:var(--a3)}
+.mg-match-msg{font-size:12px;color:var(--a2);text-align:center;margin-top:6px;width:100%}
+.mg-outcome{display:none;font-size:13px;color:var(--tx2);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.04);margin-top:8px;line-height:1.5}
+.mg-outcome.show{display:block}
+.mg-count{font-size:28px;font-weight:700;color:var(--accent,var(--a1));margin:0 6px;min-width:30px;display:inline-block;text-align:center}
+.mg-msg{font-size:12px;color:var(--tx2);margin-top:4px}
+.mg-sort-q{font-size:13px;color:var(--tx);margin-bottom:6px;font-weight:500}
+.mg-sort-score{font-size:12px;color:var(--tx2);margin-top:6px}
+@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}}
+
 </style>
 </head>
 <body class="s-green">
@@ -91,12 +165,13 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <div class="hero"><h1>外形篇·形象管理：怎么做一个"干净清爽"的男生？</h1><p class="sub">BV1RG4y1o7BN · 7分钟 · 外形篇 2/7</p><div class="tags"><span class="tag">外形篇</span><span class="tag">形象管理</span><span class="tag">干净清爽</span></div></div>
 <div class="progress"><span>3</span> / 21</div>
 <div class="page-nav"><a href="./puxing-02.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-04.html">下一篇 →</a></div>
-<div class="card"><span class="card-num">1</span><h3>✨ "干净清爽"是第一要求</h3><p>在女生对男生外形的评价中，"干净清爽"是出现频率最高的词——甚至超过"帅"。一个干净的外表传递的信息是：我在乎自己，我有基本的生活自理能力。</p><div class="big-num">No.1</div><div class="big-num-label">女生最看重的男性外形特质</div></div>
-<div class="card"><span class="card-num">2</span><h3>🪥 基础三件套：洗、剪、护</h3><p>每天洗澡（尤其运动后）、2-3周剪一次头发、用适合自己的护肤品（至少：洁面+保湿+防晒）。指甲剪短干净、眉毛修整、鼻毛修剪——这些细节对方一定会注意到。</p><ul class="checklist"><li>每天洗澡 + 运动后立即冲洗</li><li>2-3周理发一次，保持清爽发型</li><li>基础护肤三步：洁面 → 保湿 → 防晒</li><li>指甲每周修剪，保持短而干净</li><li>眉毛修杂毛，鼻毛定期修剪</li></ul></div>
-<div class="card"><span class="card-num">3</span><h3>🌸 气味管理同样重要</h3><p>选择一款清淡的香水或身体喷雾，不用太浓。洗衣液选有持久清香的。口腔卫生：刷牙+牙线+漱口水。</p><div class="takeaway"><span class="ta-icon">👃</span><span>气味是最容易被忽视但影响最大的细节。你不需要闻起来像香水店，但绝对不能有异味。清淡 > 浓烈，干净 > 掩盖。</span></div></div>
+<div class="card"><span class="card-num">1</span><h3>✨ "干净清爽"是第一要求</h3><p>在女生对男生外形的评价中，"干净清爽"是出现频率最高的词——甚至超过"帅"。一个干净的外表传递的信息是：我在乎自己，我有基本的生活自理能力。</p><div class="big-num">No.1</div><div class="big-num-label">女生最看重的男性外形特质</div><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！"干净清爽"远高于"帅"——在乎自己比天生条件重要。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">女生最看重的外形特质是？</p><button class="mg-btn">干净清爽</button><button class="mg-btn">长得帅</button><span class="mg-feedback"></span></div></div>
+<div class="card"><span class="card-num">2</span><h3>🪥 基础三件套：洗、剪、护</h3><p>每天洗澡（尤其运动后）、2-3周剪一次头发、用适合自己的护肤品（至少：洁面+保湿+防晒）。指甲剪短干净、眉毛修整、鼻毛修剪——这些细节对方一定会注意到。</p><ul class="checklist"><li>每天洗澡 + 运动后立即冲洗</li><li>2-3周理发一次，保持清爽发型</li><li>基础护肤三步：洁面 → 保湿 → 防晒</li><li>指甲每周修剪，保持短而干净</li><li>眉毛修杂毛，鼻毛定期修剪</li></ul><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！三步就够：清洁、锁水、防晒——防晒最重要。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">基础护肤三步是什么？</p><button class="mg-btn">洁面 → 保湿 → 防晒</button><button class="mg-btn">洗脸 → 爽肤水 → 面膜</button><span class="mg-feedback"></span></div></div>
+<div class="card"><span class="card-num">3</span><h3>🌸 气味管理同样重要</h3><p>选择一款清淡的香水或身体喷雾，不用太浓。洗衣液选有持久清香的。口腔卫生：刷牙+牙线+漱口水。</p><div class="takeaway"><span class="ta-icon">👃</span><span>气味是最容易被忽视但影响最大的细节。你不需要闻起来像香水店，但绝对不能有异味。清淡 > 浓烈，干净 > 掩盖。</span></div><div class="mg-quiz" data-mg="quiz" data-correct="0" data-right="对！清淡永远比浓烈好。你不需要像香水店，但绝对不能有异味。" data-wrong=""><p style="font-size:12px;color:var(--tx2);margin-bottom:4px">气味管理的黄金原则？</p><button class="mg-btn">清淡 > 浓烈，干净 > 掩盖</button><button class="mg-btn">越香越好</button><span class="mg-feedback"></span></div></div>
 <div class="page-nav"><a href="./puxing-02.html">← 上一篇</a><a href="./puxing-man.html">↑ 目录</a><a href="./puxing-04.html">下一篇 →</a></div>
 </div>
-<div class="bottom-nav"><a class="nav-btn" href="./puxing-man.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>目录</a><a class="nav-btn" href="./knowledge.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>百科</a></div>
+<div class="bottom-nav"><a class="nav-btn" href="./puxing-man.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>目录</a><a class="nav-btn" href="./knowledge.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>百科</a><a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>首页</a></div>
 <script>(function(){const s=document.querySelector('.glow-spot');let r;window.addEventListener('mousemove',e=>{if(!r){r=requestAnimationFrame(()=>{s.style.background='radial-gradient(circle 420px at '+e.clientX+'px '+e.clientY+'px,rgba(6,182,212,.05),rgba(99,102,241,.04) 20%,rgba(16,185,129,.02) 45%,transparent 70%)';r=null;});}},{passive:true});})();(function(){if(!('ontouchstart' in window))return;const c=document.getElementById('mainContainer');let gx=0,gy=0,tx=0,ty=0;const m=2.5;if(typeof DeviceOrientationEvent!=='undefined'&&'requestPermission' in DeviceOrientationEvent){document.addEventListener('click',function r(){DeviceOrientationEvent.requestPermission().then(p=>{if(p==='granted')window.addEventListener('deviceorientation',o);});document.removeEventListener('click',r);},{once:true});}else{window.addEventListener('deviceorientation',o);}function o(e){if(e.beta!==null){tx=e.gamma||0;ty=e.beta||0;}}function l(){gx+=(tx*0.04-gx)*0.04;gy+=(ty*0.04-gy)*0.04;c.style.transform='perspective(1000px) rotateX('+(-Math.max(-m,Math.min(m,gy)))+'deg) rotateY('+Math.max(-m,Math.min(m,gx))+'deg)';requestAnimationFrame(l);}l();})();</script>
+<script src="./mini-games.js"></script>
 </body>
 </html>
