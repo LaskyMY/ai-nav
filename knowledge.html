@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>知识百科</title>
+<link rel="icon" href="./icon.svg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.6;min-height:100vh;padding-bottom:calc(100px + env(safe-area-inset-bottom,0));-webkit-font-smoothing:antialiased;overflow-x:hidden;letter-spacing:-.01em}
+::-webkit-scrollbar{width:2px;height:2px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.04);border-radius:1px}
+::selection{background:rgba(99,102,241,.3)}
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(99,102,241,.05),rgba(236,72,153,.04) 20%,rgba(168,85,247,.02) 45%,transparent 70%)}
+.header{position:sticky;top:0;z-index:50;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-top:none;padding:10px 20px;border-radius:0 0 22px 22px;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 40px rgba(99,102,241,.1),0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04)}
+.header-in{max-width:800px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.header-logo{font-size:17px;font-weight:700;white-space:nowrap;letter-spacing:-.02em;background:linear-gradient(135deg,var(--a1),var(--pink),var(--vio));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 6s ease-in-out infinite}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+.back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.container{max-width:800px;margin:0 auto;padding:18px 20px;position:relative;z-index:1;will-change:transform}
+.hero{text-align:center;padding:24px 0 10px}
+.hero h1{font-size:26px;font-weight:700;letter-spacing:-.03em;margin-bottom:6px;background:linear-gradient(135deg,var(--a1),var(--pink));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 4s ease-in-out infinite}
+.hero .sub{color:var(--tx2);font-size:14px}
+.hero-emoji{font-size:40px;margin-bottom:8px;display:block;animation:floatOrb 4s ease-in-out infinite}
+.section-hd{display:flex;align-items:center;gap:8px;margin:28px 0 12px;padding-left:2px}
+.section-hd .s-icon{font-size:20px}
+.section-hd h3{font-size:15px;font-weight:600;color:var(--tx2);letter-spacing:-.01em}
+.section-hd .s-count{font-size:11px;color:var(--tx3);background:rgba(255,255,255,.05);padding:2px 8px;border-radius:6px}
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:14px 18px;transition:all .35s var(--ease);box-shadow:0 0 60px rgba(99,102,241,.04),0 4px 24px rgba(0,0,0,.1);position:relative;overflow:hidden;margin-bottom:10px;display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--tx);cursor:pointer}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.card:hover{border-color:rgba(99,102,241,.22);transform:translateY(-2px);box-shadow:0 0 80px rgba(99,102,241,.12),0 0 40px rgba(236,72,153,.06),0 16px 48px rgba(0,0,0,.15)}
+.card:active{transform:scale(.98)!important;transition:transform .12s ease!important}
+.card-ico{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.ico-psych{background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.15)}
+.ico-logic{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.15)}
+.ico-sci{background:rgba(6,182,212,.12);border:1px solid rgba(6,182,212,.15)}
+.ico-grow{background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.15)}
+.card-info{flex:1;min-width:0}
+.card-info h4{font-size:14px;font-weight:600;margin-bottom:2px;letter-spacing:-.01em}
+.card-info .meta{font-size:11px;color:var(--tx3)}
+.card-arrow{color:var(--tx4);flex-shrink:0}
+.bottom-nav{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0));left:50%;transform:translateX(-50%);width:calc(100% - 28px);max-width:440px;height:58px;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-radius:22px;display:flex;justify-content:center;align-items:center;gap:16px;z-index:100;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 50px rgba(99,102,241,.12),0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.04)}
+.nav-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:var(--tx3);padding:6px 14px;border-radius:14px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .3s var(--ease);-webkit-tap-highlight-color:transparent;text-decoration:none}
+.nav-btn:hover{background:rgba(255,255,255,.08);color:var(--tx2)}
+.nav-btn svg{width:14px;height:14px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)scale(.96)}to{opacity:1;transform:translateY(0)scale(1)}}
+.card{animation:fadeUp .5s var(--ease) both}
+.card:nth-child(1){animation-delay:.03s}.card:nth-child(2){animation-delay:.06s}.card:nth-child(3){animation-delay:.09s}.card:nth-child(4){animation-delay:.12s}.card:nth-child(5){animation-delay:.15s}.card:nth-child(6){animation-delay:.18s}.card:nth-child(7){animation-delay:.21s}.card:nth-child(8){animation-delay:.24s}.card:nth-child(9){animation-delay:.27s}.card:nth-child(10){animation-delay:.30s}.card:nth-child(11){animation-delay:.33s}.card:nth-child(12){animation-delay:.36s}.card:nth-child(13){animation-delay:.39s}.card:nth-child(14){animation-delay:.42s}
+@media(max-width:480px){.hero h1{font-size:22px}.card{padding:12px 14px}}
+</style>
+</head>
+<body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot"></div>
+<div class="header"><div class="header-in"><a class="back-btn" href="./knowledge.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">知识百科</span></div></div>
+<div class="container" id="mainContainer">
+<div class="hero"><span class="hero-emoji">📚</span><h1>知识百科</h1><p class="sub">心理学 · 逻辑哲学 · 科学常识 · 自我提升</p></div>
+
+<!-- 心理与认知 -->
+<div class="section-hd"><span class="s-icon">🧠</span><h3>心理与认知</h3><span class="s-count">9 篇</span></div>
+
+<a class="card" href="./psych-tricks.html"><span class="card-ico ico-psych">🎯</span><div class="card-info"><h4>10个超实用人际心理技巧</h4><span class="meta">富兰克林效应、镜像法、登门槛效应…</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+
+<a class="card" href="./lying-truth.html"><span class="card-ico ico-psych">🎭</span><div class="card-info"><h4>用真话说谎的13种方式</h4><span class="meta">选择性陈述、语境操纵、暗示性提问…</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+
+<a class="card" href="./interrogation.html"><span class="card-ico ico-psych">🔍</span><div class="card-info"><h4>犯罪审讯技巧：REID vs PEACE</h4><span class="meta">九步心理操纵法 vs 五步认知访谈法</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+
+<a class="card" href="./complexes.html"><span class="card-ico ico-psych">🎭</span><div class="card-info"><h4>12种常见心理情结</h4><span class="meta">俄狄浦斯情结、自卑情结、救世主情结…</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+
+<a class="card" href="./psych-effects.html"><span class="card-ico ico-psych">⚡</span><div class="card-info"><h4>心理效应大全（48个）</h4><span class="meta">锚定效应、光环效应、旁观者效应、邓宁-克鲁格…</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+
+<a class="card" href="./misconceptions2.html"><span class="card-ico ico-psych">❓</span><div class="card-info"><h4>12种常见误解</h4><span class="meta">10%大脑、左脑右脑、糖致多动、金鱼记忆…</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+
+<!-- 逻辑与哲学 -->
+<div class="section-hd"><span class="s-icon">💡</span><h3>逻辑与哲学</h3><span class="s-count">2 篇</span></div>
+
+<a class="card" href="./fallacies.html"><span class="card-ico ico-logic">⚠️</span><div class="card-info"><h4>14种常见逻辑谬误</h4><span class="meta">稻草人、滑坡论证、假两难、诉诸人身…</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+
+<a class="card" href="./paradoxes.html"><span class="card-ico ico-logic">🔄</span><div class="card-info"><h4>10种常见悖论</h4><span class="meta">费米悖论、祖父悖论、忒修斯之船、芝诺悖论…</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+
+<!-- 科学常识 -->
+<div class="section-hd"><span class="s-icon">🔬</span><h3>科学常识</h3><span class="s-count">2 篇</span></div>
+
+<a class="card" href="./blood-types.html"><span class="card-ico ico-sci">🩸</span><div class="card-info"><h4>血型知识：ABO系统与Rh因子</h4><span class="meta">万能供血者、熊猫血、血型遗传规律…</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+
+<a class="card" href="./sleep.html"><span class="card-ico ico-sci">😴</span><div class="card-info"><h4>睡眠时长后果：从4小时到10小时</h4><span class="meta">睡眠周期、睡眠债务、基因短睡眠者…</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+
+<!-- 自我提升 -->
+<div class="section-hd"><span class="s-icon">🚀</span><h3>自我提升</h3><span class="s-count">1 系列 · 21 集</span></div>
+
+<a class="card" href="./puxing-man.html"><span class="card-ico ico-grow">💪</span><div class="card-info"><h4>普行男养成计划</h4><span class="meta">外形篇7集 + 能力篇9集 + 思想行为篇3集 — 普通男生的完整自我提升指南</span></div><span class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></a>
+</div>
+
+<div class="bottom-nav"><a class="nav-btn" href="./knowledge.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>百科</a></div>
+<script>(function(){const s=document.querySelector('.glow-spot');let r;window.addEventListener('mousemove',e=>{if(!r){r=requestAnimationFrame(()=>{s.style.background='radial-gradient(circle 420px at '+e.clientX+'px '+e.clientY+'px,rgba(99,102,241,.05),rgba(236,72,153,.04) 20%,rgba(168,85,247,.02) 45%,transparent 70%)';r=null;});}},{passive:true});})();(function(){if(!('ontouchstart' in window))return;const c=document.getElementById('mainContainer');let gx=0,gy=0,tx=0,ty=0;const m=2.5;if(typeof DeviceOrientationEvent!=='undefined'&&'requestPermission' in DeviceOrientationEvent){document.addEventListener('click',function r(){DeviceOrientationEvent.requestPermission().then(p=>{if(p==='granted')window.addEventListener('deviceorientation',o);});document.removeEventListener('click',r);},{once:true});}else{window.addEventListener('deviceorientation',o);}function o(e){if(e.beta!==null){tx=e.gamma||0;ty=e.beta||0;}}function l(){gx+=(tx*0.04-gx)*0.04;gy+=(ty*0.04-gy)*0.04;c.style.transform='perspective(1000px) rotateX('+(-Math.max(-m,Math.min(m,gy)))+'deg) rotateY('+Math.max(-m,Math.min(m,gx))+'deg)';requestAnimationFrame(l);}l();})();</script>
+</body>
+</html>
