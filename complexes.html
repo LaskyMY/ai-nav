@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>4分钟解释不同的心理情结</title>
+<link rel="icon" href="./icon.svg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.6;min-height:100vh;padding-bottom:calc(100px + env(safe-area-inset-bottom,0));-webkit-font-smoothing:antialiased;overflow-x:hidden;letter-spacing:-.01em}
+::-webkit-scrollbar{width:2px;height:2px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.04);border-radius:1px}
+::selection{background:rgba(155,85,247,.3)}
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(168,85,247,.05),rgba(236,72,153,.04) 20%,rgba(99,102,241,.02) 45%,transparent 70%)}
+.header{position:sticky;top:0;z-index:50;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-top:none;padding:10px 20px;border-radius:0 0 22px 22px;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 40px rgba(168,85,247,.1),0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04)}
+.header-in{max-width:800px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.header-logo{font-size:17px;font-weight:700;white-space:nowrap;letter-spacing:-.02em;background:linear-gradient(135deg,var(--vio),var(--pink),var(--a1));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 6s ease-in-out infinite}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+.back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.container{max-width:800px;margin:0 auto;padding:18px 20px;position:relative;z-index:1;will-change:transform}
+.hero{text-align:center;padding:24px 0 10px}
+.hero h1{font-size:26px;font-weight:700;letter-spacing:-.03em;margin-bottom:6px;background:linear-gradient(135deg,var(--vio),var(--pink));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 4s ease-in-out infinite}
+.hero .sub{color:var(--tx2);font-size:14px}
+.tags{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.tag{background:rgba(168,85,247,.12);color:var(--vio);font-size:11px;padding:4px 12px;border-radius:8px;font-weight:500;border:1px solid rgba(168,85,247,.2)}
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:18px;transition:all .35s var(--ease);box-shadow:0 0 60px rgba(168,85,247,.04),0 4px 24px rgba(0,0,0,.1);position:relative;overflow:hidden;margin-bottom:14px}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.card:hover{border-color:rgba(168,85,247,.2);transform:translateY(-2px);box-shadow:0 0 80px rgba(168,85,247,.1),0 0 40px rgba(236,72,153,.05),0 16px 48px rgba(0,0,0,.15)}
+.card:active{transform:scale(.98)!important;transition:transform .12s ease!important}
+.card-num{display:inline-block;min-width:32px;height:32px;padding:0 6px;border-radius:10px;background:rgba(168,85,247,.12);text-align:center;line-height:32px;font-weight:700;font-size:14px;color:var(--vio);margin-bottom:10px;border:1px solid rgba(168,85,247,.15)}
+.card h3{font-size:16px;font-weight:600;margin-bottom:6px;letter-spacing:-.01em}
+.card p{font-size:13px;color:var(--tx3);line-height:1.6}
+.bottom-nav{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0));left:50%;transform:translateX(-50%);width:calc(100% - 28px);max-width:440px;height:58px;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-radius:22px;display:flex;justify-content:center;align-items:center;gap:16px;z-index:100;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 50px rgba(99,102,241,.12),0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.04)}
+.nav-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:var(--tx3);padding:6px 14px;border-radius:14px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .3s var(--ease);-webkit-tap-highlight-color:transparent;text-decoration:none}
+.nav-btn:hover{background:rgba(255,255,255,.08);color:var(--tx2)}
+.nav-btn svg{width:14px;height:14px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)scale(.96)}to{opacity:1;transform:translateY(0)scale(1)}}
+.card{animation:fadeUp .5s var(--ease) both}
+.card:nth-child(1){animation-delay:.03s}.card:nth-child(2){animation-delay:.07s}.card:nth-child(3){animation-delay:.11s}.card:nth-child(4){animation-delay:.15s}.card:nth-child(5){animation-delay:.19s}.card:nth-child(6){animation-delay:.23s}.card:nth-child(7){animation-delay:.27s}.card:nth-child(8){animation-delay:.31s}.card:nth-child(9){animation-delay:.35s}.card:nth-child(10){animation-delay:.39s}.card:nth-child(11){animation-delay:.43s}.card:nth-child(12){animation-delay:.47s}
+@media(max-width:480px){.hero h1{font-size:22px}.card{padding:14px}}
+</style>
+</head>
+<body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot"></div>
+<div class="header"><div class="header-in"><a class="back-btn" href="./index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">心理情结</span></div></div>
+<div class="container" id="mainContainer">
+<div class="hero">
+<h1>4分钟解释不同的心理情结</h1>
+<p class="sub">12种经典的心理学情结</p>
+<div class="tags"><span class="tag">精神分析</span><span class="tag">弗洛伊德</span><span class="tag">荣格</span><span class="tag">阿德勒</span></div>
+</div>
+
+<div class="card"><span class="card-num">1</span><h3>俄狄浦斯情结 (Oedipus Complex)</h3><p>弗洛伊德提出，指儿童在3-5岁对异性家长产生潜意识爱慕，对同性家长产生竞争心理。得名于希腊神话中无意弑父娶母的俄狄浦斯王。弗洛伊德视其为人类心理发展的核心阶段——成功度过是成人人格的基础。</p></div>
+
+<div class="card"><span class="card-num">2</span><h3>厄勒克特拉情结 (Electra Complex)</h3><p>荣格提出的女性版俄狄浦斯情结。女孩对父亲的爱慕和对母亲的竞争心理。得名于希腊神话中为父报仇的厄勒克特拉公主。这是一个有争议的概念，许多现代心理学家对此持批评态度。</p></div>
+
+<div class="card"><span class="card-num">3</span><h3>自卑情结 (Inferiority Complex)</h3><p>阿德勒提出，个体持续感到自己不如他人、不够好的深层心理。可能源于童年经历、身体缺陷或过度批评。表现为两种极端：过度补偿（拼命证明自己）或退缩逃避。阿德勒认为这是人类进步的根本驱动力。</p></div>
+
+<div class="card"><span class="card-num">4</span><h3>优越情结 (Superiority Complex)</h3><p>自卑情结的另一面——通过夸大自己的成就和能力来掩盖深层的不安全感。表面傲慢自大，实质是防御潜意识的自卑感。阿德勒："每个傲慢的人都隐藏着自卑。"</p></div>
+
+<div class="card"><span class="card-num">5</span><h3>拿破仑情结 (Napoleon Complex)</h3><p>身材矮小的人通过更具攻击性、更强势的行为来补偿身高不足。得名于拿破仑·波拿巴——尽管近年的历史研究表明拿破仑的身高在当时的法国属于平均水平。也被称为"矮个子综合征"。</p></div>
+
+<div class="card"><span class="card-num">6</span><h3>救世主情结 (Messiah Complex)</h3><p>个体坚信自己注定要拯救他人或世界。表现为过度牺牲自我以满足他人需求，或相信自己是唯一能解决问题的人。在医疗、教育、社会工作等助人行业中尤其常见。</p></div>
+
+<div class="card"><span class="card-num">7</span><h3>灰姑娘情结 (Cinderella Complex)</h3><p>女性潜意识中期望被一个强大的男性拯救和照顾，而非依靠自己的能力独立生活。得名于灰姑娘故事。反映了传统文化中对女性依赖性的期望——在现代社会中逐渐被解构。</p></div>
+
+<div class="card"><span class="card-num">8</span><h3>彼得潘综合征 (Peter Pan Syndrome)</h3><p>成年人拒绝承担成人责任，保持不成熟的行为模式。逃避承诺、职业责任和长期关系。得名于"不愿长大的男孩"彼得潘。在当代"延长的青春期"文化中愈发普遍。</p></div>
+
+<div class="card"><span class="card-num">9</span><h3>殉道者情结 (Martyr Complex)</h3><p>通过持续受苦和自我牺牲来获得道德优越感和他人关注。把自己的不幸当作控制他人的工具。典型话术："看看我为你牺牲了多少"——牺牲是一种隐性的权力。</p></div>
+
+<div class="card"><span class="card-num">10</span><h3>该隐情结 (Cain Complex)</h3><p>兄弟姐妹之间的嫉妒和竞争心理，特别是感到自己不如兄弟姐妹受父母宠爱。得名于圣经中杀害弟弟亚伯的该隐。是许多家庭冲突和中年兄弟姐妹疏远的心理根源。</p></div>
+
+<div class="card"><span class="card-num">11</span><h3>卡珊德拉情结 (Cassandra Complex)</h3><p>能够预见负面结果但被他人忽视或不被相信的痛苦。得名于希腊神话中被阿波罗诅咒能预言未来但永远不被相信的特洛伊公主卡珊德拉。常见于看到危机却无法说服他人的专家和科学家。</p></div>
+
+<div class="card"><span class="card-num">12</span><h3>伊卡洛斯情结 (Icarus Complex)</h3><p>过度膨胀的野心和对成功的执着追求，不顾现实限制和警告。得名于希腊神话中用蜡制翅膀飞向太阳却因蜡融化坠落而死的伊卡洛斯。常见于极度成功后又因傲慢而崩塌的案例。</p></div>
+</div>
+
+<div class="bottom-nav"><a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>主页</a></div>
+<script>
+(function(){const s=document.querySelector('.glow-spot');let r;window.addEventListener('mousemove',e=>{if(!r){r=requestAnimationFrame(()=>{s.style.background='radial-gradient(circle 420px at '+e.clientX+'px '+e.clientY+'px,rgba(168,85,247,.05),rgba(236,72,153,.04) 20%,rgba(99,102,241,.02) 45%,transparent 70%)';r=null;});}},{passive:true});})();
+(function(){if(!('ontouchstart' in window))return;const c=document.getElementById('mainContainer');let gx=0,gy=0,tx=0,ty=0;const m=2.5;if(typeof DeviceOrientationEvent!=='undefined'&&'requestPermission' in DeviceOrientationEvent){document.addEventListener('click',function r(){DeviceOrientationEvent.requestPermission().then(p=>{if(p==='granted')window.addEventListener('deviceorientation',o);});document.removeEventListener('click',r);},{once:true});}else{window.addEventListener('deviceorientation',o);}function o(e){if(e.beta!==null){tx=e.gamma||0;ty=e.beta||0;}}function l(){gx+=(tx*0.04-gx)*0.04;gy+=(ty*0.04-gy)*0.04;c.style.transform='perspective(1000px) rotateX('+(-Math.max(-m,Math.min(m,gy)))+'deg) rotateY('+Math.max(-m,Math.min(m,gx))+'deg)';requestAnimationFrame(l);}l();})();
+</script>
+</body>
+</html>

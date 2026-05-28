@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>血型知识</title>
+<link rel="icon" href="./icon.svg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.6;min-height:100vh;padding-bottom:calc(100px + env(safe-area-inset-bottom,0));-webkit-font-smoothing:antialiased;overflow-x:hidden;letter-spacing:-.01em}
+::-webkit-scrollbar{width:2px;height:2px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.04);border-radius:1px}
+::selection{background:rgba(239,68,68,.3)}
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a3) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(239,68,68,.05),rgba(236,72,153,.04) 20%,rgba(99,102,241,.02) 45%,transparent 70%)}
+.header{position:sticky;top:0;z-index:50;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-top:none;padding:10px 20px;border-radius:0 0 22px 22px;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 40px rgba(239,68,68,.1),0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04)}
+.header-in{max-width:800px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.header-logo{font-size:17px;font-weight:700;white-space:nowrap;letter-spacing:-.02em;background:linear-gradient(135deg,var(--a3),var(--pink),var(--a1));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 6s ease-in-out infinite}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+.back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.container{max-width:800px;margin:0 auto;padding:18px 20px;position:relative;z-index:1;will-change:transform}
+.hero{text-align:center;padding:24px 0 10px}
+.hero h1{font-size:26px;font-weight:700;letter-spacing:-.03em;margin-bottom:6px;background:linear-gradient(135deg,var(--a3),var(--pink));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 4s ease-in-out infinite}
+.hero .sub{color:var(--tx2);font-size:14px}
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:18px;transition:all .35s var(--ease);box-shadow:0 0 60px rgba(239,68,68,.04),0 4px 24px rgba(0,0,0,.1);position:relative;overflow:hidden;margin-bottom:14px}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.card:hover{border-color:rgba(239,68,68,.2);transform:translateY(-2px);box-shadow:0 0 80px rgba(239,68,68,.1),0 0 40px rgba(236,72,153,.05),0 16px 48px rgba(0,0,0,.15)}
+.card:active{transform:scale(.98)!important;transition:transform .12s ease!important}
+.card-num{display:inline-block;min-width:32px;height:32px;padding:0 6px;border-radius:10px;background:rgba(239,68,68,.12);text-align:center;line-height:32px;font-weight:700;font-size:14px;color:var(--a3);margin-bottom:10px;border:1px solid rgba(239,68,68,.15)}
+.card h3{font-size:16px;font-weight:600;margin-bottom:6px;letter-spacing:-.01em}
+.card p{font-size:13px;color:var(--tx3);line-height:1.6}
+.type-badge{display:inline-block;padding:2px 10px;border-radius:6px;font-size:12px;font-weight:600;margin-bottom:8px}
+.type-a{background:rgba(99,102,241,.15);color:var(--a1);border:1px solid rgba(99,102,241,.2)}
+.type-b{background:rgba(16,185,129,.15);color:var(--a2);border:1px solid rgba(16,185,129,.2)}
+.type-ab{background:rgba(168,85,247,.15);color:#a855f7;border:1px solid rgba(168,85,247,.2)}
+.type-o{background:rgba(245,158,11,.15);color:var(--amber);border:1px solid rgba(245,158,11,.2)}
+.bottom-nav{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0));left:50%;transform:translateX(-50%);width:calc(100% - 28px);max-width:440px;height:58px;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-radius:22px;display:flex;justify-content:center;align-items:center;gap:16px;z-index:100;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 50px rgba(99,102,241,.12),0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.04)}
+.nav-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:var(--tx3);padding:6px 14px;border-radius:14px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .3s var(--ease);-webkit-tap-highlight-color:transparent;text-decoration:none}
+.nav-btn:hover{background:rgba(255,255,255,.08);color:var(--tx2)}
+.nav-btn svg{width:14px;height:14px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)scale(.96)}to{opacity:1;transform:translateY(0)scale(1)}}
+.card{animation:fadeUp .5s var(--ease) both}
+.card:nth-child(1){animation-delay:.03s}.card:nth-child(2){animation-delay:.07s}.card:nth-child(3){animation-delay:.11s}.card:nth-child(4){animation-delay:.15s}.card:nth-child(5){animation-delay:.19s}.card:nth-child(6){animation-delay:.23s}.card:nth-child(7){animation-delay:.27s}.card:nth-child(8){animation-delay:.31s}.card:nth-child(9){animation-delay:.35s}.card:nth-child(10){animation-delay:.39s}
+@media(max-width:480px){.hero h1{font-size:22px}.card{padding:14px}}
+</style>
+</head>
+<body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot"></div>
+<div class="header"><div class="header-in"><a class="back-btn" href="./index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">血型知识</span></div></div>
+<div class="container" id="mainContainer">
+<div class="hero"><h1>3分钟介绍各种血型知识</h1><p class="sub">ABO血型系统与Rh因子</p></div>
+
+<div class="card"><span class="card-num">1</span><h3>ABO血型系统</h3><p>1901年由卡尔·兰德施泰纳发现，是输血医学的基石。基于红细胞表面的抗原(A和B)和血浆中的抗体(抗A和抗B)进行分类。这一发现使安全输血成为可能，获得1930年诺贝尔奖。</p></div>
+
+<div class="card"><span class="type-badge type-a">A型</span><h3>A型血</h3><p>红细胞表面有A抗原，血浆中有抗B抗体。只能接受A型和O型血，可以捐给A型和AB型。全球分布：欧洲约40%，亚洲约28%。</p></div>
+
+<div class="card"><span class="type-badge type-b">B型</span><h3>B型血</h3><p>红细胞表面有B抗原，血浆中有抗A抗体。只能接受B型和O型血，可以捐给B型和AB型。在亚洲人群中比例较高(约25%)，欧洲人群中较少(约10%)。</p></div>
+
+<div class="card"><span class="type-badge type-ab">AB型</span><h3>AB型血</h3><p>红细胞表面同时有A和B抗原，血浆中既无抗A也无抗B抗体。是"万能受血者"——可以接受任何血型。但只能捐给AB型。全球最稀有，约占5%。</p></div>
+
+<div class="card"><span class="type-badge type-o">O型</span><h3>O型血</h3><p>红细胞表面既无A抗原也无B抗原，血浆中有抗A和抗B抗体。是"万能供血者"——可以捐给任何血型。但只能接受O型。全球最常见，约占44%。</p></div>
+
+<div class="card"><span class="card-num">6</span><h3>Rh因子</h3><p>红细胞表面另一种重要抗原。有D抗原的为Rh阳性(+)，没有的为Rh阴性(-)。约85%的人是Rh阳性。Rh阴性孕妇怀Rh阳性胎儿时可能发生母婴血型不合(需要注射Rh免疫球蛋白预防)。</p></div>
+
+<div class="card"><span class="card-num">7</span><h3>"熊猫血"</h3><p>在中国，Rh阴性血被俗称为"熊猫血"，因为汉族人中只有约0.3%是Rh阴性。这导致了急救时血源极度紧张——"熊猫血"的献血者被称为"熊猫侠"。</p></div>
+
+<div class="card"><span class="card-num">8</span><h3>血型遗传</h3><p>A和B等位基因是共显性的，O等位基因是隐性的。父母各提供一个等位基因：AO+BO→AB/A/B/O四种可能。这就是为什么A型父母可以生出O型孩子——双方可能都携带隐性的O基因。</p></div>
+
+<div class="card"><span class="card-num">9</span><h3>血型性格学说</h3><p>在日本和韩国流行的"血型决定性格"理论(A型认真、B型自由、O型乐观、AB型复杂)没有科学依据。与星座运势类似，属于巴纳姆效应——模糊描述被当作精准分析。</p></div>
+
+<div class="card"><span class="card-num">10</span><h3>血型与疾病风险</h3><p>科学研究确实发现某些血型与特定疾病风险有微弱关联：O型血幽门螺杆菌感染风险略高(但严重COVID-19风险略低)；A型血血栓风险略高。但这些是统计学弱关联，不应用于个人健康决策。</p></div>
+</div>
+
+<div class="bottom-nav"><a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>主页</a></div>
+<script>(function(){const s=document.querySelector('.glow-spot');let r;window.addEventListener('mousemove',e=>{if(!r){r=requestAnimationFrame(()=>{s.style.background='radial-gradient(circle 420px at '+e.clientX+'px '+e.clientY+'px,rgba(239,68,68,.05),rgba(236,72,153,.04) 20%,rgba(99,102,241,.02) 45%,transparent 70%)';r=null;});}},{passive:true});})();(function(){if(!('ontouchstart' in window))return;const c=document.getElementById('mainContainer');let gx=0,gy=0,tx=0,ty=0;const m=2.5;if(typeof DeviceOrientationEvent!=='undefined'&&'requestPermission' in DeviceOrientationEvent){document.addEventListener('click',function r(){DeviceOrientationEvent.requestPermission().then(p=>{if(p==='granted')window.addEventListener('deviceorientation',o);});document.removeEventListener('click',r);},{once:true});}else{window.addEventListener('deviceorientation',o);}function o(e){if(e.beta!==null){tx=e.gamma||0;ty=e.beta||0;}}function l(){gx+=(tx*0.04-gx)*0.04;gy+=(ty*0.04-gy)*0.04;c.style.transform='perspective(1000px) rotateX('+(-Math.max(-m,Math.min(m,gy)))+'deg) rotateY('+Math.max(-m,Math.min(m,gx))+'deg)';requestAnimationFrame(l);}l();})();</script>
+</body>
+</html>

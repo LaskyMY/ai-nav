@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>常见悖论</title>
+<link rel="icon" href="./icon.svg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.6;min-height:100vh;padding-bottom:calc(100px + env(safe-area-inset-bottom,0));-webkit-font-smoothing:antialiased;overflow-x:hidden;letter-spacing:-.01em}
+::-webkit-scrollbar{width:2px;height:2px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.04);border-radius:1px}
+::selection{background:rgba(168,85,247,.3)}
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--cyan) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(168,85,247,.05),rgba(99,102,241,.04) 20%,rgba(6,182,212,.02) 45%,transparent 70%)}
+.header{position:sticky;top:0;z-index:50;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-top:none;padding:10px 20px;border-radius:0 0 22px 22px;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 40px rgba(168,85,247,.1),0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04)}
+.header-in{max-width:800px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.header-logo{font-size:17px;font-weight:700;white-space:nowrap;letter-spacing:-.02em;background:linear-gradient(135deg,var(--vio),var(--a1),var(--cyan));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 6s ease-in-out infinite}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+.back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.container{max-width:800px;margin:0 auto;padding:18px 20px;position:relative;z-index:1;will-change:transform}
+.hero{text-align:center;padding:24px 0 10px}
+.hero h1{font-size:26px;font-weight:700;letter-spacing:-.03em;margin-bottom:6px;background:linear-gradient(135deg,var(--vio),var(--a1));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 4s ease-in-out infinite}
+.hero .sub{color:var(--tx2);font-size:14px}
+.tags{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.tag{background:rgba(168,85,247,.12);color:var(--vio);font-size:11px;padding:4px 12px;border-radius:8px;font-weight:500;border:1px solid rgba(168,85,247,.2)}
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:18px;transition:all .35s var(--ease);box-shadow:0 0 60px rgba(168,85,247,.04),0 4px 24px rgba(0,0,0,.1);position:relative;overflow:hidden;margin-bottom:14px}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.card:hover{border-color:rgba(168,85,247,.2);transform:translateY(-2px);box-shadow:0 0 80px rgba(168,85,247,.1),0 0 40px rgba(99,102,241,.06),0 16px 48px rgba(0,0,0,.15)}
+.card:active{transform:scale(.98)!important;transition:transform .12s ease!important}
+.card-num{display:inline-block;min-width:32px;height:32px;padding:0 6px;border-radius:10px;background:rgba(168,85,247,.12);text-align:center;line-height:32px;font-weight:700;font-size:14px;color:var(--vio);margin-bottom:10px;border:1px solid rgba(168,85,247,.15)}
+.card h3{font-size:16px;font-weight:600;margin-bottom:6px;letter-spacing:-.01em}
+.card p{font-size:13px;color:var(--tx3);line-height:1.6}
+.bottom-nav{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0));left:50%;transform:translateX(-50%);width:calc(100% - 28px);max-width:440px;height:58px;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-radius:22px;display:flex;justify-content:center;align-items:center;gap:16px;z-index:100;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 50px rgba(99,102,241,.12),0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.04)}
+.nav-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:var(--tx3);padding:6px 14px;border-radius:14px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .3s var(--ease);-webkit-tap-highlight-color:transparent;text-decoration:none}
+.nav-btn:hover{background:rgba(255,255,255,.08);color:var(--tx2)}
+.nav-btn svg{width:14px;height:14px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)scale(.96)}to{opacity:1;transform:translateY(0)scale(1)}}
+.card{animation:fadeUp .5s var(--ease) both}
+.card:nth-child(1){animation-delay:.03s}.card:nth-child(2){animation-delay:.07s}.card:nth-child(3){animation-delay:.11s}.card:nth-child(4){animation-delay:.15s}.card:nth-child(5){animation-delay:.19s}.card:nth-child(6){animation-delay:.23s}.card:nth-child(7){animation-delay:.27s}.card:nth-child(8){animation-delay:.31s}.card:nth-child(9){animation-delay:.35s}.card:nth-child(10){animation-delay:.39s}
+@media(max-width:480px){.hero h1{font-size:22px}.card{padding:14px}}
+</style>
+</head>
+<body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot"></div>
+<div class="header"><div class="header-in"><a class="back-btn" href="./index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">悖论</span></div></div>
+<div class="container" id="mainContainer">
+<div class="hero"><h1>4分钟介绍每一种常见悖论</h1><p class="sub">挑战直觉的逻辑与哲学谜题</p><div class="tags"><span class="tag">哲学</span><span class="tag">逻辑学</span><span class="tag">物理学</span><span class="tag">思想实验</span></div></div>
+
+<div class="card"><span class="card-num">1</span><h3>费米悖论 (Fermi Paradox)</h3><p>宇宙有138亿年历史、数千亿星系，应存在大量先进文明。但费米问："大家都在哪儿？"为什么看不到任何外星生命的证据？</p><p style="margin-top:8px;font-size:12px;color:var(--tx2)">可能答案：大过滤器理论(某种障碍阻止星际旅行)；稀有地球假说；动物园假说(他们在观察但不接触)；文明在星际旅行前自我毁灭。</p></div>
+
+<div class="card"><span class="card-num">2</span><h3>祖父悖论 (Grandfather Paradox)</h3><p>穿越回过去杀死祖父→你不会出生→不可能回去杀人→祖父活着→你出生→回去杀人……逻辑死循环。</p><p style="margin-top:8px;font-size:12px;color:var(--tx2)">可能答案：诺维科夫自洽原则(只能做与时间线一致的事)；平行宇宙(创造新分支)；或回到过去根本不可能。</p></div>
+
+<div class="card"><span class="card-num">3</span><h3>孪生子悖论 (Twin Paradox)</h3><p>一个双胞胎乘飞船以近光速旅行后返回——根据相对论时间膨胀，旅行者更年轻。但每位观测者都觉得对方在移动——为什么不对称？答案：旅行者经历了加速(调头)打破了对称性。已被原子钟实验证实。</p></div>
+
+<div class="card"><span class="card-num">4</span><h3>忒修斯之船 (Ship of Theseus)</h3><p>如果一艘船每一块木板都被逐渐替换，没有一块原始材料残留——还是原来那艘船吗？如果把换下的旧部件重组成一艘船——哪一艘才是"真正的"忒修斯之船？提醒：人体细胞约每7年全部更换一轮——你还是你吗？</p></div>
+
+<div class="card"><span class="card-num">5</span><h3>薛定谔的猫 (Schrodinger's Cat)</h3><p>猫在密封盒子中，内有放射性原子和毒气。原子衰变→毒气→猫死。根据量子力学，观测前原子处于衰变/未衰变叠加态——猫同时活着和死了？薛定谔提出这个思想实验正是为了讽刺量子叠加概念被延伸到宏观物体时的荒谬性。</p></div>
+
+<div class="card"><span class="card-num">6</span><h3>芝诺悖论 (Zeno's Paradox)</h3><p>阿基里斯让乌龟先跑100米。当他到达乌龟起点时乌龟前进了1米；到那点时乌龟又前进了0.01米……永远追不上？解答：无限级数之和可以是有限值——1/2+1/4+1/8+...=1。极限概念解决了这个"悖论"。</p></div>
+
+<div class="card"><span class="card-num">7</span><h3>意外绞刑悖论 (Unexpected Hanging)</h3><p>法官告诉囚犯下周某天中午将行刑，但这一天会是"意外"。囚犯推理：不可能是周五(周四晚上就知道了)，依次往前推……结论是永远不会行刑。结果周三中午行刑了——他确实很意外。涉及自指陈述的逻辑陷阱。</p></div>
+
+<div class="card"><span class="card-num">8</span><h3>理发师悖论 (Barber Paradox)</h3><p>村里的理发师只给不自己刮胡子的人刮胡子。他给自己刮吗？如果刮→不该刮；如果不刮→该刮。这是罗素悖论的通俗版——直接动摇了19世纪末集合论的根基，迫使数学家重建集合论公理。</p></div>
+
+<div class="card"><span class="card-num">9</span><h3>全能悖论 (Omnipotence Paradox)</h3><p>"上帝能创造一块他举不起来的石头吗？"如果能→存在他举不起的石头(非全能)；如果不能→他无法创造(非全能)。这个悖论探讨的是"全能"这一概念在逻辑上是否自洽。</p></div>
+
+<div class="card"><span class="card-num">10</span><h3>蒙提霍尔问题 (Monty Hall)</h3><p>三扇门：一扇后有车，两扇后有羊。你选一扇后主持人打开一扇有羊的门，给你机会换门。换还是坚持？直觉说50/50，数学证明换门的胜率是2/3。这不是严格悖论，但因其与直觉的激烈冲突而"臭名昭著"。</p></div>
+</div>
+
+<div class="bottom-nav"><a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>主页</a></div>
+<script>(function(){const s=document.querySelector('.glow-spot');let r;window.addEventListener('mousemove',e=>{if(!r){r=requestAnimationFrame(()=>{s.style.background='radial-gradient(circle 420px at '+e.clientX+'px '+e.clientY+'px,rgba(168,85,247,.05),rgba(99,102,241,.04) 20%,rgba(6,182,212,.02) 45%,transparent 70%)';r=null;});}},{passive:true});})();(function(){if(!('ontouchstart' in window))return;const c=document.getElementById('mainContainer');let gx=0,gy=0,tx=0,ty=0;const m=2.5;if(typeof DeviceOrientationEvent!=='undefined'&&'requestPermission' in DeviceOrientationEvent){document.addEventListener('click',function r(){DeviceOrientationEvent.requestPermission().then(p=>{if(p==='granted')window.addEventListener('deviceorientation',o);});document.removeEventListener('click',r);},{once:true});}else{window.addEventListener('deviceorientation',o);}function o(e){if(e.beta!==null){tx=e.gamma||0;ty=e.beta||0;}}function l(){gx+=(tx*0.04-gx)*0.04;gy+=(ty*0.04-gy)*0.04;c.style.transform='perspective(1000px) rotateX('+(-Math.max(-m,Math.min(m,gy)))+'deg) rotateY('+Math.max(-m,Math.min(m,gx))+'deg)';requestAnimationFrame(l);}l();})();</script>
+</body>
+</html>

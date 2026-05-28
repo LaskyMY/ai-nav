@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>常见心理效应</title>
+<link rel="icon" href="./icon.svg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.6;min-height:100vh;padding-bottom:calc(100px + env(safe-area-inset-bottom,0));-webkit-font-smoothing:antialiased;overflow-x:hidden;letter-spacing:-.01em}
+::-webkit-scrollbar{width:2px;height:2px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.04);border-radius:1px}
+::selection{background:rgba(99,102,241,.3)}
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--cyan) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(99,102,241,.06),rgba(236,72,153,.03) 18%,rgba(6,182,212,.02) 42%,transparent 70%)}
+.header{position:sticky;top:0;z-index:50;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-top:none;padding:10px 20px;border-radius:0 0 22px 22px;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 40px rgba(99,102,241,.1),0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04)}
+.header-in{max-width:800px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.header-logo{font-size:17px;font-weight:700;white-space:nowrap;letter-spacing:-.02em;background:linear-gradient(135deg,var(--a1),var(--pink),var(--cyan),var(--a2));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 6s ease-in-out infinite}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+.back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.container{max-width:800px;margin:0 auto;padding:18px 20px;position:relative;z-index:1;will-change:transform}
+.hero{text-align:center;padding:24px 0 10px}
+.hero h1{font-size:26px;font-weight:700;letter-spacing:-.03em;margin-bottom:6px;background:linear-gradient(135deg,var(--a1),var(--pink));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 4s ease-in-out infinite}
+.hero .sub{color:var(--tx2);font-size:14px}
+.tags{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.tag{background:rgba(99,102,241,.12);color:var(--a1);font-size:11px;padding:4px 12px;border-radius:8px;font-weight:500;border:1px solid rgba(99,102,241,.2)}
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:18px;transition:all .35s var(--ease);box-shadow:0 0 60px rgba(99,102,241,.06),0 4px 24px rgba(0,0,0,.1);position:relative;overflow:hidden;margin-bottom:14px}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.card:hover{border-color:rgba(99,102,241,.25);transform:translateY(-2px);box-shadow:0 0 80px rgba(99,102,241,.12),0 0 40px rgba(236,72,153,.06),0 16px 48px rgba(0,0,0,.15)}
+.card:active{transform:scale(.98)!important;transition:transform .12s ease!important}
+.card-num{display:inline-block;min-width:32px;height:32px;padding:0 6px;border-radius:10px;background:rgba(99,102,241,.12);text-align:center;line-height:32px;font-weight:700;font-size:14px;color:var(--a1);margin-bottom:10px;border:1px solid rgba(99,102,241,.15)}
+.card h3{font-size:16px;font-weight:600;margin-bottom:6px;letter-spacing:-.01em}
+.card p{font-size:13px;color:var(--tx3);line-height:1.6}
+.card .ex-box{font-size:12px;color:var(--tx2);background:rgba(255,255,255,.03);padding:8px 12px;border-radius:10px;margin-top:8px;border-left:2px solid rgba(99,102,241,.2)}
+.bottom-nav{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0));left:50%;transform:translateX(-50%);width:calc(100% - 28px);max-width:440px;height:58px;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-radius:22px;display:flex;justify-content:center;align-items:center;gap:16px;z-index:100;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 50px rgba(99,102,241,.12),0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.04)}
+.nav-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:var(--tx3);padding:6px 14px;border-radius:14px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .3s var(--ease);-webkit-tap-highlight-color:transparent;text-decoration:none}
+.nav-btn:hover{background:rgba(255,255,255,.08);color:var(--tx2)}
+.nav-btn svg{width:14px;height:14px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)scale(.96)}to{opacity:1;transform:translateY(0)scale(1)}}
+.card{animation:fadeUp .5s var(--ease) both}
+.card:nth-child(1){animation-delay:.03s}.card:nth-child(2){animation-delay:.07s}.card:nth-child(3){animation-delay:.11s}.card:nth-child(4){animation-delay:.15s}.card:nth-child(5){animation-delay:.19s}.card:nth-child(6){animation-delay:.23s}.card:nth-child(7){animation-delay:.27s}.card:nth-child(8){animation-delay:.31s}.card:nth-child(9){animation-delay:.35s}.card:nth-child(10){animation-delay:.39s}.card:nth-child(11){animation-delay:.43s}.card:nth-child(12){animation-delay:.47s}
+@media(max-width:480px){.hero h1{font-size:22px}.card{padding:14px}}
+</style>
+</head>
+<body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot"></div>
+<div class="header"><div class="header-in"><a class="back-btn" href="./index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">心理效应</span></div></div>
+<div class="container" id="mainContainer">
+<div class="hero"><h1>常见心理效应</h1><p class="sub">3分钟了解改变行为的心理机制</p><div class="tags"><span class="tag">认知偏误</span><span class="tag">社会心理学</span><span class="tag">行为科学</span></div></div>
+
+<div class="card"><span class="card-num">1</span><h3>锚定效应 (Anchoring Effect)</h3><p>你看到的第一条信息会成为你做决策的"锚点"，所有后续判断都围绕它展开。锚一旦设定，就很难摆脱其影响。</p><div class="ex-box">商店标"原价999现价399"——999就是锚点，让你觉得399超划算。哪怕你对这个品类一无所知。</div></div>
+
+<div class="card"><span class="card-num">2</span><h3>光环效应 (Halo Effect)</h3><p>一个人在某方面的正面特质会影响你在其他方面对他的整体评价。长得好看的人被认为更聪明、更善良——尽管外表和这些品质毫无关系。</p><div class="ex-box">面试中形象好的候选人被系统性地认为能力更强，即使简历完全相同。</div></div>
+
+<div class="card"><span class="card-num">3</span><h3>巴纳姆效应 (Barnum Effect)</h3><p>你倾向于认为模糊的、一般性的描述是专门针对你的精准评价。这就是为什么星座运势"总说得很准"。</p><div class="ex-box">"你外表自信但内心有时感到不安"——几乎适用于所有人，但每个人读完后都觉得"这说的就是我"。</div></div>
+
+<div class="card"><span class="card-num">4</span><h3>旁观者效应 (Bystander Effect)</h3><p>紧急事件中，目击者越多，每个人采取行动的可能性越低。不是冷血——是"责任扩散"：每个人都以为别人会处理。</p><div class="ex-box">纽约街头的实验中，一个人倒地时70%的单个路人会帮忙；但5个路人在场时，帮助率降到40%。</div></div>
+
+<div class="card"><span class="card-num">5</span><h3>邓宁-克鲁格效应 (Dunning-Kruger)</h3><p>能力低的人高估自己（不知道自己不知道什么），真正的高手反而低估自己（知道越多越意识到有多少还不懂）。</p><div class="ex-box">一项研究中，逻辑测试得分最低的学生认为自己的成绩应该超过了70%的人——实际上他们的分数在垫底的12%。</div></div>
+
+<div class="card"><span class="card-num">6</span><h3>确认偏误 (Confirmation Bias)</h3><p>潜意识搜索、记住和偏好证实已有观点的信息，同时忽略或贬低矛盾证据。这是最顽固也最普遍的认知偏误。</p><div class="ex-box">你买了新手机后，会主动看关于这款手机的好评，跳过差评——你不想知道自己可能买错了。</div></div>
+
+<div class="card"><span class="card-num">7</span><h3>框架效应 (Framing Effect)</h3><p>信息呈现的方式彻底改变你的决定。同一数据换个说法，大脑的反应完全不同——不是内容变了，是"滤镜"变了。</p><div class="ex-box">医生说"手术存活率90%"vs"死亡率10%"，患者选择手术的比例相差超过30%。</div></div>
+
+<div class="card"><span class="card-num">8</span><h3>沉没成本谬误 (Sunk Cost Fallacy)</h3><p>因为已经投入了时间/金钱/感情而难以放弃，即使继续下去明显不划算——过去的投入无法收回，但这不应该影响未来的决定。</p><div class="ex-box">"电影都看了30分钟了，再烂也得看完"——那30分钟已经是沉默成本，继续看只是浪费更多时间。</div></div>
+
+<div class="card"><span class="card-num">9</span><h3>基本归因错误 (Fundamental Attribution Error)</h3><p>解释别人行为时归因于性格，解释自己时归因于外部环境。这个双标每天都在影响你的判断。</p><div class="ex-box">别人迟到是"他不负责任"，我迟到是"堵车了没办法"。</div></div>
+
+<div class="card"><span class="card-num">10</span><h3>可得性启发 (Availability Heuristic)</h3><p>越容易想到的例子对你的判断影响越大。媒体报道塑造你认为的"常见"和"危险"——即使统计现实完全相反。</p><div class="ex-box">飞机失事被广泛报道让你害怕坐飞机，但开车去机场路上的车祸风险远大于飞行的风险。</div></div>
+
+<div class="card"><span class="card-num">11</span><h3>聚光灯效应 (Spotlight Effect)</h3><p>你高估了别人对你的关注程度。你以为所有人都在注意你的每一个细节——实际上每个人都在忙着关注自己。</p><div class="ex-box">衣服上不小心弄了污渍一整天都觉得尴尬，后来发现根本没人注意到。</div></div>
+
+<div class="card"><span class="card-num">12</span><h3>虚假共识效应 (False Consensus)</h3><p>你倾向高估与自己观点相同的人的比例。如果你支持某个观点，你会不自觉地认为"大多数人都这样想"。</p><div class="ex-box">你投票给了某个候选人就以为周围的人也都投了他——结果大选结果出来大吃一惊。</div></div>
+</div>
+
+<div class="bottom-nav"><a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>主页</a></div>
+<script>
+(function(){const s=document.querySelector('.glow-spot');let r;window.addEventListener('mousemove',e=>{if(!r){r=requestAnimationFrame(()=>{s.style.background='radial-gradient(circle 420px at '+e.clientX+'px '+e.clientY+'px,rgba(99,102,241,.06),rgba(236,72,153,.03) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';r=null;});}},{passive:true});})();
+(function(){if(!('ontouchstart' in window))return;const c=document.getElementById('mainContainer');let gx=0,gy=0,tx=0,ty=0;const m=2.5;if(typeof DeviceOrientationEvent!=='undefined'&&'requestPermission' in DeviceOrientationEvent){document.addEventListener('click',function r(){DeviceOrientationEvent.requestPermission().then(p=>{if(p==='granted')window.addEventListener('deviceorientation',o);});document.removeEventListener('click',r);},{once:true});}else{window.addEventListener('deviceorientation',o);}function o(e){if(e.beta!==null){tx=e.gamma||0;ty=e.beta||0;}}function l(){gx+=(tx*0.04-gx)*0.04;gy+=(ty*0.04-gy)*0.04;c.style.transform='perspective(1000px) rotateX('+(-Math.max(-m,Math.min(m,gy)))+'deg) rotateY('+Math.max(-m,Math.min(m,gx))+'deg)';requestAnimationFrame(l);}l();})();
+</script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>常见逻辑谬误</title>
+<link rel="icon" href="./icon.svg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.6;min-height:100vh;padding-bottom:calc(100px + env(safe-area-inset-bottom,0));-webkit-font-smoothing:antialiased;overflow-x:hidden;letter-spacing:-.01em}
+::-webkit-scrollbar{width:2px;height:2px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.04);border-radius:1px}
+::selection{background:rgba(245,158,11,.3)}
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--amber) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--a3) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(245,158,11,.05),rgba(239,68,68,.04) 20%,rgba(236,72,153,.02) 45%,transparent 70%)}
+.header{position:sticky;top:0;z-index:50;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-top:none;padding:10px 20px;border-radius:0 0 22px 22px;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 40px rgba(245,158,11,.1),0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04)}
+.header-in{max-width:800px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.header-logo{font-size:17px;font-weight:700;white-space:nowrap;letter-spacing:-.02em;background:linear-gradient(135deg,var(--amber),var(--a3),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 6s ease-in-out infinite}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+.back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.container{max-width:800px;margin:0 auto;padding:18px 20px;position:relative;z-index:1;will-change:transform}
+.hero{text-align:center;padding:24px 0 10px}
+.hero h1{font-size:26px;font-weight:700;letter-spacing:-.03em;margin-bottom:6px;background:linear-gradient(135deg,var(--amber),var(--a3));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 4s ease-in-out infinite}
+.hero .sub{color:var(--tx2);font-size:14px}
+.tags{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.tag{background:rgba(245,158,11,.12);color:var(--amber);font-size:11px;padding:4px 12px;border-radius:8px;font-weight:500;border:1px solid rgba(245,158,11,.2)}
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:18px;transition:all .35s var(--ease);box-shadow:0 0 60px rgba(245,158,11,.04),0 4px 24px rgba(0,0,0,.1);position:relative;overflow:hidden;margin-bottom:14px}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.card:hover{border-color:rgba(245,158,11,.2);transform:translateY(-2px);box-shadow:0 0 80px rgba(245,158,11,.1),0 0 40px rgba(239,68,68,.05),0 16px 48px rgba(0,0,0,.15)}
+.card:active{transform:scale(.98)!important;transition:transform .12s ease!important}
+.card-num{display:inline-block;min-width:32px;height:32px;padding:0 6px;border-radius:10px;background:rgba(245,158,11,.12);text-align:center;line-height:32px;font-weight:700;font-size:14px;color:var(--amber);margin-bottom:10px;border:1px solid rgba(245,158,11,.15)}
+.card h3{font-size:16px;font-weight:600;margin-bottom:6px;letter-spacing:-.01em}
+.card p{font-size:13px;color:var(--tx3);line-height:1.6}
+.card .ex-box{font-size:12px;color:var(--tx2);background:rgba(255,255,255,.03);padding:8px 12px;border-radius:10px;margin-top:8px;border-left:2px solid rgba(245,158,11,.2)}
+.bottom-nav{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0));left:50%;transform:translateX(-50%);width:calc(100% - 28px);max-width:440px;height:58px;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-radius:22px;display:flex;justify-content:center;align-items:center;gap:16px;z-index:100;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 50px rgba(99,102,241,.12),0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.04)}
+.nav-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:var(--tx3);padding:6px 14px;border-radius:14px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .3s var(--ease);-webkit-tap-highlight-color:transparent;text-decoration:none}
+.nav-btn:hover{background:rgba(255,255,255,.08);color:var(--tx2)}
+.nav-btn svg{width:14px;height:14px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)scale(.96)}to{opacity:1;transform:translateY(0)scale(1)}}
+.card{animation:fadeUp .5s var(--ease) both}
+.card:nth-child(1){animation-delay:.03s}.card:nth-child(2){animation-delay:.07s}.card:nth-child(3){animation-delay:.11s}.card:nth-child(4){animation-delay:.15s}.card:nth-child(5){animation-delay:.19s}.card:nth-child(6){animation-delay:.23s}.card:nth-child(7){animation-delay:.27s}.card:nth-child(8){animation-delay:.31s}.card:nth-child(9){animation-delay:.35s}.card:nth-child(10){animation-delay:.39s}.card:nth-child(11){animation-delay:.43s}.card:nth-child(12){animation-delay:.47s}.card:nth-child(13){animation-delay:.51s}.card:nth-child(14){animation-delay:.55s}
+@media(max-width:480px){.hero h1{font-size:22px}.card{padding:14px}}
+</style>
+</head>
+<body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot"></div>
+<div class="header"><div class="header-in"><a class="back-btn" href="./index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">逻辑谬误</span></div></div>
+<div class="container" id="mainContainer">
+<div class="hero"><h1>3分钟解释每一种常见谬误</h1><p class="sub">识别日常对话中的逻辑陷阱</p><div class="tags"><span class="tag">批判性思维</span><span class="tag">逻辑学</span><span class="tag">辩论技巧</span></div></div>
+
+<div class="card"><span class="card-num">1</span><h3>稻草人谬误 (Straw Man)</h3><p>歪曲对方的论点使其更容易攻击。把对手的立场极端化、简单化之后再攻击——攻击的是你造的"稻草人"，不是对方的真实立场。</p><div class="ex-box">"你支持减少军费？所以你想让国家完全没有防御能力？"——没有人说零防御。</div></div>
+
+<div class="card"><span class="card-num">2</span><h3>诉诸人身 (Ad Hominem)</h3><p>攻击提出论点的人而非论点本身。拉丁文"针对人"的意思。对方的品格、背景和论点的正确性无关。</p><div class="ex-box">"他是富二代，所以他关于扶贫的言论毫无价值。"——这反驳了他的身份，没有反驳他的论点。</div></div>
+
+<div class="card"><span class="card-num">3</span><h3>滑坡谬误 (Slippery Slope)</h3><p>声称一个小的第一步将不可避免地导致极端后果，但没有提供每个中间环节的证据。</p><div class="ex-box">"如果允许学生重修作业，很快他们就会要求重修全部课程，最终没人会上课了。"</div></div>
+
+<div class="card"><span class="card-num">4</span><h3>假两难 (False Dilemma)</h3><p>将复杂问题简化为只有两个极端选项，忽略大量中间可能性。也叫非黑即白谬误。</p><div class="ex-box">"要么全面禁止汽车进城，要么接受空气质量继续恶化。"——漏掉了无数折中方案。</div></div>
+
+<div class="card"><span class="card-num">5</span><h3>诉诸群众 (Ad Populum)</h3><p>因为很多人都相信就声称某件事是真的。流行不等于正确——历史上大多数人都相信地球是平的。</p><div class="ex-box">"大家都在用这个App，肯定好用！"——大家都在用可能只是因为营销做得好。</div></div>
+
+<div class="card"><span class="card-num">6</span><h3>诉诸情感 (Appeal to Emotion)</h3><p>用情绪操控代替理性论证。煽动恐惧、怜悯、愤怒来让人接受论点。</p><div class="ex-box">慈善广告只放受苦儿童的煽情画面但不提供任何关于该组织实际成效的数据。</div></div>
+
+<div class="card"><span class="card-num">7</span><h3>诉诸假权威 (False Authority)</h3><p>引用与话题无关的权威人士来支持论点。一个领域的专家不等于所有领域的专家。</p><div class="ex-box">一位演员推荐某款药品——他可能演技很棒，但你的感冒不应该听他的。</div></div>
+
+<div class="card"><span class="card-num">8</span><h3>循环论证 (Begging the Question)</h3><p>结论已经包含在前提中。论证转了一圈回到了起点，没有提供真正的证据。</p><div class="ex-box">"这本书可信是因为它是上帝的话，我们知道它是上帝的话是因为书里这么说。"</div></div>
+
+<div class="card"><span class="card-num">9</span><h3>歧义谬误 (Equivocation)</h3><p>在论证过程中改变关键词的含义——利用一词多义来偷换概念。</p><div class="ex-box">"科学是自由的，所以学生应该自由地选择不上科学课。"——这里的"科学"(science)和"自由"(free)各有两个含义。</div></div>
+
+<div class="card"><span class="card-num">10</span><h3>以偏概全 (Hasty Generalization)</h3><p>从太少或不具代表性的样本中得出广泛结论。一个孤立例子不能代表整体。</p><div class="ex-box">"我遇到的第一个巴黎人不友好，所以巴黎人都不友好。"——样本量=1的"统计学"。</div></div>
+
+<div class="card"><span class="card-num">11</span><h3>因果谬误 (Post Hoc)</h3><p>因为A发生在B之前就错误推断A导致B。时间先后不等于因果关系。</p><div class="ex-box">"自从换了新市长，失业率下降了"——可能是经济周期、国家政策或其他因素导致的。</div></div>
+
+<div class="card"><span class="card-num">12</span><h3>红鲱鱼 (Red Herring)</h3><p>引入无关话题来转移注意力，偏离原来的讨论。得名于用熏鲱鱼训练猎犬不被其他气味干扰。</p><div class="ex-box">产品被投诉质量问题，公关部门开始谈公司做了多少公益活动。</div></div>
+
+<div class="card"><span class="card-num">13</span><h3>诉诸无知 (Appeal to Ignorance)</h3><p>因为没有被证明是假的就声称是真的(反之亦然)。缺乏证据不等于反面的证据。</p><div class="ex-box">"没人能证明外星人不存在，所以外星人一定存在。"——无法证明不存在≠存在。</div></div>
+
+<div class="card"><span class="card-num">14</span><h3>弱类比 (Weak Analogy)</h3><p>用两个实际上不够相似的事物做比较。差异远大于共同点时类比失去了说服力。</p><div class="ex-box">"管理国家就像管理一家公司，所以总统应该由CEO来当。"——国家和公司的本质差异太大了。</div></div>
+</div>
+
+<div class="bottom-nav"><a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>主页</a></div>
+<script>(function(){const s=document.querySelector('.glow-spot');let r;window.addEventListener('mousemove',e=>{if(!r){r=requestAnimationFrame(()=>{s.style.background='radial-gradient(circle 420px at '+e.clientX+'px '+e.clientY+'px,rgba(245,158,11,.05),rgba(239,68,68,.04) 20%,rgba(236,72,153,.02) 45%,transparent 70%)';r=null;});}},{passive:true});})();(function(){if(!('ontouchstart' in window))return;const c=document.getElementById('mainContainer');let gx=0,gy=0,tx=0,ty=0;const m=2.5;if(typeof DeviceOrientationEvent!=='undefined'&&'requestPermission' in DeviceOrientationEvent){document.addEventListener('click',function r(){DeviceOrientationEvent.requestPermission().then(p=>{if(p==='granted')window.addEventListener('deviceorientation',o);});document.removeEventListener('click',r);},{once:true});}else{window.addEventListener('deviceorientation',o);}function o(e){if(e.beta!==null){tx=e.gamma||0;ty=e.beta||0;}}function l(){gx+=(tx*0.04-gx)*0.04;gy+=(ty*0.04-gy)*0.04;c.style.transform='perspective(1000px) rotateX('+(-Math.max(-m,Math.min(m,gy)))+'deg) rotateY('+Math.max(-m,Math.min(m,gx))+'deg)';requestAnimationFrame(l);}l();})();</script>
+</body>
+</html>

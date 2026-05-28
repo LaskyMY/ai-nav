@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>睡眠时长后果</title>
+<link rel="icon" href="./icon.svg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.6;min-height:100vh;padding-bottom:calc(100px + env(safe-area-inset-bottom,0));-webkit-font-smoothing:antialiased;overflow-x:hidden;letter-spacing:-.01em}
+::-webkit-scrollbar{width:2px;height:2px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.04);border-radius:1px}
+::selection{background:rgba(99,102,241,.3)}
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--cyan) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(99,102,241,.05),rgba(6,182,212,.04) 20%,rgba(168,85,247,.02) 45%,transparent 70%)}
+.header{position:sticky;top:0;z-index:50;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-top:none;padding:10px 20px;border-radius:0 0 22px 22px;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 40px rgba(99,102,241,.1),0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04)}
+.header-in{max-width:800px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.header-logo{font-size:17px;font-weight:700;white-space:nowrap;letter-spacing:-.02em;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--vio));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 6s ease-in-out infinite}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+.back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.container{max-width:800px;margin:0 auto;padding:18px 20px;position:relative;z-index:1;will-change:transform}
+.hero{text-align:center;padding:24px 0 10px}
+.hero h1{font-size:26px;font-weight:700;letter-spacing:-.03em;margin-bottom:6px;background:linear-gradient(135deg,var(--a1),var(--cyan));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 4s ease-in-out infinite}
+.hero .sub{color:var(--tx2);font-size:14px}
+.tags{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.tag{background:rgba(99,102,241,.12);color:var(--a1);font-size:11px;padding:4px 12px;border-radius:8px;font-weight:500;border:1px solid rgba(99,102,241,.2)}
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:18px;transition:all .35s var(--ease);box-shadow:0 0 60px rgba(99,102,241,.04),0 4px 24px rgba(0,0,0,.1);position:relative;overflow:hidden;margin-bottom:14px}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.card:hover{border-color:rgba(99,102,241,.2);transform:translateY(-2px);box-shadow:0 0 80px rgba(99,102,241,.1),0 0 40px rgba(6,182,212,.05),0 16px 48px rgba(0,0,0,.15)}
+.card:active{transform:scale(.98)!important;transition:transform .12s ease!important}
+.card-num{display:inline-block;min-width:32px;height:32px;padding:0 6px;border-radius:10px;background:rgba(99,102,241,.12);text-align:center;line-height:32px;font-weight:700;font-size:14px;color:var(--a1);margin-bottom:10px;border:1px solid rgba(99,102,241,.15)}
+.card h3{font-size:16px;font-weight:600;margin-bottom:6px;letter-spacing:-.01em}
+.card p{font-size:13px;color:var(--tx3);line-height:1.6}
+.sleep-badge{display:inline-block;padding:2px 10px;border-radius:6px;font-size:12px;font-weight:600;margin-bottom:8px}
+.s-danger{background:rgba(239,68,68,.15);color:var(--a3);border:1px solid rgba(239,68,68,.2)}
+.s-warn{background:rgba(245,158,11,.15);color:var(--amber);border:1px solid rgba(245,158,11,.2)}
+.s-good{background:rgba(16,185,129,.15);color:var(--a2);border:1px solid rgba(16,185,129,.2)}
+.bottom-nav{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0));left:50%;transform:translateX(-50%);width:calc(100% - 28px);max-width:440px;height:58px;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-radius:22px;display:flex;justify-content:center;align-items:center;gap:16px;z-index:100;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 50px rgba(99,102,241,.12),0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.04)}
+.nav-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:var(--tx3);padding:6px 14px;border-radius:14px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .3s var(--ease);-webkit-tap-highlight-color:transparent;text-decoration:none}
+.nav-btn:hover{background:rgba(255,255,255,.08);color:var(--tx2)}
+.nav-btn svg{width:14px;height:14px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)scale(.96)}to{opacity:1;transform:translateY(0)scale(1)}}
+.card{animation:fadeUp .5s var(--ease) both}
+.card:nth-child(1){animation-delay:.03s}.card:nth-child(2){animation-delay:.07s}.card:nth-child(3){animation-delay:.11s}.card:nth-child(4){animation-delay:.15s}.card:nth-child(5){animation-delay:.19s}.card:nth-child(6){animation-delay:.23s}.card:nth-child(7){animation-delay:.27s}.card:nth-child(8){animation-delay:.31s}.card:nth-child(9){animation-delay:.35s}
+@media(max-width:480px){.hero h1{font-size:22px}.card{padding:14px}}
+</style>
+</head>
+<body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot"></div>
+<div class="header"><div class="header-in"><a class="back-btn" href="./index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a><span class="header-logo">睡眠时长</span></div></div>
+<div class="container" id="mainContainer">
+<div class="hero"><h1>3分钟解释各种睡眠时长的后果</h1><p class="sub">你的睡眠时间正在如何影响你的身体</p><div class="tags"><span class="tag">健康</span><span class="tag">睡眠科学</span><span class="tag">生物钟</span></div></div>
+
+<div class="card"><span class="sleep-badge s-danger">&lt;4小时</span><h3>极端睡眠不足</h3><p>认知功能严重受损，反应时间相当于醉酒状态(血液酒精浓度约0.1%)。判断力、记忆力和情绪调节显著下降。免疫系统功能大幅减弱。连续多天可能导致幻觉和微睡眠(microsleep)。</p></div>
+
+<div class="card"><span class="sleep-badge s-danger">4-5小时</span><h3>严重睡眠不足</h3><p>注意力不集中，学习能力下降40%。饥饿激素(ghrelin)上升而饱腹激素(leptin)下降，导致食欲增加和体重上升。长期处于此状态大幅增加心血管疾病和糖尿病风险。</p></div>
+
+<div class="card"><span class="sleep-badge s-warn">5-6小时</span><h3>轻度睡眠不足</h3><p>你可能有"我已经适应了"的错觉——但客观测试显示你的认知表现持续下降。你的身体只是在"低电量模式"下运转，不是真的适应了。情绪更易波动，免疫力轻度受损。</p></div>
+
+<div class="card"><span class="sleep-badge s-good">7-8小时</span><h3>推荐的黄金睡眠时长</h3><p>成年人(18-64岁)的最佳睡眠时长。大脑完成约4-5个完整睡眠周期(每个约90分钟)，深度睡眠完成身体修复，REM睡眠巩固记忆和情绪调节。如果你大多数时候自然醒来就是7-8小时——这就是你的最佳时长。</p></div>
+
+<div class="card"><span class="sleep-badge s-warn">9小时</span><h3>偏长睡眠</h3><p>偶尔睡9-10小时(如周末补觉)是正常的。但如果每天需要9小时以上且仍感疲倦，可能是睡眠质量差(如睡眠呼吸暂停)或潜在健康问题(如甲状腺功能减退、抑郁症)的信号。</p></div>
+
+<div class="card"><span class="sleep-badge s-danger">&gt;10小时</span><h3>过长睡眠</h3><p>流行病学研究发现，长期睡眠超过9-10小时与心血管疾病、糖尿病和全因死亡率上升有相关性。但注意：这是相关性，不是因果性——可能是潜在疾病导致了"需要更多睡眠"，而非"睡多了导致生病"。</p></div>
+
+<div class="card"><span class="card-num">7</span><h3>睡眠周期与"90分钟法则"</h3><p>一个完整睡眠周期约90分钟(NREM浅睡→深度睡眠→REM)，一夜约4-5个周期。在周期结束时自然醒来会感到清爽；在深度睡眠阶段被闹钟叫醒则会感到昏沉(睡眠惯性)。试试以90分钟为单位设置睡眠时长。</p></div>
+
+<div class="card"><span class="card-num">8</span><h3>熬夜的"债务"不可累积</h3><p>睡眠不足造成的认知损害不能靠周末补觉完全恢复。研究表明，连续5天睡5小时后，即使周末补觉10小时，注意力仍然比正常基线低30-40%。睡眠债务会不断累加。</p></div>
+
+<div class="card"><span class="card-num">9</span><h3>个体差异</h3><p>少数人是"短睡眠者"(6小时自然醒且精神充沛)，由DEC2或ADRB1基因突变导致。也有少量"长睡眠者"天生需要9-10小时。关键是：不设闹钟自然睡醒后是否感到精力充沛——这是判断你是否健康的黄金标准。</p></div>
+</div>
+
+<div class="bottom-nav"><a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>主页</a></div>
+<script>(function(){const s=document.querySelector('.glow-spot');let r;window.addEventListener('mousemove',e=>{if(!r){r=requestAnimationFrame(()=>{s.style.background='radial-gradient(circle 420px at '+e.clientX+'px '+e.clientY+'px,rgba(99,102,241,.05),rgba(6,182,212,.04) 20%,rgba(168,85,247,.02) 45%,transparent 70%)';r=null;});}},{passive:true});})();(function(){if(!('ontouchstart' in window))return;const c=document.getElementById('mainContainer');let gx=0,gy=0,tx=0,ty=0;const m=2.5;if(typeof DeviceOrientationEvent!=='undefined'&&'requestPermission' in DeviceOrientationEvent){document.addEventListener('click',function r(){DeviceOrientationEvent.requestPermission().then(p=>{if(p==='granted')window.addEventListener('deviceorientation',o);});document.removeEventListener('click',r);},{once:true});}else{window.addEventListener('deviceorientation',o);}function o(e){if(e.beta!==null){tx=e.gamma||0;ty=e.beta||0;}}function l(){gx+=(tx*0.04-gx)*0.04;gy+=(ty*0.04-gy)*0.04;c.style.transform='perspective(1000px) rotateX('+(-Math.max(-m,Math.min(m,gy)))+'deg) rotateY('+Math.max(-m,Math.min(m,gx))+'deg)';requestAnimationFrame(l);}l();})();</script>
+</body>
+</html>
