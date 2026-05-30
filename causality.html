@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>因果关系 — 为什么相关≠因果</title>
+<link rel="icon" href="./icon.svg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.6;min-height:100vh;padding-bottom:calc(100px + env(safe-area-inset-bottom,0));-webkit-font-smoothing:antialiased;overflow-x:hidden;letter-spacing:-.01em}
+::-webkit-scrollbar{width:2px;height:2px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.04);border-radius:1px}
+::selection{background:rgba(99,102,241,.3)}
+
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(99,102,241,.05),rgba(236,72,153,.04) 20%,rgba(168,85,247,.02) 45%,transparent 70%)}
+
+.header{position:sticky;top:0;z-index:50;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-top:none;padding:10px 20px;border-radius:0 0 22px 22px;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 40px rgba(99,102,241,.1),0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04)}
+.header-in{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.header-logo{font-size:17px;font-weight:700;white-space:nowrap;letter-spacing:-.02em;background:linear-gradient(135deg,var(--a1),var(--pink),var(--vio));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 6s ease-in-out infinite}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+.back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}.home-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none;margin-left:auto}.home-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+
+.container{max-width:900px;margin:0 auto;padding:18px 20px;position:relative;z-index:1}
+
+/* Hero */
+.hero-wrap{position:relative;text-align:center;padding:40px 0 20px;overflow:hidden}
+#heroCanvas{position:absolute;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:900px;height:100%;pointer-events:none;z-index:0;opacity:.6}
+.hero-content{position:relative;z-index:1}
+.hero-content h1{font-size:32px;font-weight:700;letter-spacing:-.03em;margin-bottom:8px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+.hero-content .sub{color:var(--tx2);font-size:15px;max-width:500px;margin:0 auto;line-height:1.6}
+.hero-badge{display:inline-block;padding:4px 12px;border-radius:12px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);font-size:11px;color:var(--a1);margin-bottom:12px;letter-spacing:.04em}
+
+/* Section headers */
+.section{position:relative;z-index:1;margin-bottom:32px;scroll-margin-top:80px}
+.section-hd{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-left:2px}
+.section-hd .s-icon{font-size:24px}
+.section-hd h2{font-size:18px;font-weight:700;color:var(--tx);letter-spacing:-.02em}
+.section-hd .s-num{font-size:12px;color:var(--tx3);background:rgba(255,255,255,.05);padding:3px 10px;border-radius:8px}
+
+/* Viz card */
+.viz-card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:20px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(99,102,241,.04),0 4px 24px rgba(0,0,0,.1)}
+.viz-card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.viz-card canvas{display:block;width:100%;max-width:100%;border-radius:12px;margin-bottom:12px}
+.viz-card .viz-info{font-size:12px;color:var(--tx2);line-height:1.6;margin-top:8px;padding:10px 14px;background:rgba(255,255,255,.03);border-radius:10px;border-left:2px solid var(--a1)}
+.viz-card .viz-info strong{color:var(--tx)}
+
+/* Controls */
+.viz-ctrls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;justify-content:center}
+.viz-btn{padding:7px 16px;border-radius:8px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.viz-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:rgba(99,102,241,.2)}
+.viz-btn.active{background:rgba(99,102,241,.2);border-color:rgba(99,102,241,.4);color:var(--a1)}
+.viz-slider{width:100%;margin-top:8px}
+.viz-slider input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:rgba(255,255,255,.1);outline:none}
+.viz-slider input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--a1);cursor:pointer;border:2px solid rgba(255,255,255,.2)}
+.viz-slider label{display:block;font-size:11px;color:var(--tx3);text-align:center;margin-top:4px}
+
+/* Insight highlight */
+.insight{display:flex;align-items:flex-start;gap:8px;padding:10px 14px;border-radius:10px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.15);margin-top:10px;font-size:12px;color:var(--amber);line-height:1.5}
+.insight .ins-icon{font-size:16px;flex-shrink:0}
+
+/* Scale bar */
+.scale-bar{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--tx3);margin-top:6px}
+.scale-bar .bar{flex:1;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--a1),var(--cyan),var(--a2))}
+
+/* mini-games CSS (v3 compatible) */
+.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort,.mg-quiz4,.mg-scale,.mg-spot,.mg-trap{margin-top:10px;position:relative;z-index:1}
+.mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:rgba(99,102,241,.2)}
+.mg-btn.correct{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.35);color:var(--a2)}
+.mg-btn.wrong{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.35);color:var(--a3);animation:shake .4s}
+.mg-right{color:var(--a2)}.mg-wrong{color:var(--a3)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+.mg-q4-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.mg-q4-q{font-size:12px;color:var(--tx2);margin:0;line-height:1.5}
+.mg-q4-counter{font-size:11px;color:var(--tx3);min-width:24px;text-align:center}
+.mg-q4-opt{display:block;width:100%;text-align:left;padding:8px 12px;margin:4px 0;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-q4-opt:hover{background:rgba(255,255,255,.08);color:var(--tx);border-color:rgba(99,102,241,.2)}
+.mg-q4-opt.correct{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:var(--a2)}
+.mg-q4-opt.wrong{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:var(--a3)}
+.mg-q4-explain{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:6px;line-height:1.5}
+.mg-q4-explain.show{display:block;animation:fadeUp .3s var(--ease) both}
+.mg-spot-cards{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mg-spot-card{padding:8px 10px;border-radius:8px;border:1px solid var(--card-border);font-size:11px;color:var(--tx2);cursor:pointer;background:rgba(255,255,255,.02);transition:all .2s;line-height:1.4;min-height:50px;-webkit-tap-highlight-color:transparent}
+.mg-spot-card:hover{border-color:rgba(99,102,241,.2);background:rgba(255,255,255,.05)}
+.mg-spot-card.correct{border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:var(--a2)}
+.mg-spot-card.wrong{border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.08);color:var(--a3)}
+.mg-spot-fb{display:none;font-size:12px;margin-top:6px;line-height:1.5}
+.mg-spot-fb.show{display:block;animation:fadeUp .3s var(--ease) both}
+
+/* Quote */
+blockquote.quote{border-left:3px solid var(--a1);padding:10px 16px;margin:14px 0;background:rgba(99,102,241,.05);border-radius:0 10px 10px 0;font-size:13px;color:var(--tx2);font-style:italic;line-height:1.6}
+blockquote.quote .q-author{display:block;margin-top:6px;font-style:normal;font-size:11px;color:var(--tx3)}
+
+/* Bottom nav */
+.bottom-nav{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0));left:50%;transform:translateX(-50%);width:calc(100% - 28px);max-width:440px;height:58px;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-radius:22px;display:flex;justify-content:center;align-items:center;gap:16px;z-index:100;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 50px rgba(99,102,241,.12),0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.04)}
+.nav-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:var(--tx3);padding:6px 14px;border-radius:14px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .3s var(--ease);-webkit-tap-highlight-color:transparent;text-decoration:none}
+.nav-btn:hover{background:rgba(255,255,255,.08);color:var(--tx2)}
+.nav-btn svg{width:14px;height:14px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)scale(.97)}to{opacity:1;transform:translateY(0)scale(1)}}
+
+/* TOC nav */
+.toc{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;padding:0 2px}
+.toc a{font-size:11px;color:var(--tx3);text-decoration:none;padding:4px 10px;border-radius:6px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04);transition:all .2s;white-space:nowrap}
+.toc a:hover{color:var(--tx);background:rgba(255,255,255,.06)}
+
+@media(max-width:480px){
+  .hero-content h1{font-size:24px}
+  .viz-card{padding:14px}
+  .mg-spot-cards{grid-template-columns:1fr}
+  .section-hd h2{font-size:16px}
+}
+</style>
+</head>
+<body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot"></div>
+
+<div class="header">
+  <div class="header-in">
+    <a class="back-btn" href="./index.html" title="返回主页"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
+    <a class="back-btn" href="./knowledge.html" title="知识百科" style="margin-left:2px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></a>
+    <span class="header-logo">因果关系</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- Hero -->
+<div class="hero-wrap" id="heroWrap">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-badge">📖 基于 Judea Pearl《The Book of Why》<img src="https://cdn.jsdelivr.net/gh/LaskyMY/ai-nav@main/images/causality.jpg" alt="" style="width:100%;max-width:600px;border-radius:16px;margin-top:14px;aspect-ratio:2/1;object-fit:cover" loading="lazy">
+</div>
+    <h1>为什么相关 ≠ 因果？</h1>
+    <p class="sub">两个事物同时变化，不代表一个导致了另一个。<br>一起探索因果推断的科学——从辛普森悖论到 do-算子。</p>
+  </div>
+</div>
+
+<!-- TOC -->
+<nav class="toc">
+  <a href="#s1">1. 相关≠因果</a>
+  <a href="#s2">2. 辛普森悖论</a>
+  <a href="#s3">3. 因果图 DAG</a>
+  <a href="#s4">4. 混杂因子</a>
+  <a href="#s5">5. do-算子</a>
+  <a href="#games">🎮 小游戏</a>
+</nav>
+
+<!-- ============================================================ -->
+<!-- SECTION 1: 相关≠因果 -->
+<!-- ============================================================ -->
+<section class="section" id="s1">
+  <div class="section-hd"><span class="s-icon">📊</span><h2>相关 ≠ 因果</h2><span class="s-num">第 1 章</span></div>
+
+  <div class="viz-card">
+    <canvas id="corrCanvas" width="800" height="400"></canvas>
+    <div class="viz-ctrls">
+      <button class="viz-btn" id="corrAnimate">▶ 动画演示</button>
+      <button class="viz-btn" id="corrReset">↺ 重置</button>
+    </div>
+    <div class="viz-slider">
+      <input type="range" id="tempSlider" min="0" max="100" value="50">
+      <label>拖动滑块改变"气温"（隐藏变量），观察两个指标的同步变化</label>
+    </div>
+  </div>
+
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
+      <strong>🐦 鹳鸟与婴儿</strong> — 在欧洲某些地区，鹳鸟数量与婴儿出生率呈正相关（r≈0.62）。
+      但鹳鸟不会送子——<span style="color:var(--a1)">农村面积</span>才是隐藏的共同原因：农村地区鹳鸟多，农村家庭孩子也多。
+    </p>
+    <p style="font-size:13px;color:var(--tx);line-height:1.7">
+      <strong>🍦 冰激凌与溺水</strong> — 冰激凌销量与溺水死亡高度相关。
+      但吃冰激凌不会导致溺水——<span style="color:var(--pink)">气温</span>同时驱动了两者：天热→吃冰激凌，天热→游泳→溺水。
+    </p>
+    <div class="insight"><span class="ins-icon">💡</span> 两个变量 X 和 Y 的统计相关，可能来自：(1) X 导致 Y，(2) Y 导致 X，(3) Z 同时导致 X 和 Y，(4) 纯属巧合。</div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 2: 辛普森悖论 -->
+<!-- ============================================================ -->
+<section class="section" id="s2">
+  <div class="section-hd"><span class="s-icon">🪄</span><h2>辛普森悖论</h2><span class="s-num">第 2 章</span></div>
+
+  <div class="viz-card">
+    <canvas id="simpsonCanvas" width="800" height="420"></canvas>
+    <div class="viz-ctrls">
+      <button class="viz-btn active" id="simOverall">📊 整体数据</button>
+      <button class="viz-btn" id="simGrouped">🔍 按结石大小分组</button>
+    </div>
+  </div>
+
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7">
+      <strong>🩺 肾结石治疗的经典案例：</strong> 一家医院比较两种肾结石治疗方案。
+      看整体数据：<span style="color:var(--a3)">方案 A 成功率更低</span>（看起来更差）。
+      但按病情严重程度分组后：<span style="color:var(--a2)">方案 A 在轻症和重症中都更好！</span>
+    </p>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.6;margin-top:8px">
+      为什么？因为方案 A 更常用于重症患者（重症本身成功率就低），方案 B 更多用于轻症。
+      病情严重程度是<span style="color:var(--amber)">混杂因子</span>——它同时影响医生选择哪种方案和治疗结果。
+    </p>
+    <div class="insight"><span class="ins-icon">⚠️</span> 辛普森悖论告诉你：永远不要只看汇总数据。数据的分组方式可能完全颠覆结论。</div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 3: 因果图 DAG -->
+<!-- ============================================================ -->
+<section class="section" id="s3">
+  <div class="section-hd"><span class="s-icon">🕸️</span><h2>因果图（DAG）</h2><span class="s-num">第 3 章</span></div>
+
+  <div class="viz-card">
+    <canvas id="dagCanvas" width="800" height="380"></canvas>
+    <div class="viz-ctrls">
+      <button class="viz-btn active" id="dagChain">🔗 链结构 A→B→C</button>
+      <button class="viz-btn" id="dagFork">🔱 分叉 A←C→B</button>
+      <button class="viz-btn" id="dagCollider">💥 对撞 A→C←B</button>
+    </div>
+  </div>
+
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:8px">
+      <strong>三种基本因果结构：</strong>
+    </p>
+    <div style="font-size:12px;color:var(--tx2);line-height:1.6">
+      <p><strong style="color:var(--a1)">链 (Chain)：A→B→C</strong> — A 通过 B 间接影响 C。控制 B 后，A 和 C 独立。（例：吸烟→焦油沉积→肺癌）</p>
+      <p style="margin-top:6px"><strong style="color:var(--cyan)">分叉 (Fork)：A←C→B</strong> — C 是 A 和 B 的共同原因。控制 C 后，A 和 B 独立。（例：气温←冰激凌销量 & 溺水死亡）</p>
+      <p style="margin-top:6px"><strong style="color:var(--pink)">对撞 (Collider)：A→C←B</strong> — A 和 B 都影响 C。控制 C 反而会让 A 和 B 产生虚假相关！（例：才华→成功←运气，只看成功者，才华和运气会负相关）</p>
+    </div>
+    <div class="insight"><span class="ins-icon">🔥</span> 对撞结构最反直觉：选择样本（控制对撞节点）会引入选择偏差。这是"幸存者偏差"的数学本质。</div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 4: 混杂因子 -->
+<!-- ============================================================ -->
+<section class="section" id="s4">
+  <div class="section-hd"><span class="s-icon">🎭</span><h2>混杂因子</h2><span class="s-num">第 4 章</span></div>
+
+  <div class="viz-card">
+    <canvas id="confoundCanvas" width="800" height="440"></canvas>
+    <div class="viz-slider">
+      <input type="range" id="confoundSlider" min="0" max="100" value="0">
+      <label>拖动滑块：控制混杂因子（运动习惯）→ 观察咖啡与心脏病的"假关联"如何消失</label>
+    </div>
+  </div>
+
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7">
+      <strong>☕ 咖啡导致心脏病吗？</strong> 观测数据显示：喝咖啡的人心脏病风险更高。
+      但<span style="color:var(--amber)">运动习惯</span>是一个混杂因子——不爱运动的人更爱喝咖啡（提神），
+      同时不爱运动的人心脏病风险本身就高。控制运动习惯后，咖啡与心脏病的关联消失了。
+    </p>
+    <blockquote class="quote">
+      "混杂因子是因果推断中最常见的陷阱。它同时影响你研究的'原因'和'结果'，让你看到本不存在的因果关系。"
+      <span class="q-author">— Judea Pearl, The Book of Why</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 5: do-算子 -->
+<!-- ============================================================ -->
+<section class="section" id="s5">
+  <div class="section-hd"><span class="s-icon">✋</span><h2>do-算子：观察 vs 干预</h2><span class="s-num">第 5 章</span></div>
+
+  <div class="viz-card">
+    <canvas id="doCanvas" width="800" height="440"></canvas>
+    <div class="viz-ctrls">
+      <button class="viz-btn active" id="doObserve">👁️ P(Y|X) 观测</button>
+      <button class="viz-btn" id="doIntervene">✋ P(Y|do(X)) 干预</button>
+    </div>
+  </div>
+
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7">
+      <strong>P(Y|X) ≠ P(Y|do(X))</strong> — 这是因果革命的核心公式。
+    </p>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.6;margin-top:6px">
+      <strong style="color:var(--a1)">P(Y|X) 观测：</strong> 我在人群中看到喝咖啡的人，他们心脏病风险更高。这是被动观察，混杂因子"运动习惯"仍在起作用。<br>
+      <strong style="color:var(--pink)">P(Y|do(X)) 干预：</strong> 我随机分配一些人喝咖啡、一些人不喝。切断了"运动习惯→喝咖啡"这条箭头，混杂因子被消除。
+    </p>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.6;margin-top:6px">
+      do-算子模拟的是<span style="color:var(--a2)">随机对照试验 (RCT)</span>——因果推断的金标准。
+      当 RCT 不可行时（伦理、成本），Pearl 的 do-calculus 提供了从观测数据推断因果的数学工具。
+    </p>
+    <div class="insight"><span class="ins-icon">🧠</span> 相关是"看到"的（seeing），因果是"做到"的（doing）。这就是为什么大数据能发现相关，但不能替代实验。</div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- GAMES SECTION -->
+<!-- ============================================================ -->
+<section class="section" id="games">
+  <div class="section-hd"><span class="s-icon">🎮</span><h2>互动小游戏</h2><span class="s-num">2 个</span></div>
+
+  <!-- Game 1: 因果侦探 -->
+  <div class="viz-card">
+    <h3 style="font-size:15px;font-weight:600;margin-bottom:4px;color:var(--tx)">🕵️ 因果侦探 — 这是因果还是相关？</h3>
+    <p style="font-size:11px;color:var(--tx3);margin-bottom:12px">阅读每个场景，判断描述的是因果关系还是仅仅相关。5 题。</p>
+
+    <!-- Q1: correlation (confounding: 经济水平) -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 这是相关，不是因果！有机食品价格高，买得起的人通常收入更高、医疗条件更好——收入水平才是降低疾病风险的共同原因。","📌 不对。如果是因果，随机对照试验中吃有机食品的人应该更健康。但现实中从未有RCT证明这一点。","📌 数据确实显示了相关性，但相关性不等于因果性。收入、教育、健康意识都是混杂因子。","📌 这可能同时成立，但核心问题是：有机食品本身是否是保护因素？现有证据更支持'健康用户偏差'的解释。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 一项大规模调查发现：经常吃有机食品的人，慢性病发病率比不吃有机食品的人低 35%。这是因果还是相关？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ 相关！有机食品贵，买得起的人本身就更健康</button>
+      <button class="mg-q4-opt">🅱️ 因果！有机食品没有农药，直接降低了疾病风险</button>
+      <button class="mg-q4-opt">©️ 两者都有，有机食品确实更好，同时有钱人也更健康</button>
+      <button class="mg-q4-opt">🅳 无法判断，需要更多数据</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+
+    <!-- Q2: causation (RCT evidence) -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="1" data-explains='["📌 不对。这恰恰是一个有RCT证据支持的真实因果效应。多项随机对照试验证实了运动对抑郁症状的改善作用。","🎯 因果！有多项RCT证据：将抑郁症患者随机分配到运动组和对照组，运动组的症状改善显著优于对照组。这是经过干预验证的因果关系。","📌 这个方向上，抑郁确实会减少运动意愿，但RCT证明运动→改善抑郁的因果箭头同样成立。","📌 运动确实有益，但这不是'仅仅可能'——RCT提供了因果证据，效应量中等（d≈0.5），与心理治疗相当。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 随机对照试验发现：每周运动3次的人，抑郁症评分下降了40%，而对照组只下降了10%。这是？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ 相关！可能是心情好的人才愿意运动</button>
+      <button class="mg-q4-opt">🅱️ 因果！因为是随机对照试验，已经消除了混杂因子</button>
+      <button class="mg-q4-opt">©️ 相关，但方向是抑郁→运动，不是运动→抑郁</button>
+      <button class="mg-q4-opt">🅳 运动有益但仅仅可能是安慰剂效应</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+
+    <!-- Q3: Simpson's paradox scenario -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="3" data-explains='["📌 分开看数据：也许在年轻患者和老年患者两个亚组中，B 的治愈率都比 A 高。但这被辛普森悖论掩盖了。","📌 恰好相反——如果 B 更多用于老年重症患者，老年组本身治愈率低，就会拉低 B 的整体数据。","📌 方案 B 可能确实更好，但需要按病情严重程度分组看数据才能知道真相。","🎯 辛普森悖论！医生可能优先给重症患者用B方案，导致B的整体数据被重症组拖累。分组看：也许B在轻症和重症中都优于A。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 一家医院报告：方案A整体治愈率78%，方案B只有72%。但按年龄分组后，无论在年轻组还是老年组，B的治愈率都高于A。为什么？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ 数据有问题，分组和整体不应该矛盾</button>
+      <button class="mg-q4-opt">🅱️ B 确实更差，分组后的结论不可信</button>
+      <button class="mg-q4-opt">©️ A 更适合年轻患者，B 更适合老年患者</button>
+      <button class="mg-q4-opt">🅳 辛普森悖论——B方案更多用于老年重症，拉低了整体数据</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+
+    <!-- Q4: Berkson's paradox (collider) -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="2" data-explains='["📌 不完全是。即便只看统计显著性，这个发现也是'显著'的——但它来自选择偏差，不是真实的因果或相关。","📌 两者都是独立进入医院的，完全没有因果关系。这个负相关是在'住院'这个条件下人为产生的。","🎯 对撞偏差（Berkson悖论）！只有病情严重到住院的人才会进入你的样本。在住院患者中，如果一个人不是因为A病住院，那他很可能是因B病住院的——所以两病呈负相关。","📌 这确实是一个悖论，但有明确的因果解释——控制对撞节点（住院）引入了虚假相关。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 你在医院病房里发现：有糖尿病的人似乎不太得抑郁症，有抑郁症的人糖尿病比例也低。但在社区中这两个病其实是正相关的。为什么医院里会反转？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ 医院样本太小，统计上不显著</button>
+      <button class="mg-q4-opt">🅱️ 糖尿病和抑郁症可能有相互抑制作用</button>
+      <button class="mg-q4-opt">©️ 对撞偏差！只有严重到住院的人才会进入样本</button>
+      <button class="mg-q4-opt">🅳 这是伯克森悖论的一种形式，正常的统计学现象</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+
+    <!-- Q5: do-operator -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 do-算子！P(Y|do(X)) 模拟的是随机分配，切断所有指向X的因果箭头。观测数据 P(Y|X) 不切断任何箭头，混杂因子仍在起作用。","📌 相关测量在特定条件下可以反映因果（如无混杂），但 do-算子不等同于相关测量。do-算子正式化了干预的概念。","📌 格兰杰因果检验时间序列数据的预测能力，不直接处理混杂因子。do-算子更一般。","📌 贝叶斯更新帮助我们在收到新信息后更新信念，但它处理的是 P(Y|X) 的观测问题，不区分观测和干预。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 Judea Pearl 认为，要区分真正的因果关系和单纯的相关，我们需要做一个特殊的操作。他发明的数学工具叫什么？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ do-算子 do(X)，模拟对系统的主动干预而非被动观察</button>
+      <button class="mg-q4-opt">🅱️ 相关测量 r(X,Y)，通过大样本消除偏差</button>
+      <button class="mg-q4-opt">©️ 格兰杰因果检验，利用时间序列的先后关系</button>
+      <button class="mg-q4-opt">🅳 贝叶斯更新，通过先验概率修正后验</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+  </div>
+
+  <!-- Game 2: 混杂猎手 -->
+  <div class="viz-card">
+    <h3 style="font-size:15px;font-weight:600;margin-bottom:4px;color:var(--tx)">🔍 混杂猎手 — 找到隐藏的混杂因子</h3>
+    <p style="font-size:11px;color:var(--tx3);margin-bottom:12px">下面 4 个研究中，有一个存在明显的混杂因子。找到它！共 3 轮。</p>
+
+    <!-- Round 1: Coffee & heart disease, confound = exercise -->
+    <div class="mg-spot" data-mg="spot" data-label="运动习惯（混杂因子）">
+      <p class="mg-q4-q">🔍 第一轮：以下 4 项研究中，<strong>哪一个</strong>存在明显的混杂因子（运动习惯）使得结论不可靠？</p>
+      <div class="mg-spot-cards">
+        <div class="mg-spot-card" data-idx="0" data-has="true">☕ 研究A：喝咖啡多的人心脏病风险高30%，但这些人恰好也运动最少。</div>
+        <div class="mg-spot-card" data-idx="1" data-has="false">💊 研究B：随机分配患者服用降压药，服药组血压显著降低。</div>
+        <div class="mg-spot-card" data-idx="2" data-has="false">🧬 研究C：同卵双胞胎研究显示，基因相同的两人患糖尿病风险高度一致。</div>
+        <div class="mg-spot-card" data-idx="3" data-has="false">🌡️ 研究D：控制温度变量后，冰激凌销量与溺水死亡不再相关。</div>
+      </div>
+      <div class="mg-spot-fb"></div>
+    </div>
+
+    <!-- Round 2: Education & income, confound = family background -->
+    <div class="mg-spot" data-mg="spot" data-label="家庭背景（混杂因子）">
+      <p class="mg-q4-q">🔍 第二轮：以下 4 项研究中，<strong>哪一个</strong>存在明显的混杂因子（家庭背景/SES）？</p>
+      <div class="mg-spot-cards">
+        <div class="mg-spot-card" data-idx="0" data-has="false">🏫 研究A：双盲实验中，使用新教学法的班级数学成绩提升了12%。</div>
+        <div class="mg-spot-card" data-idx="1" data-has="true">🎓 研究B：大学毕业的人收入比高中毕业者高80%。但富裕家庭的孩子更可能上大学。</div>
+        <div class="mg-spot-card" data-idx="2" data-has="false">🧪 研究C：实验室环境下，咖啡因组的反应速度比安慰剂组快15%。</div>
+        <div class="mg-spot-card" data-idx="3" data-has="false">📊 研究D：使用工具变量法（义务教育法作为IV）估计的教育回报率为10%。</div>
+      </div>
+      <div class="mg-spot-fb"></div>
+    </div>
+
+    <!-- Round 3: Sunscreen & skin cancer, confound = sun exposure -->
+    <div class="mg-spot" data-mg="spot" data-label="日晒时间（混杂因子）">
+      <p class="mg-q4-q">🔍 第三轮：以下 4 项研究中，<strong>哪一个</strong>的结论可能被混杂因子（日晒行为）所扭曲？</p>
+      <div class="mg-spot-cards">
+        <div class="mg-spot-card" data-idx="0" data-has="false">🔬 研究A：实验室培养皿中，防晒霜成分有效阻挡了UV辐射对皮肤细胞的损伤。</div>
+        <div class="mg-spot-card" data-idx="1" data-has="false">🎲 研究B：随机试验中，每天涂防晒霜的人6个月后皮肤老化指标明显改善。</div>
+        <div class="mg-spot-card" data-idx="2" data-has="true">🏖️ 研究C：涂防晒霜的人皮肤癌发病率更高！——因为涂防晒的人更多去海滩暴晒。</div>
+        <div class="mg-spot-card" data-idx="3" data-has="false">🧴 研究D：比较SPF15和SPF50防晒霜，后者在随机测试中防晒效果更好。</div>
+      </div>
+      <div class="mg-spot-fb"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Key Takeaways -->
+<section class="section" style="margin-bottom:20px">
+  <div class="section-hd"><span class="s-icon">📝</span><h2>关键要点</h2></div>
+  <div class="viz-card" style="padding:16px">
+    <div style="display:grid;gap:10px;font-size:13px;line-height:1.7">
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">1.</span><span><strong style="color:var(--a1)">相关不是因果。</strong>两个变量的统计关联可能来自共同原因、反向因果、选择偏差或纯粹巧合。</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">2.</span><span><strong style="color:var(--amber)">永远分组看数据。</strong>辛普森悖论提醒我们：汇总数据可能完全掩盖真相。</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">3.</span><span><strong style="color:var(--cyan)">画因果图。</strong>DAG 帮你理清变量间的因果关系——链、分叉、对撞三种结构各有不同的统计含义。</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">4.</span><span><strong style="color:var(--pink)">警惕混杂因子。</strong>它同时影响你的原因和结果，是最常见的因果推断陷阱。</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">5.</span><span><strong style="color:var(--a2)">因果 = 干预。</strong>P(Y|do(X)) 告诉我们真正改变 X 时 Y 会怎样——不仅仅是"看到"X变化时Y的变化。</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Further reading -->
+<section class="section" style="margin-bottom:20px">
+  <div class="section-hd"><span class="s-icon">📚</span><h2>推荐阅读 & 视频</h2></div>
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:12px;color:var(--tx2);line-height:1.8">
+      📖 <strong style="color:var(--tx)">Judea Pearl — <em>The Book of Why</em></strong>（为什么：关于因果关系的新科学）— 可读性极高的因果推断入门，几乎不需要数学基础。<br>
+      📖 <strong style="color:var(--tx)">Judea Pearl — <em>Causality</em></strong>（因果关系：模型、论证与推理）— 学术级，包含完整的 do-calculus 数学框架。<br>
+      🎬 <strong style="color:var(--tx)">漫士 — B站视频</strong>（BV1gZz8BYE3r）— "看完这个视频，你会质疑所有的因果关系"，生动直观的中文讲解。<br>
+      📖 <strong style="color:var(--tx)">Miguel Hernán — <em>Causal Inference: What If</em></strong>（免费电子书）— 流行病学视角的因果推断，包含大量实例。
+    </p>
+  </div>
+</section>
+
+</div><!-- /container -->
+
+<!-- Bottom nav -->
+<nav class="bottom-nav">
+  <a class="nav-btn" href="./index.html">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> 首页
+  </a>
+  <a class="nav-btn" href="./knowledge.html">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> 百科
+  </a>
+  <button class="nav-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg> 回到顶部
+  </button>
+</nav>
+
+<script src="mini-games.js"></script>
+<script>
+'use strict';
+
+// ── roundRect polyfill (must be before any canvas drawing) ──
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+    if (typeof r === 'number') r = { tl: r, tr: r, br: r, bl: r };
+    else if (Array.isArray(r)) {
+      if (r.length === 4) r = { tl: r[0], tr: r[1], br: r[2], bl: r[3] };
+      else if (r.length === 2) r = { tl: r[0], tr: r[0], br: r[1], bl: r[1] };
+      else if (r.length === 1) r = { tl: r[0], tr: r[0], br: r[0], bl: r[0] };
+    }
+    this.beginPath();
+    this.moveTo(x + r.tl, y);
+    this.lineTo(x + w - r.tr, y);
+    this.quadraticCurveTo(x + w, y, x + w, y + r.tr);
+    this.lineTo(x + w, y + h - r.br);
+    this.quadraticCurveTo(x + w, y + h, x + w - r.br, y + h);
+    this.lineTo(x + r.bl, y + h);
+    this.quadraticCurveTo(x, y + h, x, y + h - r.bl);
+    this.lineTo(x, y + r.tl);
+    this.quadraticCurveTo(x, y, x + r.tl, y);
+    this.closePath();
+    return this;
+  };
+}
+
+// ── DPI helper ──
+function setupCanvas(canvas, w, h) {
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  return { ctx, w, h };
+}
+
+// ═══════════════════════════════════════════════════
+// HERO: Particle animation background
+// ═══════════════════════════════════════════════════
+(function() {
+  const canvas = document.getElementById('heroCanvas');
+  const wrap = document.getElementById('heroWrap');
+  if (!canvas || !wrap) return;
+
+  function resize() {
+    const rect = wrap.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { w: rect.width, h: rect.height, ctx };
+  }
+
+  let dim = resize();
+  window.addEventListener('resize', () => { dim = resize(); });
+
+  const particles = [];
+  const N = 50;
+  for (let i = 0; i < N; i++) {
+    particles.push({
+      x: Math.random() * dim.w,
+      y: Math.random() * dim.h,
+      r: Math.random() * 2 + 1,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+      alpha: Math.random() * 0.5 + 0.1,
+      color: ['#6366f1','#06B6D4','#ec4899','#a855f7'][Math.floor(Math.random()*4)]
+    });
+  }
+
+  function draw() {
+    const { ctx, w, h } = dim;
+    ctx.clearRect(0, 0, w, h);
+    particles.forEach((p, i) => {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0) p.x = w;
+      if (p.x > w) p.x = 0;
+      if (p.y < 0) p.y = h;
+      if (p.y > h) p.y = 0;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.alpha;
+      ctx.fill();
+      // Draw connections between nearby particles
+      for (let j = i + 1; j < N; j++) {
+        const dx = particles[j].x - p.x;
+        const dy = particles[j].y - p.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 80) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = p.color;
+          ctx.globalAlpha = 0.06 * (1 - dist / 80);
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    });
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ═══════════════════════════════════════════════════
+// VIZ 1: Correlation ≠ Causation — Animated scatter
+// ═══════════════════════════════════════════════════
+(function() {
+  const canvas = document.getElementById('corrCanvas');
+  if (!canvas) return;
+  const { ctx, w, h } = setupCanvas(canvas, 800, 400);
+  const margin = { top: 30, right: 30, bottom: 45, left: 55 };
+  const pw = w - margin.left - margin.right;
+  const ph = h - margin.top - margin.bottom;
+
+  let temperature = 50; // 0-100, hidden confounder
+  let animId = null;
+
+  function generateData(temp) {
+    const pts = [];
+    for (let i = 0; i < 60; i++) {
+      // Temperature affects both ice cream and drowning
+      const baseTemp = temp / 100; // 0-1
+      const iceCream = baseTemp * 60 + (Math.random() - 0.5) * 25 + 20;
+      const drowning = baseTemp * 50 + (Math.random() - 0.5) * 20 + 10;
+      pts.push({ x: iceCream, y: drowning });
+    }
+    return pts;
+  }
+
+  function draw(pts, rVal) {
+    ctx.clearRect(0, 0, w, h);
+
+    // Background grid
+    ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= 5; i++) {
+      const x = margin.left + (pw / 5) * i;
+      const y = margin.top + (ph / 5) * i;
+      ctx.beginPath(); ctx.moveTo(x, margin.top); ctx.lineTo(x, margin.top + ph); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(margin.left, y); ctx.lineTo(margin.left + pw, y); ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(margin.left, margin.top);
+    ctx.lineTo(margin.left, margin.top + ph);
+    ctx.lineTo(margin.left + pw, margin.top + ph);
+    ctx.stroke();
+
+    // Labels
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.font = '12px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🍦 冰激凌销量 →', margin.left + pw / 2, margin.top + ph + 35);
+    ctx.save();
+    ctx.translate(14, margin.top + ph / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('🏊 溺水死亡人数 →', 0, 0);
+    ctx.restore();
+
+    // Points
+    pts.forEach(p => {
+      const px = margin.left + (p.x / 100) * pw;
+      const py = margin.top + ph - (p.y / 100) * ph;
+      ctx.beginPath();
+      ctx.arc(px, py, 5, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(99,102,241,0.7)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(99,102,241,0.3)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    });
+
+    // Trend line
+    if (pts.length > 2) {
+      const meanX = pts.reduce((s, p) => s + p.x, 0) / pts.length;
+      const meanY = pts.reduce((s, p) => s + p.y, 0) / pts.length;
+      let num = 0, den = 0;
+      pts.forEach(p => { num += (p.x - meanX) * (p.y - meanY); den += (p.x - meanX) ** 2; });
+      const slope = den !== 0 ? num / den : 0;
+      const intercept = meanY - slope * meanX;
+      const x1 = 0, y1 = intercept;
+      const x2 = 100, y2 = slope * 100 + intercept;
+      ctx.beginPath();
+      ctx.moveTo(margin.left + (x1 / 100) * pw, margin.top + ph - (y1 / 100) * ph);
+      ctx.lineTo(margin.left + (x2 / 100) * pw, margin.top + ph - (y2 / 100) * ph);
+      ctx.strokeStyle = 'rgba(236,72,153,0.6)';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 3]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // r value
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    ctx.font = 'bold 14px Inter, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('r = ' + rVal.toFixed(2), margin.left + pw - 10, margin.top + 20);
+
+    // Temperature indicator
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.font = '11px Inter, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('🌡️ 隐藏变量：气温 = ' + temperature, margin.left, margin.top + 20);
+  }
+
+  function update() {
+    const pts = generateData(temperature);
+    const r = temperature > 50 ? 0.6 + (temperature - 50) * 0.008 : 0.1 + temperature * 0.01;
+    draw(pts, r);
+  }
+
+  update();
+
+  const slider = document.getElementById('tempSlider');
+  if (slider) {
+    slider.addEventListener('input', () => {
+      temperature = parseInt(slider.value);
+      if (animId) { cancelAnimationFrame(animId); animId = null; }
+      update();
+    });
+  }
+
+  document.getElementById('corrAnimate')?.addEventListener('click', () => {
+    let t = 0;
+    function anim() {
+      t += 0.6;
+      temperature = 25 + Math.sin(t) * 25 + 25;
+      slider.value = Math.round(temperature);
+      update();
+      if (t < 18) animId = requestAnimationFrame(anim);
+      else animId = null;
+    }
+    if (animId) cancelAnimationFrame(animId);
+    anim();
+  });
+
+  document.getElementById('corrReset')?.addEventListener('click', () => {
+    if (animId) { cancelAnimationFrame(animId); animId = null; }
+    temperature = 50;
+    slider.value = 50;
+    update();
+  });
+})();
+
+// ═══════════════════════════════════════════════════
+// VIZ 2: Simpson's Paradox — Bar charts
+// ═══════════════════════════════════════════════════
+(function() {
+  const canvas = document.getElementById('simpsonCanvas');
+  if (!canvas) return;
+  const { ctx, w, h } = setupCanvas(canvas, 800, 420);
+  let viewMode = 'overall'; // 'overall' | 'grouped'
+
+  const barColors = { A: 'rgba(99,102,241,0.85)', B: 'rgba(236,72,153,0.85)' };
+
+  function drawBars(data, labels, title, xLabel) {
+    ctx.clearRect(0, 0, w, h);
+
+    // Title
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.font = 'bold 14px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(title, w / 2, 28);
+
+    const groups = data.length;
+    const barW = Math.min(60, (w - 120) / (groups * 2 + 1));
+    const chartH = h - 100;
+    const chartTop = 50;
+    const chartL = 60;
+
+    // Grid
+    for (let i = 0; i <= 5; i++) {
+      const y = chartTop + (chartH / 5) * i;
+      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(chartL, y); ctx.lineTo(w - 30, y); ctx.stroke();
+      ctx.fillStyle = 'rgba(255,255,255,0.3)';
+      ctx.font = '10px Inter, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText((100 - i * 20) + '%', chartL - 8, y + 4);
+    }
+
+    // Baseline
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(chartL, chartTop + chartH); ctx.lineTo(w - 30, chartTop + chartH); ctx.stroke();
+
+    const maxVal = 100;
+
+    data.forEach((group, gi) => {
+      const cx = chartL + (gi + 0.5) * ((w - chartL - 30) / groups);
+      group.forEach((bar, bi) => {
+        const bw = barW;
+        const bx = cx - barW + bi * (barW + 4);
+        const bh = (bar.val / maxVal) * chartH;
+        const by = chartTop + chartH - bh;
+
+        // Bar with rounded top
+        ctx.fillStyle = barColors[bar.label];
+        ctx.beginPath();
+        ctx.roundRect(bx, by, bw, bh, [4, 4, 0, 0]);
+        ctx.fill();
+
+        // Value label
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.font = 'bold 11px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(bar.val + '%', bx + bw / 2, by - 6);
+
+        // Bar label
+        ctx.fillStyle = 'rgba(255,255,255,0.6)';
+        ctx.font = '10px Inter, sans-serif';
+        ctx.fillText(bar.label, bx + bw / 2, chartTop + chartH + 16);
+      });
+      // Group label
+      ctx.fillStyle = 'rgba(255,255,255,0.5)';
+      ctx.font = '11px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(labels[gi], cx, chartTop + chartH + 36);
+    });
+
+    // Legend
+    ctx.fillStyle = barColors.A;
+    ctx.fillRect(w - 160, h - 28, 12, 12);
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.textAlign = 'left';
+    ctx.font = '11px Inter, sans-serif';
+    ctx.fillText('方案 A', w - 144, h - 18);
+    ctx.fillStyle = barColors.B;
+    ctx.fillRect(w - 90, h - 28, 12, 12);
+    ctx.fillText('方案 B', w - 74, h - 18);
+
+    // Insight text
+    ctx.fillStyle = 'rgba(245,158,11,0.9)';
+    ctx.textAlign = 'center';
+    if (viewMode === 'overall') {
+      ctx.fillText('⚠️ 整体看：方案B更好（83% vs 78%）。但这是真的吗？', w / 2, h - 6);
+    } else {
+      ctx.fillText('🔍 分组看：方案A在轻症和重症中都更好！病情严重程度是混杂因子。', w / 2, h - 6);
+    }
+  }
+
+  function drawOverall() {
+    drawBars(
+      [[{ label: 'A', val: 78 }, { label: 'B', val: 83 }]],
+      ['全部患者'],
+      '整体成功率对比',
+      ''
+    );
+  }
+
+  function drawGrouped() {
+    drawBars(
+      [
+        [{ label: 'A', val: 93 }, { label: 'B', val: 87 }],
+        [{ label: 'A', val: 73 }, { label: 'B', val: 69 }]
+      ],
+      ['轻症（小结石）', '重症（大结石）'],
+      '按病情分组后的成功率对比',
+      ''
+    );
+  }
+
+  function render() {
+    if (viewMode === 'overall') drawOverall();
+    else drawGrouped();
+  }
+
+  render();
+
+  document.getElementById('simOverall')?.addEventListener('click', function() {
+    viewMode = 'overall';
+    this.classList.add('active');
+    document.getElementById('simGrouped').classList.remove('active');
+    render();
+  });
+
+  document.getElementById('simGrouped')?.addEventListener('click', function() {
+    viewMode = 'grouped';
+    this.classList.add('active');
+    document.getElementById('simOverall').classList.remove('active');
+    render();
+  });
+})();
+
+// ═══════════════════════════════════════════════════
+// VIZ 3: Causal Diagram DAG — Interactive nodes
+// ═══════════════════════════════════════════════════
+(function() {
+  const canvas = document.getElementById('dagCanvas');
+  if (!canvas) return;
+  const { ctx, w, h } = setupCanvas(canvas, 800, 380);
+
+  let mode = 'chain'; // 'chain' | 'fork' | 'collider'
+  const nodes = [
+    { id: 'A', x: 200, y: 190, color: '#6366f1', label: 'A', r: 36 },
+    { id: 'B', x: 400, y: 190, color: '#06B6D4', label: 'B', r: 36 },
+    { id: 'C', x: 600, y: 190, color: '#ec4899', label: 'C', r: 36 }
+  ];
+
+  let dragging = null;
+  let dragOffX = 0, dragOffY = 0;
+
+  const modeLabels = {
+    chain: { title: '🔗 链结构 A→B→C', desc: 'A 通过 B 间接影响 C。控制 B → A 和 C 独立。', color: '#6366f1' },
+    fork: { title: '🔱 分叉结构 A←C→B', desc: 'C 是 A 和 B 的共同原因。控制 C → A 和 B 独立。', color: '#06B6D4' },
+    collider: { title: '💥 对撞结构 A→C←B', desc: '控制 C 反而让 A 和 B 产生虚假关联！', color: '#ec4899' }
+  };
+
+  function drawArrow(x1, y1, x2, y2, color) {
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+    const r = 36;
+    const sx = x2 - Math.cos(angle) * r;
+    const sy = y2 - Math.sin(angle) * r;
+    const ex = x1 + Math.cos(angle) * r;
+    const ey = y1 + Math.sin(angle) * r;
+
+    ctx.beginPath();
+    ctx.moveTo(ex, ey);
+    ctx.lineTo(sx, sy);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    // Arrowhead
+    const arrowLen = 12;
+    const arrowAngle = 0.5;
+    ctx.beginPath();
+    ctx.moveTo(sx, sy);
+    ctx.lineTo(sx - Math.cos(angle - arrowAngle) * arrowLen, sy - Math.sin(angle - arrowAngle) * arrowLen);
+    ctx.lineTo(sx - Math.cos(angle + arrowAngle) * arrowLen, sy - Math.sin(angle + arrowAngle) * arrowLen);
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+
+    // Title
+    const info = modeLabels[mode];
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.font = 'bold 14px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(info.title, w / 2, 30);
+
+    // Edges
+    if (mode === 'chain') {
+      drawArrow(nodes[0].x, nodes[0].y, nodes[1].x, nodes[1].y, '#6366f1');
+      drawArrow(nodes[1].x, nodes[1].y, nodes[2].x, nodes[2].y, '#ec4899');
+    } else if (mode === 'fork') {
+      drawArrow(nodes[2].x, nodes[2].y, nodes[0].x, nodes[0].y, '#06B6D4');
+      drawArrow(nodes[2].x, nodes[2].y, nodes[1].x, nodes[1].y, '#06B6D4');
+    } else if (mode === 'collider') {
+      drawArrow(nodes[0].x, nodes[0].y, nodes[2].x, nodes[2].y, '#6366f1');
+      drawArrow(nodes[1].x, nodes[1].y, nodes[2].x, nodes[2].y, '#ec4899');
+    }
+
+    // Nodes
+    nodes.forEach((n, i) => {
+      // Glow
+      const glow = ctx.createRadialGradient(n.x, n.y, n.r * 0.7, n.x, n.y, n.r * 1.5);
+      glow.addColorStop(0, n.color.replace(')', ',0.3)').replace('rgb', 'rgba'));
+      glow.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r * 1.5, 0, Math.PI * 2);
+      ctx.fillStyle = glow;
+      ctx.fill();
+
+      // Circle
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(10,10,15,0.95)';
+      ctx.fill();
+      ctx.strokeStyle = n.color;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // Label
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 16px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(n.id, n.x, n.y);
+
+      // Sublabel
+      ctx.fillStyle = 'rgba(255,255,255,0.35)';
+      ctx.font = '9px Inter, sans-serif';
+      const sub = mode === 'chain' ? ['吸烟','焦油','肺癌'][i] :
+                   mode === 'fork' ? ['冰激凌','溺水','气温'][i] :
+                   ['才华','运气','成功'][i];
+      ctx.fillText(sub, n.x, n.y + 16);
+    });
+
+    // Description
+    ctx.fillStyle = 'rgba(255,255,255,0.45)';
+    ctx.font = '12px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(info.desc, w / 2, h - 18);
+
+    // Instruction
+    ctx.fillStyle = 'rgba(255,255,255,0.2)';
+    ctx.font = '10px Inter, sans-serif';
+    ctx.fillText('💡 可以拖拽节点', w / 2, h - 38);
+  }
+
+  draw();
+
+  canvas.addEventListener('mousedown', e => {
+    const rect = canvas.getBoundingClientRect();
+    const mx = (e.clientX - rect.left) * (800 / rect.width);
+    const my = (e.clientY - rect.top) * (380 / rect.height);
+    for (const n of nodes) {
+      const dx = mx - n.x, dy = my - n.y;
+      if (Math.sqrt(dx * dx + dy * dy) < n.r) {
+        dragging = n;
+        dragOffX = n.x - mx;
+        dragOffY = n.y - my;
+        canvas.style.cursor = 'grabbing';
+        break;
+      }
+    }
+  });
+
+  canvas.addEventListener('mousemove', e => {
+    if (!dragging) {
+      const rect = canvas.getBoundingClientRect();
+      const mx = (e.clientX - rect.left) * (800 / rect.width);
+      const my = (e.clientY - rect.top) * (380 / rect.height);
+      let over = false;
+      for (const n of nodes) {
+        if (Math.sqrt((mx - n.x) ** 2 + (my - n.y) ** 2) < n.r) { over = true; break; }
+      }
+      canvas.style.cursor = over ? 'grab' : 'default';
+      return;
+    }
+    const rect = canvas.getBoundingClientRect();
+    const mx = (e.clientX - rect.left) * (800 / rect.width);
+    const my = (e.clientY - rect.top) * (380 / rect.height);
+    dragging.x = Math.max(50, Math.min(750, mx + dragOffX));
+    dragging.y = Math.max(50, Math.min(330, my + dragOffY));
+    draw();
+  });
+
+  canvas.addEventListener('mouseup', () => { dragging = null; canvas.style.cursor = 'default'; });
+  canvas.addEventListener('mouseleave', () => { dragging = null; canvas.style.cursor = 'default'; });
+
+  // Touch support
+  canvas.addEventListener('touchstart', e => {
+    const rect = canvas.getBoundingClientRect();
+    const mx = (e.touches[0].clientX - rect.left) * (800 / rect.width);
+    const my = (e.touches[0].clientY - rect.top) * (380 / rect.height);
+    for (const n of nodes) {
+      if (Math.sqrt((mx - n.x) ** 2 + (my - n.y) ** 2) < n.r) {
+        dragging = n;
+        dragOffX = n.x - mx;
+        dragOffY = n.y - my;
+        e.preventDefault();
+        break;
+      }
+    }
+  }, { passive: false });
+
+  canvas.addEventListener('touchmove', e => {
+    if (!dragging) return;
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const mx = (e.touches[0].clientX - rect.left) * (800 / rect.width);
+    const my = (e.touches[0].clientY - rect.top) * (380 / rect.height);
+    dragging.x = Math.max(50, Math.min(750, mx + dragOffX));
+    dragging.y = Math.max(50, Math.min(330, my + dragOffY));
+    draw();
+  }, { passive: false });
+
+  canvas.addEventListener('touchend', () => { dragging = null; });
+
+  // Mode buttons
+  ['dagChain','dagFork','dagCollider'].forEach(id => {
+    document.getElementById(id)?.addEventListener('click', function() {
+      document.querySelectorAll('#dagChain,#dagFork,#dagCollider').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      mode = id === 'dagChain' ? 'chain' : id === 'dagFork' ? 'fork' : 'collider';
+      // Reset node positions
+      if (mode === 'chain') { nodes[0].x = 200; nodes[1].x = 400; nodes[2].x = 600; nodes[0].y = nodes[1].y = nodes[2].y = 190; }
+      else if (mode === 'fork') { nodes[0].x = 200; nodes[0].y = 110; nodes[1].x = 200; nodes[1].y = 270; nodes[2].x = 450; nodes[2].y = 190; }
+      else { nodes[0].x = 200; nodes[0].y = 110; nodes[1].x = 200; nodes[1].y = 270; nodes[2].x = 500; nodes[2].y = 190; }
+      nodes[0].color = '#6366f1'; nodes[1].color = '#06B6D4'; nodes[2].color = '#ec4899';
+      draw();
+    });
+  });
+})();
+
+// ═══════════════════════════════════════════════════
+// VIZ 4: Confounding — Three-variable animation
+// ═══════════════════════════════════════════════════
+(function() {
+  const canvas = document.getElementById('confoundCanvas');
+  if (!canvas) return;
+  const { ctx, w, h } = setupCanvas(canvas, 800, 440);
+
+  let controlLevel = 0; // 0-100, how much we control for exercise
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+
+    // Title
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.font = 'bold 14px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('☕ 咖啡 → 心脏病？ — 观察混杂因子"运动习惯"的作用', w / 2, 25);
+
+    // Three nodes
+    const nodes = [
+      { x: 100, y: 110, r: 44, color: '#F59E0B', label: '运动习惯', sub: '混杂因子' },
+      { x: 400, y: 80, r: 38, color: '#6366f1', label: '喝咖啡', sub: '暴露因素' },
+      { x: 400, y: 280, r: 38, color: '#EF4444', label: '心脏病', sub: '结局' }
+    ];
+    const [confound, exposure, outcome] = nodes;
+
+    // Draw nodes
+    nodes.forEach(n => {
+      const glow = ctx.createRadialGradient(n.x, n.y, n.r * 0.6, n.x, n.y, n.r * 1.4);
+      glow.addColorStop(0, n.color.replace(')', ',0.25)').replace('rgb', 'rgba').replace('#',''));
+      glow.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r * 1.4, 0, Math.PI * 2); ctx.fillStyle = glow; ctx.fill();
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(10,10,15,0.95)'; ctx.fill();
+      ctx.strokeStyle = n.color; ctx.lineWidth = 2.5; ctx.stroke();
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 13px Inter, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(n.label, n.x, n.y - 4);
+      ctx.fillStyle = 'rgba(255,255,255,0.3)'; ctx.font = '9px Inter, sans-serif';
+      ctx.fillText(n.sub, n.x, n.y + 14);
+    });
+
+    // Arrow: confound → exposure (thickness varies with controlLevel)
+    drawConfoundArrow(confound.x + confound.r, confound.y - 8, exposure.x - exposure.r, exposure.y, 1);
+
+    // Arrow: confound → outcome
+    drawConfoundArrow(confound.x + confound.r, confound.y + 8, outcome.x - outcome.r, outcome.y, 1);
+
+    // Arrow: exposure → outcome (thickness decreases as we control)
+    const spuriousStrength = Math.max(0.05, 1 - controlLevel / 100);
+    drawConfoundArrow(exposure.x, exposure.y + exposure.r, outcome.x, outcome.y - outcome.r, spuriousStrength);
+
+    // Right panel: correlation display
+    const px = 560, py = 60, pw2 = 210, ph2 = 280;
+    ctx.fillStyle = 'rgba(255,255,255,0.03)';
+    ctx.beginPath(); ctx.roundRect(px, py, pw2, ph2, 12); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.roundRect(px, py, pw2, ph2, 12); ctx.stroke();
+
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.font = 'bold 12px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('观测到的关联', px + pw2 / 2, py + 22);
+
+    // Scatter dots
+    const nDots = 40;
+    const baseStrength = 1 - controlLevel / 100;
+    for (let i = 0; i < nDots; i++) {
+      const baseX = (i / nDots) * 160 + px + 25;
+      const jitter = (Math.random() - 0.5) * 30;
+      const trend = baseStrength * (i / nDots - 0.5) * 100;
+      const dotX = baseX;
+      const dotY = py + ph2 - 40 - (i / nDots) * 170 - trend * 0.6 + jitter;
+      ctx.beginPath();
+      ctx.arc(dotX, dotY, 3, 0, Math.PI * 2);
+      ctx.fillStyle = baseStrength > 0.3 ? 'rgba(239,68,68,0.6)' : 'rgba(16,185,129,0.6)';
+      ctx.fill();
+    }
+
+    // r value
+    const rVal = 0.42 * baseStrength;
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    ctx.font = 'bold 13px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('r = ' + rVal.toFixed(2), px + pw2 / 2, py + ph2 - 42);
+
+    // Label
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.font = '10px Inter, sans-serif';
+    ctx.fillText('☕ 咖啡消费  →  ❤️ 心脏病风险', px + pw2 / 2, py + ph2 - 24);
+
+    // Control level indicator
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.textAlign = 'left';
+    ctx.font = '11px Inter, sans-serif';
+    ctx.fillText('控制程度: ' + controlLevel + '%', 100, h - 30);
+    if (controlLevel > 70) {
+      ctx.fillStyle = 'rgba(16,185,129,0.9)';
+      ctx.fillText('✓ 充分控制混杂后，咖啡与心脏病几乎无关', 230, h - 30);
+    } else if (controlLevel > 30) {
+      ctx.fillStyle = 'rgba(245,158,11,0.9)';
+      ctx.fillText('⚠️ 部分控制，虚假关联在减弱', 230, h - 30);
+    } else {
+      ctx.fillStyle = 'rgba(239,68,68,0.9)';
+      ctx.fillText('⚠️ 未控制混杂，观测到虚假的"咖啡→心脏病"关联', 230, h - 30);
+    }
+  }
+
+  function drawConfoundArrow(x1, y1, x2, y2, strength) {
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+    const sx = x2 - Math.cos(angle) * 8;
+    const sy = y2 - Math.sin(angle) * 8;
+    const ex = x1 + Math.cos(angle) * 8;
+    const ey = y1 + Math.sin(angle) * 8;
+
+    ctx.beginPath();
+    ctx.moveTo(ex, ey);
+    ctx.lineTo(sx, sy);
+    ctx.strokeStyle = strength > 0.5 ? 'rgba(239,68,68,0.6)' : 'rgba(255,255,255,0.12)';
+    ctx.lineWidth = 2 * strength;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    // Arrowhead
+    const arrLen = 8 * strength + 2;
+    const arrAng = 0.5;
+    ctx.beginPath();
+    ctx.moveTo(sx, sy);
+    ctx.lineTo(sx - Math.cos(angle - arrAng) * arrLen, sy - Math.sin(angle - arrAng) * arrLen);
+    ctx.lineTo(sx - Math.cos(angle + arrAng) * arrLen, sy - Math.sin(angle + arrAng) * arrLen);
+    ctx.closePath();
+    ctx.fillStyle = strength > 0.5 ? 'rgba(239,68,68,0.6)' : 'rgba(255,255,255,0.12)';
+    ctx.fill();
+  }
+
+  draw();
+
+  document.getElementById('confoundSlider')?.addEventListener('input', function() {
+    controlLevel = parseInt(this.value);
+    draw();
+  });
+})();
+
+// ═══════════════════════════════════════════════════
+// VIZ 5: do-operator — Observe vs Intervene
+// ═══════════════════════════════════════════════════
+(function() {
+  const canvas = document.getElementById('doCanvas');
+  if (!canvas) return;
+  const { ctx, w, h } = setupCanvas(canvas, 800, 440);
+
+  let doMode = 'observe'; // 'observe' | 'intervene'
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+
+    // Two panels
+    drawPanel(20, 40, 370, 370, '👁️ 观测 P(Y|X)', '被动观察', '#6366f1', doMode === 'observe');
+    drawPanel(410, 40, 370, 370, '✋ 干预 P(Y|do(X))', '主动干预', '#ec4899', doMode === 'intervene');
+
+    // Connecting insight
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.font = 'bold 13px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    const insight = doMode === 'observe'
+      ? '观测：看到喝咖啡的人生病更多，但混杂因子（运动习惯）仍在起作用'
+      : '干预：随机分配咖啡，切断了混杂因子→喝咖啡的箭头，因果效应被隔离';
+    ctx.fillText(insight, w / 2, h - 8);
+
+    // Active indicator
+    ctx.fillStyle = doMode === 'observe' ? '#6366f1' : '#ec4899';
+    ctx.font = '11px Inter, sans-serif';
+    ctx.fillText(doMode === 'observe' ? '← 当前：观测模式' : '当前：干预模式 →', w / 2, h - 28);
+  }
+
+  function drawPanel(x, y, pw, ph, title, subtitle, color, isActive) {
+    // Panel bg
+    ctx.fillStyle = isActive ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.02)';
+    ctx.beginPath(); ctx.roundRect(x, y, pw, ph, 16); ctx.fill();
+    ctx.strokeStyle = isActive ? color : 'rgba(255,255,255,0.08)';
+    ctx.lineWidth = isActive ? 2 : 1;
+    ctx.beginPath(); ctx.roundRect(x, y, pw, ph, 16); ctx.stroke();
+
+    // Title
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 13px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(title, x + pw / 2, y + 28);
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.font = '10px Inter, sans-serif';
+    ctx.fillText(subtitle, x + pw / 2, y + 44);
+
+    // Nodes
+    const cx = x + pw / 2;
+    const cy = y + 100;
+
+    // Node: 运动习惯 (confounder)
+    drawSmallNode(cx - 80, cy - 30, '#F59E0B', '运动习惯', 26);
+
+    // Node: 喝咖啡 (exposure)
+    drawSmallNode(cx, cy - 80, color, '喝咖啡', 24);
+
+    // Node: 心脏病 (outcome)
+    drawSmallNode(cx + 80, cy - 30, '#EF4444', '心脏病', 24);
+
+    // Arrow from confounder to exposure
+    const confToExpExists = isActive ? (doMode !== 'intervene' || isActive === false) : true;
+    // In observe mode: both arrows exist
+    // In intervene mode: confounder→exposure is CUT
+    if (doMode === 'observe') {
+      drawSimpleArrow(cx - 54, cy - 30, cx - 24, cy - 72, 'rgba(245,158,11,0.5)', 2);
+    } else {
+      // Intervene: show X'ed out arrow
+      if (isActive) {
+        // Draw cut arrow
+        drawSimpleArrow(cx - 54, cy - 30, cx - 24, cy - 72, 'rgba(245,158,11,0.15)', 1, true);
+        // ✂️ cut mark
+        ctx.fillText('✂️', cx - 44, cy - 56);
+      } else {
+        drawSimpleArrow(cx - 54, cy - 30, cx - 24, cy - 72, 'rgba(245,158,11,0.5)', 2);
+      }
+    }
+
+    // Arrow confounder → outcome (always exists)
+    drawSimpleArrow(cx - 50, cy - 24, cx + 54, cy - 24, 'rgba(245,158,11,0.3)', 1.5);
+
+    // Arrow exposure → outcome
+    const expEffect = doMode === 'observe' ? 0.6 : 0.25;
+    drawSimpleArrow(cx + 6, cy - 72, cx + 56, cy - 32, 'rgba(239,68,68,0.7)', expEffect * 3);
+
+    // Results box
+    const rbx = x + 20, rby = y + ph - 90, rbw = pw - 40, rbh = 70;
+    ctx.fillStyle = 'rgba(255,255,255,0.03)';
+    ctx.beginPath(); ctx.roundRect(rbx, rby, rbw, rbh, 10); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.beginPath(); ctx.roundRect(rbx, rby, rbw, rbh, 10); ctx.stroke();
+
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.font = '11px Inter, sans-serif';
+    ctx.textAlign = 'center';
+
+    if (doMode === 'observe') {
+      ctx.fillText('咖啡与心脏病: r = 0.42', rbx + rbw / 2, rby + 22);
+      ctx.fillStyle = 'rgba(239,68,68,0.8)';
+      ctx.font = 'bold 11px Inter, sans-serif';
+      ctx.fillText('结论: 咖啡"导致"心脏病 ⚠️', rbx + rbw / 2, rby + 46);
+      ctx.fillStyle = 'rgba(255,255,255,0.3)';
+      ctx.font = '9px Inter, sans-serif';
+      ctx.fillText('（混杂因子未受控制）', rbx + rbw / 2, rby + 62);
+    } else {
+      if (isActive) {
+        ctx.fillText('咖啡与心脏病: r = 0.08', rbx + rbw / 2, rby + 22);
+        ctx.fillStyle = 'rgba(16,185,129,0.8)';
+        ctx.font = 'bold 11px Inter, sans-serif';
+        ctx.fillText('结论: 咖啡不导致心脏病 ✓', rbx + rbw / 2, rby + 46);
+        ctx.fillStyle = 'rgba(255,255,255,0.3)';
+        ctx.font = '9px Inter, sans-serif';
+        ctx.fillText('（随机分配切断了混杂）', rbx + rbw / 2, rby + 62);
+      } else {
+        ctx.fillText('咖啡与心脏病: r = 0.42', rbx + rbw / 2, rby + 22);
+        ctx.fillStyle = 'rgba(239,68,68,0.8)';
+        ctx.font = 'bold 11px Inter, sans-serif';
+        ctx.fillText('结论: 咖啡"导致"心脏病 ⚠️', rbx + rbw / 2, rby + 46);
+      }
+    }
+  }
+
+  function drawSmallNode(nx, ny, color, label, r) {
+    ctx.beginPath();
+    ctx.arc(nx, ny, r, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(10,10,15,0.95)';
+    ctx.fill();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 10px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, nx, ny);
+  }
+
+  function drawSimpleArrow(x1, y1, x2, y2, color, width, dashed) {
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+    const len = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+    const arrLen = Math.min(10, len * 0.3);
+    const sx = x2 - Math.cos(angle) * 6;
+    const sy = y2 - Math.sin(angle) * 6;
+    const ex = x1 + Math.cos(angle) * 6;
+    const ey = y1 + Math.sin(angle) * 6;
+
+    ctx.beginPath();
+    ctx.moveTo(ex, ey);
+    ctx.lineTo(sx, sy);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.lineCap = 'round';
+    if (dashed) ctx.setLineDash([4, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.beginPath();
+    ctx.moveTo(sx, sy);
+    ctx.lineTo(sx - Math.cos(angle - 0.5) * arrLen, sy - Math.sin(angle - 0.5) * arrLen);
+    ctx.lineTo(sx - Math.cos(angle + 0.5) * arrLen, sy - Math.sin(angle + 0.5) * arrLen);
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+  }
+
+  draw();
+
+  document.getElementById('doObserve')?.addEventListener('click', function() {
+    doMode = 'observe';
+    this.classList.add('active');
+    document.getElementById('doIntervene').classList.remove('active');
+    draw();
+  });
+
+  document.getElementById('doIntervene')?.addEventListener('click', function() {
+    doMode = 'intervene';
+    this.classList.add('active');
+    document.getElementById('doObserve').classList.remove('active');
+    draw();
+  });
+})();
+
+// ── Canvas resize handler ──
+window.addEventListener('resize', () => {
+  // DAG canvas responsive resize
+  const dagCanvas = document.getElementById('dagCanvas');
+  if (dagCanvas) {
+    const rect = dagCanvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    dagCanvas.style.width = '';
+    dagCanvas.style.height = '';
+  }
+});
+
+</script>
+</body>
+</html>

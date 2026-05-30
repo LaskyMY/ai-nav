@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>红蓝眼谜题 — 大家都知道的话，为何却不能说？</title>
+<link rel="icon" href="./icon.svg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.6;min-height:100vh;padding-bottom:calc(100px + env(safe-area-inset-bottom,0));-webkit-font-smoothing:antialiased;overflow-x:hidden;letter-spacing:-.01em}
+::-webkit-scrollbar{width:2px;height:2px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.04);border-radius:1px}
+::selection{background:rgba(99,102,241,.3)}
+
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(99,102,241,.05),rgba(236,72,153,.04) 20%,rgba(168,85,247,.02) 45%,transparent 70%)}
+
+.header{position:sticky;top:0;z-index:50;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-top:none;padding:10px 20px;border-radius:0 0 22px 22px;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 40px rgba(99,102,241,.1),0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04)}
+.header-in{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.header-logo{font-size:17px;font-weight:700;white-space:nowrap;letter-spacing:-.02em;background:linear-gradient(135deg,var(--a1),var(--pink),var(--vio));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 6s ease-in-out infinite}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+.back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}.home-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none;margin-left:auto}.home-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+
+.container{max-width:900px;margin:0 auto;padding:18px 20px;position:relative;z-index:1}
+
+/* Hero */
+.hero-wrap{position:relative;text-align:center;padding:40px 0 20px;overflow:hidden}
+#heroCanvas{position:absolute;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:900px;height:100%;pointer-events:none;z-index:0;opacity:.6}
+.hero-content{position:relative;z-index:1}
+.hero-content h1{font-size:32px;font-weight:700;letter-spacing:-.03em;margin-bottom:8px;background:linear-gradient(135deg,var(--a3),var(--a1),var(--cyan));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+.hero-content .sub{color:var(--tx2);font-size:15px;max-width:520px;margin:0 auto;line-height:1.6}
+.hero-badge{display:inline-block;padding:4px 12px;border-radius:12px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);font-size:11px;color:var(--a1);margin-bottom:12px;letter-spacing:.04em}
+
+.section{position:relative;z-index:1;margin-bottom:32px;scroll-margin-top:80px}
+.section-hd{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-left:2px}
+.section-hd .s-icon{font-size:24px}
+.section-hd h2{font-size:18px;font-weight:700;color:var(--tx);letter-spacing:-.02em}
+.section-hd .s-num{font-size:12px;color:var(--tx3);background:rgba(255,255,255,.05);padding:3px 10px;border-radius:8px}
+
+.viz-card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:20px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(99,102,241,.04),0 4px 24px rgba(0,0,0,.1)}
+.viz-card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.viz-card canvas{display:block;width:100%;max-width:100%;border-radius:12px;margin-bottom:8px}
+.viz-card .viz-info{font-size:12px;color:var(--tx2);line-height:1.6;margin-top:8px;padding:10px 14px;background:rgba(255,255,255,.03);border-radius:10px;border-left:2px solid var(--a1)}
+.viz-card .viz-info strong{color:var(--tx)}
+
+.viz-ctrls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;justify-content:center;align-items:center}
+.viz-btn{padding:7px 16px;border-radius:8px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.viz-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:rgba(99,102,241,.2)}
+.viz-btn.active{background:rgba(99,102,241,.2);border-color:rgba(99,102,241,.4);color:var(--a1)}
+.viz-btn:disabled{opacity:.3;pointer-events:none}
+.viz-slider{width:100%;margin-top:8px}
+.viz-slider input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:rgba(255,255,255,.1);outline:none}
+.viz-slider input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--a1);cursor:pointer;border:2px solid rgba(255,255,255,.2)}
+.viz-slider label{display:block;font-size:11px;color:var(--tx3);text-align:center;margin-top:4px}
+
+.insight{display:flex;align-items:flex-start;gap:8px;padding:10px 14px;border-radius:10px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.15);margin-top:10px;font-size:12px;color:var(--amber);line-height:1.5}
+.insight .ins-icon{font-size:16px;flex-shrink:0}
+
+/* Day log */
+.day-log{max-height:200px;overflow-y:auto;font-size:11px;color:var(--tx2);line-height:1.7;padding:8px 12px;background:rgba(255,255,255,.02);border-radius:10px;margin-top:8px}
+.day-log .entry{padding:3px 0;border-bottom:1px solid rgba(255,255,255,.03)}
+.day-log .entry.leave{color:var(--a2)}
+
+/* Knowledge layers */
+.knowledge-layers{display:flex;flex-direction:column;gap:4px;margin:10px 0}
+.knowledge-layers .layer{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;font-size:11px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);transition:all .3s}
+.knowledge-layers .layer.highlight{background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.25);color:var(--tx)}
+.knowledge-layers .layer-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;background:rgba(255,255,255,.06);color:var(--tx3)}
+.knowledge-layers .layer.highlight .layer-num{background:var(--a1);color:#fff}
+
+blockquote.quote{border-left:3px solid var(--a1);padding:10px 16px;margin:14px 0;background:rgba(99,102,241,.05);border-radius:0 10px 10px 0;font-size:13px;color:var(--tx2);font-style:italic;line-height:1.6}
+blockquote.quote .q-author{display:block;margin-top:6px;font-style:normal;font-size:11px;color:var(--tx3)}
+
+/* mini-games v3 */
+.mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:rgba(99,102,241,.2)}
+.mg-btn.correct{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.35);color:var(--a2)}
+.mg-btn.wrong{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.35);color:var(--a3);animation:shake .4s}
+.mg-right{color:var(--a2)}.mg-wrong{color:var(--a3)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+.mg-q4-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.mg-q4-q{font-size:12px;color:var(--tx2);margin:0;line-height:1.5}
+.mg-q4-counter{font-size:11px;color:var(--tx3);min-width:24px;text-align:center}
+.mg-q4-opt{display:block;width:100%;text-align:left;padding:8px 12px;margin:4px 0;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-q4-opt:hover{background:rgba(255,255,255,.08);color:var(--tx);border-color:rgba(99,102,241,.2)}
+.mg-q4-opt.correct{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:var(--a2)}
+.mg-q4-opt.wrong{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:var(--a3)}
+.mg-q4-explain{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:6px;line-height:1.5}
+.mg-q4-explain.show{display:block;animation:fadeUp .3s var(--ease) both}
+.mg-spot-cards{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mg-spot-card{padding:8px 10px;border-radius:8px;border:1px solid var(--card-border);font-size:11px;color:var(--tx2);cursor:pointer;background:rgba(255,255,255,.02);transition:all .2s;line-height:1.4;min-height:50px;-webkit-tap-highlight-color:transparent}
+.mg-spot-card:hover{border-color:rgba(99,102,241,.2);background:rgba(255,255,255,.05)}
+.mg-spot-card.correct{border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:var(--a2)}
+.mg-spot-card.wrong{border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.08);color:var(--a3)}
+.mg-spot-fb{display:none;font-size:12px;margin-top:6px;line-height:1.5}
+.mg-spot-fb.show{display:block;animation:fadeUp .3s var(--ease) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)scale(.97)}to{opacity:1;transform:translateY(0)scale(1)}}
+
+/* bottom nav */
+.bottom-nav{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0));left:50%;transform:translateX(-50%);width:calc(100% - 28px);max-width:440px;height:58px;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-radius:22px;display:flex;justify-content:center;align-items:center;gap:16px;z-index:100;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 50px rgba(99,102,241,.12),0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.04)}
+.nav-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:var(--tx3);padding:6px 14px;border-radius:14px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .3s var(--ease);-webkit-tap-highlight-color:transparent;text-decoration:none}
+.nav-btn:hover{background:rgba(255,255,255,.08);color:var(--tx2)}
+.nav-btn svg{width:14px;height:14px}
+
+.toc{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;padding:0 2px}
+.toc a{font-size:11px;color:var(--tx3);text-decoration:none;padding:4px 10px;border-radius:6px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04);transition:all .2s;white-space:nowrap}
+.toc a:hover{color:var(--tx);background:rgba(255,255,255,.06)}
+
+@media(max-width:480px){
+  .hero-content h1{font-size:24px}
+  .viz-card{padding:14px}
+  .mg-spot-cards{grid-template-columns:1fr}
+  .section-hd h2{font-size:16px}
+}
+</style>
+</head>
+<body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot"></div>
+
+<div class="header">
+  <div class="header-in">
+    <a class="back-btn" href="./index.html" title="返回主页"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
+    <a class="back-btn" href="./knowledge.html" title="知识百科" style="margin-left:2px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></a>
+    <span class="header-logo">红蓝眼谜题</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- Hero -->
+<div class="hero-wrap" id="heroWrap">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-badge">🧩 经典逻辑谜题<img src="https://cdn.jsdelivr.net/gh/LaskyMY/ai-nav@main/images/logic-puzzle.jpg" alt="" style="width:100%;max-width:600px;border-radius:16px;margin-top:14px;aspect-ratio:2/1;object-fit:cover" loading="lazy">
+</div>
+    <h1>大家都知道的话<br>为何却不能说？</h1>
+    <p class="sub">岛上住着红眼睛和蓝眼睛的人。所有人都能看见别人的眼睛，但看不见自己的。一个外来者说了一句话，然后……一切都变了。</p>
+  </div>
+</div>
+
+<!-- TOC -->
+<nav class="toc">
+  <a href="#s1">1. 谜题设定</a>
+  <a href="#s2">2. 交互模拟器</a>
+  <a href="#s3">3. 数学归纳法</a>
+  <a href="#s4">4. 共同知识</a>
+  <a href="#s5">5. 现实意义</a>
+  <a href="#games">🎮 小游戏</a>
+</nav>
+
+<!-- ============================================================ -->
+<!-- SECTION 1: 谜题设定 -->
+<!-- ============================================================ -->
+<section class="section" id="s1">
+  <div class="section-hd"><span class="s-icon">🏝️</span><h2>谜题设定</h2><span class="s-num">第 1 章</span></div>
+
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
+      <strong>设定：</strong>一个岛上有 <span style="color:var(--a1)">N 个蓝眼睛的人</span>和若干红眼睛的人。岛民们严格遵守两条规则：
+    </p>
+    <div style="font-size:12px;color:var(--tx2);line-height:1.8;padding-left:12px">
+      <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--a1)">1.</span> 每个人都能看到别人的眼睛颜色，但<span style="color:var(--a3)">看不见自己的</span>。</div>
+      <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--a1)">2.</span> 任何人<span style="color:var(--a3)">不得以任何方式讨论</span>眼睛颜色——不能说、不能写、不能暗示。</div>
+      <div style="display:flex;gap:8px"><span style="color:var(--a1)">3.</span> 如果有人<span style="color:var(--a2)">推理出</span>自己的眼睛颜色，必须在<span style="color:var(--amber)">当晚午夜</span>离开岛屿。</div>
+    </div>
+  </div>
+
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:8px">
+      <strong>🚢 外来者到来：</strong>一天，一个外来者来到岛上，对所有岛民公开宣布：
+    </p>
+    <div style="text-align:center;padding:16px;background:rgba(99,102,241,.08);border-radius:12px;border:1px solid rgba(99,102,241,.15);margin-bottom:10px">
+      <span style="font-size:16px;color:var(--tx)">"<strong>我看到这个岛上至少有一个蓝眼睛的人。</strong>"</span>
+    </div>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.6">
+      这句话听起来像是废话——因为每个岛民<span style="color:var(--a1)">已经能看到</span>其他蓝眼睛的岛民（如果 N≥2）。
+      但这句"废话"却引发了一个连锁反应：<strong style="color:var(--a3)">N 天后，所有蓝眼睛的人都会离开。</strong>
+    </p>
+    <div class="insight"><span class="ins-icon">🤔</span> 如果每个人早就知道"存在蓝眼睛的人"，为什么外来者的话还会产生新的信息？答案在"共同知识"中。</div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 2: 交互模拟器 -->
+<!-- ============================================================ -->
+<section class="section" id="s2">
+  <div class="section-hd"><span class="s-icon">🎮</span><h2>交互模拟器</h2><span class="s-num">第 2 章</span></div>
+
+  <div class="viz-card">
+    <canvas id="simCanvas" width="800" height="440"></canvas>
+    <div class="viz-slider">
+      <input type="range" id="nSlider" min="1" max="7" value="3">
+      <label>蓝眼睛人数 N = <span id="nLabel">3</span>（拖动滑块改变）</label>
+    </div>
+    <div class="viz-ctrls">
+      <button class="viz-btn" id="simReset">↺ 重置</button>
+      <button class="viz-btn" id="simStep">▶ 推进一天</button>
+      <button class="viz-btn" id="simAuto">⏩ 自动演示</button>
+    </div>
+    <div class="day-log" id="dayLog"></div>
+  </div>
+
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:8px">
+      <strong>👁️ 推理过程（以 N=3 为例）：</strong>
+    </p>
+    <div style="font-size:12px;color:var(--tx2);line-height:1.7">
+      <p><strong style="color:var(--a1)">第 1 天：</strong>每个蓝眼人看到 2 个蓝眼人。他们想："如果我是红眼，那 2 个人只会看到 1 个蓝眼人。他们会想'如果我也是红眼，那唯一的蓝眼人会在第1天离开'。" 没人离开。</p>
+      <p style="margin-top:4px"><strong style="color:var(--cyan)">第 2 天：</strong>看到没人离开，证明"我是红眼"的假设失败了。所以如果只有 2 个蓝眼人，他们会在第 2 天离开。但还是没人离开。</p>
+      <p style="margin-top:4px"><strong style="color:var(--pink)">第 3 天：</strong>又没人离开。"只有 2 个蓝眼人"的假设也失败了。所以……我一定是蓝眼睛！所有 3 人在第 3 天同时离开。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 3: 数学归纳法 -->
+<!-- ============================================================ -->
+<section class="section" id="s3">
+  <div class="section-hd"><span class="s-icon">📐</span><h2>数学归纳法证明</h2><span class="s-num">第 3 章</span></div>
+
+  <div class="viz-card">
+    <canvas id="inductCanvas" width="800" height="360"></canvas>
+  </div>
+
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:8px">
+      <strong>定理：</strong>如果有 N 个蓝眼睛的人，他们都会在第 N 天午夜离开。
+    </p>
+    <div style="font-size:12px;color:var(--tx2);line-height:1.7">
+      <p><strong style="color:var(--a2)">基础情况 N=1：</strong>唯一的蓝眼人看不到任何蓝眼人。外来者说"存在蓝眼人"→ 他立刻知道就是自己。第 1 天离开。✓</p>
+      <p style="margin-top:4px"><strong style="color:var(--a1)">归纳假设：</strong>假设有 K 个蓝眼人时，他们会在第 K 天离开。</p>
+      <p style="margin-top:4px"><strong style="color:var(--pink)">归纳步骤 N=K+1：</strong>每个蓝眼人看到 K 个蓝眼人。他想："如果我是红眼，那就只有 K 个蓝眼人。根据归纳假设，他们会在第 K 天离开。" 当第 K 天没人离开时，他知道"我是红眼"的假设错误。所以在第 K+1 天离开。✓</p>
+    </div>
+    <blockquote class="quote">
+      "这个谜题完美展示了数学归纳法的力量——从一个显然的基础情形出发，通过纯粹的逻辑推理，得到令人惊讶的结论。"
+      <span class="q-author">— 陶哲轩 (Terence Tao)</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 4: 共同知识 vs 互相知识 -->
+<!-- ============================================================ -->
+<section class="section" id="s4">
+  <div class="section-hd"><span class="s-icon">🧠</span><h2>共同知识 — 谜题的核心</h2><span class="s-num">第 4 章</span></div>
+
+  <div class="viz-card">
+    <canvas id="knowledgeCanvas" width="800" height="320"></canvas>
+    <div class="viz-ctrls">
+      <button class="viz-btn active" id="knowBefore">外来者到来之前</button>
+      <button class="viz-btn" id="knowAfter">外来者到来之后</button>
+    </div>
+  </div>
+
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
+      <strong>互相知识 ≠ 共同知识：</strong>
+    </p>
+    <div class="knowledge-layers" id="knowLayers">
+      <div class="layer"><span class="layer-num">L0</span> 我知道"存在蓝眼人"</div>
+      <div class="layer"><span class="layer-num">L1</span> 我知道"你知道"存在蓝眼人</div>
+      <div class="layer"><span class="layer-num">L2</span> 我知道"你知道'我知道'"存在蓝眼人</div>
+      <div class="layer"><span class="layer-num">L3</span> 我知道"你知道'我知道你知道'"存在蓝眼人</div>
+      <div class="layer"><span class="layer-num">L∞</span> ……无穷递归 → 这才是共同知识</div>
+    </div>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.6;margin-top:10px">
+      外来者到来<span style="color:var(--a3)">之前</span>：每个人都看到了蓝眼人，L0-L(N-1) 成立，但 L∞ 不成立——因为没人公开说过。每个人都可能怀疑"别人知不知道我知道"。
+    </p>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.6">
+      外来者到来<span style="color:var(--a2)">之后</span>：在一次<span style="color:var(--a1)">公开宣告</span>中，所有人都听到了，所有人都看到所有人听到了。L∞ 成立了——宣告的内容成为了"共同知识"。
+    </p>
+    <div class="insight"><span class="ins-icon">💡</span> 外来者的话之所以不是废话，是因为它把"互相知识"升级成了"共同知识"。这就是为什么同样的信息，私下知道和公开宣告有本质区别。</div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 5: 现实意义 -->
+<!-- ============================================================ -->
+<section class="section" id="s5">
+  <div class="section-hd"><span class="s-icon">🌍</span><h2>现实世界中的应用</h2><span class="s-num">第 5 章</span></div>
+
+  <div class="viz-card" style="padding:16px">
+    <div style="display:grid;gap:12px;font-size:13px;line-height:1.7">
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <span style="font-size:24px;flex-shrink:0">📈</span>
+        <div><strong style="color:var(--a1)">股市泡沫</strong><br><span style="font-size:12px;color:var(--tx2)">每个人都知道股价被高估，但没人知道"别人知不知道"。一旦有人公开发表看空观点（相当于外来者宣告），泡沫瞬间破裂。</span></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <span style="font-size:24px;flex-shrink:0">👑</span>
+        <div><strong style="color:var(--amber)">皇帝的新装</strong><br><span style="font-size:12px;color:var(--tx2)">每个成年人"看到"皇帝没穿衣服，但没人知道别人是不是真的没看到。小孩公开说出来→共同知识建立→所有人都笑了。</span></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <span style="font-size:24px;flex-shrink:0">🤝</span>
+        <div><strong style="color:var(--a2)">协调博弈</strong><br><span style="font-size:12px;color:var(--tx2)">电子邮件游戏：你需要确认对方收到了你的确认，对方需要确认你收到了他的确认……无穷递归。共同知识是协调问题的理论基石。</span></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <span style="font-size:24px;flex-shrink:0">🗳️</span>
+        <div><strong style="color:var(--pink)">公共宣告逻辑</strong><br><span style="font-size:12px;color:var(--tx2)">计算机科学中的"公共宣告逻辑"(PAL)专门研究公开宣告如何改变知识状态。分布式系统中的"共识问题"本质上也是共同知识问题。</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- GAMES -->
+<!-- ============================================================ -->
+<section class="section" id="games">
+  <div class="section-hd"><span class="s-icon">🎮</span><h2>互动小游戏</h2><span class="s-num">2 个</span></div>
+
+  <!-- Game 1: 逻辑侦探 -->
+  <div class="viz-card">
+    <h3 style="font-size:15px;font-weight:600;margin-bottom:4px;color:var(--tx)">🕵️ 逻辑侦探 — 你能推理出来吗？</h3>
+    <p style="font-size:11px;color:var(--tx3);margin-bottom:12px">关于共同知识和逻辑谜题的 5 道挑战题。</p>
+
+    <!-- Q1 -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="2" data-explains='["📌 虽然大家都看到了蓝眼人，但这只是互相知识（每个人都知道），不是共同知识（每个人都知道每个人都知道……无穷递归）。","📌 存在蓝眼人确实是老信息——每个人之前就看到了。但信息的\"公开性\"才是新东西。","🎯 核心答案！外来者的话把\"互相知识\"升级成了\"共同知识\"。在公共宣告之前，每个蓝眼人都可以合理怀疑：别人是否知道\"别人知道\"存在蓝眼人？宣告之后，这个递归无限延伸。","📌 外来者没有给出新的事实，但他让所有人同时知道了同一件事——并且所有人都知道所有人知道了。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 为什么外来者的话不是废话？每个岛民不是早就看到其他蓝眼人了吗？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ 因为有些岛民可能没注意看别人的眼睛</button>
+      <button class="mg-q4-opt">🅱️ 因为岛民之前不确定到底有没有蓝眼人</button>
+      <button class="mg-q4-opt">©️ 因为外来者把"互相知识"变成了"共同知识"</button>
+      <button class="mg-q4-opt">🅳 因为外来者给出了新的信息——蓝眼人确实存在</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+
+    <!-- Q2: induction -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="3" data-explains='["📌 不对。每个蓝眼人看到 N-1 个蓝眼人，他能推算出：如果我是红眼，那 N-1 个蓝眼人会在第 N-1 天离开。","📌 外来者在第1天到来之前就说话了——他说的当天就是推理的起点。在第1天之前，蓝眼人只能看到其他蓝眼人但没有人公开宣告过。","📌 N=1时，唯一的蓝眼人看不到任何蓝眼人。外来者的话让他立即知道是自己。这才是基础情形。","🎯 正确！每个蓝眼人都在想：\"如果我看到K个蓝眼人而他们没在第K天离开，那说明第K天离开的前提不成立——所以我不是红眼。\"这种递归推理需要 N 层深。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 如果有N个蓝眼人，他们都在第N天离开。这个推理过程中，每个蓝眼人需要思考多少层递归？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ 1层——只需要想"我看到N-1个蓝眼人"</button>
+      <button class="mg-q4-opt">🅱️ N-1层——从第2天开始推理</button>
+      <button class="mg-q4-opt">©️ 0层——N=1的基础情形不需要递归</button>
+      <button class="mg-q4-opt">🅳 N层——"如果我是红眼，那其他N-1人会想'如果我也是红眼，那N-2人会想……'"</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+
+    <!-- Q3: muddy children variant -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 这就是红蓝眼谜题的变体。老师说\"至少一人额头脏\"相当于外来者的宣告。2个脏孩子会在第2天同时举手——因为每个脏孩子看到1个脏孩子，如果第1天没人举手，就说明不止1个。","📌 每个脏孩子只能看到别人的额头，看不到自己的。这和红蓝眼谜题的设定一样。","📌 如果只有1个脏孩子，他看不到任何脏额头，会在第1天举手。但老师说的是\"至少一人\"。","📌 第1天最多只有1人会举手（如果恰好1个脏孩子）。有2个脏孩子时，第1天没人举手。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 经典变体"脏孩子谜题"：老师说"你们中至少一人额头上有泥巴"。有2个脏孩子。第几天他们会举手？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ 第2天——和第2天推理完全一样</button>
+      <button class="mg-q4-opt">🅱️ 第1天——因为他们看到对方额头有泥巴</button>
+      <button class="mg-q4-opt">©️ 永远不会——他们无法知道自己额头有没有泥巴</button>
+      <button class="mg-q4-opt">🅳 第1天——因为老师的宣告包含新信息</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+
+    <!-- Q4: common knowledge real life -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="1" data-explains='["📌 每个人私下知道自己的工资，但不知道别人的工资是否被公开了。缺乏共同知识，无法协调行动。","🎯 公司全员邮件就是一次\"公开宣告\"，建立了共同知识。没有它之前，即使每个人都私下不满，也不知道别人是否也不满，更不知道别人是否知道别人也不满……","📌 匿名的力量恰恰在于它制造了\"我不知道你是谁\"的局面——破坏了共同知识。","📌 私下流传是互相知识，不是共同知识。没有公开宣告，就没有从L0到L∞的升级。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 以下哪个是现实中的"外来者宣告"——把互相知识升级为共同知识？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ 每个人都私下知道自己的工资</button>
+      <button class="mg-q4-opt">🅱️ CEO发全员邮件宣布裁员计划——所有人都收到了</button>
+      <button class="mg-q4-opt">©️ 匿名论坛上有人说公司管理不善</button>
+      <button class="mg-q4-opt">🅳 同事私下告诉你他不满工资</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+
+    <!-- Q5: deeper insight -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="2" data-explains='["📌 不对。预言本身不引发行动——预言改变了人们对\"别人知道什么\"的认知。","📌 恰好相反。逻辑本身是确定的——给定前提，结论必然推出。\"自我实现\"意味着前提可以改变，但这里没有。","🎯 正确！这个谜题展示了纯逻辑和纯知识状态的变化可以产生实质结果——不需要任何物理因果。外来者没有碰任何人，没有改变任何物理事实，只改变了\"谁知道了什么\"的知识状态。","📌 归纳法适用于任何自然数N，不存在上限。\"任意大\"的N都成立——虽然现实中的人可能做不了无限层递归推理。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 红蓝眼谜题最深刻的哲学含义是什么？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ 逻辑推理有实际局限性，现实中N不能太大</button>
+      <button class="mg-q4-opt">🅱️ 预言有自我实现的力量</button>
+      <button class="mg-q4-opt">©️ 知识状态的变化可以产生实质结果，即使没有任何物理因果</button>
+      <button class="mg-q4-opt">🅳 数学归纳法不适用于超过3个蓝眼人的情况</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+  </div>
+
+  <!-- Game 2: Spot -->
+  <div class="viz-card">
+    <h3 style="font-size:15px;font-weight:600;margin-bottom:4px;color:var(--tx)">🔍 找出真正的"共同知识"</h3>
+    <p style="font-size:11px;color:var(--tx3);margin-bottom:12px">以下 4 个场景中，有一个建立了真正的共同知识。找到它！共 3 轮。</p>
+
+    <!-- Round 1 -->
+    <div class="mg-spot" data-mg="spot" data-label="公开宣告（共同知识）">
+      <p class="mg-q4-q">🔍 第一轮：以下哪个场景中的信息变成了<strong>共同知识</strong>（L∞成立）？</p>
+      <div class="mg-spot-cards">
+        <div class="mg-spot-card" data-idx="0" data-has="false">📧 老板分别给10个员工单独发邮件，告诉他们"公司下月搬家"</div>
+        <div class="mg-spot-card" data-idx="1" data-has="true">📢 全体会议上CEO说"公司下月搬家"，所有人都在场并看到彼此在场</div>
+        <div class="mg-spot-card" data-idx="2" data-has="false">💬 茶水间传言说公司要搬家，大多数人都听说了</div>
+        <div class="mg-spot-card" data-idx="3" data-has="false">📊 内部论坛的置顶帖写着"公司下月搬家"</div>
+      </div>
+      <div class="mg-spot-fb"></div>
+    </div>
+
+    <!-- Round 2 -->
+    <div class="mg-spot" data-mg="spot" data-label="皇帝的新装（小孩的宣告）">
+      <p class="mg-q4-q">🔍 第二轮：<strong>皇帝的新装</strong>故事中，哪个瞬间把"互相知识"变成了"共同知识"？</p>
+      <div class="mg-spot-cards">
+        <div class="mg-spot-card" data-idx="0" data-has="false">👀 每个成年人看到皇帝裸体但假装没看到</div>
+        <div class="mg-spot-card" data-idx="1" data-has="false">🤴 皇帝自己心虚但不敢承认看不见衣服</div>
+        <div class="mg-spot-card" data-idx="2" data-has="false">👔 骗子声称"愚蠢的人看不见这件衣服"</div>
+        <div class="mg-spot-card" data-idx="3" data-has="true">🗣️ 小孩大声说"皇帝什么都没穿！"——所有人都听到了</div>
+      </div>
+      <div class="mg-spot-fb"></div>
+    </div>
+
+    <!-- Round 3 -->
+    <div class="mg-spot" data-mg="spot" data-label="股市崩盘（公开信号）">
+      <p class="mg-q4-q">🔍 第三轮：哪个事件起到了<strong>外来者宣告</strong>的作用，触发了连锁反应？</p>
+      <div class="mg-spot-cards">
+        <div class="mg-spot-card" data-idx="0" data-has="false">📰 财经媒体发表文章说"股市可能被高估了"</div>
+        <div class="mg-spot-card" data-idx="1" data-has="true">🏦 某大基金公开宣布清仓，所有人看到这条消息，所有人看到所有人看到了</div>
+        <div class="mg-spot-card" data-idx="2" data-has="false">💭 几个基金经理私下讨论觉得泡沫太大</div>
+        <div class="mg-spot-card" data-idx="3" data-has="false">📉 当天股市跌了2%，大家觉得可能是调整</div>
+      </div>
+      <div class="mg-spot-fb"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Key takeaways -->
+<section class="section" style="margin-bottom:20px">
+  <div class="section-hd"><span class="s-icon">📝</span><h2>关键要点</h2></div>
+  <div class="viz-card" style="padding:16px">
+    <div style="display:grid;gap:10px;font-size:13px;line-height:1.7">
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">1.</span><span><strong style="color:var(--a1)">互相知识 ≠ 共同知识。</strong>每个人都知道 X，不等于每个人都知道"每个人都知道 X"（无穷递归）。</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">2.</span><span><strong style="color:var(--amber)">公开宣告改变一切。</strong>外来者的话之所以不是废话，是因为"公开"让L0变成了L∞。</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">3.</span><span><strong style="color:var(--cyan)">归纳法是推理引擎。</strong>从基础情形N=1出发，N=2的人需要推"N=1的人会怎么想"。递归深度正好等于N。</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">4.</span><span><strong style="color:var(--pink)">纯知识状态变化 = 实质结果。</strong>没有任何物理因果，只靠逻辑推理就导致了岛民离开。</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">5.</span><span><strong style="color:var(--a2)">应用无处不在。</strong>股市泡沫、皇帝的新装、协调博弈、分布式共识——共同知识是现代经济学的基石。</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Further watching -->
+<section class="section" style="margin-bottom:20px">
+  <div class="section-hd"><span class="s-icon">📚</span><h2>推荐阅读 & 视频</h2></div>
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:12px;color:var(--tx2);line-height:1.8">
+      🎬 <strong style="color:var(--tx)">漫士 — B站视频</strong>（BV1gZz8BYE3r 相关）— "红蓝眼谜题：大家都知道的话，为何却不能说？"<br>
+      📖 <strong style="color:var(--tx)">Terence Tao — 博客文章</strong> — "The Blue-Eyed Islanders Puzzle" 陶哲轩详细分析<br>
+      📖 <strong style="color:var(--tx)">Robert Aumann</strong> — "Agreeing to Disagree" (1976) — 共同知识概念的里程碑论文<br>
+      📖 <strong style="color:var(--tx)">David Lewis — <em>Convention</em></strong> (1969) — 共同知识在哲学中的起源<br>
+      🎓 <strong style="color:var(--tx)">Michael Chwe — <em>Rational Ritual</em></strong> — 共同知识在仪式、广告、政治中的角色
+    </p>
+  </div>
+</section>
+
+</div><!-- /container -->
+
+<!-- Bottom nav -->
+<nav class="bottom-nav">
+  <a class="nav-btn" href="./index.html">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> 首页
+  </a>
+  <a class="nav-btn" href="./knowledge.html">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> 百科
+  </a>
+  <button class="nav-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg> 回到顶部
+  </button>
+</nav>
+
+<script src="mini-games.js"></script>
+<script>
+'use strict';
+
+// ── roundRect polyfill ──
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+    if (typeof r === 'number') r = { tl: r, tr: r, br: r, bl: r };
+    else if (Array.isArray(r)) {
+      if (r.length === 4) r = { tl: r[0], tr: r[1], br: r[2], bl: r[3] };
+      else if (r.length === 2) r = { tl: r[0], tr: r[0], br: r[1], bl: r[1] };
+      else if (r.length === 1) r = { tl: r[0], tr: r[0], br: r[0], bl: r[0] };
+    }
+    this.beginPath(); this.moveTo(x + r.tl, y); this.lineTo(x + w - r.tr, y);
+    this.quadraticCurveTo(x + w, y, x + w, y + r.tr); this.lineTo(x + w, y + h - r.br);
+    this.quadraticCurveTo(x + w, y + h, x + w - r.br, y + h); this.lineTo(x + r.bl, y + h);
+    this.quadraticCurveTo(x, y + h, x, y + h - r.bl); this.lineTo(x, y + r.tl);
+    this.quadraticCurveTo(x, y, x + r.tl, y); this.closePath(); return this;
+  };
+}
+
+function setupCanvas(canvas, w, h) {
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+  const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr);
+  return { ctx, w, h };
+}
+
+// ═══════════════════════════════════════
+// HERO: particle network
+// ═══════════════════════════════════════
+(function() {
+  const canvas = document.getElementById('heroCanvas');
+  const wrap = document.getElementById('heroWrap');
+  if (!canvas || !wrap) return;
+  let dim;
+  function resize() {
+    const rect = wrap.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr; canvas.height = rect.height * dpr;
+    canvas.style.width = rect.width + 'px'; canvas.style.height = rect.height + 'px';
+    const ctx = canvas.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { w: rect.width, h: rect.height, ctx };
+  }
+  dim = resize();
+  window.addEventListener('resize', () => { dim = resize(); });
+  const particles = [];
+  for (let i = 0; i < 45; i++) {
+    particles.push({
+      x: Math.random() * dim.w, y: Math.random() * dim.h, r: Math.random() * 2 + 1,
+      vx: (Math.random() - 0.5) * 0.35, vy: (Math.random() - 0.5) * 0.35,
+      alpha: Math.random() * 0.4 + 0.1,
+      color: ['#6366f1','#EF4444','#06B6D4','#a855f7'][Math.floor(Math.random()*4)]
+    });
+  }
+  function draw() {
+    const { ctx, w, h } = dim;
+    ctx.clearRect(0, 0, w, h);
+    particles.forEach((p, i) => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = w; if (p.x > w) p.x = 0;
+      if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = p.color; ctx.globalAlpha = p.alpha; ctx.fill();
+      for (let j = i + 1; j < 45; j++) {
+        const dx = particles[j].x - p.x, dy = particles[j].y - p.y;
+        const dist = Math.sqrt(dx*dx+dy*dy);
+        if (dist < 80) {
+          ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = p.color; ctx.globalAlpha = 0.06*(1-dist/80);
+          ctx.lineWidth = 0.5; ctx.stroke();
+        }
+      }
+    });
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ═══════════════════════════════════════
+// VIZ 1: Island Simulator
+// ═══════════════════════════════════════
+(function() {
+  const canvas = document.getElementById('simCanvas');
+  if (!canvas) return;
+  const { ctx, w, h } = setupCanvas(canvas, 800, 440);
+
+  let N = 3; // number of blue-eyed people
+  let day = 0;
+  let people = [];
+  let logEntries = [];
+  let autoRunning = false;
+  let autoTimer = null;
+
+  const positions = [];
+  const totalPeople = 12;
+
+  function initPeople() {
+    people = [];
+    for (let i = 0; i < totalPeople; i++) {
+      people.push({ blue: i < N, left: false, id: i });
+    }
+    day = 0;
+    logEntries = [];
+    updateLog();
+  }
+
+  function updateLog() {
+    const logEl = document.getElementById('dayLog');
+    if (!logEl) return;
+    let html = '';
+    for (const e of logEntries) {
+      html += `<div class="entry${e.leave ? ' leave' : ''}">${e.text}</div>`;
+    }
+    logEl.innerHTML = html;
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+
+    // Title
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.font = 'bold 14px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🏝️ 红蓝眼岛 — 交互模拟', w/2, 24);
+
+    // Day counter
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.font = 'bold 20px Inter, sans-serif';
+    ctx.fillText('第 ' + day + ' 天', w/2, 54);
+
+    // Island ground
+    const cx = w/2, cy = 240, ir = 160;
+    ctx.beginPath();
+    ctx.arc(cx, cy, ir + 30, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(16,185,129,0.04)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(16,185,129,0.1)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([8, 12]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // People in circle
+    const activePeople = people.filter(p => !p.left);
+    const count = activePeople.length;
+
+    // Place everyone in circle
+    people.forEach((p, i) => {
+      let px, py;
+      if (p.left) {
+        // Moved to edge - placed at the sides
+        const side = i % 4;
+        if (side === 0) { px = 60; py = 80 + (i * 37) % 300; }
+        else if (side === 1) { px = w - 60; py = 80 + (i * 37) % 300; }
+        else if (side === 2) { px = 120 + (i * 43) % 560; py = 40; }
+        else { px = 120 + (i * 43) % 560; py = h - 30; }
+        p.vx = px; p.vy = py;
+      } else {
+        const idx = activePeople.indexOf(p);
+        const angle = (idx / count) * Math.PI * 2 - Math.PI/2;
+        px = cx + Math.cos(angle) * ir;
+        py = cy + Math.sin(angle) * ir;
+        p.vx = p.vx ? p.vx * 0.85 + px * 0.15 : px;
+        p.vy = p.vy ? p.vy * 0.85 + py * 0.15 : py;
+      }
+      const sx = p.vx || px;
+      const sy = p.vy || py;
+
+      // Body
+      ctx.beginPath();
+      ctx.arc(sx, sy - 8, 10, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(255,255,255,0.15)';
+      ctx.fill();
+      ctx.strokeStyle = p.blue ? 'rgba(99,102,241,0.5)' : 'rgba(239,68,68,0.5)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Body line
+      ctx.beginPath();
+      ctx.moveTo(sx, sy + 2);
+      ctx.lineTo(sx, sy + 22);
+      ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Eyes - the key!
+      const eyeR = 3.5;
+      const eyeY = sy - 9;
+      const eyeSpacing = 4;
+      ctx.beginPath();
+      ctx.arc(sx - eyeSpacing, eyeY, eyeR, 0, Math.PI*2);
+      ctx.arc(sx + eyeSpacing, eyeY, eyeR, 0, Math.PI*2);
+      ctx.fillStyle = p.blue ? '#6366f1' : '#EF4444';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+      ctx.lineWidth = 0.5;
+      ctx.stroke();
+
+      // Eye glow for blue-eyed
+      if (p.blue && !p.left) {
+        ctx.beginPath();
+        ctx.arc(sx - eyeSpacing, eyeY, eyeR + 3, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(99,102,241,0.15)';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(sx + eyeSpacing, eyeY, eyeR + 3, 0, Math.PI*2);
+        ctx.fill();
+      }
+
+      // Left indicator
+      if (p.left) {
+        ctx.fillStyle = 'rgba(255,255,255,0.3)';
+        ctx.font = '10px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('🚶已离开', sx, sy + 36);
+      }
+    });
+
+    // Legend
+    ctx.fillStyle = '#6366f1'; ctx.beginPath();
+    ctx.arc(w - 180, h - 28, 5, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.font = '11px Inter, sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText('蓝眼', w - 170, h - 24);
+
+    ctx.fillStyle = '#EF4444'; ctx.beginPath();
+    ctx.arc(w - 120, h - 28, 5, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.fillText('红眼', w - 110, h - 24);
+
+    ctx.fillText('蓝眼人数: ' + N + ' | 已离开: ' + people.filter(p=>p.left).length + '/' + N, w - 240, h - 24);
+
+    // Speech bubble from outsider (day 0)
+    if (day === 0) {
+      const bx = 130, by = 60;
+      ctx.fillStyle = 'rgba(255,255,255,0.08)';
+      ctx.beginPath(); ctx.roundRect(bx, by, 200, 32, 10); ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+      ctx.beginPath(); ctx.roundRect(bx, by, 200, 32, 10); ctx.stroke();
+      ctx.fillStyle = 'rgba(255,255,255,0.6)';
+      ctx.font = '11px Inter, sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('📢 "至少有一个蓝眼人"', bx + 100, by + 21);
+      // Triangle pointer
+      ctx.beginPath(); ctx.moveTo(bx + 100, by + 32); ctx.lineTo(bx + 90, by + 42); ctx.lineTo(bx + 110, by + 42); ctx.closePath();
+      ctx.fillStyle = 'rgba(255,255,255,0.08)'; ctx.fill();
+    }
+
+    // Status text
+    if (day > 0) {
+      const leftToday = people.filter(p => p.left).length;
+      const shouldLeave = (day >= N) ? N : 0;
+      if (leftToday >= N && N > 0) {
+        ctx.fillStyle = 'rgba(16,185,129,0.9)';
+        ctx.font = 'bold 13px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('✅ 第 ' + N + ' 天：所有 ' + N + ' 个蓝眼人都推理出自己眼睛的颜色，离开了岛屿！', w/2, h - 14);
+      } else if (day > N) {
+        ctx.fillStyle = 'rgba(255,255,255,0.35)';
+        ctx.font = '12px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('故事结束。所有蓝眼人已离开。', w/2, h - 14);
+      } else {
+        ctx.fillStyle = 'rgba(255,255,255,0.35)';
+        ctx.font = '12px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('蓝眼人正在推理中……', w/2, h - 14);
+      }
+    }
+  }
+
+  function stepDay() {
+    if (day >= N && people.filter(p => p.blue && !p.left).length === 0) return;
+    day++;
+    const prevBlueCount = people.filter(p => p.blue && !p.left).length;
+    if (day === N && prevBlueCount === N) {
+      // All blue-eyed people leave
+      people.forEach(p => { if (p.blue) p.left = true; });
+      logEntries.push({ text: '🌅 第 ' + day + ' 天午夜：所有 ' + N + ' 个蓝眼人同时离开岛屿！他们推理出了自己的眼睛颜色。', leave: true });
+    } else if (day > N) {
+      logEntries.push({ text: '🌅 第 ' + day + ' 天：岛上已无蓝眼人。推理结束。', leave: false });
+    } else {
+      const leftCount = N - prevBlueCount;
+      logEntries.push({ text: '🌅 第 ' + day + ' 天午夜：无人离开。蓝眼人继续推理中……（他们想："如果只有' + (N - day) + '个蓝眼人他们应该走了才对"）', leave: false });
+    }
+    updateLog();
+    draw();
+  }
+
+  function reset() {
+    if (autoTimer) { clearInterval(autoTimer); autoTimer = null; autoRunning = false; }
+    initPeople();
+    document.getElementById('simAuto').textContent = '⏩ 自动演示';
+    document.getElementById('simStep').disabled = false;
+    draw();
+  }
+
+  initPeople();
+  draw();
+
+  document.getElementById('nSlider')?.addEventListener('input', function() {
+    N = parseInt(this.value);
+    document.getElementById('nLabel').textContent = N;
+    reset();
+  });
+
+  document.getElementById('simStep')?.addEventListener('click', stepDay);
+
+  document.getElementById('simReset')?.addEventListener('click', reset);
+
+  document.getElementById('simAuto')?.addEventListener('click', function() {
+    if (autoRunning) {
+      clearInterval(autoTimer); autoTimer = null; autoRunning = false;
+      this.textContent = '⏩ 自动演示';
+      document.getElementById('simStep').disabled = false;
+    } else {
+      autoRunning = true;
+      this.textContent = '⏸️ 停止';
+      document.getElementById('simStep').disabled = true;
+      // Reset if finished
+      if (day >= N && people.filter(p => p.blue && !p.left).length === 0) reset();
+      autoTimer = setInterval(() => {
+        if (day >= N && people.filter(p => p.blue && !p.left).length === 0) {
+          clearInterval(autoTimer); autoTimer = null; autoRunning = false;
+          document.getElementById('simAuto').textContent = '⏩ 自动演示';
+          document.getElementById('simStep').disabled = false;
+          return;
+        }
+        stepDay();
+      }, 1200);
+    }
+  });
+})();
+
+// ═══════════════════════════════════════
+// VIZ 2: Induction proof visualization
+// ═══════════════════════════════════════
+(function() {
+  const canvas = document.getElementById('inductCanvas');
+  if (!canvas) return;
+  const { ctx, w, h } = setupCanvas(canvas, 800, 360);
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.font = 'bold 14px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('📐 数学归纳法：如果 N 个蓝眼人在第 N 天离开……', w/2, 26);
+
+    // Draw the reasoning chain for N and N+1
+    const leftX = 80, rightX = 480;
+    const y = 70;
+
+    // Top: N blue-eyed people scenario
+    drawInductionStep(leftX, y, 'N 个蓝眼人', '第 N 天离开 ✓', 'rgba(99,102,241,0.3)', '#6366f1');
+    drawArrow(leftX + 140, y + 35, leftX + 200, y + 80, 'rgba(255,255,255,0.2)');
+
+    // Middle left: the reasoning
+    drawInductionStep(leftX, y + 80, 'N+1 人中每个蓝眼人\n看到 N 个蓝眼人', '如果我是红眼 →\n剩下 N 个蓝眼人', 'rgba(245,158,11,0.2)', '#F59E0B');
+    drawArrow(leftX + 140, y + 135, leftX + 200, y + 175, 'rgba(255,255,255,0.2)');
+
+    // Bottom left: the conclusion
+    drawInductionStep(leftX, y + 175, '他们在第 N 天\n没有离开！', '所以"我是红眼"\n的假设是错误的', 'rgba(236,72,153,0.2)', '#ec4899');
+    drawArrow(leftX + 140, y + 230, leftX + 200, y + 260, 'rgba(16,185,129,0.4)');
+
+    // Final conclusion
+    drawInductionStep(leftX, y + 260, '我一定是蓝眼！', '第 N+1 天离开 ✓', 'rgba(16,185,129,0.2)', '#10B981');
+
+    // Right side: the visual
+    const rx = 500, ry = 80;
+    ctx.fillStyle = 'rgba(255,255,255,0.04)';
+    ctx.beginPath(); ctx.roundRect(rx, ry, 260, 200, 12); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    ctx.beginPath(); ctx.roundRect(rx, ry, 260, 200, 12); ctx.stroke();
+
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.font = '11px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🧠 推理链核心', rx + 130, ry + 24);
+
+    const reasoningLines = [
+      '1. 每个蓝眼人看到 N-1 个蓝眼人',
+      '2. 他假设自己是红眼',
+      '3. 那么其他 N-1 人看到 N-2 个',
+      '4. 他们也会假设自己是红眼...',
+      '5. 递归到底层：如果只有1个',
+      '   蓝眼人，他会在第1天离开',
+      '6. 第1天没人走 → 不止1个',
+      '7. 第2天还是没人走 → 不止2个',
+      '...',
+      'N. 第N-1天没人走 → N个全走'
+    ];
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.font = '10px Inter, sans-serif';
+    ctx.textAlign = 'left';
+    reasoningLines.forEach((line, i) => {
+      ctx.fillText(line, rx + 18, ry + 48 + i * 16);
+    });
+
+    // Bottom note
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.font = '10px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('这本质上就是数学归纳法：基础情形 N=1 成立 + 归纳步骤 N→N+1 成立 → 对所有 N 成立', w/2, h - 14);
+  }
+
+  function drawInductionStep(x, y, left, right, bg, border) {
+    ctx.fillStyle = bg;
+    ctx.beginPath(); ctx.roundRect(x, y, 140, 60, 10); ctx.fill();
+    ctx.strokeStyle = border;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.roundRect(x, y, 140, 60, 10); ctx.stroke();
+
+    ctx.fillStyle = '#fff';
+    ctx.font = '11px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    const lines = left.split('\n');
+    lines.forEach((l, i) => ctx.fillText(l, x + 70, y + 18 + i * 16));
+
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.font = '9px Inter, sans-serif';
+    const rlines = right.split('\n');
+    rlines.forEach((l, i) => ctx.fillText(l, x + 70, y + 40 + i * 12));
+  }
+
+  function drawArrow(x1, y1, x2, y2, color) {
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - Math.cos(angle - 0.5) * 8, y2 - Math.sin(angle - 0.5) * 8);
+    ctx.lineTo(x2 - Math.cos(angle + 0.5) * 8, y2 - Math.sin(angle + 0.5) * 8);
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+  }
+
+  draw();
+})();
+
+// ═══════════════════════════════════════
+// VIZ 3: Knowledge layers
+// ═══════════════════════════════════════
+(function() {
+  const canvas = document.getElementById('knowledgeCanvas');
+  if (!canvas) return;
+  const { ctx, w, h } = setupCanvas(canvas, 800, 320);
+
+  let beforeMode = true;
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.font = 'bold 14px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(beforeMode ? '外来者到来之前：互相知识（止于有限层）' : '外来者到来之后：共同知识（无穷递归 L∞）', w/2, 24);
+
+    // Draw people
+    const peoplePos = [
+      { x: 160, y: 200 }, { x: 400, y: 200 }, { x: 640, y: 200 }
+    ];
+
+    peoplePos.forEach((pp, pi) => {
+      const idx = pi + 1;
+      // Person
+      ctx.beginPath();
+      ctx.arc(pp.x, pp.y - 6, 14, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(255,255,255,0.1)';
+      ctx.fill();
+      ctx.strokeStyle = '#6366f1'; ctx.lineWidth = 1.5; ctx.stroke();
+      // Eyes
+      ctx.beginPath();
+      ctx.arc(pp.x - 3, pp.y - 8, 2.5, 0, Math.PI*2);
+      ctx.arc(pp.x + 3, pp.y - 8, 2.5, 0, Math.PI*2);
+      ctx.fillStyle = '#6366f1'; ctx.fill();
+      // Label
+      ctx.fillStyle = 'rgba(255,255,255,0.6)';
+      ctx.font = '10px Inter, sans-serif';
+      ctx.fillText('岛民 ' + idx, pp.x, pp.y + 16);
+    });
+
+    // Knowledge layers from each person
+    if (beforeMode) {
+      // Before: only finite layers
+      // Person 1 → P1 knows P2 knows (Level 1)
+      drawKnowledgeLine(peoplePos[0].x, peoplePos[0].y - 20, peoplePos[1].x, peoplePos[1].y - 20, 'L0: 我看到蓝眼', 'rgba(99,102,241,0.3)', 0);
+      drawKnowledgeLine(peoplePos[1].x - 8, 175, peoplePos[0].x + 8, 175, 'L1: 他知道我看到', 'rgba(99,102,241,0.15)', 1);
+      // Gap at L2
+      ctx.fillStyle = 'rgba(239,68,68,0.5)';
+      ctx.font = 'bold 11px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('⛔ L2 不确定：岛民1不确定"岛民2是否知道岛民1知道"', 400, 120);
+      ctx.fillText('因为没人公开说过这句话！', 400, 138);
+    } else {
+      // After: infinite recursion
+      for (let level = 0; level < 4; level++) {
+        const alpha = 0.4 - level * 0.1;
+        const yOff = 80 + level * 24;
+        drawKnowledgeLine(peoplePos[0].x, yOff, peoplePos[2].x, yOff,
+          level === 0 ? 'L0: 我看到蓝眼' : 'L' + level + ': 我知道"你知道' + (level > 1 ? '...' : '我知道"') + '...',
+          'rgba(16,185,129,' + alpha + ')', level);
+      }
+      ctx.fillStyle = 'rgba(16,185,129,0.6)';
+      ctx.font = 'bold 12px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('✅ L∞ 成立！无穷递归 → 共同知识建立', 400, 240);
+    }
+
+    // Bottom legend
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.font = '10px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(beforeMode ? '互相知识：每个人都知道，但递归到某一层就断了' : '共同知识：公开宣告让无穷层递归成立', w/2, h - 16);
+
+    // Update the sidebar layers highlight
+    const layers = document.querySelectorAll('#knowLayers .layer');
+    layers.forEach((l, i) => {
+      if (!beforeMode) l.classList.add('highlight');
+      else if (i < 2) l.classList.add('highlight');
+      else l.classList.remove('highlight');
+    });
+  }
+
+  function drawKnowledgeLine(x1, y1, x2, y2, label, color, level) {
+    // Curved connection
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.quadraticCurveTo((x1 + x2) / 2, y1 - 10 - level * 5, x2, y2);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = Math.max(0.5, 2.5 - level * 0.5);
+    ctx.setLineDash([3, 3]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Label
+    ctx.fillStyle = color;
+    ctx.font = '9px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(label, (x1 + x2) / 2, y1 - 6 - level * 5);
+  }
+
+  draw();
+
+  document.getElementById('knowBefore')?.addEventListener('click', function() {
+    beforeMode = true;
+    this.classList.add('active');
+    document.getElementById('knowAfter').classList.remove('active');
+    draw();
+  });
+
+  document.getElementById('knowAfter')?.addEventListener('click', function() {
+    beforeMode = false;
+    this.classList.add('active');
+    document.getElementById('knowBefore').classList.remove('active');
+    draw();
+  });
+})();
+
+// ── resize handler ──
+window.addEventListener('resize', () => {
+  // Canvas resize will be handled via setupCanvas on next interaction or on reload
+});
+</script>
+</body>
+</html>

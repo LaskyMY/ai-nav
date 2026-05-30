@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>伯特兰悖论 — 同一个事件，三种概率</title>
+<link rel="icon" href="./icon.svg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.6;min-height:100vh;padding-bottom:calc(100px + env(safe-area-inset-bottom,0));-webkit-font-smoothing:antialiased;overflow-x:hidden;letter-spacing:-.01em}
+::-webkit-scrollbar{width:2px;height:2px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.04);border-radius:1px}
+::selection{background:rgba(99,102,241,.3)}
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(99,102,241,.05),rgba(236,72,153,.04) 20%,rgba(168,85,247,.02) 45%,transparent 70%)}
+.header{position:sticky;top:0;z-index:50;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-top:none;padding:10px 20px;border-radius:0 0 22px 22px;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 40px rgba(99,102,241,.1),0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04)}
+.header-in{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.header-logo{font-size:17px;font-weight:700;white-space:nowrap;letter-spacing:-.02em;background:linear-gradient(135deg,var(--a1),var(--pink),var(--vio));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 6s ease-in-out infinite}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+.back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}.home-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none;margin-left:auto}.home-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.container{max-width:900px;margin:0 auto;padding:18px 20px;position:relative;z-index:1}
+.hero-wrap{position:relative;text-align:center;padding:40px 0 20px;overflow:hidden}
+#heroCanvas{position:absolute;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:900px;height:100%;pointer-events:none;z-index:0;opacity:.6}
+.hero-content{position:relative;z-index:1}
+.hero-content h1{font-size:32px;font-weight:700;letter-spacing:-.03em;margin-bottom:8px;background:linear-gradient(135deg,var(--amber),var(--a1),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+.hero-content .sub{color:var(--tx2);font-size:15px;max-width:520px;margin:0 auto;line-height:1.6}
+.hero-badge{display:inline-block;padding:4px 12px;border-radius:12px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);font-size:11px;color:var(--a1);margin-bottom:12px;letter-spacing:.04em}
+.section{position:relative;z-index:1;margin-bottom:32px;scroll-margin-top:80px}
+.section-hd{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-left:2px}
+.section-hd .s-icon{font-size:24px}
+.section-hd h2{font-size:18px;font-weight:700;color:var(--tx);letter-spacing:-.02em}
+.section-hd .s-num{font-size:12px;color:var(--tx3);background:rgba(255,255,255,.05);padding:3px 10px;border-radius:8px}
+.viz-card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:20px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(99,102,241,.04),0 4px 24px rgba(0,0,0,.1)}
+.viz-card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.viz-card canvas{display:block;width:100%;max-width:100%;border-radius:12px;margin-bottom:8px}
+.viz-ctrls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;justify-content:center;align-items:center}
+.viz-btn{padding:7px 16px;border-radius:8px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.viz-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:rgba(99,102,241,.2)}
+.viz-btn.active{background:rgba(99,102,241,.2);border-color:rgba(99,102,241,.4);color:var(--a1)}
+.insight{display:flex;align-items:flex-start;gap:8px;padding:10px 14px;border-radius:10px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.15);margin-top:10px;font-size:12px;color:var(--amber);line-height:1.5}
+.insight .ins-icon{font-size:16px;flex-shrink:0}
+
+/* Method stat boxes */
+.method-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.method-stat{text-align:center;padding:10px 8px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);transition:all .3s}
+.method-stat.active{border-color:rgba(99,102,241,.3);background:rgba(99,102,241,.06)}
+.method-stat .ms-name{font-size:11px;color:var(--tx2);margin-bottom:2px}
+.method-stat .ms-val{font-size:22px;font-weight:700;margin-bottom:2px}
+.method-stat .ms-bar{height:3px;border-radius:2px;margin-top:4px;transition:width .3s}
+.ms-bar-1{background:var(--a1)}.ms-bar-2{background:var(--cyan)}.ms-bar-3{background:var(--pink)}
+.method-stat .ms-target{font-size:10px;color:var(--tx3);margin-top:2px}
+
+blockquote.quote{border-left:3px solid var(--a1);padding:10px 16px;margin:14px 0;background:rgba(99,102,241,.05);border-radius:0 10px 10px 0;font-size:13px;color:var(--tx2);font-style:italic;line-height:1.6}
+blockquote.quote .q-author{display:block;margin-top:6px;font-style:normal;font-size:11px;color:var(--tx3)}
+
+/* mini-games v3 */
+.mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:rgba(99,102,241,.2)}
+.mg-btn.correct{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.35);color:var(--a2)}
+.mg-btn.wrong{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.35);color:var(--a3);animation:shake .4s}
+.mg-right{color:var(--a2)}.mg-wrong{color:var(--a3)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+.mg-q4-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.mg-q4-q{font-size:12px;color:var(--tx2);margin:0;line-height:1.5}
+.mg-q4-counter{font-size:11px;color:var(--tx3);min-width:24px;text-align:center}
+.mg-q4-opt{display:block;width:100%;text-align:left;padding:8px 12px;margin:4px 0;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-q4-opt:hover{background:rgba(255,255,255,.08);color:var(--tx);border-color:rgba(99,102,241,.2)}
+.mg-q4-opt.correct{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:var(--a2)}
+.mg-q4-opt.wrong{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:var(--a3)}
+.mg-q4-explain{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:6px;line-height:1.5}
+.mg-q4-explain.show{display:block;animation:fadeUp .3s var(--ease) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)scale(.97)}to{opacity:1;transform:translateY(0)scale(1)}}
+
+.bottom-nav{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0));left:50%;transform:translateX(-50%);width:calc(100% - 28px);max-width:440px;height:58px;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-radius:22px;display:flex;justify-content:center;align-items:center;gap:16px;z-index:100;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 50px rgba(99,102,241,.12),0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.04)}
+.nav-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:var(--tx3);padding:6px 14px;border-radius:14px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .3s var(--ease);-webkit-tap-highlight-color:transparent;text-decoration:none}
+.nav-btn:hover{background:rgba(255,255,255,.08);color:var(--tx2)}
+.nav-btn svg{width:14px;height:14px}
+.toc{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;padding:0 2px}
+.toc a{font-size:11px;color:var(--tx3);text-decoration:none;padding:4px 10px;border-radius:6px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04);transition:all .2s;white-space:nowrap}
+.toc a:hover{color:var(--tx);background:rgba(255,255,255,.06)}
+@media(max-width:480px){
+  .hero-content h1{font-size:24px}.viz-card{padding:14px}
+  .method-stats{grid-template-columns:repeat(3,1fr);gap:4px}
+  .method-stat .ms-val{font-size:18px}
+}
+</style>
+</head>
+<body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot"></div>
+<div class="header">
+  <div class="header-in">
+    <a class="back-btn" href="./index.html" title="返回主页"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
+    <a class="back-btn" href="./knowledge.html" title="知识百科" style="margin-left:2px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></a>
+    <span class="header-logo">伯特兰悖论</span>
+  </div>
+</div>
+<div class="container">
+<div class="hero-wrap" id="heroWrap">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-badge">🎲 概率论经典悖论<img src="https://cdn.jsdelivr.net/gh/LaskyMY/ai-nav@main/images/bertrand-paradox.jpg" alt="" style="width:100%;max-width:600px;border-radius:16px;margin-top:14px;aspect-ratio:2/1;object-fit:cover" loading="lazy">
+</div>
+    <h1>同一个事件<br>居然有三种概率？</h1>
+    <p class="sub">圆的"随机弦"比内接正三角形的边长更长——概率是多少？取决于你怎么定义"随机"。</p>
+  </div>
+</div>
+<nav class="toc">
+  <a href="#s1">1. 问题设定</a>
+  <a href="#s2">2. 交互模拟器</a>
+  <a href="#s3">3. 三种方法对比</a>
+  <a href="#s4">4. 为什么？</a>
+  <a href="#s5">5. 现实意义</a>
+  <a href="#games">🎮 小游戏</a>
+</nav>
+
+<!-- S1: Setup -->
+<section class="section" id="s1">
+  <div class="section-hd"><span class="s-icon">🎯</span><h2>问题设定</h2><span class="s-num">第 1 章</span></div>
+  <div class="viz-card">
+    <canvas id="setupCanvas" width="800" height="360"></canvas>
+  </div>
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:8px">
+      <strong>伯特兰悖论（Bertrand's Paradox, 1889）：</strong>
+    </p>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.7">
+      在一个圆中<span style="color:var(--a1)">随机</span>画一条弦，这条弦的长度<span style="color:var(--a2)">大于内接正三角形边长</span>的概率是多少？
+    </p>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.7;margin-top:6px">
+      法国数学家约瑟夫·伯特兰发现：用三种<span style="color:var(--amber)">看起来都合理</span>的方法定义"随机弦"，得到的答案分别是——<strong style="color:var(--a1)">1/3</strong>、<strong style="color:var(--cyan)">1/2</strong> 和 <strong style="color:var(--pink)">1/4</strong>。
+    </p>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.7;margin-top:4px">
+      同一个问题，三种"正确"答案。这说明：<strong style="color:var(--tx)">"随机"这个词本身就需要被精确定义。</strong>
+    </p>
+  </div>
+</section>
+
+<!-- S2: Simulator -->
+<section class="section" id="s2">
+  <div class="section-hd"><span class="s-icon">🎮</span><h2>交互模拟器 — 蒙特卡洛实验</h2><span class="s-num">第 2 章</span></div>
+  <div class="viz-card">
+    <canvas id="simCanvas" width="800" height="520"></canvas>
+    <div class="viz-ctrls">
+      <button class="viz-btn active" id="btnMethod1" style="color:var(--a1);border-color:rgba(99,102,241,.3)">方法一：随机端点</button>
+      <button class="viz-btn" id="btnMethod2" style="color:var(--cyan)">方法二：随机半径</button>
+      <button class="viz-btn" id="btnMethod3" style="color:var(--pink)">方法三：随机中点</button>
+    </div>
+    <div class="viz-ctrls">
+      <button class="viz-btn" id="btnOne">🖊️ 画一根</button>
+      <button class="viz-btn" id="btnTen">画 10 根</button>
+      <button class="viz-btn" id="btnHundred">画 100 根</button>
+      <button class="viz-btn" id="btnAuto">▶ 连续模拟</button>
+      <button class="viz-btn" id="btnReset">↺ 重置</button>
+    </div>
+    <div class="method-stats">
+      <div class="method-stat" id="stat1"><div class="ms-name">🔵 随机端点法</div><div class="ms-val" style="color:var(--a1)">—</div><div class="ms-bar ms-bar-1" id="bar1" style="width:0%"></div><div class="ms-target" id="target1">长弦数 / 总数</div></div>
+      <div class="method-stat" id="stat2"><div class="ms-name">🔷 随机半径法</div><div class="ms-val" style="color:var(--cyan)">—</div><div class="ms-bar ms-bar-2" id="bar2" style="width:0%"></div><div class="ms-target" id="target2">长弦数 / 总数</div></div>
+      <div class="method-stat" id="stat3"><div class="ms-name">🔴 随机中点法</div><div class="ms-val" style="color:var(--pink)">—</div><div class="ms-bar ms-bar-3" id="bar3" style="width:0%"></div><div class="ms-target" id="target3">长弦数 / 总数</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S3: Method comparison -->
+<section class="section" id="s3">
+  <div class="section-hd"><span class="s-icon">📊</span><h2>三种方法详细对比</h2><span class="s-num">第 3 章</span></div>
+  <div class="viz-card" style="padding:16px">
+    <div style="display:grid;gap:14px">
+      <div style="display:flex;align-items:flex-start;gap:12px;padding:12px;background:rgba(99,102,241,.05);border-radius:12px;border:1px solid rgba(99,102,241,.12)">
+        <span style="font-size:28px;flex-shrink:0">🎯</span>
+        <div>
+          <div style="font-weight:700;color:var(--a1);font-size:14px;margin-bottom:4px">方法一：随机端点 · P = 1/3</div>
+          <div style="font-size:12px;color:var(--tx2);line-height:1.7">
+            在圆周上随机选取<strong>两个点</strong>，用线段连接。<br>
+            弦长 &gt; 三角形边长 ⟺ 两点间的圆弧 &gt; 120°（即弦对应的圆心角 &gt; 120°）。<br>
+            第一个点任意；第二个点落在对侧 120° 圆弧内的概率 = <strong>120° / 360° = 1/3</strong>。
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px;padding:12px;background:rgba(6,182,212,.05);border-radius:12px;border:1px solid rgba(6,182,212,.12)">
+        <span style="font-size:28px;flex-shrink:0">📏</span>
+        <div>
+          <div style="font-weight:700;color:var(--cyan);font-size:14px;margin-bottom:4px">方法二：随机半径 · P = 1/2</div>
+          <div style="font-size:12px;color:var(--tx2);line-height:1.7">
+            随机选一条<strong>半径</strong>，在半径上随机选<strong>一个点</strong>，过该点作半径的垂线即为弦。<br>
+            弦长 &gt; 三角形边长 ⟺ 该点到圆心的距离 &lt; <strong>R/2</strong>。<br>
+            半径上符合条件的区间长度占一半 → P = <strong>1/2</strong>。
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px;padding:12px;background:rgba(236,72,153,.05);border-radius:12px;border:1px solid rgba(236,72,153,.12)">
+        <span style="font-size:28px;flex-shrink:0">🎲</span>
+        <div>
+          <div style="font-weight:700;color:var(--pink);font-size:14px;margin-bottom:4px">方法三：随机中点 · P = 1/4</div>
+          <div style="font-size:12px;color:var(--tx2);line-height:1.7">
+            在圆内随机选取<strong>一个点</strong>，以该点为中点作弦。<br>
+            弦长 &gt; 三角形边长 ⟺ 该点到圆心的距离 &lt; <strong>R/2</strong>。<br>
+            所有可能的中点均匀分布在圆面上 → P = (π·(R/2)²) / (π·R²) = <strong>1/4</strong>。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S4: Why -->
+<section class="section" id="s4">
+  <div class="section-hd"><span class="s-icon">💡</span><h2>为什么会出现悖论？</h2><span class="s-num">第 4 章</span></div>
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
+      核心问题：<strong style="color:var(--a3)">"随机"一词没有唯一的数学定义。</strong>伯特兰悖论揭示了一个深刻的事实：
+    </p>
+    <div style="font-size:12px;color:var(--tx2);line-height:1.7">
+      <p>三种方法分别对应三种不同的<span style="color:var(--a1)">概率空间</span>——它们对"所有可能的弦"这个集合分配了<span style="color:var(--amber)">不同的测度</span>。</p>
+      <p style="margin-top:6px"><strong style="color:var(--tx)">方法一</strong>中，弦的分布由端点均匀分布导出——在圆周上有平移不变性。</p>
+      <p style="margin-top:4px"><strong style="color:var(--tx)">方法二</strong>中，弦的分布由半径均匀分布导出——在径向有旋转不变性。</p>
+      <p style="margin-top:4px"><strong style="color:var(--tx)">方法三</strong>中，弦的分布由中点均匀分布导出——在平面上有平移+旋转不变性。</p>
+      <p style="margin-top:8px">三种方法都对"随机"提出了<span style="color:var(--a2)">合理的对称性要求</span>，但这些要求<span style="color:var(--a3)">互相矛盾</span>——你不可能同时满足所有不变性。</p>
+    </div>
+    <blockquote class="quote">
+      "伯特兰悖论是20世纪概率论公理化的催化剂。它直接推动了柯尔莫哥洛夫在1933年建立概率的公理化基础——用测度论的语言精确地定义'概率空间'。"
+      <span class="q-author">— 概率论历史上的关键转折点</span>
+    </blockquote>
+    <div class="insight"><span class="ins-icon">🧠</span> 实践中的教训：当有人说"随机挑选"时，一定要追问——<strong>在什么空间上按什么分布随机？</strong> 否则就没有唯一的答案。</div>
+  </div>
+</section>
+
+<!-- S5: Real-world -->
+<section class="section" id="s5">
+  <div class="section-hd"><span class="s-icon">🌍</span><h2>现实世界中的意义</h2><span class="s-num">第 5 章</span></div>
+  <div class="viz-card" style="padding:16px">
+    <div style="display:grid;gap:12px;font-size:13px;line-height:1.7">
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <span style="font-size:24px;flex-shrink:0">🤖</span>
+        <div><strong style="color:var(--a1)">机器学习</strong><br><span style="font-size:12px;color:var(--tx2)">"随机采样"、"均匀先验"——伯特兰悖论提醒我们：参数的先验分布在重新参数化后会改变（如均匀θ vs 均匀sinθ）。Jeffreys先验正是为了解决这个问题。</span></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <span style="font-size:24px;flex-shrink:0">🎲</span>
+        <div><strong style="color:var(--amber)">贝叶斯统计</strong><br><span style="font-size:12px;color:var(--tx2)">"无信息先验"本身就是一个矛盾——不同的参数化导致不同的均匀分布。伯特兰悖论是理解先验选择重要性的经典案例。</span></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <span style="font-size:24px;flex-shrink:0">📏</span>
+        <div><strong style="color:var(--cyan)">计量经济学</strong><br><span style="font-size:12px;color:var(--tx2)">当你"随机"抽样时——是按人随机？按家庭随机？按地区随机？不同的抽样框架给出不同的概率。抽样设计就是选择一种"随机"的定义。</span></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <span style="font-size:24px;flex-shrink:0">⚖️</span>
+        <div><strong style="color:var(--pink)">法律与政策</strong><br><span style="font-size:12px;color:var(--tx2)">"随机抽查"真的随机吗？按企业随机 vs 按员工随机 vs 按营业额随机——不同的"随机"查出问题的概率完全不同。执法策略就是对一个随机定义的选择。</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Games -->
+<section class="section" id="games">
+  <div class="section-hd"><span class="s-icon">🎮</span><h2>互动小游戏</h2><span class="s-num">2 组</span></div>
+  <div class="viz-card">
+    <h3 style="font-size:15px;font-weight:600;margin-bottom:4px;color:var(--tx)">🧠 伯特兰悖论挑战</h3>
+    <p style="font-size:11px;color:var(--tx3);margin-bottom:12px">5 道关于概率和"随机"定义的测试题。</p>
+    <!-- Q1 -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="3" data-explains='["📌 1/3、1/2、1/4 分别是三种方法给出的答案——它们都是正确的，在不同的随机定义下。","📌 伯特兰本人承认三种方法都合理。这不是错误，而是暴露了\"随机\"一词的不确定性。","📌 如果有一个唯一答案，伯特兰悖论就不是悖论了。三种方法对应三种随机定义，没有哪个更\"对\"。","🎯 伯特兰悖论的核心教训就是：答案取决于你怎么定义\"随机\"。没有一种唯一的、普适的\"随机\"定义——这就是悖论的意义。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 伯特兰悖论中的三种方法给出了三个不同的概率。哪一个才是"正确"答案？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ 1/3，因为随机端点是最自然的随机定义</button>
+      <button class="mg-q4-opt">🅱️ 1/2，伯特兰本人认为这个最正确</button>
+      <button class="mg-q4-opt">©️ 1/4，平面上的均匀分布才是最对称的</button>
+      <button class="mg-q4-opt">🅳 都正确——答案取决于"随机"的定义方式</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+    <!-- Q2 -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 在方法二中，弦完全由\"半径方向\"和\"半径上的点\"决定。中点离圆心小于R/2时弦比三角形边长。半径上的均匀分布意味着概率=1/2。","📌 1/3是方法一（随机端点）的答案。在方法二中，半径上的点均匀分布，不是端点均匀分布。","📌 1/4是方法三（随机中点）的答案。方法二中点在半径上均匀分布，不是圆面上的均匀分布。","📌 会有某个概率，但恰好是1/2——因为半径上离圆心R/2以内的区间占一半。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 方法二（随机半径法）为什么概率恰好是 1/2？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ 弦中点离圆心距离&lt;R/2时弦比三角形长，半径上R/2以内占一半</button>
+      <button class="mg-q4-opt">🅱️ 圆周上120°是360°的1/3，另一半是圆周上的1/2</button>
+      <button class="mg-q4-opt">©️ 圆面积中半径R/2的圆面积占1/4，但半径加权后是1/2</button>
+      <button class="mg-q4-opt">🅳 这是巧合，蒙特卡洛模拟恰好收敛到0.5</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+    <!-- Q3 -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="1" data-explains='["📌 这是贝叶斯统计中的一个著名问题。Jeffreys先验就是为了解决重新参数化后均匀分布不保留的问题。","🎯 是杰弗里（Harold Jeffreys）！他提出的Jeffreys先验在参数变换下具有不变性——正如伯特兰悖论所示，简单的\"均匀先验\"依赖于参数化的选择。","📌 拉普拉斯提出了"不充分理由原则"（均匀先验），但伯特兰悖论正是这个原则的反例。","📌 费雪是最大似然估计的创始人，提出了充分统计量等概念。但Jeffreys先验直接回应了伯特兰悖论。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 哪位统计学家提出了解决伯特兰悖论中"无信息先验"问题的方法？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ 托马斯·贝叶斯（Thomas Bayes）</button>
+      <button class="mg-q4-opt">🅱️ 哈罗德·杰弗里（Harold Jeffreys）</button>
+      <button class="mg-q4-opt">©️ 皮埃尔-西蒙·拉普拉斯（Laplace）</button>
+      <button class="mg-q4-opt">🅳 罗纳德·费雪（Ronald Fisher）</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+    <!-- Q4: real-world analog -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="2" data-explains='["📌 均匀取年龄没问题，但如果年龄和风险不是线性关系，不同年龄段人数差异会导致偏差。","📌 A/B测试本身是对的，但\"随机分配\"的具体方式（按用户？按session？按设备？）会影响结论。","🎯 这就是伯特兰悖论在实践中的体现。\"随机企业\"和\"随机员工\"给出了不同的概率——取决于你的抽样框架。大企业有更多员工，所以按员工随机更可能抽到大企业。","📌 抽样误差存在，但这个问题不是误差——是两种抽样设计的理论基础不同。大企业和小企业有相同的被抽中概率（按企业），但大企业有更多员工，所以按员工随机时大企业概率更高。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 哪个现实场景体现了伯特兰悖论的核心问题？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ 一个问卷调查随机抽取1000人，但年龄分布不均匀</button>
+      <button class="mg-q4-opt">🅱️ 一个A/B测试中实验组和对照组的分配方式</button>
+      <button class="mg-q4-opt">©️ 劳动统计中，"随机选企业调查"和"随机选员工调查"得出不同的平均工资</button>
+      <button class="mg-q4-opt">🅳 投硬币100次得到53个正面——样本太少导致误差</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+    <!-- Q5: maxwell -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="3" data-explains='["📌 题目没有精确定义\"随机\"的含义——这就是伯特兰悖论。没有哪种是\"唯一正确\"的。","📌 这恰好是伯特兰悖论的教训——三个答案在不同的对称性要求下都是合理的。","📌 题目在1889年提出时本身就是个谜题。伯特兰本人没有声称有唯一答案。","🎯 杰恩斯（E.T.Jaynes）在1973年提出，如果要求随机弦的分布在平移和旋转下不变，只有方法二满足最大熵原则——但这仍然只是一种可能的解决方案，不是唯一的。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 伯特兰悖论的"解法"之一是使用最大熵原理（最大无知原则）。这给了哪个答案？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ 1/3——最大熵下端点独立均匀分布在圆周上</button>
+      <button class="mg-q4-opt">🅱️ 题目没有精确定义，所以三种答案都对</button>
+      <button class="mg-q4-opt">©️ 1/4——中点在圆面上均匀分布</button>
+      <button class="mg-q4-opt">🅳 1/2——要求在平移+旋转下具有不变性，只有随机半径法满足</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Takeaways -->
+<section class="section" style="margin-bottom:20px">
+  <div class="section-hd"><span class="s-icon">📝</span><h2>关键要点</h2></div>
+  <div class="viz-card" style="padding:16px">
+    <div style="display:grid;gap:10px;font-size:13px;line-height:1.7">
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">1.</span><span><strong style="color:var(--a3)">"随机"需要定义。</strong>没有一种普适的"随机"概念——你必须指定概率空间和测度。</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">2.</span><span><strong style="color:var(--a1)">对称性要求可能互相矛盾。</strong>三种方法各自满足不同的不变性，无法同时满足所有对称性要求。</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">3.</span><span><strong style="color:var(--amber)">伯特兰悖论触发了概率公理化。</strong>柯尔莫哥洛夫在1933年的测度论框架正是为了消除这类歧义。</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">4.</span><span><strong style="color:var(--cyan)">实践中处处可见。</strong>从机器学习先验到抽样调查，从贝叶斯统计到法律合规——"随机"的定义至关重要。</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">5.</span><span><strong style="color:var(--a2)">最大熵原理提供了一种选择。</strong>Jaynes指出，如果要求位置+方向不变性，答案是1/2——但这不是唯一的哲学立场。</span></div>
+    </div>
+  </div>
+</section>
+<section class="section" style="margin-bottom:20px">
+  <div class="section-hd"><span class="s-icon">📚</span><h2>推荐阅读 & 视频</h2></div>
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:12px;color:var(--tx2);line-height:1.8">
+      🎬 <strong style="color:var(--tx)">漫士 — B站视频</strong> — "数学不存在了！同一个事件居然有三种概率？"<br>
+      📖 <strong style="color:var(--tx)">Joseph Bertrand — <em>Calcul des Probabilités</em></strong> (1889) — 悖论首次出现<br>
+      📖 <strong style="color:var(--tx)">E.T. Jaynes</strong> — "The Well-Posed Problem" (1973) — 用最大熵原理分析伯特兰悖论<br>
+      📖 <strong style="color:var(--tx)">Kolmogorov — <em>Foundations of Probability</em></strong> (1933) — 概率公理化的里程碑<br>
+      📖 <strong style="color:var(--tx)">A.W.F. Edwards — <em>Likelihood</em></strong> — 从似然角度讨论概率空间选择的重要性
+    </p>
+  </div>
+</section>
+</div><!-- /container -->
+
+<nav class="bottom-nav">
+  <a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> 首页</a>
+  <a class="nav-btn" href="./knowledge.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> 百科</a>
+  <button class="nav-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg> 回到顶部</button>
+</nav>
+
+<script src="mini-games.js"></script>
+<script>
+'use strict';
+
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+    if (typeof r === 'number') r = { tl: r, tr: r, br: r, bl: r };
+    else if (Array.isArray(r)) {
+      if (r.length === 4) r = { tl: r[0], tr: r[1], br: r[2], bl: r[3] };
+      else if (r.length === 2) r = { tl: r[0], tr: r[0], br: r[1], bl: r[1] };
+      else if (r.length === 1) r = { tl: r[0], tr: r[0], br: r[0], bl: r[0] };
+    }
+    this.beginPath(); this.moveTo(x + r.tl, y); this.lineTo(x + w - r.tr, y);
+    this.quadraticCurveTo(x + w, y, x + w, y + r.tr); this.lineTo(x + w, y + h - r.br);
+    this.quadraticCurveTo(x + w, y + h, x + w - r.br, y + h); this.lineTo(x + r.bl, y + h);
+    this.quadraticCurveTo(x, y + h, x, y + h - r.bl); this.lineTo(x, y + r.tl);
+    this.quadraticCurveTo(x, y, x + r.tl, y); this.closePath(); return this;
+  };
+}
+
+function setupCanvas(canvas, w, h) {
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+  const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr);
+  return { ctx, w, h };
+}
+
+// ═══ HERO particles ═══
+(function() {
+  const canvas = document.getElementById('heroCanvas');
+  const wrap = document.getElementById('heroWrap');
+  if (!canvas || !wrap) return;
+  let dim;
+  function resize() {
+    const rect = wrap.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr; canvas.height = rect.height * dpr;
+    canvas.style.width = rect.width + 'px'; canvas.style.height = rect.height + 'px';
+    const ctx = canvas.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { w: rect.width, h: rect.height, ctx };
+  }
+  dim = resize();
+  window.addEventListener('resize', () => { dim = resize(); });
+  const P = [];
+  for (let i = 0; i < 40; i++) P.push({
+    x: Math.random()*dim.w, y: Math.random()*dim.h, r: Math.random()*2+1,
+    vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3,
+    a: Math.random()*0.4+0.08,
+    c: ['#6366f1','#06B6D4','#ec4899','#F59E0B'][Math.floor(Math.random()*4)]
+  });
+  function draw() {
+    const {ctx,w,h}=dim;
+    ctx.clearRect(0,0,w,h);
+    P.forEach((p,i)=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=w;if(p.x>w)p.x=0;if(p.y<0)p.y=h;if(p.y>h)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=p.c;ctx.globalAlpha=p.a;ctx.fill();
+      for(let j=i+1;j<40;j++){
+        const dx=P[j].x-p.x,dy=P[j].y-p.y,dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<70){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(P[j].x,P[j].y);ctx.strokeStyle=p.c;ctx.globalAlpha=0.05*(1-dist/70);ctx.lineWidth=0.5;ctx.stroke();}
+      }
+    });
+    ctx.globalAlpha=1;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ═══ SETUP CANVAS — Circle + Triangle + Explanation ═══
+(function() {
+  const canvas = document.getElementById('setupCanvas');
+  if (!canvas) return;
+  const { ctx, w, h } = setupCanvas(canvas, 800, 360);
+
+  const cx = 200, cy = 200, R = 160;
+  const triVerts = [];
+  for (let i = 0; i < 3; i++) {
+    const angle = -Math.PI/2 + i * 2*Math.PI/3;
+    triVerts.push({ x: cx + R*Math.cos(angle), y: cy + R*Math.sin(angle) });
+  }
+
+  // Animate a chord
+  let animAngle = 0;
+
+  function draw(angleOffset) {
+    ctx.clearRect(0, 0, w, h);
+
+    // Title
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.font = 'bold 14px Inter, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('⭕ 伯特兰悖论 — 问题设定', cx + 200, 28);
+
+    // Circle
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI*2);
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 2.5; ctx.stroke();
+
+    // Center dot
+    ctx.beginPath(); ctx.arc(cx, cy, 3, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.fill();
+
+    // Inner circle at R/2 (threshold)
+    ctx.beginPath(); ctx.arc(cx, cy, R/2, 0, Math.PI*2);
+    ctx.strokeStyle = 'rgba(245,158,11,0.25)'; ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 8]); ctx.stroke(); ctx.setLineDash([]);
+
+    // R/2 label
+    ctx.fillStyle = 'rgba(245,158,11,0.5)'; ctx.font = '9px Inter, sans-serif';
+    ctx.fillText('R/2', cx + R/2 + 6, cy);
+
+    // Inscribed equilateral triangle
+    ctx.beginPath();
+    ctx.moveTo(triVerts[0].x, triVerts[0].y);
+    ctx.lineTo(triVerts[1].x, triVerts[1].y);
+    ctx.lineTo(triVerts[2].x, triVerts[2].y);
+    ctx.closePath();
+    ctx.strokeStyle = 'rgba(16,185,129,0.35)'; ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Triangle vertices
+    triVerts.forEach(v => {
+      ctx.beginPath(); ctx.arc(v.x, v.y, 4, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(16,185,129,0.7)'; ctx.fill();
+    });
+
+    // Animated chord
+    const a1 = angleOffset, a2 = angleOffset + Math.PI * 2 / 3 + 0.3;
+    const x1 = cx + R*Math.cos(a1), y1 = cy + R*Math.sin(a1);
+    const x2 = cx + R*Math.cos(a2), y2 = cy + R*Math.sin(a2);
+    const mx = (x1+x2)/2, my = (y1+y2)/2;
+    const distFromCenter = Math.sqrt((mx-cx)**2 + (my-cy)**2);
+    const isLong = distFromCenter < R/2;
+
+    // Chord line
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+    ctx.strokeStyle = isLong ? 'rgba(16,185,129,0.9)' : 'rgba(239,68,68,0.9)';
+    ctx.lineWidth = 2.5; ctx.stroke();
+
+    // Midpoint
+    ctx.beginPath(); ctx.arc(mx, my, 4, 0, Math.PI*2);
+    ctx.fillStyle = isLong ? 'rgba(16,185,129,0.9)' : 'rgba(239,68,68,0.9)';
+    ctx.fill();
+
+    // Endpoint dots
+    ctx.beginPath(); ctx.arc(x1, y1, 5, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(99,102,241,0.8)'; ctx.fill();
+    ctx.beginPath(); ctx.arc(x2, y2, 5, 0, Math.PI*2);
+    ctx.fill();
+
+    // Line from center to midpoint
+    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(mx, my);
+    ctx.strokeStyle = 'rgba(255,255,255,0.12)'; ctx.lineWidth = 0.8;
+    ctx.setLineDash([2, 4]); ctx.stroke(); ctx.setLineDash([]);
+
+    // Right panel: explanation
+    const rx = 400, ry = 55;
+    ctx.fillStyle = 'rgba(255,255,255,0.03)';
+    ctx.beginPath(); ctx.roundRect(rx, ry, 360, 270, 12); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.beginPath(); ctx.roundRect(rx, ry, 360, 270, 12); ctx.stroke();
+
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.font = '12px Inter, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('📐 关键几何事实', rx + 180, ry + 26);
+
+    const facts = [
+      '内接正三角形的边长 = R√3 ≈ 1.732R',
+      '',
+      '弦长 > 三角形边长',
+      '⟺',
+      '弦中点到圆心距离 < R/2',
+      '',
+      '即：弦的中点落在',
+      '半径为 R/2 的内切圆中',
+      '',
+      '金色虚线 = R/2 阈值边界',
+      '绿色弦 > 三角形边长 ✓',
+      '红色弦 < 三角形边长 ✗'
+    ];
+    ctx.fillStyle = 'rgba(255,255,255,0.45)';
+    ctx.font = '11px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    facts.forEach((line, i) => {
+      if (line === '绿色弦 > 三角形边长 ✓') {
+        ctx.fillStyle = 'rgba(16,185,129,0.7)';
+      } else if (line === '红色弦 < 三角形边长 ✗') {
+        ctx.fillStyle = 'rgba(239,68,68,0.7)';
+      } else {
+        ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      }
+      ctx.fillText(line, rx + 180, ry + 52 + i * 17);
+    });
+
+    // Chord info
+    ctx.fillStyle = isLong ? 'rgba(16,185,129,0.9)' : 'rgba(239,68,68,0.9)';
+    ctx.font = 'bold 11px Inter, sans-serif';
+    ctx.fillText(
+      (isLong ? '✅ 长弦（距离=' : '❌ 短弦（距离=') + distFromCenter.toFixed(0) + ' > R/2=' + (R/2).toFixed(0) + '）',
+      rx + 180, ry + 40
+    );
+  }
+
+  function anim() {
+    animAngle += 0.012;
+    draw(animAngle);
+    requestAnimationFrame(anim);
+  }
+  anim();
+})();
+
+// ═══ SIMULATOR — Three methods + Monte Carlo ═══
+(function() {
+  const canvas = document.getElementById('simCanvas');
+  if (!canvas) return;
+  const { ctx, w, h } = setupCanvas(canvas, 800, 520);
+
+  let activeMethod = 0; // 0=endpoints, 1=radius, 2=midpoint
+  const methods = ['endpoints', 'radius', 'midpoint'];
+  const methodColors = ['#6366f1', '#06B6D4', '#ec4899'];
+  const methodNames = ['随机端点法', '随机半径法', '随机中点法'];
+  const methodTheoretical = [1/3, 1/2, 1/4];
+
+  const cx = 290, cy = 250, R = 200;
+
+  // Monte Carlo counters
+  const counts = [[0, 0], [0, 0], [0, 0]]; // [total, long] for each method
+  let lastChords = [[], [], []]; // Store last 20 chords for display
+  let autoRunning = false;
+  let autoTimer = null;
+
+  function randomChord(method) {
+    if (method === 0) {
+      // Random endpoints
+      const a1 = Math.random() * Math.PI * 2;
+      const a2 = Math.random() * Math.PI * 2;
+      const x1 = cx + R*Math.cos(a1), y1 = cy + R*Math.sin(a1);
+      const x2 = cx + R*Math.cos(a2), y2 = cy + R*Math.sin(a2);
+      const mx = (x1+x2)/2, my = (y1+y2)/2;
+      const dist = Math.sqrt((mx-cx)**2 + (my-cy)**2);
+      return { x1, y1, x2, y2, mx, my, dist, long: dist < R/2 };
+    } else if (method === 1) {
+      // Random radius
+      const angle = Math.random() * Math.PI * 2;
+      const d = Math.random() * R; // distance from center along radius
+      const mx = cx + d*Math.cos(angle), my = cy + d*Math.sin(angle);
+      const perpAngle = angle + Math.PI/2;
+      const halfLen = Math.sqrt(R*R - d*d);
+      const x1 = mx + halfLen*Math.cos(perpAngle), y1 = my + halfLen*Math.sin(perpAngle);
+      const x2 = mx - halfLen*Math.cos(perpAngle), y2 = my - halfLen*Math.sin(perpAngle);
+      return { x1, y1, x2, y2, mx, my, dist: d, long: d < R/2 };
+    } else {
+      // Random midpoint in circle (rejection sampling)
+      let mx, my;
+      while (true) {
+        mx = (Math.random() - 0.5) * 2 * R + cx;
+        my = (Math.random() - 0.5) * 2 * R + cy;
+        if ((mx-cx)**2 + (my-cy)**2 <= R*R) break;
+      }
+      const d = Math.sqrt((mx-cx)**2 + (my-cy)**2);
+      if (d < 0.01) return randomChord(2); // avoid degenerate
+      const angle = Math.atan2(my-cy, mx-cx);
+      const perpAngle = angle + Math.PI/2;
+      const halfLen = Math.sqrt(R*R - d*d);
+      const x1 = mx + halfLen*Math.cos(perpAngle), y1 = my + halfLen*Math.sin(perpAngle);
+      const x2 = mx - halfLen*Math.cos(perpAngle), y2 = my - halfLen*Math.sin(perpAngle);
+      return { x1, y1, x2, y2, mx, my, dist: d, long: d < R/2 };
+    }
+  }
+
+  function addChords(count) {
+    for (let m = 0; m < 3; m++) {
+      for (let i = 0; i < count; i++) {
+        const chord = randomChord(m);
+        counts[m][0]++;
+        if (chord.long) counts[m][1]++;
+        if (m === activeMethod) {
+          lastChords[m].push(chord);
+          if (lastChords[m].length > 20) lastChords[m].shift();
+        }
+      }
+    }
+    updateStats();
+    draw();
+  }
+
+  function updateStats() {
+    for (let m = 0; m < 3; m++) {
+      const [total, long] = counts[m];
+      const pct = total > 0 ? (long / total * 100) : 0;
+      const el = document.getElementById('target' + (m+1));
+      const bar = document.getElementById('bar' + (m+1));
+      if (el) el.textContent = long + ' / ' + total + ' = ' + (total > 0 ? (long/total).toFixed(3) : '—');
+      if (bar) bar.style.width = pct + '%';
+      const statEl = document.getElementById('stat' + (m+1));
+      const valEl = statEl?.querySelector('.ms-val');
+      if (valEl) valEl.textContent = total > 0 ? (long/total).toFixed(3) : '—';
+      if (statEl) statEl.classList.toggle('active', m === activeMethod);
+    }
+  }
+
+  function reset() {
+    if (autoTimer) { clearInterval(autoTimer); autoTimer = null; autoRunning = false; }
+    document.getElementById('btnAuto').textContent = '▶ 连续模拟';
+    for (let m = 0; m < 3; m++) { counts[m][0] = 0; counts[m][1] = 0; lastChords[m] = []; }
+    updateStats();
+    draw();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+
+    // Title
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.font = 'bold 14px Inter, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🎲 ' + methodNames[activeMethod] + ' — 蒙特卡洛模拟', cx, 30);
+
+    // Circle
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI*2);
+    ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 2; ctx.stroke();
+
+    // Inner circle at R/2
+    ctx.beginPath(); ctx.arc(cx, cy, R/2, 0, Math.PI*2);
+    ctx.strokeStyle = 'rgba(245,158,11,0.18)'; ctx.lineWidth = 1;
+    ctx.setLineDash([4, 6]); ctx.stroke(); ctx.setLineDash([]);
+
+    // Triangle vertices (reference)
+    for (let i = 0; i < 3; i++) {
+      const angle = -Math.PI/2 + i * 2*Math.PI/3;
+      const vx = cx + R*Math.cos(angle), vy = cy + R*Math.sin(angle);
+      ctx.beginPath(); ctx.arc(vx, vy, 3, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(16,185,129,0.3)'; ctx.fill();
+    }
+
+    // Center dot
+    ctx.beginPath(); ctx.arc(cx, cy, 3, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(255,255,255,0.3)'; ctx.fill();
+
+    // Draw stored chords
+    if (activeMethod === 0) {
+      // Method 1: show chord lines
+      const chords = lastChords[activeMethod];
+      chords.forEach((ch, i) => {
+        const alpha = 0.15 + i / chords.length * 0.7;
+        ctx.beginPath(); ctx.moveTo(ch.x1, ch.y1); ctx.lineTo(ch.x2, ch.y2);
+        ctx.strokeStyle = ch.long
+          ? 'rgba(16,185,129,' + alpha + ')'
+          : 'rgba(239,68,68,' + alpha * 0.5 + ')';
+        ctx.lineWidth = ch.long ? 1.8 : 0.8;
+        ctx.stroke();
+        // Endpoint dots
+        ctx.beginPath(); ctx.arc(ch.x1, ch.y1, 2, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(255,255,255,' + alpha * 0.5 + ')'; ctx.fill();
+        ctx.beginPath(); ctx.arc(ch.x2, ch.y2, 2, 0, Math.PI*2); ctx.fill();
+      });
+    } else if (activeMethod === 1) {
+      // Method 2: show chords + radius lines
+      const chords = lastChords[activeMethod];
+      chords.forEach((ch, i) => {
+        const alpha = 0.12 + i / chords.length * 0.7;
+        ctx.beginPath(); ctx.moveTo(ch.x1, ch.y1); ctx.lineTo(ch.x2, ch.y2);
+        ctx.strokeStyle = ch.long
+          ? 'rgba(16,185,129,' + alpha + ')'
+          : 'rgba(239,68,68,' + alpha * 0.5 + ')';
+        ctx.lineWidth = ch.long ? 1.8 : 0.8;
+        ctx.stroke();
+      });
+    } else {
+      // Method 3: show chords + midpoints
+      const chords = lastChords[activeMethod];
+      chords.forEach((ch, i) => {
+        const alpha = 0.12 + i / chords.length * 0.7;
+        ctx.beginPath(); ctx.moveTo(ch.x1, ch.y1); ctx.lineTo(ch.x2, ch.y2);
+        ctx.strokeStyle = ch.long
+          ? 'rgba(16,185,129,' + alpha + ')'
+          : 'rgba(239,68,68,' + alpha * 0.5 + ')';
+        ctx.lineWidth = ch.long ? 1.8 : 0.8;
+        ctx.stroke();
+        // Midpoint
+        ctx.beginPath(); ctx.arc(ch.mx, ch.my, 2.5, 0, Math.PI*2);
+        ctx.fillStyle = ch.long
+          ? 'rgba(16,185,129,' + (alpha + 0.2) + ')'
+          : 'rgba(239,68,68,' + (alpha + 0.1) + ')';
+        ctx.fill();
+      });
+    }
+
+    // Right panel: all three methods stats
+    const rx = 560, ry = 50, rw = 210, rh = 420;
+    ctx.fillStyle = 'rgba(255,255,255,0.03)';
+    ctx.beginPath(); ctx.roundRect(rx, ry, rw, rh, 12); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.beginPath(); ctx.roundRect(rx, ry, rw, rh, 12); ctx.stroke();
+
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.font = 'bold 11px Inter, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('📊 蒙特卡洛结果', rx + rw/2, ry + 20);
+
+    const mColors = ['#6366f1', '#06B6D4', '#ec4899'];
+    const mLabels = ['🔵 随机端点', '🔷 随机半径', '🔴 随机中点'];
+    const mTheory = ['1/3', '1/2', '1/4'];
+
+    for (let m = 0; m < 3; m++) {
+      const my = ry + 50 + m * 130;
+      const [total, long] = counts[m];
+      const empP = total > 0 ? long / total : 0;
+      const theoryP = methodTheoretical[m];
+
+      // Method card
+      const isActive = m === activeMethod;
+      ctx.fillStyle = isActive ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.02)';
+      ctx.beginPath(); ctx.roundRect(rx + 8, my, rw - 16, 115, 10); ctx.fill();
+      ctx.strokeStyle = isActive ? mColors[m] : 'rgba(255,255,255,0.06)';
+      ctx.lineWidth = isActive ? 1.5 : 0.8;
+      ctx.beginPath(); ctx.roundRect(rx + 8, my, rw - 16, 115, 10); ctx.stroke();
+
+      ctx.fillStyle = mColors[m];
+      ctx.font = 'bold 12px Inter, sans-serif';
+      ctx.fillText(mLabels[m], rx + rw/2, my + 18);
+
+      ctx.fillStyle = 'rgba(255,255,255,0.5)';
+      ctx.font = '10px Inter, sans-serif';
+      ctx.fillText('理论值: ' + mTheory[m] + ' ≈ ' + theoryP.toFixed(3), rx + rw/2, my + 34);
+
+      // Empirical value
+      ctx.fillStyle = mColors[m];
+      ctx.font = 'bold 26px Inter, sans-serif';
+      ctx.fillText(total > 0 ? empP.toFixed(3) : '—', rx + rw/2, my + 66);
+
+      // Progress bar background
+      ctx.fillStyle = 'rgba(255,255,255,0.06)';
+      ctx.beginPath(); ctx.roundRect(rx + 20, my + 76, rw - 40, 10, 5); ctx.fill();
+
+      // Progress bar fill
+      if (total > 0) {
+        const barW = Math.min(empP, 1) * (rw - 40);
+        ctx.fillStyle = mColors[m];
+        ctx.beginPath(); ctx.roundRect(rx + 20, my + 76, barW, 10, 5); ctx.fill();
+      }
+
+      // Theory marker
+      const theoryX = rx + 20 + theoryP * (rw - 40);
+      ctx.beginPath();
+      ctx.moveTo(theoryX, my + 74);
+      ctx.lineTo(theoryX - 4, my + 68);
+      ctx.lineTo(theoryX + 4, my + 68);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(255,255,255,0.5)';
+      ctx.fill();
+
+      ctx.fillStyle = 'rgba(255,255,255,0.3)';
+      ctx.font = '9px Inter, sans-serif';
+      ctx.fillText('样本: ' + total, rx + rw/2, my + 102);
+    }
+
+    // Method indicator text
+    if (lastChords[activeMethod].length > 0) {
+      ctx.fillStyle = 'rgba(255,255,255,0.25)';
+      ctx.font = '10px Inter, sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('显示最近 ' + lastChords[activeMethod].length + ' 条弦', cx, cy + R + 30);
+
+      if (activeMethod === 0) ctx.fillText('🟢 绿弦 = 长（>三角形边长） 🔴 红弦 = 短', cx, cy + R + 46);
+      else if (activeMethod === 1) ctx.fillText('🟢 绿弦 = 长  🔴 红弦 = 短', cx, cy + R + 46);
+      else ctx.fillText('🟢 绿点 = 长弦中点（落在R/2内） 🔴 红点 = 短弦中点', cx, cy + R + 46);
+    }
+  }
+
+  draw();
+  updateStats();
+
+  // Buttons
+  document.getElementById('btnMethod1')?.addEventListener('click', function() {
+    activeMethod = 0;
+    document.querySelectorAll('#btnMethod1,#btnMethod2,#btnMethod3').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    updateStats();
+    draw();
+  });
+  document.getElementById('btnMethod2')?.addEventListener('click', function() {
+    activeMethod = 1;
+    document.querySelectorAll('#btnMethod1,#btnMethod2,#btnMethod3').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    updateStats();
+    draw();
+  });
+  document.getElementById('btnMethod3')?.addEventListener('click', function() {
+    activeMethod = 2;
+    document.querySelectorAll('#btnMethod1,#btnMethod2,#btnMethod3').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    updateStats();
+    draw();
+  });
+
+  document.getElementById('btnOne')?.addEventListener('click', () => addChords(1));
+  document.getElementById('btnTen')?.addEventListener('click', () => addChords(10));
+  document.getElementById('btnHundred')?.addEventListener('click', () => addChords(100));
+  document.getElementById('btnReset')?.addEventListener('click', reset);
+  document.getElementById('btnAuto')?.addEventListener('click', function() {
+    if (autoRunning) {
+      clearInterval(autoTimer); autoTimer = null; autoRunning = false;
+      this.textContent = '▶ 连续模拟';
+    } else {
+      autoRunning = true;
+      this.textContent = '⏸️ 停止';
+      autoTimer = setInterval(() => addChords(5), 80);
+    }
+  });
+})();
+
+window.addEventListener('resize', () => {});
+</script>
+</body>
+</html>

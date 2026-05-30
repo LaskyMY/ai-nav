@@ -76,7 +76,7 @@ GAME_CSS = '''
 .mg-trap-reveal{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:8px;line-height:1.5;border-left:3px solid var(--accent,var(--a1))}
 .mg-trap-reveal.show{display:block;animation:fadeUp .4s var(--ease) both}
 .mg-trap-next{display:block;margin-top:8px;width:100%;text-align:center}
-@media(max-width:480px){.mg-flip{height:90px}.mg-match{flex-direction:column}.mg-spot-cards{grid-template-columns:1fr}.mg-scale-row{flex-direction:column;align-items:flex-start;gap:6px}}
+@media(max-width:480px){.card{width:auto;max-width:100%}.container{padding-left:20px;padding-right:20px}.mg-flip{height:90px}.mg-match{flex-direction:column}.mg-spot-cards{grid-template-columns:1fr}.mg-scale-row{flex-direction:column;align-items:flex-start;gap:6px}}
 '''
 
 # ── Game HTML templates ──
@@ -512,6 +512,12 @@ def inject_games(filepath, games):
         modified = True
 
     if modified:
+        # Safety check: verify div balance before writing
+        div_opens = len(re.findall(r'<div\b', page))
+        div_closes = len(re.findall(r'</div>', page))
+        if div_opens != div_closes:
+            print(f'  WARNING: {filepath} div imbalance ({div_opens} opens, {div_closes} closes) — skipping write to prevent corruption')
+            return filepath
         with open(filepath, 'w', encoding='utf-8') as f:
             f.write(page)
 

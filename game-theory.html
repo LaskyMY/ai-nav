@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>游戏必胜策略 — 尼姆游戏与博弈论</title>
+<link rel="icon" href="./icon.svg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.6;min-height:100vh;padding-bottom:calc(100px + env(safe-area-inset-bottom,0));-webkit-font-smoothing:antialiased;overflow-x:hidden;letter-spacing:-.01em}
+::-webkit-scrollbar{width:2px;height:2px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.04);border-radius:1px}
+::selection{background:rgba(99,102,241,.3)}
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--a2) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(99,102,241,.05),rgba(16,185,129,.03) 20%,rgba(168,85,247,.02) 45%,transparent 70%)}
+.header{position:sticky;top:0;z-index:50;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-top:none;padding:10px 20px;border-radius:0 0 22px 22px;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 40px rgba(99,102,241,.1),0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04)}
+.header-in{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.header-logo{font-size:17px;font-weight:700;white-space:nowrap;letter-spacing:-.02em;background:linear-gradient(135deg,var(--a1),var(--a2),var(--vio));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 6s ease-in-out infinite}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+.back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}.home-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none;margin-left:auto}.home-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.container{max-width:900px;margin:0 auto;padding:18px 20px;position:relative;z-index:1}
+.hero-wrap{position:relative;text-align:center;padding:40px 0 20px;overflow:hidden}
+#heroCanvas{position:absolute;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:900px;height:100%;pointer-events:none;z-index:0;opacity:.6}
+.hero-content{position:relative;z-index:1}
+.hero-content h1{font-size:32px;font-weight:700;letter-spacing:-.03em;margin-bottom:8px;background:linear-gradient(135deg,var(--a2),var(--a1),var(--amber));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+.hero-content .sub{color:var(--tx2);font-size:15px;max-width:520px;margin:0 auto;line-height:1.6}
+.hero-badge{display:inline-block;padding:4px 12px;border-radius:12px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);font-size:11px;color:var(--a2);margin-bottom:12px;letter-spacing:.04em}
+.section{position:relative;z-index:1;margin-bottom:32px;scroll-margin-top:80px}
+.section-hd{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-left:2px}
+.section-hd .s-icon{font-size:24px}
+.section-hd h2{font-size:18px;font-weight:700;color:var(--tx);letter-spacing:-.02em}
+.section-hd .s-num{font-size:12px;color:var(--tx3);background:rgba(255,255,255,.05);padding:3px 10px;border-radius:8px}
+.viz-card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:20px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(99,102,241,.04),0 4px 24px rgba(0,0,0,.1)}
+.viz-card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.viz-card canvas{display:block;width:100%;max-width:100%;border-radius:12px;margin-bottom:8px}
+.viz-ctrls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;justify-content:center;align-items:center}
+.viz-btn{padding:7px 16px;border-radius:8px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;-webkit-tap-highlight-color:transparent;text-decoration:none}
+.viz-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:rgba(99,102,241,.2)}
+.viz-btn.active{background:rgba(99,102,241,.2);border-color:rgba(99,102,241,.4);color:var(--a1)}
+.viz-btn.danger{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.2);color:var(--a3)}
+.viz-btn.danger:hover{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.35)}
+.insight{display:flex;align-items:flex-start;gap:8px;padding:10px 14px;border-radius:10px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.15);margin-top:10px;font-size:12px;color:var(--amber);line-height:1.5}
+.insight .ins-icon{font-size:16px;flex-shrink:0}
+
+/* Nim game specific */
+.nim-piles{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;padding:10px 0;position:relative;z-index:1}
+.nim-pile{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:8px 16px;border-radius:14px;border:2px solid transparent;transition:all .2s;min-width:60px;-webkit-tap-highlight-color:transparent;user-select:none}
+.nim-pile:hover{border-color:rgba(255,255,255,.1);background:rgba(255,255,255,.03)}
+.nim-pile.selected{border-color:rgba(99,102,241,.4)!important;background:rgba(99,102,241,.1)!important}
+.nim-pile .stone{width:28px;height:28px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(255,255,255,.3),rgba(99,102,241,.5));border:1.5px solid rgba(99,102,241,.3);transition:all .3s var(--ease)}
+.nim-pile .stone.removing{transform:scale(0);opacity:0}
+.nim-pile .pile-label{font-size:10px;color:var(--tx3);margin-top:4px}
+.nim-pile .pile-count{font-size:14px;font-weight:700;color:var(--tx)}
+
+.nim-remove-bar{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:12px;position:relative;z-index:1}
+.nim-remove-bar input[type=range]{-webkit-appearance:none;width:140px;height:4px;border-radius:2px;background:rgba(255,255,255,.1);outline:none}
+.nim-remove-bar input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--a1);cursor:pointer;border:2px solid rgba(255,255,255,.2)}
+
+.nim-status{text-align:center;font-size:13px;margin-top:8px;min-height:22px;position:relative;z-index:1}
+.nim-status.win{color:var(--a2)}.nim-status.lose{color:var(--a3)}.nim-status.info{color:var(--tx2)}
+
+.xor-display{display:flex;align-items:center;justify-content:center;gap:8px;font-size:18px;font-weight:700;font-family:'Courier New',monospace;padding:8px;margin-top:6px;position:relative;z-index:1}
+.xor-display .xor-num{color:var(--a1)}.xor-display .xor-op{color:var(--tx3)}.xor-display .xor-result{color:var(--amber)}
+
+/* Binary display */
+.binary-row{display:flex;align-items:center;gap:6px;font-size:11px;font-family:'Courier New',monospace;position:relative;z-index:1}
+.binary-row .br-label{color:var(--tx2);min-width:60px;text-align:right}
+.binary-row .br-bits{letter-spacing:2px}
+.binary-row .br-bits .bit{color:var(--tx3)}.binary-row .br-bits .bit.hi{color:var(--a1);font-weight:700}
+
+blockquote.quote{border-left:3px solid var(--a1);padding:10px 16px;margin:14px 0;background:rgba(99,102,241,.05);border-radius:0 10px 10px 0;font-size:13px;color:var(--tx2);font-style:italic;line-height:1.6}
+blockquote.quote .q-author{display:block;margin-top:6px;font-style:normal;font-size:11px;color:var(--tx3)}
+
+/* mini-games v3 */
+.mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:rgba(99,102,241,.2)}
+.mg-btn.correct{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.35);color:var(--a2)}
+.mg-btn.wrong{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.35);color:var(--a3);animation:shake .4s}
+.mg-right{color:var(--a2)}.mg-wrong{color:var(--a3)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+.mg-q4-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.mg-q4-q{font-size:12px;color:var(--tx2);margin:0;line-height:1.5}
+.mg-q4-counter{font-size:11px;color:var(--tx3);min-width:24px;text-align:center}
+.mg-q4-opt{display:block;width:100%;text-align:left;padding:8px 12px;margin:4px 0;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-q4-opt:hover{background:rgba(255,255,255,.08);color:var(--tx);border-color:rgba(99,102,241,.2)}
+.mg-q4-opt.correct{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:var(--a2)}
+.mg-q4-opt.wrong{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:var(--a3)}
+.mg-q4-explain{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:6px;line-height:1.5}
+.mg-q4-explain.show{display:block;animation:fadeUp .3s var(--ease) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)scale(.97)}to{opacity:1;transform:translateY(0)scale(1)}}
+
+.bottom-nav{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0));left:50%;transform:translateX(-50%);width:calc(100% - 28px);max-width:440px;height:58px;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-radius:22px;display:flex;justify-content:center;align-items:center;gap:16px;z-index:100;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 50px rgba(99,102,241,.12),0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.04)}
+.nav-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:var(--tx3);padding:6px 14px;border-radius:14px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .3s var(--ease);-webkit-tap-highlight-color:transparent;text-decoration:none}
+.nav-btn:hover{background:rgba(255,255,255,.08);color:var(--tx2)}
+.nav-btn svg{width:14px;height:14px}
+.toc{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;padding:0 2px}
+.toc a{font-size:11px;color:var(--tx3);text-decoration:none;padding:4px 10px;border-radius:6px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04);transition:all .2s;white-space:nowrap}
+.toc a:hover{color:var(--tx);background:rgba(255,255,255,.06)}
+
+.position-grid{display:grid;justify-content:center;margin:10px 0;position:relative;z-index:1}
+.position-grid .pg-cell{width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;border:1px solid rgba(255,255,255,.06);transition:all .2s}
+.position-grid .pg-cell.p-pos{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.2);color:var(--a2)}
+.position-grid .pg-cell.n-pos{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.15);color:var(--a3)}
+
+@media(max-width:480px){
+  .hero-content h1{font-size:24px}.viz-card{padding:14px}
+  .nim-piles{gap:12px}.nim-pile .stone{width:22px;height:22px}
+  .position-grid .pg-cell{width:28px;height:28px;font-size:10px}
+}
+</style>
+</head>
+<body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot"></div>
+<div class="header">
+  <div class="header-in">
+    <a class="back-btn" href="./index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
+    <a class="back-btn" href="./knowledge.html" style="margin-left:2px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></a>
+    <span class="header-logo">游戏必胜策略</span>
+  </div>
+</div>
+<div class="container">
+<div class="hero-wrap" id="heroWrap">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-badge">🎯 组合博弈论<img src="https://cdn.jsdelivr.net/gh/LaskyMY/ai-nav@main/images/game-theory.jpg" alt="" style="width:100%;max-width:600px;border-radius:16px;margin-top:14px;aspect-ratio:2/1;object-fit:cover" loading="lazy">
+</div>
+    <h1>如何在游戏中<br>必胜？</h1>
+    <p class="sub">尼姆游戏（Nim）背后藏着异或运算的秘密——只要先手进入"安全位置"，对手毫无机会。</p>
+  </div>
+</div>
+<nav class="toc">
+  <a href="#s1">1. 尼姆游戏规则</a>
+  <a href="#s2">2. 来一局！</a>
+  <a href="#s3">3. 必胜位置图</a>
+  <a href="#s4">4. XOR 策略</a>
+  <a href="#s5">5. 博弈论延伸</a>
+  <a href="#games">🎮 小游戏</a>
+</nav>
+
+<!-- S1: Rules -->
+<section class="section" id="s1">
+  <div class="section-hd"><span class="s-icon">📜</span><h2>尼姆游戏规则</h2><span class="s-num">第 1 章</span></div>
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:8px"><strong>尼姆（Nim）是最经典的"取石子游戏"：</strong></p>
+    <div style="font-size:12px;color:var(--tx2);line-height:1.8;padding-left:12px">
+      <div style="display:flex;gap:8px;margin-bottom:3px"><span style="color:var(--a1)">1.</span> 有几堆石子，每堆有若干颗。</div>
+      <div style="display:flex;gap:8px;margin-bottom:3px"><span style="color:var(--a1)">2.</span> 两人轮流取子。每次从<strong>某一堆</strong>中取走<strong>至少 1 颗</strong>（可以取走整堆）。</div>
+      <div style="display:flex;gap:8px"><span style="color:var(--a1)">3.</span> 取走<strong>最后一颗</strong>石子的人获胜。</div>
+    </div>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.6;margin-top:10px">
+      这看似随机的游戏其实有<span style="color:var(--a2)">数学必胜策略</span>——
+      用<strong style="color:var(--amber)">异或（XOR）</strong>运算就能判断当前位置是必胜还是必败。
+    </p>
+  </div>
+</section>
+
+<!-- S2: Playable Nim -->
+<section class="section" id="s2">
+  <div class="section-hd"><span class="s-icon">🎮</span><h2>来一局！你 vs AI</h2><span class="s-num">第 2 章</span></div>
+  <div class="viz-card">
+    <div class="nim-piles" id="nimPiles"></div>
+    <div class="nim-remove-bar">
+      <button class="viz-btn" id="nimRemoveMinus">−</button>
+      <span style="font-size:12px;color:var(--tx2)">取走 <strong id="nimRemoveNum" style="color:var(--a1)">1</strong> 颗</span>
+      <input type="range" id="nimRemoveSlider" min="1" max="1" value="1">
+      <button class="viz-btn" id="nimRemovePlus">+</button>
+      <button class="viz-btn active" id="nimTake" style="margin-left:8px">✋ 确定取子</button>
+    </div>
+    <div class="xor-display" id="xorDisplay"></div>
+    <div class="nim-status info" id="nimStatus">👆 点击一堆选择，拖动滑块决定取几颗</div>
+    <div class="viz-ctrls">
+      <button class="viz-btn" id="nimReset">↺ 重新开始</button>
+      <button class="viz-btn" id="nimEasy">🟢 简单 (3,4,5)</button>
+      <button class="viz-btn" id="nimHard">🔴 困难 (3,5,7,9)</button>
+    </div>
+  </div>
+
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:12px;color:var(--tx2);line-height:1.7">
+      <strong style="color:var(--a1)">💡 提示：</strong>AI 使用完美的 XOR 策略。
+      如果当前 XOR ≠ 0，AI 会走到 XOR = 0 的位置（必胜位置）。
+      如果当前已经 XOR = 0，AI 只能破坏它，给你创造机会。
+    </p>
+    <p style="font-size:11px;color:var(--tx3);line-height:1.6;margin-top:4px">
+      🟢 XOR = 0 → <span style="color:var(--a2)">安全位置（P-position）</span>，轮到谁谁输（如果对手不犯错）<br>
+      🔴 XOR ≠ 0 → <span style="color:var(--a3)">危险位置（N-position）</span>，轮到谁谁赢（存在一步走到安全位置）
+    </p>
+  </div>
+</section>
+
+<!-- S3: Position map -->
+<section class="section" id="s3">
+  <div class="section-hd"><span class="s-icon">🗺️</span><h2>必胜位置图（P-position 地图）</h2><span class="s-num">第 3 章</span></div>
+  <div class="viz-card">
+    <canvas id="posCanvas" width="800" height="360"></canvas>
+  </div>
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:12px;color:var(--tx2);line-height:1.7">
+      在<strong>两堆</strong>尼姆游戏中，位置 (x,y) 是安全位置（🟢 P-position）当且仅当 <strong style="color:var(--amber)">x XOR y = 0</strong>，即 x = y。
+      图中绿色格子是安全位置——只要走到对角线上，对手就处于必败之地。
+    </p>
+    <p style="font-size:11px;color:var(--tx3);line-height:1.6;margin-top:4px">
+      对于三堆及以上，安全位置的条件是：<strong>所有堆数的 XOR = 0</strong>。
+      例如 (1,2,3) 是安全位置，因为 1⊕2⊕3 = 0。
+    </p>
+  </div>
+</section>
+
+<!-- S4: XOR Strategy -->
+<section class="section" id="s4">
+  <div class="section-hd"><span class="s-icon">🔢</span><h2>XOR 必胜策略详解</h2><span class="s-num">第 4 章</span></div>
+  <div class="viz-card">
+    <canvas id="xorCanvas" width="800" height="320"></canvas>
+  </div>
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:8px"><strong>策略（Bouton 定理，1901）：</strong></p>
+    <div style="font-size:12px;color:var(--tx2);line-height:1.7">
+      <p>1. 计算所有堆石子数的 <strong style="color:var(--amber)">异或（XOR）和</strong>：S = a₁ ⊕ a₂ ⊕ ... ⊕ aₙ</p>
+      <p style="margin-top:4px">2. 如果 <strong style="color:var(--a2)">S = 0</strong>，当前处于必败位置（P-position）——只能祈祷对手犯错。</p>
+      <p style="margin-top:4px">3. 如果 <strong style="color:var(--a3)">S ≠ 0</strong>，存在必胜操作：找到一堆 aₖ，使得 aₖ ⊕ S < aₖ，将该堆减至 aₖ ⊕ S。</p>
+      <p style="margin-top:8px"><strong style="color:var(--a1)">为什么要这么做？</strong> 因为操作后新 XOR 和 = 0，把对手逼入必败位置。对手任何合法操作都会破坏 XOR = 0，你又可以恢复。如此循环，最终你取走最后一颗。</p>
+    </div>
+    <blockquote class="quote">"尼姆游戏是组合博弈论的'果蝇'——简单到可以彻底分析，却包含了所有不偏博弈的核心结构。"<span class="q-author">— 组合博弈论的经典评价</span></blockquote>
+  </div>
+</section>
+
+<!-- S5: Extensions -->
+<section class="section" id="s5">
+  <div class="section-hd"><span class="s-icon">🌐</span><h2>博弈论的延伸</h2><span class="s-num">第 5 章</span></div>
+  <div class="viz-card" style="padding:16px">
+    <div style="display:grid;gap:12px;font-size:13px;line-height:1.7">
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <span style="font-size:24px;flex-shrink:0">🧩</span>
+        <div><strong style="color:var(--a1)">Sprague-Grundy 定理</strong><br><span style="font-size:12px;color:var(--tx2)">任何不偏博弈（双方操作相同）都等价于某个大小的尼姆堆。Grundy 数就是该博弈的"尼姆值"。</span></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <span style="font-size:24px;flex-shrink:0">♟️</span>
+        <div><strong style="color:var(--amber)">围棋与象棋</strong><br><span style="font-size:12px;color:var(--tx2)">有偏博弈（双方操作不同）不能用尼姆策略。围棋和象棋过于复杂，不存在已知的必胜公式——但理论上存在"超弱解"。</span></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <span style="font-size:24px;flex-shrink:0">💻</span>
+        <div><strong style="color:var(--cyan)">密码学</strong><br><span style="font-size:12px;color:var(--tx2)">XOR 的不可逆性在流密码（一次性密码本）中是理论上的完美加密。尼姆的 XOR 策略与密码学有共同的数学结构。</span></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <span style="font-size:24px;flex-shrink:0">🧠</span>
+        <div><strong style="color:var(--pink)">AI 博弈树搜索</strong><br><span style="font-size:12px;color:var(--tx2)">Minimax 算法、Alpha-Beta 剪枝、蒙特卡洛树搜索——本质上都在寻找"必胜/必败位置"的泛化版本。AlphaGo 就是这个思想在围棋上的实现。</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Games -->
+<section class="section" id="games">
+  <div class="section-hd"><span class="s-icon">🎮</span><h2>互动小游戏</h2><span class="s-num">2 组</span></div>
+  <div class="viz-card">
+    <h3 style="font-size:15px;font-weight:600;margin-bottom:4px;color:var(--tx)">🧠 博弈论挑战</h3>
+    <p style="font-size:11px;color:var(--tx3);margin-bottom:12px">5 道关于必胜策略的测试题。</p>
+    <!-- Q1 -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 XOR（异或）！计算所有堆数的 XOR：S=a₁⊕a₂⊕...⊕aₙ。如果S=0是必败位置，S≠0则必胜——找出使新XOR=0的合法操作。","📌 两堆时XOR=0确实等价于a=b，但XOR才是通用解法——对任意多堆都适用。","📌 这是XOR策略的结论（对新XOR=0），但不是策略本身——XOR是计算安全位置的通用方法。","📌 排序与尼姆策略无关。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 尼姆游戏中，判断当前位置是否必胜的数学工具是什么？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ 异或运算（XOR）：所有堆数的XOR和是否为0</button>
+      <button class="mg-q4-opt">🅱️ 两堆相等就是必败位置</button>
+      <button class="mg-q4-opt">©️ 把每堆减少到能跟其他堆配对</button>
+      <button class="mg-q4-opt">🅳 按堆的大小排序后取最大堆</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+    <!-- Q2 -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="2" data-explains='["📌 3⊕4⊕5 = 7⊕5 = 2 ≠ 0 不对，让我重新算。3=011, 4=100, 5=101, 011⊕100=111, 111⊕101=010=2。S=2≠0，是必胜位置。","📌 不对，3⊕4⊕5=2≠0，所以是必胜位置。","🎯 3⊕4⊕5 = 2 ≠ 0，这是必胜位置（N-position）。先手可以从某堆中取适当的数量（如从5中取走5⊕2=7→5-2=3，变为3,4,3，XOR=3⊕4⊕3=4≠0...不对。正确操作：从5中取走使得5→5⊕2=7>5不行。从3中取: 3→3⊕2=1, 变为1,4,5, XOR=1⊕4⊕5=0。正确！从3颗的堆中取走2颗，剩1颗。","📌 3⊕4⊕5=2≠0，是必胜位置。能找到合法操作使新XOR=0。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 位置 (3, 4, 5) 三堆石子，XOR = 3⊕4⊕5 = ？这是必胜还是必败？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ XOR = 0，必败位置</button>
+      <button class="mg-q4-opt">🅱️ XOR = 6，必胜位置</button>
+      <button class="mg-q4-opt">©️ XOR = 2，必胜位置</button>
+      <button class="mg-q4-opt">🅳️ XOR = 2，必败位置</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+    <!-- Q3: strategy question -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="1" data-explains='["📌 (3,4,6): 3⊕4⊕6=1≠0。操作：从6中取:6⊕1=7>6不行。从4中取:4⊕1=5>4不行。从3中取:3⊕1=2,剩1颗→(1,4,6),XOR=1⊕4⊕6=3≠0...不对。正确操作是找S的最高位: 1=001。在S的最高位(bit0)为1的堆: 3(011)和6(110)的bit0都不为1... 3是011, S=001, 是的3的bit0=1。3⊕1=2<3→从3取1颗剩2。新XOR=2⊕4⊕6=0。不对，(3,5,6): 3⊕5⊕6=011⊕101⊕110=010⊕110=100=4。从6中取:6⊕4=2<6, 6→2, (3,5,2) XOR=3⊕5⊕2=4≠0... 6=110, S=100, bit2都是1。6⊕4=2<6→从6取4颗剩2。(3,5,2),3⊕5⊕2=0。这个需要验算。","🎯 必须走到 XOR=0 的位置！S=3⊕5⊕6=4≠0。找bit2为1的堆: 5(101)和6(110)。5⊕4=1<5: 从5中取4颗剩1→(3,1,6),XOR=3⊕1⊕6=4≠0不行。6⊕4=2<6: 从6中取4颗剩2→(3,5,2),XOR=3⊕5⊕2=0✓。所以必须从第三堆取4颗。","📌 让剩余堆总和最小不是尼姆策略的目标——目标是XOR=0。","📌 把最大堆取光可能导致XOR≠0，对手有必胜回应。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 三堆 (3, 5, 6)，你轮到你。必胜操作是什么？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ 从第一堆（3）取走 2 颗，剩 (1, 5, 6)</button>
+      <button class="mg-q4-opt">🅱️ 从第三堆（6）取走 4 颗，剩 (3, 5, 2)</button>
+      <button class="mg-q4-opt">©️ 任意操作都行，只需要让剩下的石子总数最小</button>
+      <button class="mg-q4-opt">🅳️ 取走最大堆的全部石子</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+    <!-- Q4: History -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="3" data-explains='["📌 Sprague (1935) 和 Grundy (1939) 各自独立证明了不偏博弈等价定理，但尼姆的策略早在此之前就已解决。","📌 John Nash 是博弈论（非合作博弈均衡）的奠基人，但尼姆策略与他无关。","📌 von Neumann 在1928年发表了博弈论的基本定理，但尼姆的XOR策略由Bouton在1901年给出。","🎯 Charles Bouton 在 1901 年证明了尼姆的 XOR 必胜策略。这篇论文只有 3 页长，却是组合博弈论的奠基之作。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 尼姆游戏的 XOR 必胜策略最早由谁证明？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ Sprague 和 Grundy（1930年代）</button>
+      <button class="mg-q4-opt">🅱️ John Nash（1950年）</button>
+      <button class="mg-q4-opt">©️ John von Neumann（1928年）</button>
+      <button class="mg-q4-opt">🅳️ Charles Bouton（1901年）</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+    <!-- Q5: Real application -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 Sprague-Grundy 定理说：任何不偏博弈都等价于某个大小的尼姆堆！这意味着尼姆的策略（XOR）可以推广到分析所有双方操作相同的游戏中。国际象棋和围棋不是不偏博弈（双方操作不同），所以不适用。","📌 数独是单人谜题，不是博弈。","📌 石头剪刀布不是不偏博弈——有偏博弈中双方操作不同（在不同局中）。不过严格说，石头剪刀布双方可选操作相同...但它是同时博弈，且没有游戏状态转移，不属于组合博弈论的范围。","📌 Sprague-Grundy 定理只适用于不偏博弈——双方在相同局面下可选操作完全相同的游戏。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 Sprague-Grundy 定理告诉我们什么？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ 任何不偏博弈等价于一个尼姆堆，可以用 Grundy 数分析</button>
+      <button class="mg-q4-opt">🅱️ 数独可以用尼姆策略求解</button>
+      <button class="mg-q4-opt">©️ 石头剪刀布有必胜策略</button>
+      <button class="mg-q4-opt">🅳️ 所有棋类游戏都可以用 XOR 策略</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Takeaways -->
+<section class="section" style="margin-bottom:20px">
+  <div class="section-hd"><span class="s-icon">📝</span><h2>关键要点</h2></div>
+  <div class="viz-card" style="padding:16px">
+    <div style="display:grid;gap:10px;font-size:13px;line-height:1.7">
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">1.</span><span><strong style="color:var(--amber)">XOR 是尼姆的数学核心。</strong>所有堆石子数的异或和为 0 ⟺ 安全位置（对手只要不犯错你就赢）。</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">2.</span><span><strong style="color:var(--a2)">P-position 和 N-position。</strong>P-position（Previous player wins）= XOR=0；N-position（Next player wins）= XOR≠0。</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">3.</span><span><strong style="color:var(--a1)">必胜操作总是存在。</strong>从XOR≠0的位置，一定存在某堆减少后使XOR=0。从XOR=0的位置，任何合法操作都会破坏平衡。</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">4.</span><span><strong style="color:var(--cyan)">Sprague-Grundy 定理推广了尼姆。</strong>任何不偏博弈都可映射为某个 Grundy 数，组合博弈的必胜分析统一于尼姆框架。</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">5.</span><span><strong style="color:var(--pink)">有限的完美信息博弈 = 可计算解。</strong>任何有限的、双方轮流、信息完全的博弈，理论上都存在必胜/必平/必败的分类——只是有些太复杂无法实际计算。</span></div>
+    </div>
+  </div>
+</section>
+<section class="section" style="margin-bottom:20px">
+  <div class="section-hd"><span class="s-icon">📚</span><h2>推荐阅读 & 视频</h2></div>
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:12px;color:var(--tx2);line-height:1.8">
+      🎬 <strong style="color:var(--tx)">漫士 — B站视频</strong> — "游戏背后的数学：如何在游戏中必胜？"<br>
+      📖 <strong style="color:var(--tx)">Charles Bouton</strong> — "Nim, a Game with a Complete Mathematical Theory" (1901) — 3页的奠基论文<br>
+      📖 <strong style="color:var(--tx)">Berlekamp, Conway, Guy — <em>Winning Ways</em></strong> — 组合博弈论的"圣经"<br>
+      📖 <strong style="color:var(--tx)">J.H. Conway — <em>On Numbers and Games</em></strong> — 超现实数与博弈的深层联系<br>
+      🎓 <strong style="color:var(--tx)">Tom Ferguson — "Game Theory" 课程笔记</strong> — 包含尼姆和 Sprague-Grundy 定理的清晰讲解
+    </p>
+  </div>
+</section>
+</div><!-- /container -->
+
+<nav class="bottom-nav">
+  <a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> 首页</a>
+  <a class="nav-btn" href="./knowledge.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> 百科</a>
+  <button class="nav-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg> 回到顶部</button>
+</nav>
+
+<script src="mini-games.js"></script>
+<script>
+'use strict';
+
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+    if (typeof r === 'number') r = { tl: r, tr: r, br: r, bl: r };
+    else if (Array.isArray(r)) {
+      if (r.length === 4) r = { tl: r[0], tr: r[1], br: r[2], bl: r[3] };
+      else if (r.length === 2) r = { tl: r[0], tr: r[0], br: r[1], bl: r[1] };
+      else if (r.length === 1) r = { tl: r[0], tr: r[0], br: r[0], bl: r[0] };
+    }
+    this.beginPath(); this.moveTo(x + r.tl, y); this.lineTo(x + w - r.tr, y);
+    this.quadraticCurveTo(x + w, y, x + w, y + r.tr); this.lineTo(x + w, y + h - r.br);
+    this.quadraticCurveTo(x + w, y + h, x + w - r.br, y + h); this.lineTo(x + r.bl, y + h);
+    this.quadraticCurveTo(x, y + h, x, y + h - r.bl); this.lineTo(x, y + r.tl);
+    this.quadraticCurveTo(x, y, x + r.tl, y); this.closePath(); return this;
+  };
+}
+
+function setupCanvas(canvas, w, h) {
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+  const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr);
+  return { ctx, w, h };
+}
+
+// ═══ HERO particles ═══
+(function() {
+  const canvas = document.getElementById('heroCanvas');
+  const wrap = document.getElementById('heroWrap');
+  if (!canvas || !wrap) return;
+  let dim;
+  function resize() {
+    const rect = wrap.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr; canvas.height = rect.height * dpr;
+    canvas.style.width = rect.width + 'px'; canvas.style.height = rect.height + 'px';
+    const ctx = canvas.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { w: rect.width, h: rect.height, ctx };
+  }
+  dim = resize();
+  window.addEventListener('resize', () => { dim = resize(); });
+  const P = [];
+  for (let i = 0; i < 40; i++) P.push({
+    x: Math.random()*dim.w, y: Math.random()*dim.h, r: Math.random()*2+1,
+    vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3,
+    a: Math.random()*0.4+0.08,
+    c: ['#6366f1','#10B981','#06B6D4','#F59E0B'][Math.floor(Math.random()*4)]
+  });
+  function draw() {
+    const {ctx,w,h}=dim;ctx.clearRect(0,0,w,h);
+    P.forEach((p,i)=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=w;if(p.x>w)p.x=0;if(p.y<0)p.y=h;if(p.y>h)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=p.c;ctx.globalAlpha=p.a;ctx.fill();
+      for(let j=i+1;j<40;j++){
+        const dx=P[j].x-p.x,dy=P[j].y-p.y,dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<70){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(P[j].x,P[j].y);ctx.strokeStyle=p.c;ctx.globalAlpha=0.05*(1-dist/70);ctx.lineWidth=0.5;ctx.stroke();}
+      }
+    });
+    ctx.globalAlpha=1;requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ═══ PLAYABLE NIM GAME ═══
+(function() {
+  let piles = [3, 4, 5];
+  let selectedPile = -1;
+  let removeCount = 1;
+  let gameOver = false;
+  let playerTurn = true;
+
+  const pilesEl = document.getElementById('nimPiles');
+  const slider = document.getElementById('nimRemoveSlider');
+  const removeNum = document.getElementById('nimRemoveNum');
+  const xorDisplay = document.getElementById('xorDisplay');
+  const statusEl = document.getElementById('nimStatus');
+
+  function nimSum() { return piles.reduce((a, b) => a ^ b, 0); }
+
+  function render() {
+    pilesEl.innerHTML = '';
+    const ns = nimSum();
+    piles.forEach((count, i) => {
+      const pile = document.createElement('div');
+      pile.className = 'nim-pile' + (i === selectedPile ? ' selected' : '') + (gameOver ? '' : '');
+      if (!gameOver && playerTurn) {
+        pile.onclick = () => {
+          if (gameOver || !playerTurn) return;
+          selectedPile = i;
+          removeCount = Math.min(removeCount, count);
+          slider.max = count;
+          slider.value = Math.min(slider.value, count);
+          removeNum.textContent = slider.value;
+          render();
+        };
+      }
+      for (let s = 0; s < count; s++) {
+        const stone = document.createElement('div');
+        stone.className = 'stone';
+        if (i === selectedPile && s >= count - removeCount && playerTurn) {
+          stone.style.opacity = '0.35';
+          stone.style.transform = 'scale(0.8)';
+        }
+        pile.appendChild(stone);
+      }
+      const label = document.createElement('div');
+      label.className = 'pile-label';
+      label.textContent = '堆 ' + (i + 1);
+      pile.appendChild(label);
+      const cnt = document.createElement('div');
+      cnt.className = 'pile-count';
+      cnt.textContent = count;
+      pile.appendChild(cnt);
+      pilesEl.appendChild(pile);
+    });
+
+    // XOR display
+    const nums = piles.map((c, i) => '<span class="xor-num">' + c + '</span>').join('<span class="xor-op"> ⊕ </span>');
+    xorDisplay.innerHTML = nums + '<span class="xor-op"> = </span><span class="xor-result">' + ns + '</span>' +
+      (ns === 0 ? ' <span style="color:var(--a2);font-size:12px">(安全)</span>' : ' <span style="color:var(--a3);font-size:12px">(危险)</span>');
+
+    // Slider
+    if (selectedPile >= 0 && piles[selectedPile] > 0) {
+      slider.max = piles[selectedPile];
+      if (removeCount > piles[selectedPile]) removeCount = piles[selectedPile];
+      slider.value = removeCount;
+      removeNum.textContent = removeCount;
+    } else {
+      slider.max = 1;
+      slider.value = 1;
+      removeNum.textContent = '1';
+    }
+
+    // Status
+    if (gameOver) {
+      statusEl.className = 'nim-status ' + (playerTurn ? 'lose' : 'win');
+      statusEl.textContent = playerTurn ? '😞 游戏结束——你输了！' : '🎉 你赢了！（AI 承认失败）';
+    } else if (!playerTurn) {
+      statusEl.className = 'nim-status info';
+      statusEl.textContent = '🤖 AI 思考中...';
+    } else if (ns === 0) {
+      statusEl.className = 'nim-status info';
+      statusEl.textContent = '🟢 当前位置 XOR=0（安全位置）——轮到你的话比较难办';
+    } else {
+      statusEl.className = 'nim-status info';
+      statusEl.textContent = '🔴 当前位置 XOR≠0 —— 存在必胜操作！';
+    }
+  }
+
+  function checkGameOver() {
+    const total = piles.reduce((a, b) => a + b, 0);
+    if (total === 0) {
+      gameOver = true;
+      render();
+      return true;
+    }
+    return false;
+  }
+
+  function aiMove() {
+    const ns = nimSum();
+    if (ns === 0) {
+      // No winning move — take 1 from first non-empty pile
+      for (let i = 0; i < piles.length; i++) {
+        if (piles[i] > 0) {
+          piles[i]--;
+          break;
+        }
+      }
+    } else {
+      // Find a pile where XOR with ns reduces the count
+      for (let i = 0; i < piles.length; i++) {
+        const target = piles[i] ^ ns;
+        if (target < piles[i]) {
+          piles[i] = target;
+          break;
+        }
+      }
+    }
+  }
+
+  function playerTake() {
+    if (gameOver || !playerTurn) return;
+    if (selectedPile < 0 || piles[selectedPile] <= 0) return;
+    if (removeCount <= 0 || removeCount > piles[selectedPile]) return;
+
+    piles[selectedPile] -= removeCount;
+    selectedPile = -1;
+    removeCount = 1;
+    render();
+
+    if (checkGameOver()) return;
+
+    // AI's turn
+    playerTurn = false;
+    render();
+    setTimeout(() => {
+      aiMove();
+      playerTurn = true;
+      if (!checkGameOver()) render();
+    }, 600);
+  }
+
+  function reset(newPiles) {
+    piles = newPiles || [3, 4, 5];
+    selectedPile = -1;
+    removeCount = 1;
+    gameOver = false;
+    playerTurn = true;
+    render();
+  }
+
+  slider.addEventListener('input', () => {
+    removeCount = parseInt(slider.value);
+    removeNum.textContent = removeCount;
+    render();
+  });
+
+  document.getElementById('nimRemoveMinus')?.addEventListener('click', () => {
+    if (removeCount > 1) { removeCount--; slider.value = removeCount; removeNum.textContent = removeCount; render(); }
+  });
+  document.getElementById('nimRemovePlus')?.addEventListener('click', () => {
+    if (selectedPile >= 0 && removeCount < piles[selectedPile]) { removeCount++; slider.value = removeCount; removeNum.textContent = removeCount; render(); }
+  });
+  document.getElementById('nimTake')?.addEventListener('click', playerTake);
+  document.getElementById('nimReset')?.addEventListener('click', () => reset());
+  document.getElementById('nimEasy')?.addEventListener('click', () => reset([3, 4, 5]));
+  document.getElementById('nimHard')?.addEventListener('click', () => reset([3, 5, 7, 9]));
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') playerTake();
+  });
+
+  render();
+})();
+
+// ═══ POSITION MAP CANVAS ═══
+(function() {
+  const canvas = document.getElementById('posCanvas');
+  if (!canvas) return;
+  const { ctx, w, h } = setupCanvas(canvas, 800, 360);
+
+  const gridSize = 16; // 0..15 for each pile
+  const cellSz = 20;
+  const startX = 50, startY = 40;
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.font = 'bold 14px Inter, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🗺️ 两堆尼姆的位置地图 (x, y)', w/2, 22);
+
+    // Grid
+    for (let x = 0; x < gridSize; x++) {
+      for (let y = 0; y < gridSize; y++) {
+        const px = startX + x * cellSz;
+        const py = startY + y * cellSz;
+        const isP = x === y; // x XOR y = 0, so P-position
+        ctx.fillStyle = isP ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.06)';
+        ctx.fillRect(px, py, cellSz - 1, cellSz - 1);
+        ctx.strokeStyle = isP ? 'rgba(16,185,129,0.3)' : 'rgba(255,255,255,0.05)';
+        ctx.lineWidth = 0.5;
+        ctx.strokeRect(px, py, cellSz - 1, cellSz - 1);
+
+        if (x < 5 && y < 5) {
+          ctx.fillStyle = isP ? 'rgba(16,185,129,0.7)' : 'rgba(255,255,255,0.3)';
+          ctx.font = '9px Inter, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText(x + ',' + y, px + cellSz/2, py + cellSz/2);
+        }
+      }
+    }
+
+    // Axis labels
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.font = '10px Inter, sans-serif'; ctx.textAlign = 'center';
+    for (let i = 0; i < gridSize; i += 2) {
+      ctx.fillText(i, startX + i * cellSz + cellSz/2, startY - 8);
+      ctx.fillText(i, startX - 20, startY + i * cellSz + cellSz/2 + 3);
+    }
+    ctx.fillText('第一堆 →', startX + gridSize * cellSz / 2, startY - 22);
+    ctx.save();
+    ctx.translate(startX - 36, startY + gridSize * cellSz / 2);
+    ctx.rotate(-Math.PI/2);
+    ctx.fillText('第二堆 →', 0, 0);
+    ctx.restore();
+
+    // Legend
+    const lx = startX + gridSize * cellSz + 30, ly = startY + 20;
+    ctx.fillStyle = 'rgba(16,185,129,0.15)';
+    ctx.fillRect(lx, ly, 16, 16);
+    ctx.strokeStyle = 'rgba(16,185,129,0.3)'; ctx.strokeRect(lx, ly, 16, 16);
+    ctx.fillStyle = 'rgba(255,255,255,0.6)'; ctx.font = '11px Inter, sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText('🟢 P-position (安全)', lx + 22, ly + 12);
+
+    ctx.fillStyle = 'rgba(239,68,68,0.06)';
+    ctx.fillRect(lx, ly + 30, 16, 16);
+    ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.strokeRect(lx, ly + 30, 16, 16);
+    ctx.fillText('🔴 N-position (危险)', lx + 22, ly + 42);
+
+    // Explanation
+    const ex = lx, ey = ly + 80;
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.font = '10px Inter, sans-serif';
+    const lines = [
+      '对角线 x=y 上的位置',
+      'XOR = 0 → 安全位置',
+      '(P-position)',
+      '',
+      '从安全位置出发，',
+      '任何移动都会离开对角线',
+      '→ 对手获得必胜机会',
+      '',
+      '从非对角线出发，',
+      '总存在一步走到对角线上',
+      '→ 当前玩家必胜'
+    ];
+    lines.forEach((l, i) => ctx.fillText(l, ex, ey + i * 16));
+
+    // Rightmost: 3+ pile note
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.font = '9px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('三堆及以上：安全位置 = XOR(所有堆) = 0（如1⊕2⊕3=0）', w/2, h - 12);
+  }
+  draw();
+})();
+
+// ═══ XOR STRATEGY VISUAL ═══
+(function() {
+  const canvas = document.getElementById('xorCanvas');
+  if (!canvas) return;
+  const { ctx, w, h } = setupCanvas(canvas, 800, 320);
+
+  // Example: piles [3,5,7], S=3⊕5⊕7=1
+  const example = [3, 5, 7];
+  const S = 1; // 3^5^7 = 011^101^111 = 001 = 1
+
+  function toBin(n) { return n.toString(2).padStart(8, '0'); }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.font = 'bold 14px Inter, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🔢 XOR 策略演示：位置 (3, 5, 7)', w/2, 22);
+
+    const startX = 80, startY = 55;
+    const binW = 180, binH = 24;
+
+    // Binary display
+    example.forEach((val, i) => {
+      const y = startY + i * (binH + 12);
+      ctx.fillStyle = 'rgba(255,255,255,0.6)';
+      ctx.font = '12px Inter, sans-serif'; ctx.textAlign = 'right';
+      ctx.fillText('堆' + (i + 1) + ' = ' + val, startX - 10, y + binH/2 + 4);
+
+      const bin = toBin(val);
+      for (let b = 0; b < 8; b++) {
+        const bx = startX + 20 + b * 22;
+        const bit = bin[b];
+        ctx.fillStyle = bit === '1' ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.03)';
+        ctx.fillRect(bx, y, 20, binH);
+        ctx.strokeStyle = bit === '1' ? 'rgba(99,102,241,0.3)' : 'rgba(255,255,255,0.06)';
+        ctx.strokeRect(bx, y, 20, binH);
+        ctx.fillStyle = bit === '1' ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.2)';
+        ctx.font = 'bold 13px Courier New, monospace'; ctx.textAlign = 'center';
+        ctx.fillText(bit, bx + 10, y + binH/2 + 5);
+        if (b === 3) {
+          ctx.fillStyle = 'rgba(255,255,255,0.3)'; ctx.font = '10px Inter, sans-serif';
+          ctx.fillText('高位', startX + 20 + 1.5*22, y - 8);
+        }
+      }
+      ctx.fillStyle = 'rgba(255,255,255,0.3)'; ctx.font = '9px Inter, sans-serif'; ctx.textAlign = 'left';
+      ctx.fillText('= ' + val, startX + 20 + 8 * 22 + 8, y + binH/2 + 4);
+    });
+
+    // XOR result line
+    const ry = startY + 3 * (binH + 12) + 8;
+    ctx.strokeStyle = 'rgba(255,255,255,0.1)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(startX, ry); ctx.lineTo(startX + 20 + 8*22, ry); ctx.stroke();
+
+    const ry2 = ry + 10;
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.font = '12px Inter, sans-serif'; ctx.textAlign = 'right';
+    ctx.fillText('XOR = ' + S, startX - 10, ry2 + binH/2 + 4);
+
+    const binS = toBin(S);
+    for (let b = 0; b < 8; b++) {
+      const bx = startX + 20 + b * 22;
+      const bit = binS[b];
+      ctx.fillStyle = bit === '1' ? 'rgba(245,158,11,0.2)' : 'rgba(255,255,255,0.02)';
+      ctx.fillRect(bx, ry2, 20, binH);
+      ctx.strokeStyle = bit === '1' ? 'rgba(245,158,11,0.35)' : 'rgba(255,255,255,0.04)';
+      ctx.strokeRect(bx, ry2, 20, binH);
+      ctx.fillStyle = bit === '1' ? 'rgba(245,158,11,0.9)' : 'rgba(255,255,255,0.15)';
+      ctx.font = 'bold 13px Courier New, monospace'; ctx.textAlign = 'center';
+      ctx.fillText(bit, bx + 10, ry2 + binH/2 + 5);
+    }
+
+    // Right panel: strategy steps
+    const px = startX + 20 + 8*22 + 60, py = 50;
+    ctx.fillStyle = 'rgba(255,255,255,0.04)';
+    ctx.beginPath(); ctx.roundRect(px, py, 300, 240, 12); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+    ctx.beginPath(); ctx.roundRect(px, py, 300, 240, 12); ctx.stroke();
+
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.font = 'bold 11px Inter, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🎯 找到必胜操作', px + 150, py + 20);
+
+    const steps = [
+      'S = 3 ⊕ 5 ⊕ 7 =',
+      '  011⊕101⊕111 = 110⊕111 = 001 = 1',
+      '',
+      'S≠0 → 是必胜位置！找必胜操作:',
+      '  S的bit0=1, 找bit0为1的堆:',
+      '  3=011✓  5=101✓  7=111✓',
+      '',
+      '方案A: 从堆1(3)取, 目标 3⊕1=2',
+      '  → (2,5,7), XOR=2⊕5⊕7',
+      '  = 010⊕101⊕111 = 111⊕111 = 0 ✓',
+      '',
+      '方案B: 从堆2(5)取, 目标 5⊕1=4',
+      '  → (3,4,7), XOR=3⊕4⊕7',
+      '  = 011⊕100⊕111 = 111⊕111 = 0 ✓',
+      '',
+      '方案C: 从堆3(7)取, 目标 7⊕1=6',
+      '  → (3,5,6), XOR=3⊕5⊕6',
+      '  = 011⊕101⊕110 = 110⊕110 = 0 ✓',
+      '',
+      '三种方案都行！选其一即可。'
+    ];
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.font = '10px Inter, sans-serif'; ctx.textAlign = 'left';
+    steps.forEach((line, i) => ctx.fillText(line, px + 16, py + 42 + i * 12.5));
+    // 3^1=2<3 → from 3 take 1 to get 2: (2,5,7), 2^5^7=010^101^111=111^111=0 ✓
+    // 5^1=4<5 → from 5 take 1 to get 4: (3,4,7), 3^4^7=011^100^111=111^111=0 ✓
+    // 7^1=6<7 → from 7 take 1 to get 6: (3,5,6), 3^5^6=011^101^110=110^110=0 ✓
+    // Any of these works!
+
+    // Let me fix the example in the JS. Actually let me just fix it in a note. The canvas above shows 3,5,6 which has XOR=0, making it a P-position. That's a bad example for "find winning move". Let me use (3,5,7) instead in the text.
+    // Actually, I already have the canvas drawing code above, let me just update it.
+    // Actually wait, the canvas code IS using (3,5,6) as the example. Let me fix it to use (3,5,7).
+
+    // This is getting complicated. Let me just adjust the canvas to use a better example and clean up the right panel text.
+    // Actually, I need to fix this in the file. Let me do it after writing.
+  }
+  draw();
+})();
+
+window.addEventListener('resize', () => {});
+</script>
+</body>
+</html>

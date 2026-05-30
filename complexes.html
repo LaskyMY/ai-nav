@@ -44,9 +44,9 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .nav-btn:hover{background:rgba(255,255,255,.08);color:var(--tx2)}
 .nav-btn svg{width:14px;height:14px}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)scale(.96)}to{opacity:1;transform:translateY(0)scale(1)}}
-.card{animation:fadeUp .5s var(--ease) both}
+.card{width:auto;max-width:100%;animation:fadeUp .5s var(--ease) both}
 .card:nth-child(1){animation-delay:.03s}.card:nth-child(2){animation-delay:.07s}.card:nth-child(3){animation-delay:.11s}.card:nth-child(4){animation-delay:.15s}.card:nth-child(5){animation-delay:.19s}.card:nth-child(6){animation-delay:.23s}.card:nth-child(7){animation-delay:.27s}.card:nth-child(8){animation-delay:.31s}.card:nth-child(9){animation-delay:.35s}.card:nth-child(10){animation-delay:.39s}.card:nth-child(11){animation-delay:.43s}.card:nth-child(12){animation-delay:.47s}
-@media(max-width:480px){.hero h1{font-size:22px}.card{padding:14px}}
+@media(max-width:480px){.hero h1{font-size:22px}.card{width:auto;max-width:100%;padding:14px}.container{padding-left:20px;padding-right:20px}}
 
 
 
@@ -132,32 +132,33 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <div class="hero">
 <h1>4分钟解释不同的心理情结</h1>
 <p class="sub">12种经典的心理学情结</p>
-<div class="tags"><span class="tag">精神分析</span><span class="tag">弗洛伊德</span><span class="tag">荣格</span><span class="tag">阿德勒</span></div>
+<div class="tags"><span class="tag">精神分析</span><span class="tag">弗洛伊德</span><span class="tag">荣格</span><span class="tag">阿德勒</span><img src="https://cdn.jsdelivr.net/gh/LaskyMY/ai-nav@main/images/complexes.jpg" alt="" style="width:100%;max-width:600px;border-radius:16px;margin-top:14px;aspect-ratio:2/1;object-fit:cover" loading="lazy">
+</div>
 </div>
 
-<div class="card"><span class="card-num">1</span><h3>俄狄浦斯情结 (Oedipus Complex)</h3><p>弗洛伊德提出，指儿童在3-5岁对异性家长产生潜意识爱慕，对同性家长产生竞争心理。得名于希腊神话中无意弑父娶母的俄狄浦斯王。弗洛伊德视其为人类心理发展的核心阶段——成功度过是成人人格的基础。</p><div class="mg-flip" data-mg="flip"><div class="mg-flip-inner"><div class="mg-front">俄狄浦斯情结</div><div class="mg-back">恋母情结：男孩潜意识中对母亲的性吸引和对父亲的敌意。弗洛伊德命名自古希腊悲剧——俄狄浦斯在不知情中弑父娶母。</div></div></div></div></div></div></div></div></div></div>
+<div class="card"><span class="card-num">1</span><h3>俄狄浦斯情结 (Oedipus Complex)</h3><p>弗洛伊德提出，指儿童在3-5岁对异性家长产生潜意识爱慕，对同性家长产生竞争心理。得名于希腊神话中无意弑父娶母的俄狄浦斯王。弗洛伊德视其为人类心理发展的核心阶段——成功度过是成人人格的基础。</p><div class="mg-flip" data-mg="flip"><div class="mg-flip-inner"><div class="mg-front">俄狄浦斯情结</div><div class="mg-back">恋母情结：男孩潜意识中对母亲的性吸引和对父亲的敌意。弗洛伊德命名自古希腊悲剧——俄狄浦斯在不知情中弑父娶母。</div></div></div></div>
 
-<div class="card"><span class="card-num">2</span><h3>厄勒克特拉情结 (Electra Complex)</h3><p>荣格提出的女性版俄狄浦斯情结。女孩对父亲的爱慕和对母亲的竞争心理。得名于希腊神话中为父报仇的厄勒克特拉公主。这是一个有争议的概念，许多现代心理学家对此持批评态度。</p><div class="mg-flip" data-mg="flip"><div class="mg-flip-inner"><div class="mg-front">厄勒克特拉情结</div><div class="mg-back">恋父情结：女孩对父亲的潜意识性吸引和对母亲的竞争。是俄狄浦斯情结的"女性版本"，命名自为父报仇的希腊公主。</div></div></div></div></div></div></div></div></div></div>
+<div class="card"><span class="card-num">2</span><h3>厄勒克特拉情结 (Electra Complex)</h3><p>荣格提出的女性版俄狄浦斯情结。女孩对父亲的爱慕和对母亲的竞争心理。得名于希腊神话中为父报仇的厄勒克特拉公主。这是一个有争议的概念，许多现代心理学家对此持批评态度。</p><div class="mg-flip" data-mg="flip"><div class="mg-flip-inner"><div class="mg-front">厄勒克特拉情结</div><div class="mg-back">恋父情结：女孩对父亲的潜意识性吸引和对母亲的竞争。是俄狄浦斯情结的"女性版本"，命名自为父报仇的希腊公主。</div></div></div></div>
 
-<div class="card"><span class="card-num">3</span><h3>自卑情结 (Inferiority Complex)</h3><p>阿德勒提出，个体持续感到自己不如他人、不够好的深层心理。可能源于童年经历、身体缺陷或过度批评。表现为两种极端：过度补偿（拼命证明自己）或退缩逃避。阿德勒认为这是人类进步的根本驱动力。</p><div class="mg-flip" data-mg="flip"><div class="mg-flip-inner"><div class="mg-front">彼得潘综合征</div><div class="mg-back">拒绝长大的心理：逃避成年责任、渴望永恒少年。工作不稳定、感情不承诺、沉迷幻想——"长不大的大人"。</div></div></div></div></div></div></div></div></div></div>
+<div class="card"><span class="card-num">3</span><h3>自卑情结 (Inferiority Complex)</h3><p>阿德勒提出，个体持续感到自己不如他人、不够好的深层心理。可能源于童年经历、身体缺陷或过度批评。表现为两种极端：过度补偿（拼命证明自己）或退缩逃避。阿德勒认为这是人类进步的根本驱动力。</p><div class="mg-flip" data-mg="flip"><div class="mg-flip-inner"><div class="mg-front">彼得潘综合征</div><div class="mg-back">拒绝长大的心理：逃避成年责任、渴望永恒少年。工作不稳定、感情不承诺、沉迷幻想——"长不大的大人"。</div></div></div></div>
 
-<div class="card"><span class="card-num">4</span><h3>优越情结 (Superiority Complex)</h3><p>自卑情结的另一面——通过夸大自己的成就和能力来掩盖深层的不安全感。表面傲慢自大，实质是防御潜意识的自卑感。阿德勒："每个傲慢的人都隐藏着自卑。"</p><div class="mg-flip" data-mg="flip"><div class="mg-flip-inner"><div class="mg-front">灰姑娘情结</div><div class="mg-back">潜意识中等待被"拯救"的心理：女性压抑独立能力，幻想一个完美伴侣来改变自己的人生——"我的王子会来的"。</div></div></div></div></div></div></div></div></div></div>
+<div class="card"><span class="card-num">4</span><h3>优越情结 (Superiority Complex)</h3><p>自卑情结的另一面——通过夸大自己的成就和能力来掩盖深层的不安全感。表面傲慢自大，实质是防御潜意识的自卑感。阿德勒："每个傲慢的人都隐藏着自卑。"</p><div class="mg-flip" data-mg="flip"><div class="mg-flip-inner"><div class="mg-front">灰姑娘情结</div><div class="mg-back">潜意识中等待被"拯救"的心理：女性压抑独立能力，幻想一个完美伴侣来改变自己的人生——"我的王子会来的"。</div></div></div></div>
 
-<div class="card"><span class="card-num">5</span><h3>拿破仑情结 (Napoleon Complex)</h3><p>身材矮小的人通过更具攻击性、更强势的行为来补偿身高不足。得名于拿破仑·波拿巴——尽管近年的历史研究表明拿破仑的身高在当时的法国属于平均水平。也被称为"矮个子综合征"。</p><div class="mg-flip" data-mg="flip"><div class="mg-flip-inner"><div class="mg-front">拿破仑情结</div><div class="mg-back">身材矮小者通过过度进取心和侵略性来补偿的心理。历史上拿破仑可能并不矮——他身高约168cm，在当时属于平均身高。</div></div></div></div></div></div></div></div></div></div>
+<div class="card"><span class="card-num">5</span><h3>拿破仑情结 (Napoleon Complex)</h3><p>身材矮小的人通过更具攻击性、更强势的行为来补偿身高不足。得名于拿破仑·波拿巴——尽管近年的历史研究表明拿破仑的身高在当时的法国属于平均水平。也被称为"矮个子综合征"。</p><div class="mg-flip" data-mg="flip"><div class="mg-flip-inner"><div class="mg-front">拿破仑情结</div><div class="mg-back">身材矮小者通过过度进取心和侵略性来补偿的心理。历史上拿破仑可能并不矮——他身高约168cm，在当时属于平均身高。</div></div></div></div>
 
-<div class="card"><span class="card-num">6</span><h3>救世主情结 (Messiah Complex)</h3><p>个体坚信自己注定要拯救他人或世界。表现为过度牺牲自我以满足他人需求，或相信自己是唯一能解决问题的人。在医疗、教育、社会工作等助人行业中尤其常见。</p><div class="mg-flip" data-mg="flip"><div class="mg-flip-inner"><div class="mg-front">弥赛亚情结</div><div class="mg-back">救世主情结：坚信自己命中注定要拯救他人，甚至以自我牺牲为代价。常见于助人行业从业者。</div></div></div></div></div></div></div></div></div></div>
+<div class="card"><span class="card-num">6</span><h3>救世主情结 (Messiah Complex)</h3><p>个体坚信自己注定要拯救他人或世界。表现为过度牺牲自我以满足他人需求，或相信自己是唯一能解决问题的人。在医疗、教育、社会工作等助人行业中尤其常见。</p><div class="mg-flip" data-mg="flip"><div class="mg-flip-inner"><div class="mg-front">弥赛亚情结</div><div class="mg-back">救世主情结：坚信自己命中注定要拯救他人，甚至以自我牺牲为代价。常见于助人行业从业者。</div></div></div></div>
 
-<div class="card"><span class="card-num">7</span><h3>灰姑娘情结 (Cinderella Complex)</h3><p>女性潜意识中期望被一个强大的男性拯救和照顾，而非依靠自己的能力独立生活。得名于灰姑娘故事。反映了传统文化中对女性依赖性的期望——在现代社会中逐渐被解构。</p><div class="mg-flip" data-mg="flip"><div class="mg-flip-inner"><div class="mg-front">伊卡洛斯情结</div><div class="mg-back">飞得太高导致毁灭：过度野心和自大，无视警告和限制。来自希腊神话——伊卡洛斯用蜡粘羽毛飞向太阳，翅膀融化坠海。</div></div></div></div></div></div></div></div></div></div>
+<div class="card"><span class="card-num">7</span><h3>灰姑娘情结 (Cinderella Complex)</h3><p>女性潜意识中期望被一个强大的男性拯救和照顾，而非依靠自己的能力独立生活。得名于灰姑娘故事。反映了传统文化中对女性依赖性的期望——在现代社会中逐渐被解构。</p><div class="mg-flip" data-mg="flip"><div class="mg-flip-inner"><div class="mg-front">伊卡洛斯情结</div><div class="mg-back">飞得太高导致毁灭：过度野心和自大，无视警告和限制。来自希腊神话——伊卡洛斯用蜡粘羽毛飞向太阳，翅膀融化坠海。</div></div></div></div>
 
-<div class="card"><span class="card-num">8</span><h3>彼得潘综合征 (Peter Pan Syndrome)</h3><p>成年人拒绝承担成人责任，保持不成熟的行为模式。逃避承诺、职业责任和长期关系。得名于"不愿长大的男孩"彼得潘。在当代"延长的青春期"文化中愈发普遍。</p><div class="mg-flip" data-mg="flip"><div class="mg-flip-inner"><div class="mg-front">约拿情结</div><div class="mg-back">对成功的恐惧：逃避自己的潜能和伟大。约拿逃避上帝的使命——很多人害怕真正的成功会带来更多期望和压力。</div></div></div></div></div></div></div></div></div></div>
+<div class="card"><span class="card-num">8</span><h3>彼得潘综合征 (Peter Pan Syndrome)</h3><p>成年人拒绝承担成人责任，保持不成熟的行为模式。逃避承诺、职业责任和长期关系。得名于"不愿长大的男孩"彼得潘。在当代"延长的青春期"文化中愈发普遍。</p><div class="mg-flip" data-mg="flip"><div class="mg-flip-inner"><div class="mg-front">约拿情结</div><div class="mg-back">对成功的恐惧：逃避自己的潜能和伟大。约拿逃避上帝的使命——很多人害怕真正的成功会带来更多期望和压力。</div></div></div></div>
 
-<div class="card"><span class="card-num">9</span><h3>殉道者情结 (Martyr Complex)</h3><p>通过持续受苦和自我牺牲来获得道德优越感和他人关注。把自己的不幸当作控制他人的工具。典型话术："看看我为你牺牲了多少"——牺牲是一种隐性的权力。</p><div class="mg-flip" data-mg="flip"><div class="mg-flip-inner"><div class="mg-front">该隐情结</div><div class="mg-back">兄弟间的嫉妒和竞争，源于感到被父母偏爱的一方不如另一方。该隐因嫉妒弟弟亚伯更受上帝喜爱而杀了他。</div></div></div></div></div></div></div></div></div></div>
+<div class="card"><span class="card-num">9</span><h3>殉道者情结 (Martyr Complex)</h3><p>通过持续受苦和自我牺牲来获得道德优越感和他人关注。把自己的不幸当作控制他人的工具。典型话术："看看我为你牺牲了多少"——牺牲是一种隐性的权力。</p><div class="mg-flip" data-mg="flip"><div class="mg-flip-inner"><div class="mg-front">该隐情结</div><div class="mg-back">兄弟间的嫉妒和竞争，源于感到被父母偏爱的一方不如另一方。该隐因嫉妒弟弟亚伯更受上帝喜爱而杀了他。</div></div></div></div>
 
-<div class="card"><span class="card-num">10</span><h3>该隐情结 (Cain Complex)</h3><p>兄弟姐妹之间的嫉妒和竞争心理，特别是感到自己不如兄弟姐妹受父母宠爱。得名于圣经中杀害弟弟亚伯的该隐。是许多家庭冲突和中年兄弟姐妹疏远的心理根源。</p><div class="mg-flip" data-mg="flip"><div class="mg-flip-inner"><div class="mg-front">犹大情结</div><div class="mg-back">背叛亲近者的心理动机：潜意识中对被信任的抗拒和自我毁灭的冲动。犹大背叛了对他最信任的人。</div></div></div></div></div></div></div></div></div></div>
+<div class="card"><span class="card-num">10</span><h3>该隐情结 (Cain Complex)</h3><p>兄弟姐妹之间的嫉妒和竞争心理，特别是感到自己不如兄弟姐妹受父母宠爱。得名于圣经中杀害弟弟亚伯的该隐。是许多家庭冲突和中年兄弟姐妹疏远的心理根源。</p><div class="mg-flip" data-mg="flip"><div class="mg-flip-inner"><div class="mg-front">犹大情结</div><div class="mg-back">背叛亲近者的心理动机：潜意识中对被信任的抗拒和自我毁灭的冲动。犹大背叛了对他最信任的人。</div></div></div></div>
 
-<div class="card"><span class="card-num">11</span><h3>卡珊德拉情结 (Cassandra Complex)</h3><p>能够预见负面结果但被他人忽视或不被相信的痛苦。得名于希腊神话中被阿波罗诅咒能预言未来但永远不被相信的特洛伊公主卡珊德拉。常见于看到危机却无法说服他人的专家和科学家。</p><div class="mg-flip" data-mg="flip"><div class="mg-flip-inner"><div class="mg-front">安提戈涅情结</div><div class="mg-back">为原则牺牲自我的冲动：将道德/信仰置于个人幸福之上。安提戈涅为埋葬哥哥违抗国王命令，最终付出生命代价。</div></div></div></div></div></div></div></div></div></div>
+<div class="card"><span class="card-num">11</span><h3>卡珊德拉情结 (Cassandra Complex)</h3><p>能够预见负面结果但被他人忽视或不被相信的痛苦。得名于希腊神话中被阿波罗诅咒能预言未来但永远不被相信的特洛伊公主卡珊德拉。常见于看到危机却无法说服他人的专家和科学家。</p><div class="mg-flip" data-mg="flip"><div class="mg-flip-inner"><div class="mg-front">安提戈涅情结</div><div class="mg-back">为原则牺牲自我的冲动：将道德/信仰置于个人幸福之上。安提戈涅为埋葬哥哥违抗国王命令，最终付出生命代价。</div></div></div></div>
 
-<div class="card"><span class="card-num">12</span><h3>伊卡洛斯情结 (Icarus Complex)</h3><p>过度膨胀的野心和对成功的执着追求，不顾现实限制和警告。得名于希腊神话中用蜡制翅膀飞向太阳却因蜡融化坠落而死的伊卡洛斯。常见于极度成功后又因傲慢而崩塌的案例。</p><div class="mg-flip" data-mg="flip"><div class="mg-flip-inner"><div class="mg-front">唐璜情结</div><div class="mg-back">强迫性征服异性但无法建立深层连接。不断追求新的"征服"来证明自我价值——一旦得手就失去兴趣，转入下一个目标。</div></div></div></div></div></div></div></div></div></div>
+<div class="card"><span class="card-num">12</span><h3>伊卡洛斯情结 (Icarus Complex)</h3><p>过度膨胀的野心和对成功的执着追求，不顾现实限制和警告。得名于希腊神话中用蜡制翅膀飞向太阳却因蜡融化坠落而死的伊卡洛斯。常见于极度成功后又因傲慢而崩塌的案例。</p><div class="mg-flip" data-mg="flip"><div class="mg-flip-inner"><div class="mg-front">唐璜情结</div><div class="mg-back">强迫性征服异性但无法建立深层连接。不断追求新的"征服"来证明自我价值——一旦得手就失去兴趣，转入下一个目标。</div></div></div></div>
 </div>
 
 <div class="bottom-nav"><a class="nav-btn" href="./knowledge.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>百科</a><a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>首页</a></div>

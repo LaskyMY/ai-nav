@@ -45,9 +45,9 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .nav-btn:hover{background:rgba(255,255,255,.08);color:var(--tx2)}
 .nav-btn svg{width:14px;height:14px}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)scale(.96)}to{opacity:1;transform:translateY(0)scale(1)}}
-.card{animation:fadeUp .5s var(--ease) both}
+.card{width:auto;max-width:100%;animation:fadeUp .5s var(--ease) both}
 .card:nth-child(1){animation-delay:.03s}.card:nth-child(2){animation-delay:.07s}.card:nth-child(3){animation-delay:.11s}.card:nth-child(4){animation-delay:.15s}.card:nth-child(5){animation-delay:.19s}.card:nth-child(6){animation-delay:.23s}.card:nth-child(7){animation-delay:.27s}.card:nth-child(8){animation-delay:.31s}.card:nth-child(9){animation-delay:.35s}.card:nth-child(10){animation-delay:.39s}.card:nth-child(11){animation-delay:.43s}.card:nth-child(12){animation-delay:.47s}.card:nth-child(13){animation-delay:.51s}
-@media(max-width:480px){.hero h1{font-size:22px}.card{padding:14px}}
+@media(max-width:480px){.hero h1{font-size:22px}.card{width:auto;max-width:100%;padding:14px}.container{padding-left:20px;padding-right:20px}}
 
 
 
@@ -133,7 +133,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <div class="hero">
 <h1>说真话撒谎的所有方式详解</h1>
 <p class="sub">13种用真话误导别人的技巧</p>
-<div class="tags"><span class="tag">信息操纵</span><span class="tag">批判性思维</span><span class="tag">媒体素养</span></div>
+<div class="tags"><span class="tag">信息操纵</span><span class="tag">批判性思维</span><span class="tag">媒体素养</span><img src="https://cdn.jsdelivr.net/gh/LaskyMY/ai-nav@main/images/lying-truth.jpg" alt="" style="width:100%;max-width:600px;border-radius:16px;margin-top:14px;aspect-ratio:2/1;object-fit:cover" loading="lazy">
+</div>
 </div>
 
 <div class="card"><span class="card-num">1</span><h3>信息遗漏 (Omission)</h3><p>选择性地说出部分真相，但刻意省略关键信息。每句话都是真的，但组合起来的画面是假的——这是最常用也最难识破的撒谎方式。</p><div class="ex-box">二手车销售说"这车从来没出过事故"——但没说的是发动机每两周就要修一次。</div><div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 \"数据遮蔽\"（Data Obscuring）——给真实数据但隐藏关键信息（样本量、问题措辞、抽样方法），让你自己得出错误结论。严格来说，他们可能没有说任何假话。", "技术上他们可能没有\"造假\"——20 个人确实都表示满意。问题不在于数据是假的，而在于数据不完整——这是更高级的欺骗策略。", "虽然很多公司确实这么做——但\"大家都在做\"不是理由。这是诉诸大众，也是一种逻辑谬误。", "确认偏误是\"他们无意识犯了错\"，但故意隐藏关键信息是\"策略性误导\"——差别在于意图。"]'><div class="mg-q4-header"><p class="mg-q4-q">🤔 在一次商务谈判中，对方说"我们的产品在同类中满意度最高"——但后来你发现他们只调查了 20 个老客户且问题设置是引导性的。对方在做什么？</p><span class="mg-q4-counter"></span></div><button class="mg-q4-opt">🅰️ 数据遮蔽：给出真实但不完整的数据，引诱你做出错误推论</button><button class="mg-q4-opt">🅱️ 直接造假——20 个人的样本根本没有统计意义</button><button class="mg-q4-opt">©️ 合理营销——所有公司都会用最有利的方式呈现数据</button><button class="mg-q4-opt">🅳 确认偏误——他们只关注了想看到的结果</button><div class="mg-q4-explain"></div></div></div>

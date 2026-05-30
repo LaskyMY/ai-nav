@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>音乐与数学 — 动听背后的数学密码</title>
+<link rel="icon" href="./icon.svg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.6;min-height:100vh;padding-bottom:calc(100px + env(safe-area-inset-bottom,0));-webkit-font-smoothing:antialiased;overflow-x:hidden;letter-spacing:-.01em}
+::-webkit-scrollbar{width:2px;height:2px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.04);border-radius:1px}
+::selection{background:rgba(99,102,241,.3)}
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--amber) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(99,102,241,.05),rgba(245,158,11,.03) 20%,rgba(236,72,153,.02) 45%,transparent 70%)}
+.header{position:sticky;top:0;z-index:50;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-top:none;padding:10px 20px;border-radius:0 0 22px 22px;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 40px rgba(99,102,241,.1),0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04)}
+.header-in{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.header-logo{font-size:17px;font-weight:700;white-space:nowrap;letter-spacing:-.02em;background:linear-gradient(135deg,var(--a1),var(--amber),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 6s ease-in-out infinite}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+.back-btn,.home-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.back-btn:hover,.home-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}.home-btn{margin-left:auto}
+.container{max-width:900px;margin:0 auto;padding:18px 20px;position:relative;z-index:1}
+.hero-wrap{position:relative;text-align:center;padding:40px 0 20px;overflow:hidden}
+#heroCanvas{position:absolute;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:900px;height:100%;pointer-events:none;z-index:0;opacity:.6}
+.hero-content{position:relative;z-index:1}
+.hero-content h1{font-size:32px;font-weight:700;letter-spacing:-.03em;margin-bottom:8px;background:linear-gradient(135deg,var(--amber),var(--pink),var(--a1));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+.hero-content .sub{color:var(--tx2);font-size:15px;max-width:520px;margin:0 auto;line-height:1.6}
+.hero-badge{display:inline-block;padding:4px 12px;border-radius:12px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);font-size:11px;color:var(--amber);margin-bottom:12px;letter-spacing:.04em}
+.section{position:relative;z-index:1;margin-bottom:32px;scroll-margin-top:80px}
+.section-hd{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-left:2px}
+.section-hd .s-icon{font-size:24px}
+.section-hd h2{font-size:18px;font-weight:700;color:var(--tx);letter-spacing:-.02em}
+.section-hd .s-num{font-size:12px;color:var(--tx3);background:rgba(255,255,255,.05);padding:3px 10px;border-radius:8px}
+.viz-card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:20px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(99,102,241,.04),0 4px 24px rgba(0,0,0,.1)}
+.viz-card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.viz-card canvas{display:block;width:100%;max-width:100%;border-radius:12px;margin-bottom:8px}
+.viz-ctrls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;justify-content:center;align-items:center}
+.viz-btn{padding:7px 16px;border-radius:8px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;-webkit-tap-highlight-color:transparent;text-decoration:none}
+.viz-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:rgba(99,102,241,.2)}
+.viz-btn.active{background:rgba(99,102,241,.2);border-color:rgba(99,102,241,.4);color:var(--a1)}
+.viz-btn.play-btn{padding:12px 18px;font-size:13px;min-width:90px;text-align:center}
+.viz-btn.play-btn .ratio{display:block;font-size:10px;color:var(--tx3);margin-top:1px}
+.insight{display:flex;align-items:flex-start;gap:8px;padding:10px 14px;border-radius:10px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.15);margin-top:10px;font-size:12px;color:var(--amber);line-height:1.5}
+.insight .ins-icon{font-size:16px;flex-shrink:0}
+blockquote.quote{border-left:3px solid var(--amber);padding:10px 16px;margin:14px 0;background:rgba(245,158,11,.05);border-radius:0 10px 10px 0;font-size:13px;color:var(--tx2);font-style:italic;line-height:1.6}
+blockquote.quote .q-author{display:block;margin-top:6px;font-style:normal;font-size:11px;color:var(--tx3)}
+
+/* Freq table */
+.freq-table{width:100%;border-collapse:collapse;font-size:11px;margin-top:10px}
+.freq-table th,.freq-table td{padding:6px 8px;text-align:center;border-bottom:1px solid rgba(255,255,255,.05)}
+.freq-table th{color:var(--tx3);font-weight:500;font-size:10px}
+.freq-table td{color:var(--tx2)}
+.freq-table .diff{color:var(--amber);font-size:10px}
+
+/* mini-games v3 */
+.mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:rgba(99,102,241,.2)}
+.mg-btn.correct{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.35);color:var(--a2)}
+.mg-btn.wrong{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.35);color:var(--a3);animation:shake .4s}
+.mg-right{color:var(--a2)}.mg-wrong{color:var(--a3)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+.mg-q4-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.mg-q4-q{font-size:12px;color:var(--tx2);margin:0;line-height:1.5}
+.mg-q4-counter{font-size:11px;color:var(--tx3);min-width:24px;text-align:center}
+.mg-q4-opt{display:block;width:100%;text-align:left;padding:8px 12px;margin:4px 0;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-q4-opt:hover{background:rgba(255,255,255,.08);color:var(--tx);border-color:rgba(99,102,241,.2)}
+.mg-q4-opt.correct{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:var(--a2)}
+.mg-q4-opt.wrong{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:var(--a3)}
+.mg-q4-explain{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:6px;line-height:1.5}
+.mg-q4-explain.show{display:block;animation:fadeUp .3s var(--ease) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)scale(.97)}to{opacity:1;transform:translateY(0)scale(1)}}
+
+.bottom-nav{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0));left:50%;transform:translateX(-50%);width:calc(100% - 28px);max-width:440px;height:58px;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-radius:22px;display:flex;justify-content:center;align-items:center;gap:16px;z-index:100;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 50px rgba(99,102,241,.12),0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.04)}
+.nav-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:var(--tx3);padding:6px 14px;border-radius:14px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .3s var(--ease);-webkit-tap-highlight-color:transparent;text-decoration:none}
+.nav-btn:hover{background:rgba(255,255,255,.08);color:var(--tx2)}
+.nav-btn svg{width:14px;height:14px}
+.toc{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;padding:0 2px}
+.toc a{font-size:11px;color:var(--tx3);text-decoration:none;padding:4px 10px;border-radius:6px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04);transition:all .2s;white-space:nowrap}
+.toc a:hover{color:var(--tx);background:rgba(255,255,255,.06)}
+@media(max-width:480px){.hero-content h1{font-size:24px}.viz-card{padding:14px}}
+</style>
+</head>
+<body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot"></div>
+<div class="header">
+  <div class="header-in">
+    <a class="back-btn" href="./index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
+    <a class="back-btn" href="./knowledge.html" style="margin-left:2px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></a>
+    <span class="header-logo">音乐与数学</span>
+  </div>
+</div>
+<div class="container">
+<div class="hero-wrap" id="heroWrap"><canvas id="heroCanvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-badge">🎵 音乐中的数学<img src="https://cdn.jsdelivr.net/gh/LaskyMY/ai-nav@main/images/music-math.jpg" alt="" style="width:100%;max-width:600px;border-radius:16px;margin-top:14px;aspect-ratio:2/1;object-fit:cover" loading="lazy">
+</div>
+    <h1>动听的音乐背后<br>藏着怎样的数学密码？</h1>
+    <p class="sub">为什么有些音一起响很好听？因为它们的频率比是简单的整数比——大自然用分数谱曲。</p>
+  </div>
+</div>
+<nav class="toc">
+  <a href="#s1">1. 和谐的秘密</a>
+  <a href="#s2">2. 听一听！</a>
+  <a href="#s3">3. 泛音列</a>
+  <a href="#s4">4. 五度圈</a>
+  <a href="#s5">5. 平均律</a>
+  <a href="#games">🎮 小游戏</a>
+</nav>
+
+<!-- S1: The secret of consonance -->
+<section class="section" id="s1">
+  <div class="section-hd"><span class="s-icon">🎯</span><h2>和谐的秘密：简单整数比</h2><span class="s-num">第 1 章</span></div>
+  <div class="viz-card">
+    <canvas id="ratioCanvas" width="800" height="380"></canvas>
+  </div>
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:8px"><strong>毕达哥拉斯的发现（约公元前500年）：</strong></p>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.7">
+      两根弦的长度为简单整数比时，它们发出的声音听起来<span style="color:var(--a2)">和谐悦耳</span>。
+      频率与弦长成反比——弦长减半，频率翻倍。
+    </p>
+    <div style="margin-top:10px;display:grid;gap:6px">
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(255,255,255,.03);border-radius:8px">
+        <span style="font-size:24px">🎵</span>
+        <div><strong style="color:var(--a1)">八度 2:1</strong> — 频率翻倍。最完美的和谐。C4=262Hz → C5=524Hz</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(255,255,255,.03);border-radius:8px">
+        <span style="font-size:24px">🎻</span>
+        <div><strong style="color:var(--cyan)">纯五度 3:2</strong> — 第二个最和谐的音程。C→G。频率比=1.5</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(255,255,255,.03);border-radius:8px">
+        <span style="font-size:24px">🎼</span>
+        <div><strong style="color:var(--pink)">纯四度 4:3</strong> — 频率比≈1.333。C→F</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(255,255,255,.03);border-radius:8px">
+        <span style="font-size:24px">🎹</span>
+        <div><strong style="color:var(--amber)">大三度 5:4</strong> — 频率比=1.25。C→E。决定了"大调"的明亮色彩</div>
+      </div>
+    </div>
+    <div class="insight"><span class="ins-icon">💡</span> 规律：比例中的整数越小 → 音程越和谐。2:1 > 3:2 > 4:3 > 5:4 > 6:5（小三度）。</div>
+  </div>
+</section>
+
+<!-- S2: Listen! -->
+<section class="section" id="s2">
+  <div class="section-hd"><span class="s-icon">🔊</span><h2>听一听！感受频率比例</h2><span class="s-num">第 2 章</span></div>
+  <div class="viz-card">
+    <canvas id="waveCanvas" width="800" height="340"></canvas>
+    <div class="viz-ctrls">
+      <button class="viz-btn play-btn" data-ratio="2/1">🎵 八度<span class="ratio">2 : 1</span></button>
+      <button class="viz-btn play-btn" data-ratio="3/2">🎻 纯五度<span class="ratio">3 : 2</span></button>
+      <button class="viz-btn play-btn" data-ratio="4/3">🎼 纯四度<span class="ratio">4 : 3</span></button>
+      <button class="viz-btn play-btn" data-ratio="5/4">🎹 大三度<span class="ratio">5 : 4</span></button>
+      <button class="viz-btn play-btn" data-ratio="6/5">🎷 小三度<span class="ratio">6 : 5</span></button>
+      <button class="viz-btn play-btn" data-ratio="16/15">⚡ 半音<span class="ratio">16:15</span></button>
+    </div>
+    <div class="nim-status info" id="audioStatus" style="text-align:center;margin-top:6px;">👆 点击按钮听音程（使用纯律频率比）</div>
+  </div>
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:12px;color:var(--tx2);line-height:1.7">
+      <strong style="color:var(--a1)">为什么简单的整数比听起来和谐？</strong> 当频率比为 m:n 时，两个声波每 m 个周期（高音）= n 个周期（低音）会重新对齐。整数越小，对齐越快，大脑感知到的"拍频"越少。
+    </p>
+  </div>
+</section>
+
+<!-- S3: Harmonic series -->
+<section class="section" id="s3">
+  <div class="section-hd"><span class="s-icon">🌈</span><h2>泛音列：大自然的和声</h2><span class="s-num">第 3 章</span></div>
+  <div class="viz-card">
+    <canvas id="harmonicCanvas" width="800" height="400"></canvas>
+  </div>
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:6px"><strong>每一根弦都在同时唱出整个泛音列：</strong></p>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.7">
+      当你弹C4（262Hz），你听到的不仅仅是一个频率。弦在整根振动（基音）的同时，也在 1/2、1/3、1/4... 处振动（泛音）。
+      这些泛音的频率是基音的<strong style="color:var(--amber)">整倍数</strong>：262、524、786、1048、1310、1572... Hz。
+    </p>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.7;margin-top:4px">
+      泛音列中包含了<strong style="color:var(--a1)">所有自然音程</strong>：第1泛音→第2泛音=八度，第2→第3=纯五度，第3→第4=纯四度，第4→第5=大三度。
+      音乐的和声系统<span style="color:var(--a2)">不是人类发明的</span>——它们是从物理定律中自然涌现的。
+    </p>
+  </div>
+</section>
+
+<!-- S4: Circle of fifths -->
+<section class="section" id="s4">
+  <div class="section-hd"><span class="s-icon">🔵</span><h2>五度圈与毕达哥拉斯调音</h2><span class="s-num">第 4 章</span></div>
+  <div class="viz-card">
+    <canvas id="circleCanvas" width="800" height="420"></canvas>
+    <div class="viz-ctrls">
+      <button class="viz-btn active" id="circlePure">纯五度堆叠 (3:2)</button>
+      <button class="viz-btn" id="circleEqual">十二平均律 (2^1/12)</button>
+    </div>
+  </div>
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:12px;color:var(--tx2);line-height:1.7">
+      <strong style="color:var(--a1)">毕达哥拉斯调音法：</strong>从 C 开始，每次乘以 3/2 向上走一个纯五度，降到同一八度内。
+      走 12 步后应该回到 C，但 (3/2)¹² ≈ 129.75，而 2⁷ = 128。
+      差了 <strong style="color:var(--a3)">23.5 音分</strong>——这就是"毕达哥拉斯逗号"。纯数学不肯让我们完美地闭合这个圈。
+    </p>
+  </div>
+</section>
+
+<!-- S5: Equal temperament -->
+<section class="section" id="s5">
+  <div class="section-hd"><span class="s-icon">🎹</span><h2>十二平均律：妥协的完美</h2><span class="s-num">第 5 章</span></div>
+  <div class="viz-card" style="overflow-x:auto">
+    <table class="freq-table">
+      <thead><tr><th>音名</th><th>纯律频率比</th><th>纯律(Hz)</th><th>平均律(Hz)</th><th>偏差(音分)</th></tr></thead>
+      <tbody id="freqBody"></tbody>
+    </table>
+  </div>
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:12px;color:var(--tx2);line-height:1.7">
+      <strong style="color:var(--amber)">十二平均律的解决方案：</strong>把八度（2:1）<strong>等比</strong>分成 12 份。每个半音的比例因子 = <strong style="color:var(--a1)">2^(1/12) ≈ 1.05946</strong>。
+    </p>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.7;margin-top:6px">
+      代价：除了八度外，所有音程都<span style="color:var(--a3)">略有偏差</span>。纯五度差约 2 音分（几乎听不出），大三度差约 14 音分（能听出但可接受）。
+      好处：可以在任何调上演奏，键盘布局整齐对称。巴赫的《平均律钢琴曲集》就是为了证明这个体系的可行性而写的。
+    </p>
+    <blockquote class="quote">"平均律是人类在数学完美和音乐实用之间做出的最优雅的妥协。"<span class="q-author">— 音乐声学的经典论断</span></blockquote>
+  </div>
+</section>
+
+<!-- Games -->
+<section class="section" id="games">
+  <div class="section-hd"><span class="s-icon">🎮</span><h2>互动小游戏</h2><span class="s-num">2 组</span></div>
+  <div class="viz-card">
+    <h3 style="font-size:15px;font-weight:600;margin-bottom:4px;color:var(--tx)">🎵 音乐数学挑战</h3>
+    <p style="font-size:11px;color:var(--tx3);margin-bottom:12px">5 道关于音乐与数学的测试题。</p>
+    <!-- Q1 -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="0" data-explains='["🎯 毕达哥拉斯！他发现弦长比为简单整数时声音和谐——2:1(八度)、3:2(纯五度)、4:3(纯四度)。他用单弦琴（monochord）做了这些实验。","📌 欧几里得是几何学家。毕达哥拉斯才是发现音乐数学规律的人。","📌 开普勒写的是《世界的和谐》(1619)，试图把行星轨道对应到音程上，但音乐比例的发现比他早2000年。","📌 这三位都知道音乐中的数学关系，但毕达哥拉斯是第一个系统研究并记录的人（约公元前500年）。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 谁最早发现了音乐中的整数比（如2:1=八度）？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ 毕达哥拉斯（约公元前500年）</button>
+      <button class="mg-q4-opt">🅱️ 欧几里得（约公元前300年）</button>
+      <button class="mg-q4-opt">©️ 约翰内斯·开普勒（17世纪）</button>
+      <button class="mg-q4-opt">🅳️ 毕达哥拉斯只是传说，实际是17世纪科学家发现的</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+    <!-- Q2 -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="2" data-explains='["📌 整数比不是任意选择的——它们是物理规律。弦振动自然产生泛音列，泛音列决定了什么音程和谐。","📌 这不是巧合——这是弦振动的物理必然。","🎯 泛音列中包含了所有基本音程。基音×2=八度，×3÷2=纯五度，×4÷3=纯四度，×5÷4=大三度。调性系统从泛音列的物理规律中直接推导出来。","📌 人类确实觉得这些音程好听，但这不是主观偏好——所有文化都独立地发现了八度和五度的和谐性，因为它们根植于物理学。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 为什么恰恰是 2:1, 3:2, 4:3 这些比例让人感觉和谐？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ 这是西方音乐文化的任意选择</button>
+      <button class="mg-q4-opt">🅱️ 这是偶然的，就像不同文化喜欢不同香料</button>
+      <button class="mg-q4-opt">©️ 弦振动的物理规律——泛音列天然包含这些整数倍频率</button>
+      <button class="mg-q4-opt">🅳️ 人类大脑的主观偏好，跟物理没有关系</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+    <!-- Q3 -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="1" data-explains='["📌 2^(1/12)≈1.059463是平均律半音的比值，但12这个数字的来源是五度圈。","🎯 因为 (3/2)^12 ≈ 129.75，而 2^7 = 128，两者接近但不相等。12个纯五度≈7个八度，所以把八度分成12份是最自然的近似。","📌 10是手指的数量，不是音乐规律。","📌 中国人确实用五声音阶，但12这个数字来自数学（五度圈），不是来自某个文化的音阶。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 为什么一个八度恰好被分成 12 个半音（而不是 10 或 15）？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ 因为 2^(1/12) 最接近于一个有理数</button>
+      <button class="mg-q4-opt">🅱️ 因为 12 个纯五度 ≈ 7 个八度——12 是五度圈自然闭合的最小数目</button>
+      <button class="mg-q4-opt">©️ 因为人有 10 个手指，12 是 10 以上的最小方便数</button>
+      <button class="mg-q4-opt">🅳️ 因为中国人最早发现 12 律</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+    <!-- Q4 -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="3" data-explains='["📌 伽利略研究了振动频率，但他不是第一个做这个实验的人。","📌 牛顿研究了光和声音，但单弦琴实验早在毕达哥拉斯时代就有了。","📌 这不对。单弦琴是真实的历史实验，被多个古代文献记载。","🎯 正确！毕达哥拉斯用单弦琴——一根弦绷在一个可移动的琴马上。当他把琴马移到弦长的1/2处，音高升高了一个八度。移到2/3处，得到纯五度。这是历史上第一个物理实验。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 毕达哥拉斯用什么实验装置发现了音程的数学关系？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ 伽利略的斜面+钟摆实验</button>
+      <button class="mg-q4-opt">🅱️ 牛顿的三棱镜分光实验</button>
+      <button class="mg-q4-opt">©️ 没有实际实验，只是数学推理</button>
+      <button class="mg-q4-opt">🅳️ 单弦琴（monochord）——一根弦加一个可移动的琴马</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+    <!-- Q5 -->
+    <div class="mg-quiz4" data-mg="quiz4" data-correct="2" data-explains='["📌 平均律的纯五度差约2音分，大三度差约14音分。偏差不同。","📌 恰恰相反，纯律的大三度(5:4=386音分)比平均律大三度(400音分)低14音分。这个差别很明显。","🎯 平均律的五度≈1.4983，与纯律1.5几乎无差别。但大三度方面，平均律≈1.2599，纯律=1.2500，偏差大了7倍。钢琴的大三度在物理上并不"纯"——我们只是习惯了。"]'>
+      <div class="mg-q4-header"><p class="mg-q4-q">🤔 十二平均律中，哪个音程的偏差最大？</p><span class="mg-q4-counter"></span></div>
+      <button class="mg-q4-opt">🅰️ 八度——差得最多</button>
+      <button class="mg-q4-opt">🅱️ 纯五度——差约14音分</button>
+      <button class="mg-q4-opt">©️ 大三度——Pure是5:4≈1.2500，平均律是2^(4/12)≈1.2599，差了约14音分</button>
+      <button class="mg-q4-opt">🅳️ 所有音程偏差一样大</button>
+      <div class="mg-q4-explain"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Takeaways -->
+<section class="section" style="margin-bottom:20px">
+  <div class="section-hd"><span class="s-icon">📝</span><h2>关键要点</h2></div>
+  <div class="viz-card" style="padding:16px">
+    <div style="display:grid;gap:10px;font-size:13px;line-height:1.7">
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">1.</span><span><strong style="color:var(--a1)">和谐 = 简单整数比。</strong>2:1(八度)、3:2(纯五度)、4:3(纯四度)、5:4(大三度)。</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">2.</span><span><strong style="color:var(--amber)">泛音列是物理定律。</strong>每根弦自然产生基音×2,×3,×4...的泛音。和声系统从物理中涌现，不是文化发明。</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">3.</span><span><strong style="color:var(--a3)">纯律不能封闭。</strong>(3/2)^12 ≠ 2^7，差了23.5音分（毕达哥拉斯逗号）。五度圈永远不能完美闭合。</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">4.</span><span><strong style="color:var(--a2)">平均律是优雅的妥协。</strong>每个半音=2^(1/12)。八度完美，其他音程略有偏差，但换来任意转调的便利。</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:20px;flex-shrink:0">5.</span><span><strong style="color:var(--pink)">对数与音乐。</strong>频率的对数间隔相等→听觉感知的音高间隔相等。人耳是天然的对数探测器。</span></div>
+    </div>
+  </div>
+</section>
+<section class="section" style="margin-bottom:20px">
+  <div class="section-hd"><span class="s-icon">📚</span><h2>推荐阅读 & 视频</h2></div>
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:12px;color:var(--tx2);line-height:1.8">
+      🎬 <strong style="color:var(--tx)">漫士 — B站视频</strong> — "动听的音乐背后，藏着怎样的数学密码？"<br>
+      📖 <strong style="color:var(--tx)">Harry F. Olson — <em>Music, Physics and Engineering</em></strong> — 音乐声学的权威著作<br>
+      📖 <strong style="color:var(--tx)">Hermann Helmholtz — <em>On the Sensations of Tone</em></strong> (1863) — 开创性的音乐生理学与声学<br>
+      📖 <strong style="color:var(--tx)">Dave Benson — <em>Music: A Mathematical Offering</em></strong> — 免费的数学+音乐教材<br>
+      🎓 <strong style="color:var(--tx)">3Blue1Brown — "Music and Measure Theory"</strong> — YouTube视频，用数学解释音乐
+    </p>
+  </div>
+</section>
+</div><!-- /container -->
+
+<nav class="bottom-nav">
+  <a class="nav-btn" href="./index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> 首页</a>
+  <a class="nav-btn" href="./knowledge.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> 百科</a>
+  <button class="nav-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg> 回到顶部</button>
+</nav>
+
+<script src="mini-games.js"></script>
+<script>
+'use strict';
+
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+    if (typeof r === 'number') r = { tl: r, tr: r, br: r, bl: r };
+    else if (Array.isArray(r)) {
+      if (r.length === 4) r = { tl: r[0], tr: r[1], br: r[2], bl: r[3] };
+      else if (r.length === 2) r = { tl: r[0], tr: r[0], br: r[1], bl: r[1] };
+      else if (r.length === 1) r = { tl: r[0], tr: r[0], br: r[0], bl: r[0] };
+    }
+    this.beginPath(); this.moveTo(x + r.tl, y); this.lineTo(x + w - r.tr, y);
+    this.quadraticCurveTo(x + w, y, x + w, y + r.tr); this.lineTo(x + w, y + h - r.br);
+    this.quadraticCurveTo(x + w, y + h, x + w - r.br, y + h); this.lineTo(x + r.bl, y + h);
+    this.quadraticCurveTo(x, y + h, x, y + h - r.bl); this.lineTo(x, y + r.tl);
+    this.quadraticCurveTo(x, y, x + r.tl, y); this.closePath(); return this;
+  };
+}
+
+function setupCanvas(canvas, w, h) {
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+  const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr);
+  return { ctx, w, h };
+}
+
+// ═══ HERO ═══
+(function() {
+  const canvas = document.getElementById('heroCanvas');
+  const wrap = document.getElementById('heroWrap');
+  if (!canvas || !wrap) return;
+  let dim;
+  function resize() {
+    const rect = wrap.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr; canvas.height = rect.height * dpr;
+    canvas.style.width = rect.width + 'px'; canvas.style.height = rect.height + 'px';
+    const ctx = canvas.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { w: rect.width, h: rect.height, ctx };
+  }
+  dim = resize();
+  window.addEventListener('resize', () => { dim = resize(); });
+  const P = [];
+  for (let i = 0; i < 35; i++) P.push({
+    x: Math.random()*dim.w, y: Math.random()*dim.h, r: Math.random()*2+1,
+    vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3,
+    a: Math.random()*0.4+0.08,
+    c: ['#F59E0B','#ec4899','#6366f1','#10B981'][Math.floor(Math.random()*4)]
+  });
+  // Add sine wave motion
+  let phase = 0;
+  function draw() {
+    const {ctx,w,h}=dim;ctx.clearRect(0,0,w,h);phase+=0.02;
+    P.forEach((p,i)=>{
+      p.x+=p.vx+Math.sin(phase+i*0.3)*0.15;p.y+=p.vy;
+      if(p.x<0)p.x=w;if(p.x>w)p.x=0;if(p.y<0)p.y=h;if(p.y>h)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=p.c;ctx.globalAlpha=p.a;ctx.fill();
+      for(let j=i+1;j<35;j++){
+        const dx=P[j].x-p.x,dy=P[j].y-p.y,dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<70){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(P[j].x,P[j].y);ctx.strokeStyle=p.c;ctx.globalAlpha=0.05*(1-dist/70);ctx.lineWidth=0.5;ctx.stroke();}
+      }
+    });
+    ctx.globalAlpha=1;requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ═══ RATIO CANVAS — Wave alignment ═══
+(function() {
+  const canvas = document.getElementById('ratioCanvas');
+  if (!canvas) return;
+  const { ctx, w, h } = setupCanvas(canvas, 800, 380);
+
+  function drawWave(y0, amp, freq, color, label, offset) {
+    ctx.beginPath();
+    for (let x = 0; x <= w; x++) {
+      const y = y0 + Math.sin((x + offset) * 0.03 * freq) * amp;
+      if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = color; ctx.font = '11px Inter, sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText(label, 20, y0 - amp - 6);
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.font = 'bold 14px Inter, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('📊 波形对齐 — 为什么简单整数比听起来和谐', w/2, 22);
+
+    // Show 3:2 alignment
+    const y1 = 80, y2 = 180, y3 = 300;
+    const amp = 45;
+
+    // Wave 1: base frequency (f=2)
+    drawWave(y1, amp, 2, 'rgba(99,102,241,0.8)', '低音 f=2 (基频)', 0);
+
+    // Wave 2: 3:2 ratio (f=3)
+    drawWave(y2, amp, 3, 'rgba(236,72,153,0.8)', '高音 f=3 (纯五度 3:2)', 0);
+
+    // Combined wave
+    const cy = y3;
+    ctx.beginPath();
+    for (let x = 0; x <= w; x++) {
+      const v1 = Math.sin(x * 0.03 * 2);
+      const v2 = Math.sin(x * 0.03 * 3);
+      const y = cy + (v1 + v2) * amp * 0.55;
+      if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = 'rgba(245,158,11,0.8)'; ctx.lineWidth = 2.5; ctx.stroke();
+    ctx.fillStyle = 'rgba(245,158,11,0.8)'; ctx.font = '11px Inter, sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText('叠加 (2+3) — 每6个交叉点重复一次', 20, cy - amp * 0.55 - 6);
+
+    // Alignment markers
+    for (let cycle = 0; cycle < 5; cycle++) {
+      const ax = 40 + cycle * (w - 80) / 4;
+      ctx.strokeStyle = 'rgba(255,255,255,0.1)'; ctx.lineWidth = 1;
+      ctx.setLineDash([3, 6]);
+      ctx.beginPath(); ctx.moveTo(ax, 30); ctx.lineTo(ax, h - 20); ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Dot where waves align
+      ctx.beginPath(); ctx.arc(ax, y1, 4, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(99,102,241,0.7)'; ctx.fill();
+      ctx.beginPath(); ctx.arc(ax, y2, 4, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(236,72,153,0.7)'; ctx.fill();
+    }
+
+    // Right panel text
+    const rx = 560, ry = 60, rw = 210, rh = 290;
+    ctx.fillStyle = 'rgba(255,255,255,0.03)';
+    ctx.beginPath(); ctx.roundRect(rx, ry, rw, rh, 12); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.beginPath(); ctx.roundRect(rx, ry, rw, rh, 12); ctx.stroke();
+
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.font = 'bold 11px Inter, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🎯 关键洞察', rx + rw/2, ry + 20);
+
+    ctx.fillStyle = 'rgba(255,255,255,0.45)';
+    ctx.font = '10px Inter, sans-serif'; ctx.textAlign = 'left';
+    const lines = [
+      '频率比 = m : n',
+      '',
+      '高音每 m 个周期',
+      '低音每 n 个周期',
+      '两个波重新对齐一次',
+      '',
+      'm 和 n 越小',
+      '→ 对齐越频繁',
+      '→ 大脑感知越和谐',
+      '',
+      '这就是为什么',
+      '2:1 (八度) 最协和',
+      '3:2 (五度) 次之',
+      '4:3 (四度) 第三',
+      '',
+      '16:15 (半音)',
+      '要16个周期才对齐一次',
+      '→ 不协和 / 紧张感'
+    ];
+    lines.forEach((l, i) => ctx.fillText(l, rx + 14, ry + 44 + i * 14));
+  }
+  draw();
+})();
+
+// ═══ WAVE CANVAS + AUDIO ═══
+(function() {
+  const canvas = document.getElementById('waveCanvas');
+  if (!canvas) return;
+  const { ctx, w, h } = setupCanvas(canvas, 800, 340);
+
+  let audioCtx = null;
+  let currentOsc = null;
+  let currentGain = null;
+  let animFreq1 = 2, animFreq2 = 3;
+  let animPhase = 0;
+  let animActive = false;
+
+  function getAudioCtx() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+
+  function playRatio(ratioStr) {
+    const [num, den] = ratioStr.split('/').map(Number);
+    const baseFreq = 330; // E4
+    const f1 = baseFreq;
+    const f2 = baseFreq * num / den;
+
+    // Stop previous
+    if (currentOsc) {
+      try { currentOsc[0].stop(); currentOsc[1].stop(); } catch(e) {}
+    }
+
+    const ctx = getAudioCtx();
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
+    const gain1 = ctx.createGain();
+    const gain2 = ctx.createGain();
+    gain1.gain.value = 0.12;
+    gain2.gain.value = 0.12;
+    gain1.gain.setTargetAtTime(0, ctx.currentTime + 1.2, 0.1);
+    gain2.gain.setTargetAtTime(0, ctx.currentTime + 1.2, 0.1);
+
+    osc1.type = 'sine'; osc1.frequency.value = f1;
+    osc2.type = 'sine'; osc2.frequency.value = f2;
+    osc1.connect(gain1); gain1.connect(ctx.destination);
+    osc2.connect(gain2); gain2.connect(ctx.destination);
+    osc1.start(); osc2.start();
+    osc1.stop(ctx.currentTime + 1.5);
+    osc2.stop(ctx.currentTime + 1.5);
+    currentOsc = [osc1, osc2];
+
+    // Animate
+    animFreq1 = den; animFreq2 = num;
+    animActive = true;
+    animPhase = 0;
+
+    document.getElementById('audioStatus').textContent = '🔊 正在播放：' + ratioStr + ' (基频=' + baseFreq + 'Hz, 高音=' + Math.round(f2) + 'Hz)';
+    document.getElementById('audioStatus').className = 'nim-status win';
+
+    setTimeout(() => {
+      animActive = false;
+      document.getElementById('audioStatus').textContent = '👆 点击按钮听音程（使用纯律频率比）';
+      document.getElementById('audioStatus').className = 'nim-status info';
+    }, 1600);
+  }
+
+  document.querySelectorAll('.play-btn').forEach(btn => {
+    btn.addEventListener('click', () => playRatio(btn.dataset.ratio));
+  });
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.font = 'bold 14px Inter, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🔊 波形同步可视化', w/2, 22);
+
+    const y1 = 90, y2 = 200, amp = 55;
+    const cycles = animActive ? 4 : 3;
+
+    // Wave 1
+    ctx.beginPath();
+    for (let x = 0; x <= w; x++) {
+      const y = y1 + Math.sin((x + animPhase) * 0.025 * animFreq1) * amp;
+      if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = 'rgba(99,102,241,0.8)'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = 'rgba(99,102,241,0.7)'; ctx.font = '11px Inter, sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText('基音 f (低音)', 20, y1 - amp - 6);
+
+    // Wave 2
+    ctx.beginPath();
+    for (let x = 0; x <= w; x++) {
+      const y = y2 + Math.sin((x + animPhase) * 0.025 * animFreq2) * amp;
+      if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = 'rgba(236,72,153,0.8)'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = 'rgba(236,72,153,0.7)'; ctx.textAlign = 'left';
+    ctx.fillText('高音 f×' + (animFreq2/animFreq1).toFixed(2).replace('.00','') + ' (高音)', 20, y2 - amp - 6);
+
+    // Alignment dots
+    if (animActive) {
+      const period = (w - 80) / cycles;
+      for (let c = 0; c <= cycles * animFreq1; c++) {
+        const ax = 40 + c * period / animFreq1;
+        if (ax < w - 20) {
+          const y1v = y1 + Math.sin((ax + animPhase) * 0.025 * animFreq1) * amp;
+          const y2v = y2 + Math.sin((ax + animPhase) * 0.025 * animFreq2) * amp;
+          ctx.beginPath(); ctx.arc(ax, y1v, 3.5, 0, Math.PI*2);
+          ctx.fillStyle = 'rgba(99,102,241,0.9)'; ctx.fill();
+          ctx.beginPath(); ctx.arc(ax, y2v, 3.5, 0, Math.PI*2);
+          ctx.fillStyle = 'rgba(236,72,153,0.9)'; ctx.fill();
+          // Highlight where both align
+          if (Math.abs(Math.sin((ax + animPhase) * 0.025 * animFreq1) - Math.sin((ax + animPhase) * 0.025 * animFreq2)) < 0.2) {
+            ctx.beginPath(); ctx.arc(ax, y1v, 7, 0, Math.PI*2);
+            ctx.strokeStyle = 'rgba(245,158,11,0.6)'; ctx.lineWidth = 2; ctx.stroke();
+            ctx.beginPath(); ctx.arc(ax, y2v, 7, 0, Math.PI*2);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    // Bottom info
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.font = '10px Inter, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('蓝 = 基音 | 粉 = 高音 | 金色圈 = 两波对齐点（听感和谐的原因）', w/2, h - 14);
+
+    if (animActive) animPhase += 0.8;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ═══ HARMONIC SERIES ═══
+(function() {
+  const canvas = document.getElementById('harmonicCanvas');
+  if (!canvas) return;
+  const { ctx, w, h } = setupCanvas(canvas, 800, 400);
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.font = 'bold 14px Inter, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🌈 一根弦上的泛音列', w/2, 22);
+
+    // Draw a "string"
+    const sx = 60, sy = 60, sw = w - 120, sh = 300;
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(sx, sy, sw, sh);
+
+    // Fundamental
+    drawHarmonic(sx, sy + 20, sw, 1, '#6366f1', '基音 (×1)', '262 Hz (C4)');
+
+    // Overtones
+    const overtones = [
+      { n: 2, color: '#06B6D4', label: '第1泛音 (×2)', note: '524 Hz (C5) — 八度' },
+      { n: 3, color: '#10B981', label: '第2泛音 (×3)', note: '786 Hz (G5) — 纯五度' },
+      { n: 4, color: '#F59E0B', label: '第3泛音 (×4)', note: '1048 Hz (C6) — 纯四度' },
+      { n: 5, color: '#ec4899', label: '第4泛音 (×5)', note: '1310 Hz (E6) — 大三度' },
+      { n: 6, color: '#EF4444', label: '第5泛音 (×6)', note: '1572 Hz (G6) — 小三度' }
+    ];
+
+    overtones.forEach((ot, i) => {
+      drawHarmonic(sx, sy + 20 + (i + 1) * 45, sw, ot.n, ot.color, ot.label, ot.note);
+    });
+  }
+
+  function drawHarmonic(x, y, w, n, color, label, note) {
+    // Draw the "string" vibrating in n segments
+    const amp = 8;
+    const segW = w / n;
+
+    ctx.beginPath();
+    for (let i = 0; i < n; i++) {
+      const sx = x + i * segW;
+      // Draw a half sine wave in each segment
+      for (let px = 0; px <= segW; px++) {
+        const relX = px / segW * Math.PI;
+        const waveY = y + Math.sin(relX) * amp * (1 - i * 0.05);
+        const absX = sx + px;
+        if (i === 0 && px === 0) ctx.moveTo(absX, waveY);
+        else ctx.lineTo(absX, waveY);
+      }
+    }
+    ctx.strokeStyle = color; ctx.lineWidth = 2.5; ctx.stroke();
+
+    // Nodes (stationary points)
+    for (let i = 0; i <= n; i++) {
+      const nx = x + i * segW;
+      ctx.beginPath(); ctx.arc(nx, y, 3.5, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.fill();
+    }
+
+    // Label
+    ctx.fillStyle = color; ctx.font = 'bold 10px Inter, sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText(label, x + w + 14, y - 4);
+    ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.font = '9px Inter, sans-serif';
+    ctx.fillText(note, x + w + 14, y + 12);
+  }
+
+  draw();
+})();
+
+// ═══ CIRCLE OF FIFTHS ═══
+(function() {
+  const canvas = document.getElementById('circleCanvas');
+  if (!canvas) return;
+  const { ctx, w, h } = setupCanvas(canvas, 800, 420);
+
+  let showEqual = false;
+  const noteNames = ['C','G','D','A','E','B','F#','Db','Ab','Eb','Bb','F'];
+  const noteColors = ['#6366f1','#06B6D4','#10B981','#F59E0B','#ec4899','#EF4444','#a855f7',
+                      '#6366f1','#06B6D4','#10B981','#F59E0B','#ec4899'];
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.font = 'bold 14px Inter, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(showEqual ? '🔵 十二平均律：完美的闭合圆' : '🔵 纯五度堆叠 (3:2) — 注意缺口！', w/2, 22);
+
+    const cx = 230, cy = 230, R = 160;
+    const px = 480, py = 60;
+
+    // Draw circle
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI*2);
+    ctx.strokeStyle = 'rgba(255,255,255,0.12)'; ctx.lineWidth = 1.5; ctx.stroke();
+
+    // Note positions
+    const gapAngle = showEqual ? 0 : Math.PI * 2 * 0.02; // ~7.2° gap for Pythagorean comma
+
+    for (let i = 0; i < 12; i++) {
+      // Pure: angle = i * (Math.PI*2/12 + gapAdjust)
+      // Equal: angle = i * Math.PI*2/12
+      let angle;
+      if (showEqual) {
+        angle = -Math.PI/2 + i * Math.PI*2/12;
+      } else {
+        // Simulate Pythagorean: each step is slightly more than 1/12 circle
+        angle = -Math.PI/2 + i * (Math.PI*2/12 + gapAngle/12);
+      }
+
+      const nx = cx + Math.cos(angle) * R;
+      const ny = cy + Math.sin(angle) * R;
+
+      // Line from center
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(nx, ny);
+      ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1; ctx.stroke();
+
+      // Node
+      ctx.beginPath(); ctx.arc(nx, ny, 18, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(10,10,15,0.9)'; ctx.fill();
+      ctx.strokeStyle = noteColors[i]; ctx.lineWidth = 2; ctx.stroke();
+
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 11px Inter, sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(noteNames[i], nx, ny);
+    }
+
+    // Gap marker for pure version
+    if (!showEqual) {
+      // Pythagorean comma indicator
+      const gapAngle2 = -Math.PI/2 + 12 * (Math.PI*2/12 + gapAngle/12);
+      const gx = cx + Math.cos(gapAngle2) * (R + 8);
+      const gy = cy + Math.sin(gapAngle2) * (R + 8);
+
+      ctx.beginPath(); ctx.arc(gx, gy, 6, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(239,68,68,0.8)'; ctx.fill();
+      ctx.strokeStyle = 'rgba(239,68,68,0.5)'; ctx.lineWidth = 2; ctx.stroke();
+
+      // Red arc showing the gap
+      ctx.beginPath();
+      ctx.arc(cx, cy, R + 5, gapAngle2 - 0.03, gapAngle2 + 0.08);
+      ctx.strokeStyle = 'rgba(239,68,68,0.5)'; ctx.lineWidth = 3; ctx.stroke();
+    }
+
+    // Right panel: explanation
+    ctx.fillStyle = 'rgba(255,255,255,0.03)';
+    ctx.beginPath(); ctx.roundRect(px, py, 290, 320, 12); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.beginPath(); ctx.roundRect(px, py, 290, 320, 12); ctx.stroke();
+
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.font = 'bold 11px Inter, sans-serif'; ctx.textAlign = 'center';
+
+    if (showEqual) {
+      ctx.fillText('十二平均律', px + 145, py + 24);
+      const lines = [
+        '每个半音 = 2^(1/12)',
+        '≈ 1.059463094',
+        '',
+        '八度被等比分成12份',
+        '五度圈完美闭合',
+        '',
+        '代价：',
+        '每个纯五度 = 700音分',
+        '（纯律是702音分）',
+        '差2音分，几乎听不出',
+        '',
+        '大三度 = 400音分',
+        '（纯律是386音分）',
+        '差14音分，能听出',
+        '',
+        '这是"妥协的完美"',
+        '钢琴调音师都这么做',
+      ];
+      ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      ctx.font = '10px Inter, sans-serif'; ctx.textAlign = 'left';
+      lines.forEach((l, i) => ctx.fillText(l, px + 18, py + 46 + i * 16));
+    } else {
+      ctx.fillText('毕达哥拉斯调音 (纯五度堆叠)', px + 145, py + 24);
+      const lines = [
+        '每次 × 3/2 (纯五度)',
+        '走12步得到：',
+        '(3/2)^12 ≈ 129.746',
+        '',
+        '7个八度：',
+        '2^7 = 128',
+        '',
+        '差距 = 23.5 音分',
+        '"毕达哥拉斯逗号"',
+        '',
+        '五度圈不能闭合！',
+        '第13个音 ≠ 起始音',
+        '',
+        '红色缺口 = 逗号差距',
+        '这0.02%的误差',
+        '让纯律无法在所有调上演奏',
+        '→ 催生了平均律'
+      ];
+      ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      ctx.font = '10px Inter, sans-serif'; ctx.textAlign = 'left';
+      lines.forEach((l, i) => ctx.fillText(l, px + 18, py + 46 + i * 16));
+    }
+  }
+
+  draw();
+
+  document.getElementById('circlePure')?.addEventListener('click', function() {
+    showEqual = false; this.classList.add('active');
+    document.getElementById('circleEqual').classList.remove('active'); draw();
+  });
+  document.getElementById('circleEqual')?.addEventListener('click', function() {
+    showEqual = true; this.classList.add('active');
+    document.getElementById('circlePure').classList.remove('active'); draw();
+  });
+})();
+
+// ═══ FREQ TABLE ═══
+(function() {
+  const tbody = document.getElementById('freqBody');
+  if (!tbody) return;
+  const A4 = 440;
+  const notes = [
+    { name: 'C4', justRatio: '1/1', justNum: 1, justDen: 1 },
+    { name: 'D4', justRatio: '9/8', justNum: 9, justDen: 8 },
+    { name: 'E4', justRatio: '5/4', justNum: 5, justDen: 4 },
+    { name: 'F4', justRatio: '4/3', justNum: 4, justDen: 3 },
+    { name: 'G4', justRatio: '3/2', justNum: 3, justDen: 2 },
+    { name: 'A4', justRatio: '5/3', justNum: 5, justDen: 3 },
+    { name: 'B4', justRatio: '15/8', justNum: 15, justDen: 8 },
+    { name: 'C5', justRatio: '2/1', justNum: 2, justDen: 1 },
+  ];
+  const baseFreq = A4 / (5/3); // C4 = A4 * 3/5 = 264 Hz (just intonation reference)
+
+  // Map: C=0, D=2, E=4, F=5, G=7, A=9, B=11
+  const semitonesFromC = [0, 2, 4, 5, 7, 9, 11, 12];
+
+  notes.forEach((n, i) => {
+    const justFreq = baseFreq * n.justNum / n.justDen;
+    const equalFreq = baseFreq * Math.pow(2, semitonesFromC[i] / 12);
+    const cents = 1200 * Math.log2(justFreq / equalFreq);
+
+    const row = document.createElement('tr');
+    row.innerHTML = '<td style="color:var(--tx);font-weight:600">' + n.name + '</td>' +
+      '<td>' + n.justRatio + '</td>' +
+      '<td>' + justFreq.toFixed(1) + ' Hz</td>' +
+      '<td>' + equalFreq.toFixed(1) + ' Hz</td>' +
+      '<td style="color:' + (Math.abs(cents) > 5 ? 'var(--a3)' : 'var(--a2)') + '">' +
+      (cents > 0 ? '+' : '') + cents.toFixed(1) + ' 音分</td>';
+    tbody.appendChild(row);
+  });
+})();
+
+window.addEventListener('resize', () => {});
+</script>
+</body>
+</html>
