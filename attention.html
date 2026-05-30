@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>注意力机制 — Attention 到底在做什么？</title>
+<link rel="icon" href="./icon.svg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.6;min-height:100vh;padding-bottom:calc(100px + env(safe-area-inset-bottom,0));-webkit-font-smoothing:antialiased;overflow-x:hidden;letter-spacing:-.01em}
+::-webkit-scrollbar{width:2px;height:2px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.04);border-radius:1px}
+::selection{background:rgba(99,102,241,.3)}
+
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--cyan) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(99,102,241,.05),rgba(6,182,212,.04) 20%,rgba(168,85,247,.02) 45%,transparent 70%)}
+
+.header{position:sticky;top:0;z-index:50;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-top:none;padding:10px 20px;border-radius:0 0 22px 22px;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 40px rgba(99,102,241,.1),0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04)}
+.header-in{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.header-logo{font-size:17px;font-weight:700;white-space:nowrap;letter-spacing:-.02em;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 6s ease-in-out infinite}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+.back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.home-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none;margin-left:auto}
+.home-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+
+.container{max-width:900px;margin:0 auto;padding:18px 20px;position:relative;z-index:1}
+
+.hero-wrap{position:relative;text-align:center;padding:40px 0 20px;overflow:hidden}
+#heroCanvas{position:absolute;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:900px;height:100%;pointer-events:none;z-index:0;opacity:.6}
+.hero-content{position:relative;z-index:1}
+.hero-content h1{font-size:32px;font-weight:700;letter-spacing:-.03em;margin-bottom:8px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+.hero-content .sub{color:var(--tx2);font-size:15px;max-width:520px;margin:0 auto;line-height:1.6}
+.hero-badge{display:inline-block;padding:4px 12px;border-radius:12px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);font-size:11px;color:var(--a1);margin-bottom:12px;letter-spacing:.04em}
+
+.section{position:relative;z-index:1;margin-bottom:32px;scroll-margin-top:80px}
+.section-hd{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-left:2px}
+.section-hd .s-icon{font-size:24px}
+.section-hd h2{font-size:18px;font-weight:700;color:var(--tx);letter-spacing:-.02em}
+.section-hd .s-num{font-size:12px;color:var(--tx3);background:rgba(255,255,255,.05);padding:3px 10px;border-radius:8px}
+
+.viz-card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:20px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(99,102,241,.04),0 4px 24px rgba(0,0,0,.1)}
+.viz-card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.viz-card canvas{display:block;width:100%;max-width:100%;border-radius:12px;margin-bottom:12px}
+.viz-card .viz-info{font-size:12px;color:var(--tx2);line-height:1.6;margin-top:8px;padding:10px 14px;background:rgba(255,255,255,.03);border-radius:10px;border-left:2px solid var(--a1)}
+.viz-card .viz-info strong{color:var(--tx)}
+
+.viz-ctrls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;justify-content:center}
+.viz-btn{padding:7px 16px;border-radius:8px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.viz-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:rgba(99,102,241,.2)}
+.viz-btn.active{background:rgba(99,102,241,.2);border-color:rgba(99,102,241,.4);color:var(--a1)}
+
+.insight{display:flex;align-items:flex-start;gap:8px;padding:10px 14px;border-radius:10px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.15);margin-top:10px;font-size:12px;color:var(--amber);line-height:1.5}
+.insight .ins-icon{font-size:16px;flex-shrink:0}
+
+/* Formula display */
+.formula-box{text-align:center;padding:16px 10px;margin:8px 0;background:rgba(255,255,255,.03);border-radius:12px;border:1px solid rgba(255,255,255,.06);font-family:'SF Mono','Cascadia Code','Fira Code',monospace;font-size:14px;letter-spacing:.02em;color:var(--tx);word-break:break-all}
+
+blockquote.quote{border-left:3px solid var(--a1);padding:10px 16px;margin:14px 0;background:rgba(99,102,241,.05);border-radius:0 10px 10px 0;font-size:13px;color:var(--tx2);font-style:italic;line-height:1.6}
+blockquote.quote .q-author{display:block;margin-top:6px;font-style:normal;font-size:11px;color:var(--tx3)}
+
+/* Step flow */
+.step-list{display:grid;gap:10px}
+.step-item{display:flex;align-items:flex-start;gap:10px;padding:12px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);transition:all .3s}
+.step-item:hover{background:rgba(255,255,255,.04);border-color:rgba(99,102,241,.15)}
+.step-num{width:28px;height:28px;border-radius:50%;background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.25);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--a1);flex-shrink:0}
+.step-body h4{font-size:13px;color:var(--tx);margin-bottom:2px}
+.step-body p{font-size:11px;color:var(--tx2);line-height:1.5}
+
+/* Tone terminal style */
+.tone-box{padding:14px 18px;border-radius:12px;background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.12);font-size:15px;color:var(--cyan);font-weight:600;text-align:center;margin:12px 0;letter-spacing:.03em}
+
+/* mini-games CSS (v3 compatible) */
+.mg-reveal,.mg-quiz,.mg-flip,.mg-slider,.mg-match,.mg-scenario,.mg-counter,.mg-sort,.mg-quiz4,.mg-scale,.mg-spot,.mg-trap{margin-top:10px;position:relative;z-index:1}
+.mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:rgba(99,102,241,.2)}
+.mg-btn.correct{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.35);color:var(--a2)}
+.mg-btn.wrong{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.35);color:var(--a3);animation:shake .4s}
+.mg-right{color:var(--a2)}.mg-wrong{color:var(--a3)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+.mg-q4-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.mg-q4-q{font-size:12px;color:var(--tx2);margin:0;line-height:1.5}
+.mg-q4-counter{font-size:11px;color:var(--tx3);min-width:24px;text-align:center}
+.mg-q4-opt{display:block;width:100%;text-align:left;padding:8px 12px;margin:4px 0;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-q4-opt:hover{background:rgba(255,255,255,.08);color:var(--tx);border-color:rgba(99,102,241,.2)}
+.mg-q4-opt.correct{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:var(--a2)}
+.mg-q4-opt.wrong{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:var(--a3)}
+.mg-q4-explain{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:6px;line-height:1.5}
+.mg-q4-explain.show{display:block;animation:fadeUp .3s var(--ease) both}
+.mg-spot-cards{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mg-spot-card{padding:8px 10px;border-radius:8px;border:1px solid var(--card-border);font-size:11px;color:var(--tx2);cursor:pointer;background:rgba(255,255,255,.02);transition:all .2s;line-height:1.4;min-height:50px;-webkit-tap-highlight-color:transparent}
+.mg-spot-card:hover{border-color:rgba(99,102,241,.2);background:rgba(255,255,255,.05)}
+.mg-spot-card.correct{border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:var(--a2)}
+.mg-spot-card.wrong{border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.08);color:var(--a3)}
+.mg-spot-fb{display:none;font-size:12px;margin-top:6px;line-height:1.5}
+.mg-spot-fb.show{display:block;animation:fadeUp .3s var(--ease) both}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)scale(.97)}to{opacity:1;transform:translateY(0)scale(1)}}
+
+/* Bottom nav */
+.bottom-nav{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0));left:50%;transform:translateX(-50%);width:calc(100% - 28px);max-width:440px;height:58px;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-radius:22px;display:flex;justify-content:center;align-items:center;gap:16px;z-index:100;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 50px rgba(99,102,241,.12),0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.04)}
+.nav-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:var(--tx3);padding:6px 14px;border-radius:14px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .3s var(--ease);-webkit-tap-highlight-color:transparent;text-decoration:none}
+.nav-btn:hover{background:rgba(255,255,255,.08);color:var(--tx2)}
+.nav-btn svg{width:14px;height:14px}
+
+/* TOC nav */
+.toc{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;padding:0 2px}
+.toc a{font-size:11px;color:var(--tx3);text-decoration:none;padding:4px 10px;border-radius:6px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04);transition:all .2s;white-space:nowrap}
+.toc a:hover{color:var(--tx);background:rgba(255,255,255,.06)}
+
+@media(max-width:480px){
+  .hero-content h1{font-size:22px}
+  .viz-card{padding:14px}
+  .mg-spot-cards{grid-template-columns:1fr}
+  .section-hd h2{font-size:16px}
+  .formula-box{font-size:12px;padding:12px 8px}
+  .toc{gap:4px}
+  .toc a{font-size:10px;padding:3px 7px}
+}
+</style>
+</head>
+<body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot"></div>
+
+<div class="header">
+  <div class="header-in">
+    <a class="back-btn" href="./index.html" title="返回主页"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
+    <a class="back-btn" href="./knowledge.html" title="知识百科" style="margin-left:2px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></a>
+    <span class="header-logo">注意力机制</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- Hero -->
+<div class="hero-wrap" id="heroWrap">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-badge">🔬 基于 Transformer 论文 + 漫士科普视频</div>
+    <h1>注意力机制到底在做什么？</h1>
+    <p class="sub">从 "老板告诉员工他必须加班" 这个句子开始，<br>一步一步理解 Transformer 最核心的动作——Attention。</p>
+  </div>
+</div>
+
+<!-- TOC -->
+<nav class="toc">
+  <a href="#s1">1. "他"指谁？</a>
+  <a href="#s2">2. 词向量</a>
+  <a href="#s3">3. Q·K 相似度</a>
+  <a href="#s4">4. Softmax</a>
+  <a href="#s5">5. V——真正的"搬"</a>
+  <a href="#s6">6. 因果掩码</a>
+  <a href="#s7">7. 多头注意力</a>
+  <a href="#games">🎮 小游戏</a>
+</nav>
+
+<!-- ============================================================ -->
+<!-- SECTION 1: "他"指谁？ -->
+<!-- ============================================================ -->
+<section class="section" id="s1">
+  <div class="section-hd"><span class="s-icon">💬</span><h2>"他"指谁？</h2><span class="s-num">第 1 章</span></div>
+
+  <div class="viz-card">
+    <canvas id="refCanvas" width="800" height="320"></canvas>
+    <div class="viz-ctrls">
+      <button class="viz-btn active" id="refNoAttn">👀 不加Attention</button>
+      <button class="viz-btn" id="refWithAttn">🧠 加上Attention</button>
+    </div>
+    <div class="viz-info"><strong>关键问题：</strong>"老板告诉员工他必须加班"——这个「他」指的是老板还是员工？人类一眼看出是「员工」，但机器怎么知道的？</div>
+  </div>
+
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
+      <strong>没有注意力时：</strong>模型把每个词当成独立符号。"他"就是一个字，和小狗叫"他"、别人口中的"他"完全相同——没有上下文信息。
+    </p>
+    <p style="font-size:13px;color:var(--tx);line-height:1.7">
+      <strong>有了注意力：</strong>模型在处理"他"时，会主动去<strong style="color:var(--cyan)">查询</strong>前面所有词——"老板"、"告诉"、"员工"——然后发现"员工"与"他"在语义上最相关，于是把注意力权重更多地分配给"员工"。
+    </p>
+    <div class="insight"><span class="ins-icon">💡</span> 注意力本质上是：<strong style="color:var(--a1)">让每个词去"打听"其他所有词，找出谁和自己最有关系。</strong>这就是 Transformer 里最关键的一步。</div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 2: 词向量 — 数字世界的"词" -->
+<!-- ============================================================ -->
+<section class="section" id="s2">
+  <div class="section-hd"><span class="s-icon">🔢</span><h2>词向量——给每个词一个数字身份</h2><span class="s-num">第 2 章</span></div>
+
+  <div class="viz-card">
+    <canvas id="embCanvas" width="800" height="340"></canvas>
+    <div class="viz-ctrls">
+      <button class="viz-btn" id="embHighlight">✨ 高亮相近词</button>
+      <button class="viz-btn" id="embReset">↺ 重置</button>
+    </div>
+  </div>
+
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
+      <strong>第一步：查表</strong>——模型把每个词（或子词）映射成一个高维向量（通常 768 或 4096 维），这个向量是训练学来的。
+    </p>
+    <p style="font-size:13px;color:var(--tx);line-height:1.7">
+      <strong>向量之间的相似度 = 语义相关性</strong>——"国王"的向量和"王后"的向量在空间中很靠近，"老板"和"员工"也很靠近。
+      这些词向量是从一张巨大的"词嵌入表"中<strong style="color:var(--a1)">查表</strong>得到的。
+    </p>
+    <div class="formula-box">
+      输入句子 → <span style="color:var(--a1)">Embedding 查表</span> → n 个 d 维向量 = 输入矩阵 X ∈ R<sup>n×d</sup>
+    </div>
+    <div class="insight"><span class="ins-icon">⚠️</span> 单纯加权平均为什么不行？——把所有词向量取平均，会丢掉词序信息。"狗咬人"和"人咬狗"会产生相同的向量表示。注意力正是为了解决这个问题。</div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 3: Q·K 相似度 -->
+<!-- ============================================================ -->
+<section class="section" id="s3">
+  <div class="section-hd"><span class="s-icon">🎯</span><h2>Q·K——给每个词打"路宽"分数</h2><span class="s-num">第 3 章</span></div>
+
+  <div class="viz-card">
+    <canvas id="qkCanvas" width="800" height="380"></canvas>
+    <div class="viz-ctrls">
+      <button class="viz-btn active" id="qkRun">▶ 演示 Q·K 计算</button>
+      <button class="viz-btn" id="qkReset">↺ 重置</button>
+    </div>
+  </div>
+
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
+      <strong>三个关键角色：</strong>
+    </p>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num" style="background:rgba(99,102,241,.15);border-color:rgba(99,102,241,.25);color:var(--a1)">Q</div>
+        <div class="step-body"><h4>Query（查询）</h4><p>当前词在"打听"——"我是'他'，谁和我最有关系？"</p></div>
+      </div>
+      <div class="step-item">
+        <div class="step-num" style="background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.25);color:var(--a2)">K</div>
+        <div class="step-body"><h4>Key（钥匙）</h4><p>所有词的"标签"——"我是'老板'，查询我的人会看到我的特征。"</p></div>
+      </div>
+      <div class="step-item">
+        <div class="step-num" style="background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.25);color:var(--a3)">V</div>
+        <div class="step-body"><h4>Value（值）</h4><p>每个词的"实际内容"——真正被搬运的信息。</p></div>
+      </div>
+    </div>
+
+    <div class="formula-box" style="margin-top:12px">
+      得分矩阵 S = Q · K<sup>T</sup> &nbsp;&nbsp;→&nbsp;&nbsp; S<sub>ij</sub> = "第 i 个词对第 j 个词的关注度"
+    </div>
+
+    <p style="font-size:12px;color:var(--tx2);line-height:1.6;margin-top:8px">
+      做<strong style="color:var(--a1)">点积</strong>：Q 和 K 都是 d<sub>k</sub> 维向量，点积结果反映了两个词在语义空间中的"匹配度"。值越大，说明这两个词越相关。
+    </p>
+    <div class="insight"><span class="ins-icon">🔑</span> Q 和 K 来自同一个词向量 X，但乘以<strong style="color:var(--a1)">不同的权重矩阵</strong> W<sub>Q</sub> 和 W<sub>K</sub>（这是训练学来的）。所以即使是同一个词，它"查询别人"和"被别人查询"时，用的是不同的表示。</div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 4: Softmax — 变成注意力预算 -->
+<!-- ============================================================ -->
+<section class="section" id="s4">
+  <div class="section-hd"><span class="s-icon">📊</span><h2>Softmax——把分数变成"注意力预算"</h2><span class="s-num">第 4 章</span></div>
+
+  <div class="viz-card">
+    <canvas id="softmaxCanvas" width="800" height="350"></canvas>
+    <div class="viz-ctrls">
+      <button class="viz-btn active" id="smRun">▶ 动画演示</button>
+      <button class="viz-btn" id="smReset">↺ 重置</button>
+    </div>
+  </div>
+
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
+      Q·K<sup>T</sup> 得到的是<strong>没有上限的原始分数</strong>——可能是 47，可能是 -23。我们需要把它们变成"概率分布"：
+    </p>
+
+    <div class="formula-box">
+      A = softmax( <span style="color:var(--a1)">Q·K<sup>T</sup></span> / <span style="color:var(--amber)">&radic;d<sub>k</sub></span> )
+    </div>
+
+    <p style="font-size:12px;color:var(--tx2);line-height:1.6;margin-top:8px">
+      <strong style="color:var(--amber)">为什么要除以 &radic;d<sub>k</sub>？</strong>——当向量维度很大时（如 64 或 128），点积值会变得很大，导致 softmax 输出极度尖锐（接近 one-hot），梯度几乎为零，训练不动。除以 &radic;d<sub>k</sub> 相当于"缩放到合理的温度"。
+    </p>
+
+    <div class="formula-box" style="margin-top:10px">
+      softmax 之后 → 每一行的元素之和 = 1 → <strong style="color:var(--cyan)">"注意力预算"</strong>
+    </div>
+
+    <div class="insight"><span class="ins-icon">💰</span> Softmax 后的结果可以理解为：模型手里有 100% 的注意力预算，它按照 Q·K 相似度把这 100% 分配给所有前面的词。最相关的词分得最多，"路人甲"几乎分不到。</div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 5: V — 真正的"搬" -->
+<!-- ============================================================ -->
+<section class="section" id="s5">
+  <div class="section-hd"><span class="s-icon">📦</span><h2>V——注意力不只是看，更是搬</h2><span class="s-num">第 5 章</span></div>
+
+  <div class="viz-card">
+    <canvas id="vCanvas" width="800" height="360"></canvas>
+    <div class="viz-ctrls">
+      <button class="viz-btn active" id="vRun">▶ 动画演示</button>
+      <button class="viz-btn" id="vReset">↺ 重置</button>
+    </div>
+  </div>
+
+  <div class="viz-card" style="padding:16px">
+    <div class="formula-box">
+      <strong>最终输出 = A · V</strong>
+    </div>
+
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-top:10px">
+      A 是注意力权重矩阵（由 softmax 得到），V 是每个词的值向量。<strong style="color:var(--a3)">A · V 的意思是：按照注意力权重，把各词的 V 向量加权求和。</strong>
+    </p>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.6;margin-top:8px">
+      回到"他"的例子：处理"他"时，注意力权重给"员工"分配了 0.7，给"老板"分配了 0.2，给"告诉"分配了 0.08，给其他词分配了 0.02。
+      那么"他"的最终输出 ≈ 0.7 × V<sub>员工</sub> + 0.2 × V<sub>老板</sub> + 0.08 × V<sub>告诉</sub> + ...
+    </p>
+
+    <div class="tone-box">
+      💡 "注意力不是只看，更是搬。" —— 漫士
+    </div>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.6">
+      Q 和 K 决定"看谁"，V 决定"搬什么"。注意力机制的本质是：<strong style="color:var(--tx)">把相关词的内容按比例搬运到当前词的表示中</strong>，从而让模型在理解"他"时能利用"员工"的信息。
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 6: 因果掩码 -->
+<!-- ============================================================ -->
+<section class="section" id="s6">
+  <div class="section-hd"><span class="s-icon">🎭</span><h2>因果掩码——不能偷看未来</h2><span class="s-num">第 6 章</span></div>
+
+  <div class="viz-card">
+    <canvas id="maskCanvas" width="800" height="340"></canvas>
+    <div class="viz-ctrls">
+      <button class="viz-btn active" id="maskShow">🔲 显示掩码</button>
+      <button class="viz-btn" id="maskHide">🔍 去掉掩码（会发生什么？）</button>
+    </div>
+  </div>
+
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
+      <strong>自回归生成</strong>——GPT 类模型是逐词生成的。在预测下一个词时，模型<strong style="color:var(--a3)">不能看到未来的内容</strong>。
+    </p>
+    <p style="font-size:13px;color:var(--tx);line-height:1.7">
+      <strong>做法：</strong>计算 Q·K<sup>T</sup> 后，把右上角（"未来"位置）的分数全部填成<strong style="color:var(--amber)">负无穷（-∞）</strong>。
+      经过 softmax 后，-∞ 位置的注意力权重恰好为 0——模型对未来的词完全"视而不见"。
+    </p>
+    <div class="insight"><span class="ins-icon">🔮</span> 如果没有因果掩码，模型会在训练时"作弊"——直接偷看答案再猜答案，就像先看试卷反面再做题。这样的模型到了推理时（没有答案可看）就会完全失效。</div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 7: 多头注意力 -->
+<!-- ============================================================ -->
+<section class="section" id="s7">
+  <div class="section-hd"><span class="s-icon">👥</span><h2>多头注意力——一个人看不全</h2><span class="s-num">第 7 章</span></div>
+
+  <div class="viz-card">
+    <canvas id="multiHeadCanvas" width="800" height="380"></canvas>
+    <div class="viz-ctrls">
+      <button class="viz-btn active" id="mh1">1 个头</button>
+      <button class="viz-btn" id="mh4">4 个头</button>
+      <button class="viz-btn" id="mh12">12 个头</button>
+      <button class="viz-btn" id="mh96">96 个头</button>
+    </div>
+  </div>
+
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
+      <strong>单头注意力的问题：</strong>每个词只有一套 Q、K、V，只能关注一种"模式"。比如处理"他"时，可能只注意到位置相近的词，而忽略了语义相关的词。
+    </p>
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
+      <strong>多头注意力：</strong>同时有多套（Q<sub>1</sub>, K<sub>1</sub>, V<sub>1</sub>）、（Q<sub>2</sub>, K<sub>2</sub>, V<sub>2</sub>）、……，每个"头"独立计算注意力，最后拼接起来再用 W<sub>O</sub> 融合。
+    </p>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.6">
+      <strong>不同头学到不同的关注模式：</strong>有的头关注"代词指代"（他 → 员工），有的头关注"动词搭配"（加班 → 工作），有的头关注"句法结构"（主语→谓语→宾语）。
+      GPT-3 用了 <strong style="color:var(--a1)">96 个头</strong>，每个头 128 维，让模型从 96 个不同角度同时理解文本。
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 8: 全流程回顾 -->
+<!-- ============================================================ -->
+<section class="section" id="s8">
+  <div class="section-hd"><span class="s-icon">🔄</span><h2>全流程回顾——96层里的「他」</h2><span class="s-num">第 8 章</span></div>
+
+  <div class="viz-card" style="padding:16px">
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-body"><h4>Embedding</h4><p>"老板"、"告诉"、"员工"、"他"……每个词查嵌入表，变成 12288 维向量（GPT-3）。</p></div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-body"><h4>第 1 层 Attention</h4><p>每个词生成 Q, K, V（96 个头 × 3）。"他"的 Q 和所有词的 K 做点积，得到初步的注意力热力图。</p></div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-body"><h4>Causal Mask</h4><p>只看当前位置及之前的词。后面的词全部 mask 掉。</p></div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-body"><h4>Softmax + V 加权</h4><p>注意力变成预算，按比例搬运 V。"他"的表示开始向"员工"靠近。</p></div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">5</div>
+        <div class="step-body"><h4>96 个头拼接 → FeedForward</h4><p>96 个头的输出拼在一起，经过全连接层，信息被进一步整合和转换。</p></div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">6</div>
+        <div class="step-body"><h4>层层传递 × 96 层</h4><p>经过 96 个 Transformer Block 后，"他"的向量已经<strong>装载了"员工"的语义信息</strong>。模型通过这个词向量来预测下一个词。</p></div>
+      </div>
+    </div>
+
+    <div class="tone-box" style="margin-top:14px">
+      💡 96 层之后，"他"这个字的表示已经走过了从"孤立字符"到"满载上下文"的完整旅程。
+    </div>
+
+    <blockquote class="quote">
+      "注意力机制非常重要，但它不是全部。没有词向量表 / 没有前馈网络 / 没有训练数据，那几个 W 矩阵永远学不出来。"
+      <span class="q-author">—— 漫士，B站视频简介</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- GAMES -->
+<!-- ============================================================ -->
+<section class="section" id="games">
+  <div class="section-hd"><span class="s-icon">🎮</span><h2>互动测试</h2><span class="s-num">检测理解</span></div>
+
+  <!-- Game 1: 注意力概念 Quiz -->
+  <div class="viz-card" style="padding:16px">
+    <h3 style="font-size:14px;color:var(--tx);margin-bottom:4px">🧩 注意力概念测验</h3>
+    <p style="font-size:11px;color:var(--tx3);margin-bottom:10px">判断每道题的说法是否正确</p>
+
+    <div id="quiz1" class="mg-quiz4">
+      <div class="mg-q4-header"><p class="mg-q4-q"></p><span class="mg-q4-counter"></span></div>
+      <div class="mg-q4-opts"></div>
+      <div class="mg-q4-explain"></div>
+    </div>
+  </div>
+
+  <!-- Game 2: 找混杂因子式概念配对 -->
+  <div class="viz-card" style="padding:16px">
+    <h3 style="font-size:14px;color:var(--tx);margin-bottom:4px">🔍 Attention 概念配对</h3>
+    <p style="font-size:11px;color:var(--tx3);margin-bottom:10px">点击"概念"和"解释"正确配对</p>
+
+    <div id="spot1" class="mg-spot">
+      <div class="mg-spot-cards"></div>
+      <div class="mg-spot-fb"></div>
+    </div>
+  </div>
+</section>
+
+</div><!-- .container -->
+
+<!-- Bottom nav -->
+<nav class="bottom-nav">
+  <a class="nav-btn" href="./knowledge.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> 知识百科
+  </a>
+  <a class="nav-btn" href="./index.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> 主页
+  </a>
+  <a class="nav-btn" href="./causality.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 因果关系
+  </a>
+</nav>
+
+<script>
+// ============================================================
+// HERO CANVAS — Floating neural nodes
+// ============================================================
+(function(){
+  var c=document.getElementById('heroCanvas'),w=c.parentNode.offsetWidth,h=360;
+  c.width=w*2;c.height=h*2;c.style.width=w+'px';c.style.height=h+'px';
+  var ctx=c.getContext('2d'),W=c.width,H=c.height;
+  var pts=[];
+  for(var i=0;i<40;i++){
+    pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*1.2,vy:(Math.random()-.5)*1.2, r:2+Math.random()*3, c:Math.random()>.5?'99,102,241':'6,182,212'});
+  }
+  function heroLoop(){
+    ctx.clearRect(0,0,W,H);
+    for(var i=0;i<pts.length;i++){var p=pts[i];
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba('+p.c+','+(0.3+Math.random()*0.3)+')';ctx.fill();
+      for(var j=i+1;j<pts.length;j++){var q=pts[j],dx=p.x-q.x,dy=p.y-q.y,dist=Math.sqrt(dx*dx+dy*dy);if(dist<120){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.strokeStyle='rgba(99,102,241,'+(0.02*(1-dist/120))+')';ctx.lineWidth=1;ctx.stroke();}}
+    }
+    requestAnimationFrame(heroLoop);
+  }
+  heroLoop();
+})();
+
+// ============================================================
+// CANVAS 1: 指代消解 — "他"指谁？
+// ============================================================
+(function(){
+  var c=document.getElementById('refCanvas'),w=c.parentNode.clientWidth-40,h=320;
+  c.width=w*2;c.height=h*2;c.style.width=w+'px';c.style.height=h+'px';
+  var ctx=c.getContext('2d'),W=c.width,H=c.height;
+  var words=['老','板','告','诉','员','工','他','必','须','加','班'];
+  var wordXs=[],wordY=H*0.5,wordR=28,wordGap=0;
+  var withAttn=false;
+  var attnWeights=null;
+  var time=0,animId;
+
+  function layoutWords(){
+    var totalW=words.length*wordR*2.4;
+    var startX=(W-totalW)/2+wordR*1.2;
+    wordXs=[];wordGap=W*0.92/(words.length-1);
+    for(var i=0;i<words.length;i++) wordXs.push(startX+i*wordGap*0.8);
+  }
+  layoutWords();
+
+  function drawWords(t){
+    for(var i=0;i<words.length;i++){
+      var x=wordXs[i],y=wordY;
+      var sh=(i===6 && withAttn)?'#ec4899':'rgba(255,255,255,.1)';
+      ctx.beginPath();ctx.arc(x,y,wordR,0,Math.PI*2);
+      ctx.fillStyle=(i===6&&withAttn)?'rgba(236,72,153,.25)':'rgba(255,255,255,.04)';
+      ctx.fill();ctx.strokeStyle=sh;ctx.lineWidth=2;ctx.stroke();
+      ctx.fillStyle='rgba(255,255,255,.92)';ctx.font=(i===6?'bold ':'')+'20px Inter,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(words[i],x,y);
+    }
+  }
+
+  function drawArrows(weights){
+    if(!weights) return;
+    var srcIdx=6;
+    for(var i=0;i<srcIdx;i++){
+      var fromX=wordXs[i],toX=wordXs[srcIdx];
+      var alpha=weights[i];
+      if(alpha<0.03) continue;
+      var cy=wordY-60-alpha*40;
+      ctx.beginPath();
+      ctx.moveTo(fromX,wordY-wordR-4);
+      ctx.quadraticCurveTo((fromX+toX)/2,cy,toX,wordY-wordR-4);
+      ctx.strokeStyle='rgba(99,102,241,'+(alpha*0.9+0.1)+')';ctx.lineWidth=alpha*6+1;ctx.stroke();
+      var mx=(fromX+toX)/2,my=cy;
+      ctx.fillStyle='rgba(255,255,255,'+(alpha*0.9+0.1)+')';ctx.font='11px Inter,sans-serif';
+      ctx.textAlign='center';ctx.fillText((alpha*100).toFixed(0)+'%',mx,my-6);
+    }
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // Title
+    ctx.fillStyle='rgba(255,255,255,.55)';ctx.font='13px Inter,sans-serif';ctx.textAlign='center';
+    ctx.fillText('"老板告诉员工他必须加班" — 这个「他」指谁？',W/2,36);
+    drawWords(time);
+    if(withAttn) drawArrows(attnWeights);
+    // Legend
+    if(withAttn){
+      ctx.fillStyle='rgba(236,72,153,.8)';ctx.font='12px Inter,sans-serif';ctx.textAlign='center';
+      ctx.fillText('← 注意力聚焦：「他」从「员工」(70%) 获取语义',W/2,H-30);
+    }else{
+      ctx.fillStyle='rgba(255,255,255,.35)';ctx.font='12px Inter,sans-serif';ctx.textAlign='center';
+      ctx.fillText('没有注意力时，「他」只是一个孤立的词，和上下文无关',W/2,H-30);
+    }
+  }
+
+  function loop(){
+    time+=0.02;draw();animId=requestAnimationFrame(loop);
+  }
+  loop();
+
+  document.getElementById('refNoAttn').addEventListener('click',function(){
+    withAttn=false;attnWeights=null;this.classList.add('active');document.getElementById('refWithAttn').classList.remove('active');
+  });
+  document.getElementById('refWithAttn').addEventListener('click',function(){
+    withAttn=true;
+    attnWeights=[0.05,0.02,0.08,0.03,0.7,0.02,0.04,0.02,0.02,0.02];
+    this.classList.add('active');document.getElementById('refNoAttn').classList.remove('active');
+  });
+})();
+
+// ============================================================
+// CANVAS 2: 词嵌入空间
+// ============================================================
+(function(){
+  var c=document.getElementById('embCanvas'),w=c.parentNode.clientWidth-40,h=340;
+  c.width=w*2;c.height=h*2;c.style.width=w+'px';c.style.height=h+'px';
+  var ctx=c.getContext('2d'),W=c.width,H=c.height;
+  var words2d=[
+    {word:'老板',x:0.68,y:0.55},{word:'员工',x:0.72,y:0.58},{word:'经理',x:0.65,y:0.52},
+    {word:'苹果',x:0.12,y:0.15},{word:'香蕉',x:0.15,y:0.12},{word:'水果',x:0.1,y:0.18},
+    {word:'汽车',x:0.85,y:0.78},{word:'司机',x:0.88,y:0.82},{word:'道路',x:0.82,y:0.8},
+    {word:'他',x:0.7,y:0.57},{word:'加班',x:0.62,y:0.48},{word:'告诉',x:0.5,y:0.4}
+  ];
+  var highlight=false;
+  function project(x,y){return [100+x*(W-200),50+y*(H-100)];}
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='rgba(255,255,255,.45)';ctx.font='13px Inter,sans-serif';ctx.textAlign='center';
+    ctx.fillText('词向量空间（PCA 降维到 2D 示意图）',W/2,30);
+    // Grid
+    ctx.strokeStyle='rgba(255,255,255,.03)';ctx.lineWidth=1;
+    for(var i=1;i<10;i++){var lx=100+(W-200)*i/10;ctx.beginPath();ctx.moveTo(lx,50);ctx.lineTo(lx,H-50);ctx.stroke();}
+    for(var i=1;i<8;i++){var ly=50+(H-100)*i/8;ctx.beginPath();ctx.moveTo(100,ly);ctx.lineTo(W-100,ly);ctx.stroke();}
+    // Points
+    for(var i=0;i<words2d.length;i++){
+      var w=words2d[i],p=project(w.x,w.y);
+      var isPerson=highlight&&(w.word==='老板'||w.word==='员工'||w.word==='经理'||w.word==='他');
+      var isFruit=highlight&&(w.word==='苹果'||w.word==='香蕉'||w.word==='水果');
+      var isVehicle=highlight&&(w.word==='汽车'||w.word==='司机'||w.word==='道路');
+      var col='rgba(99,102,241,.6)',bg='rgba(99,102,241,.15)';
+      if(isPerson){col='rgba(16,185,129,.8)';bg='rgba(16,185,129,.2)';}
+      if(isFruit){col='rgba(236,72,153,.8)';bg='rgba(236,72,153,.2)';}
+      if(isVehicle){col='rgba(6,182,212,.8)';bg='rgba(6,182,212,.2)';}
+      ctx.beginPath();ctx.arc(p[0],p[1],10+Math.random()*0.5,0,Math.PI*2);
+      ctx.fillStyle=bg;ctx.fill();ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.stroke();
+      ctx.fillStyle='rgba(255,255,255,.85)';ctx.font='12px Inter,sans-serif';
+      ctx.fillText(w.word,p[0],p[1]-18);
+    }
+    if(highlight){
+      // Draw circles around groups
+      var centerPerson=project(0.69,0.555);
+      ctx.beginPath();ctx.arc(centerPerson[0],centerPerson[1],60,0,Math.PI*2);
+      ctx.strokeStyle='rgba(16,185,129,.25)';ctx.lineWidth=2;ctx.setLineDash([6,6]);ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle='rgba(16,185,129,.6)';ctx.font='11px Inter,sans-serif';ctx.textAlign='center';
+      ctx.fillText('工作称谓',centerPerson[0],centerPerson[1]-50);
+    }
+  }
+  draw();
+  document.getElementById('embHighlight').addEventListener('click',function(){highlight=!highlight;draw();this.textContent=highlight?'🔍 取消高亮':'✨ 高亮相近词';});
+  document.getElementById('embReset').addEventListener('click',function(){highlight=false;draw();document.getElementById('embHighlight').textContent='✨ 高亮相近词';});
+})();
+
+// ============================================================
+// CANVAS 3: Q·K 点积相似度
+// ============================================================
+(function(){
+  var c=document.getElementById('qkCanvas'),w=c.parentNode.clientWidth-40,h=380;
+  c.width=w*2;c.height=h*2;c.style.width=w+'px';c.style.height=h+'px';
+  var ctx=c.getContext('2d'),W=c.width,H=c.height;
+  var gridCols=5,gridRows=5,cellW=100,cellH=50,startX=0,startY=80;
+  var tokens=['老','板','告','员','工'];
+  var scores=[[0.7,0.6,0.3,0.2,0.2],[0.6,0.8,0.4,0.3,0.2],[0.3,0.4,0.9,0.5,0.4],[0.2,0.3,0.5,0.85,0.75],[0.2,0.2,0.4,0.75,0.88]];
+  var animPhase=0,animId;
+  function layout(){startX=(W-(gridCols*cellW+40))/2;}
+  layout();
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='rgba(255,255,255,.45)';ctx.font='13px Inter,sans-serif';ctx.textAlign='center';
+    ctx.fillText('Q·K 相似度热力图（越亮 = 越相关）',W/2,30);
+    // Col headers: K
+    for(var j=0;j<gridCols;j++){
+      var x=startX+cellW/2+j*(cellW+10)+cellW/2;
+      ctx.fillStyle='rgba(16,185,129,.7)';ctx.font='12px Inter,sans-serif';
+      ctx.fillText('K_'+tokens[j],x,startY-12);
+    }
+    for(var i=0;i<gridRows;i++){
+      var y=startY+i*(cellH+8)+cellH/2;
+      // Row header: Q
+      ctx.fillStyle='rgba(99,102,241,.7)';ctx.font='12px Inter,sans-serif';ctx.textAlign='right';
+      ctx.fillText('Q_'+tokens[i],startX-10,y+4);
+      ctx.textAlign='center';
+      for(var j=0;j<gridCols;j++){
+        var x=startX+cellW/2+j*(cellW+10)+cellW/2;
+        var sc=scores[i][j]*animPhase;
+        var intensity=Math.floor(sc*255);
+        var rr=99,gg=102,bb=241;
+        if(sc>0.5){rr=16;gg=185;bb=129;}
+        if(sc>0.7){rr=236;gg=72;bb=153;}
+        ctx.fillStyle='rgba('+rr+','+gg+','+bb+','+(0.1+sc*0.7)+')';
+        ctx.fillRect(x-cellW/2,y-cellH/2,cellW,cellH);
+        ctx.strokeStyle='rgba(255,255,255,0.1)';ctx.lineWidth=1;
+        ctx.strokeRect(x-cellW/2,y-cellH/2,cellW,cellH);
+        if(animPhase>0.1){
+          ctx.fillStyle='rgba(255,255,255,'+(0.4+sc*0.6)+')';ctx.font='13px Inter,sans-serif';
+          ctx.fillText((sc).toFixed(2),x,y+5);
+        }
+      }
+      ctx.textAlign='center';
+    }
+    // eq
+    ctx.fillStyle='rgba(255,255,255,.35)';ctx.font='11px Inter,sans-serif';
+    ctx.fillText('S = Q @ Kᵀ   点积越大 → 两个词越相关',W/2,H-30);
+    ctx.fillText('「员」×「工」= 0.88（最高）  |  「老」×「工」= 0.20（很低）',W/2,H-12);
+  }
+  function loop(){
+    if(animPhase<1){animPhase+=0.025;}else{animPhase=1;}
+    draw();animId=requestAnimationFrame(loop);
+  }
+  loop();
+  document.getElementById('qkRun').addEventListener('click',function(){animPhase=0;this.classList.add('active');});
+  document.getElementById('qkReset').addEventListener('click',function(){animPhase=0;draw();});
+})();
+
+// ============================================================
+// CANVAS 4: Softmax 变换
+// ============================================================
+(function(){
+  var c=document.getElementById('softmaxCanvas'),w=c.parentNode.clientWidth-40,h=350;
+  c.width=w*2;c.height=h*2;c.style.width=w+'px';c.style.height=h+'px';
+  var ctx=c.getContext('2d'),W=c.width,H=c.height;
+  var rawScores=[2.3,-0.5,-1.2,3.8,0.1,1.7,-0.8,0.5];
+  var labels=['员','工','老','板','告','诉','他','加'];
+  var barH=26,barGap=14,baseY=120,maxBarW=W*0.55;
+  var phase=0,animId,showSoftmax=false;
+
+  function softmax(arr){
+    var maxV=Math.max.apply(null,arr);
+    var exps=arr.map(function(v){return Math.exp(v-maxV);});
+    var sum=exps.reduce(function(a,b){return a+b;},0);
+    return exps.map(function(v){return v/sum;});
+  }
+  var softScores=softmax(rawScores);
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='rgba(255,255,255,.45)';ctx.font='13px Inter,sans-serif';ctx.textAlign='center';
+    ctx.fillText(showSoftmax?'Softmax 之后 → 注意力预算（总和=1）':'Q·Kᵀ 原始分数',W/2,26);
+    var data=showSoftmax?softScores:rawScores.map(function(v){return v;});
+    var hasNeg=!showSoftmax;
+    var zero=baseY+labels.length*(barH+barGap)/2;
+    if(hasNeg) zero=baseY+labels.length*(barH+barGap)/2 - 30;
+
+    for(var i=0;i<labels.length;i++){
+      var y=baseY+i*(barH+barGap);
+      var val=data[i]*phase;
+      var absVal=Math.abs(val),barW;
+      if(showSoftmax) barW=val*maxBarW*0.8;
+      else barW=Math.min(absVal*maxBarW*0.2,maxBarW*0.8);
+      // Label
+      ctx.fillStyle='rgba(255,255,255,.75)';ctx.font='13px Inter,sans-serif';ctx.textAlign='right';
+      ctx.fillText(labels[i]+'  ',W*0.38-10,y+barH/2+4);
+      // Bar
+      var bx=W*0.38;
+      ctx.fillStyle=showSoftmax?'rgba(6,182,212,'+(0.4+val*0.6)+')':'rgba(99,102,241,'+(0.4+absVal*0.6)+')';
+      ctx.fillRect(bx,y,barW,barH);
+      ctx.strokeStyle='rgba(255,255,255,0.08)';ctx.lineWidth=1;ctx.strokeRect(bx,y,barW,barH);
+      // Value
+      ctx.fillStyle='rgba(255,255,255,.7)';ctx.font='12px Inter,sans-serif';ctx.textAlign='left';
+      ctx.fillText((val).toFixed(3),bx+barW+8,y+barH/2+4);
+    }
+    // Rule
+    if(showSoftmax && phase>0.8){
+      ctx.fillStyle='rgba(245,158,11,.8)';ctx.font='12px Inter,sans-serif';ctx.textAlign='center';
+      ctx.fillText('softmax 之后，每一项 >0 且全部加起来 = 1',W/2,baseY+labels.length*(barH+barGap)+30);
+    }
+    ctx.fillStyle='rgba(255,255,255,.3)';ctx.font='11px Inter,sans-serif';ctx.textAlign='center';
+    ctx.fillText(showSoftmax?'← 「注意力预算」：「板」(0.666) 分到最多注意力，远超其他词':'← Q·K 原始分数：可正可负，数值范围不确定',W/2,H-18);
+  }
+
+  function loop(){
+    if(phase<1){phase+=0.03;}else{phase=1;}
+    draw();animId=requestAnimationFrame(loop);
+  }
+  loop();
+
+  document.getElementById('smRun').addEventListener('click',function(){
+    phase=0;showSoftmax=!showSoftmax;
+    this.textContent=showSoftmax?'▶ 切换回原始分数':'▶ 动画演示';
+    this.classList.add('active');
+  });
+  document.getElementById('smReset').addEventListener('click',function(){phase=0;showSoftmax=false;draw();document.getElementById('smRun').textContent='▶ 动画演示';});
+})();
+
+// ============================================================
+// CANVAS 5: V — 内容搬运
+// ============================================================
+(function(){
+  var c=document.getElementById('vCanvas'),w=c.parentNode.clientWidth-40,h=360;
+  c.width=w*2;c.height=h*2;c.style.width=w+'px';c.style.height=h+'px';
+  var ctx=c.getContext('2d'),W=c.width,H=c.height;
+  var wordsV=[{word:'老板',v:[0.3,0.5,0.2,0.4]},{word:'告诉',v:[0.1,0.3,0.6,0.2]},{word:'员工',v:[0.7,0.8,0.5,0.6]},{word:'他',v:[0.0,0.0,0.0,0.0]}];
+  var attnW=[0.15,0.15,0.7];
+  var result=[0,0,0,0];
+  var phase=0,animId;
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='rgba(255,255,255,.45)';ctx.font='13px Inter,sans-serif';ctx.textAlign='center';
+    ctx.fillText('V 的加权汇聚：A · V',W/2,26);
+
+    var startY=65,rowH=(H-startY-60)/wordsV.length,leftX=W*0.12,rightX=W*0.68;
+
+    for(var i=0;i<wordsV.length;i++){
+      var w=wordsV[i],y=startY+i*rowH;
+      var isCur=(i===3);
+      // Label
+      ctx.fillStyle=isCur?'rgba(236,72,153,.9)':'rgba(255,255,255,.7)';
+      ctx.font=(isCur?'bold ':'')+'13px Inter,sans-serif';ctx.textAlign='left';
+      ctx.fillText(w.word+(isCur?'（← 当前）':''),leftX,y+rowH/2);
+      // V bars
+      var barW=40,barH=14,barR=rightX;
+      for(var j=0;j<w.v.length;j++){
+        var bx=barR+j*(barW+8),by=y+rowH/2-8;
+        var alpha=isCur?0.1:w.v[j];
+        ctx.fillStyle='rgba(99,102,241,'+(0.15+alpha*0.65)+')';
+        ctx.fillRect(bx,by,barW,barH);
+        ctx.strokeStyle='rgba(255,255,255,0.06)';ctx.lineWidth=1;ctx.strokeRect(bx,by,barW,barH);
+        if(!isCur){
+          ctx.fillStyle='rgba(255,255,255,.55)';ctx.font='9px Inter,sans-serif';ctx.textAlign='center';
+          ctx.fillText((w.v[j]).toFixed(1),bx+barW/2,by+barH-2);
+        }
+      }
+      // Arrow from sources to target
+      if(!isCur && phase>0.5){
+        var srcX=barR+4*barW*0.5,trgX=barR+4*barW*0.5;
+        var trgY=startY+3*rowH+rowH/2;
+        ctx.beginPath();ctx.moveTo(srcX,y+rowH-10);
+        ctx.quadraticCurveTo(srcX+40,(y+trgY)/2,trgX-60,trgY-10);
+        ctx.strokeStyle='rgba(6,182,212,'+(0.3+phase*0.4)+')';ctx.lineWidth=attnW[i]*4+1;ctx.stroke();
+        ctx.fillStyle='rgba(6,182,212,.7)';ctx.font='10px Inter,sans-serif';ctx.textAlign='center';
+        ctx.fillText('×'+attnW[i].toFixed(2),srcX+40,(y+trgY)/2-4);
+      }
+    }
+    // Result row
+    var resY=startY+wordsV.length*rowH+4;
+    ctx.fillStyle='rgba(236,72,153,.9)';ctx.font='bold 13px Inter,sans-serif';ctx.textAlign='left';
+    ctx.fillText('"他" 的输出 =',leftX,resY+rowH/2);
+    for(var j=0;j<4;j++){
+      var bx=barR+j*(barW+8);
+      var val=wordsV[0].v[j]*attnW[0]+wordsV[1].v[j]*attnW[1]+wordsV[2].v[j]*attnW[2];
+      result[j]=val*phase;
+      ctx.fillStyle='rgba(236,72,153,'+(0.2+val*0.7)+')';
+      ctx.fillRect(bx,resY+4,barW,barH);
+      ctx.strokeStyle='rgba(236,72,153,0.2)';ctx.lineWidth=1;ctx.strokeRect(bx,resY+4,barW,barH);
+      ctx.fillStyle='rgba(255,255,255,.65)';ctx.font='9px Inter,sans-serif';ctx.textAlign='center';
+      ctx.fillText((result[j]).toFixed(2),bx+barW/2,resY+barH-3);
+    }
+    ctx.fillStyle='rgba(255,255,255,.35)';ctx.font='11px Inter,sans-serif';ctx.textAlign='center';
+    ctx.fillText('最终 = 0.15×V_老板 + 0.15×V_告诉 + 0.70×V_员工 ≈ "员工"的语义被搬到了"他"的位置',W/2,H-12);
+  }
+
+  function loop(){phase=Math.min(phase+0.02,1);draw();animId=requestAnimationFrame(loop);}
+  loop();
+  document.getElementById('vRun').addEventListener('click',function(){phase=0;this.classList.add('active');});
+  document.getElementById('vReset').addEventListener('click',function(){phase=0;draw();});
+})();
+
+// ============================================================
+// CANVAS 6: Causal Mask
+// ============================================================
+(function(){
+  var c=document.getElementById('maskCanvas'),w=c.parentNode.clientWidth-40,h=340;
+  c.width=w*2;c.height=h*2;c.style.width=w+'px';c.style.height=h+'px';
+  var ctx=c.getContext('2d'),W=c.width,H=c.height;
+  var tokens=['老','板','告','诉','员','工','他','必','须','加','班'];
+  var n=tokens.length,cellSize=0,startX=0,startY=60,showMask=true;
+  var phase=0,animId;
+
+  function layout(){
+    cellSize=Math.floor(Math.min((W-160)/n,(H-startY-60)/n));
+    startX=(W-cellSize*n)/2;
+  }
+  layout();
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='rgba(255,255,255,.45)';ctx.font='13px Inter,sans-serif';ctx.textAlign='center';
+    ctx.fillText('Q·Kᵀ 注意力矩阵'+(showMask?' — 因果掩码（右上角置为 -∞）':' — 无掩码（作弊模式）'),W/2,24);
+
+    // Col headers
+    for(var j=0;j<n;j++){
+      var x=startX+j*cellSize+cellSize/2;
+      ctx.fillStyle='rgba(16,185,129,.7)';ctx.font='11px Inter,sans-serif';ctx.textAlign='center';
+      ctx.fillText(tokens[j],x,startY-10);
+    }
+    // Row headers + cells
+    for(var i=0;i<n;i++){
+      var y=startY+i*cellSize+cellSize/2;
+      ctx.fillStyle='rgba(99,102,241,.7)';ctx.font='11px Inter,sans-serif';ctx.textAlign='right';
+      ctx.fillText(tokens[i],startX-16,y+4);
+      ctx.textAlign='center';
+      for(var j=0;j<n;j++){
+        var x=startX+j*cellSize+cellSize/2;
+        var masked=(showMask && j>i)*phase;
+        if(masked>0){
+          // Masked (future): dark red
+          ctx.fillStyle='rgba(239,68,68,'+(0.3+masked*0.5)+')';
+          ctx.fillRect(x-cellSize/2+1,y-cellSize/2+1,cellSize-2,cellSize-2);
+          ctx.fillStyle='rgba(255,255,255,'+(0.3+masked*0.7)+')';ctx.font=(cellSize>20?'11px':'8px')+' Inter,sans-serif';
+          ctx.fillText('-∞',x,y+4);
+        }else if(j<=i){
+          var alpha=0.3+phase*0.5;
+          if(i===j) alpha=0.6+phase*0.3;
+          ctx.fillStyle='rgba(99,102,241,'+alpha+')';
+          ctx.fillRect(x-cellSize/2+1,y-cellSize/2+1,cellSize-2,cellSize-2);
+        }
+        ctx.strokeStyle='rgba(255,255,255,0.06)';ctx.lineWidth=1;
+        ctx.strokeRect(x-cellSize/2+1,y-cellSize/2+1,cellSize-2,cellSize-2);
+      }
+    }
+    var legendY=startY+n*cellSize+14;
+    ctx.fillStyle='rgba(255,255,255,.35)';ctx.font='11px Inter,sans-serif';ctx.textAlign='center';
+    ctx.fillText('▣ 可见（当前及之前）&nbsp;&nbsp;&nbsp;▣ 掩码为 -∞（未来，不可见）&nbsp;&nbsp;&nbsp;▣ 对角线（自关注）',W/2,legendY);
+  }
+
+  function loop(){phase=Math.min(phase+0.04,1);draw();animId=requestAnimationFrame(loop);}
+  loop();
+
+  document.getElementById('maskShow').addEventListener('click',function(){
+    showMask=true;phase=0;this.classList.add('active');document.getElementById('maskHide').classList.remove('active');
+  });
+  document.getElementById('maskHide').addEventListener('click',function(){
+    showMask=false;phase=0;this.classList.add('active');document.getElementById('maskShow').classList.remove('active');
+  });
+})();
+
+// ============================================================
+// CANVAS 7: Multi-head Attention
+// ============================================================
+(function(){
+  var c=document.getElementById('multiHeadCanvas'),w=c.parentNode.clientWidth-40,h=380;
+  c.width=w*2;c.height=h*2;c.style.width=w+'px';c.style.height=h+'px';
+  var ctx=c.getContext('2d'),W=c.width,H=c.height;
+  var numHeads=1,phase=0,animId;
+  var headColors=['rgba(99,102,241,','rgba(16,185,129,','rgba(236,72,153,','rgba(6,182,212,','rgba(245,158,11,','rgba(168,85,247,','rgba(239,68,68,','rgba(34,197,94,','rgba(59,130,246,','rgba(217,70,239,','rgba(251,146,60,','rgba(45,212,191,'];
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='rgba(255,255,255,.45)';ctx.font='13px Inter,sans-serif';ctx.textAlign='center';
+    ctx.fillText(numHeads+' 头注意力 — 每个头独立关注不同模式',W/2,24);
+
+    var headH=(H-60)/Math.max(numHeads,4);
+    if(numHeads===1) headH=200;
+    if(numHeads>=12) headH=(H-60)/12;
+    if(numHeads>=96) headH=(H-60)/32;
+
+    var tokens=['老','板','告','诉','员','工','他','必','须','加','班'];
+    var cellSize=Math.min(28,(W-180)/tokens.length);
+    var gridX=W*0.3,gridY;
+    var rowsToShow=Math.min(numHeads,numHeads>12?32:12);
+
+    for(var h=0;h<rowsToShow;h++){
+      var row=h;if(numHeads===96 && h>=32) row=h%32;
+      gridY=60+h*headH;
+      // Head label
+      ctx.fillStyle=headColors[h%headColors.length]+'0.8)';ctx.font='10px Inter,sans-serif';ctx.textAlign='right';
+      ctx.fillText('头'+(h+1),gridX-8,gridY+headH/2+4);
+      // Mini grid
+      var gx=gridX,gy=gridY+headH/2-tokens.length*cellSize/2;
+      for(var i=0;i<tokens.length;i++){
+        for(var j=0;j<tokens.length;j++){
+          var cx=gx+j*cellSize+cellSize/2,cy=gy+i*cellSize+cellSize/2;
+          var alpha=0.1+Math.random()*0.4;
+          if(i===6&&j===4) alpha=0.8; // 他→员工
+          if(i===6&&j===2) alpha=0.4; // 他→告
+          ctx.fillStyle=headColors[h%headColors.length]+(0.1+alpha*0.7)+')';
+          ctx.fillRect(cx-cellSize/2+1,cy-cellSize/2+1,cellSize-2,cellSize-2);
+          ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=0.5;
+          ctx.strokeRect(cx-cellSize/2+1,cy-cellSize/2+1,cellSize-2,cellSize-2);
+        }
+      }
+    }
+    // W_O projection
+    var wy=60+rowsToShow*headH+(H-60-rowsToShow*headH)/2;
+    ctx.fillStyle='rgba(168,85,247,0.5)';ctx.font='12px Inter,sans-serif';ctx.textAlign='center';
+    ctx.fillText('↓ 所有头的输出拼接起来 × W_O → 融合成统一表示',W/2,wy);
+
+    ctx.fillStyle='rgba(255,255,255,.3)';ctx.font='10px Inter,sans-serif';
+    ctx.fillText(numHeads+' × d_k='+(64*numHeads)+'维 → 各头关注不同的语义关系（指代/语法/搭配...）',W/2,H-10);
+  }
+
+  function loop(){phase+=0.01;draw();animId=requestAnimationFrame(loop);}
+  loop();
+
+  document.getElementById('mh1').addEventListener('click',function(){numHeads=1;this.classList.add('active');document.getElementById('mh4').classList.remove('active');document.getElementById('mh12').classList.remove('active');document.getElementById('mh96').classList.remove('active');});
+  document.getElementById('mh4').addEventListener('click',function(){numHeads=4;document.getElementById('mh1').classList.remove('active');this.classList.add('active');document.getElementById('mh12').classList.remove('active');document.getElementById('mh96').classList.remove('active');});
+  document.getElementById('mh12').addEventListener('click',function(){numHeads=12;document.getElementById('mh1').classList.remove('active');document.getElementById('mh4').classList.remove('active');this.classList.add('active');document.getElementById('mh96').classList.remove('active');});
+  document.getElementById('mh96').addEventListener('click',function(){numHeads=96;document.getElementById('mh1').classList.remove('active');document.getElementById('mh4').classList.remove('active');document.getElementById('mh12').classList.remove('active');this.classList.add('active');});
+})();
+</script>
+
+<!-- ============================================================ -->
+<!-- GAME SCRIPTS -->
+<!-- ============================================================ -->
+<script>
+// === Quiz 1: 注意力概念测验 ===
+(function(){
+  var qq=[
+    {q:'Attention(Q,K,V) 公式中，Q 和 K 做的是什么运算？',opts:['点积 (dot product)','加法','卷积','矩阵求逆'],ans:0,exp:'Q 和 K 做点积来计算相似度。Q·Kᵀ 得到一个分数矩阵，表示每对词之间的"匹配度"。'},
+    {q:'为什么要除以 √d_k？',opts:['防止点积值过大导致 softmax 太尖锐','为了让 Q 和 K 正交','这是随机初始化的一部分','为了让结果变成整数'],ans:0,exp:'向量维度 d_k 很大时（如 64），点积值会很大，softmax 会变得极度尖锐（接近 one-hot），梯度消失，训练不动。除以 √d_k 像调低"温度"。'},
+    {q:'因果掩码 (causal mask) 的作用是什么？',opts:['防止模型偷看未来的词','让模型更快训练','增加模型的参数量','减少显存占用'],ans:0,exp:'自回归生成时，当前位置只能看到它自己及之前的词。因果掩码把注意力矩阵右上角（"未来"位置）填成 -∞，经过 softmax 后权重为 0。'},
+    {q:'多头注意力的主要优势是什么？',opts:['让模型从多个角度同时关注不同模式','让计算速度变快','减少参数数量','让输出更稀疏'],ans:0,exp:'不同头学到不同的关注模式：有的关注代词指代，有的关注句法结构，有的关注动词搭配。GPT-3 用了 96 个头。'},
+  ];
+  var idx=0,score=0,total=0;
+  var el=document.getElementById('quiz1');
+  var qEl=el.querySelector('.mg-q4-q'),cEl=el.querySelector('.mg-q4-counter'),oEl=el.querySelector('.mg-q4-opts'),xEl=el.querySelector('.mg-q4-explain');
+  function show(){
+    if(idx>=qq.length){qEl.textContent='测验完成！';cEl.textContent=score+'/'+total;oEl.innerHTML='';xEl.textContent='太棒了！你已完成所有注意力机制概念题。';xEl.classList.add('show');return;}
+    var q=qq[idx];
+    qEl.textContent='Q'+(idx+1)+'/'+qq.length+': '+q.q;
+    cEl.textContent=score+'/'+total;
+    var optsHtml='';
+    for(var i=0;i<q.opts.length;i++){
+      optsHtml+='<button class="mg-q4-opt" data-idx="'+i+'">'+String.fromCharCode(65+i)+'. '+q.opts[i]+'</button>';
+    }
+    oEl.innerHTML=optsHtml;xEl.classList.remove('show');
+  }
+  oEl.addEventListener('click',function(e){
+    var btn=e.target.closest('.mg-q4-opt');if(!btn)return;
+    var si=parseInt(btn.dataset.idx),q=qq[idx];
+    total++;
+    if(si===q.ans){score++;btn.classList.add('correct');}else{btn.classList.add('wrong');oEl.querySelector('.mg-q4-opt[data-idx="'+q.ans+'"]').classList.add('correct');}
+    xEl.textContent='💡 '+q.exp;xEl.classList.add('show');
+    setTimeout(function(){idx++;show();},1800);
+  });
+  show();
+})();
+
+// === Spot: Attention 概念配对 ===
+(function(){
+  var pairs=[
+    {left:'Query (Q)',right:'当前词在"打听"——谁和我有关系？',id:0},
+    {left:'Key (K)',right:'所有词的"标签"——被查询的一方',id:1},
+    {left:'Value (V)',right:'每个词的"实际内容"——真正被搬运',id:2},
+    {left:'Softmax',right:'把分数变成概率分布，总和为 1',id:3},
+    {left:'√d_k',right:'缩放因子，防止点积太大导致梯度消失',id:4},
+    {left:'Multi-Head',right:'多组 QKV 并行计算，关注不同模式',id:5},
+  ];
+  var shuffledLeft=[],shuffledRight=[];
+  var selectedLeft=null,selectedRight=null,matched={},score=0,totalPairs=pairs.length;
+  var el=document.getElementById('spot1');
+  var cardsEl=el.querySelector('.mg-spot-cards'),fbEl=el.querySelector('.mg-spot-fb');
+
+  function init(){
+    shuffledLeft=pairs.map(function(p,i){return {text:p.left,id:p.id,origIdx:i};});
+    shuffledRight=pairs.map(function(p,i){return {text:p.right,id:p.id,origIdx:i};});
+    // Shuffle
+    for(var i=shuffledLeft.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=shuffledLeft[i];shuffledLeft[i]=shuffledLeft[j];shuffledLeft[j]=t;}
+    for(var i=shuffledRight.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=shuffledRight[i];shuffledRight[i]=shuffledRight[j];shuffledRight[j]=t;}
+    score=0;matched={};selectedLeft=null;selectedRight=null;render();
+  }
+
+  function render(){
+    var html='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+    html+='<div><p style="font-size:10px;color:var(--tx3);margin-bottom:4px">📋 概念</p>';
+    for(var i=0;i<shuffledLeft.length;i++){
+      var l=shuffledLeft[i];
+      if(matched[l.id]){html+='<div class="mg-spot-card correct" style="opacity:.5">'+l.text+' ✓</div>';}
+      else{var isSel=selectedLeft&&selectedLeft.id===l.id;html+='<div class="mg-spot-card'+(isSel?' correct':'')+'" data-side="left" data-idx="'+i+'">'+l.text+'</div>';}
+    }
+    html+='</div><div><p style="font-size:10px;color:var(--tx3);margin-bottom:4px">💬 解释</p>';
+    for(var i=0;i<shuffledRight.length;i++){
+      var r=shuffledRight[i];
+      if(matched[r.id]){html+='<div class="mg-spot-card correct" style="opacity:.5">'+r.text+' ✓</div>';}
+      else{var isSel=selectedRight&&selectedRight.id===r.id;html+='<div class="mg-spot-card'+(isSel?' correct':'')+'" data-side="right" data-idx="'+i+'">'+r.text+'</div>';}
+    }
+    html+='</div></div>';
+    cardsEl.innerHTML=html;
+    fbEl.textContent='已配对: '+score+'/'+totalPairs;
+    fbEl.classList.add('show');
+  }
+
+  cardsEl.addEventListener('click',function(e){
+    var card=e.target.closest('.mg-spot-card');if(!card)return;
+    var side=card.dataset.side,idx=parseInt(card.dataset.idx);
+    if(side==='left'){
+      var item=shuffledLeft[idx];if(matched[item.id])return;
+      selectedLeft=item;
+    }else{
+      var item=shuffledRight[idx];if(matched[item.id])return;
+      selectedRight=item;
+    }
+    // Check match
+    if(selectedLeft&&selectedRight){
+      if(selectedLeft.id===selectedRight.id){
+        matched[selectedLeft.id]=true;score++;
+        fbEl.textContent='✅ 正确！已配对: '+score+'/'+totalPairs;
+        fbEl.style.color='var(--a2)';
+      }else{
+        fbEl.textContent='❌ 配对不正确，请重试';
+        fbEl.style.color='var(--a3)';
+      }
+      selectedLeft=null;selectedRight=null;
+      if(score===totalPairs){
+        fbEl.textContent='🎉 太棒了！你已经掌握了注意力机制的所有核心概念！';
+        fbEl.style.color='var(--amber)';
+      }
+    }
+    render();
+  });
+
+  init();
+})();
+</script>
+</body>
+</html>
