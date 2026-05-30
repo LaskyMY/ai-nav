@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 <meta name="theme-color" content="#0a0a0f">
-<title>伯特兰悖论 — 同一个事件，三种概率</title>
+<title>伯特兰悖论 — 同一个事件，无穷多个概率</title>
 <link rel="icon" href="./icon.svg">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -60,6 +60,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 
 blockquote.quote{border-left:3px solid var(--a1);padding:10px 16px;margin:14px 0;background:rgba(99,102,241,.05);border-radius:0 10px 10px 0;font-size:13px;color:var(--tx2);font-style:italic;line-height:1.6}
 blockquote.quote .q-author{display:block;margin-top:6px;font-style:normal;font-size:11px;color:var(--tx3)}
+.formula-box{text-align:center;padding:14px 10px;margin:8px 0;background:rgba(255,255,255,.03);border-radius:12px;border:1px solid rgba(255,255,255,.06);font-family:'SF Mono','Cascadia Code','Fira Code',monospace;font-size:14px;letter-spacing:.02em;color:var(--tx);word-break:break-all}
 
 /* mini-games v3 */
 .mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
@@ -107,16 +108,16 @@ blockquote.quote .q-author{display:block;margin-top:6px;font-style:normal;font-s
 <div class="hero-wrap" id="heroWrap">
   <canvas id="heroCanvas"></canvas>
   <div class="hero-content">
-    <div class="hero-badge">🎲 概率论经典悖论</div>
-    <h1>同一个事件<br>居然有三种概率？</h1>
-    <p class="sub">圆的"随机弦"比内接正三角形的边长更长——概率是多少？取决于你怎么定义"随机"。</p>
+    <div class="hero-badge">🎲 概率论公理化的催化剂 | 基于"爱因是蛋"视频解读</div>
+    <h1>同一个事件<br>竟有无穷多个概率？</h1>
+    <p class="sub">圆的"随机弦"比内接正三角形的边长更长——概率只有 3 个吗？<br>不，它其实有<strong style="color:var(--amber)">无穷多个</strong>。关键在于怎么定义"随机画弦"。</p>
   </div>
 </div>
 <nav class="toc">
   <a href="#s1">1. 问题设定</a>
   <a href="#s2">2. 交互模拟器</a>
   <a href="#s3">3. 三种方法对比</a>
-  <a href="#s4">4. 为什么？</a>
+  <a href="#s4">4. 为什么？无穷多个？</a>
   <a href="#s5">5. 现实意义</a>
   <a href="#games">🎮 小游戏</a>
 </nav>
@@ -212,23 +213,45 @@ blockquote.quote .q-author{display:block;margin-top:6px;font-style:normal;font-s
 
 <!-- S4: Why -->
 <section class="section" id="s4">
-  <div class="section-hd"><span class="s-icon">💡</span><h2>为什么会出现悖论？</h2><span class="s-num">第 4 章</span></div>
+  <div class="section-hd"><span class="s-icon">💡</span><h2>为什么？不是三种，而是无穷多种</h2><span class="s-num">第 4 章</span></div>
   <div class="viz-card" style="padding:16px">
     <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
-      核心问题：<strong style="color:var(--a3)">"随机"一词没有唯一的数学定义。</strong>伯特兰悖论揭示了一个深刻的事实：
+      核心问题：<strong style="color:var(--a3)">"随机"一词没有唯一的数学定义。</strong>伯特兰悖论揭示了一个更深刻的事实——不只是 3 个概率，而是<strong style="color:var(--amber)">无穷多个</strong>。
     </p>
     <div style="font-size:12px;color:var(--tx2);line-height:1.7">
-      <p>三种方法分别对应三种不同的<span style="color:var(--a1)">概率空间</span>——它们对"所有可能的弦"这个集合分配了<span style="color:var(--amber)">不同的测度</span>。</p>
-      <p style="margin-top:6px"><strong style="color:var(--tx)">方法一</strong>中，弦的分布由端点均匀分布导出——在圆周上有平移不变性。</p>
-      <p style="margin-top:4px"><strong style="color:var(--tx)">方法二</strong>中，弦的分布由半径均匀分布导出——在径向有旋转不变性。</p>
-      <p style="margin-top:4px"><strong style="color:var(--tx)">方法三</strong>中，弦的分布由中点均匀分布导出——在平面上有平移+旋转不变性。</p>
-      <p style="margin-top:8px">三种方法都对"随机"提出了<span style="color:var(--a2)">合理的对称性要求</span>，但这些要求<span style="color:var(--a3)">互相矛盾</span>——你不可能同时满足所有不变性。</p>
+      <p style="margin-bottom:8px"><strong style="color:var(--tx)">为什么有无穷多个？</strong>因为"随机画弦"可以有无穷多种不同的定义方式。每一条弦由两个参数决定（比如中点的极坐标 r 和 θ），不同的参数化方法对"所有可能的弦"这个集合分配了<span style="color:var(--amber)">不同的概率测度</span>。</p>
+
+      <p style="margin-bottom:8px">三种经典方法不过是冰山一角：</p>
+      <ul style="padding-left:16px;margin-bottom:8px">
+        <li><strong style="color:var(--tx)">方法一</strong> — 端点均匀分布导出（圆周上有平移不变性）</li>
+        <li><strong style="color:var(--tx)">方法二</strong> — 半径均匀分布导出（径向有旋转不变性）</li>
+        <li><strong style="color:var(--tx)">方法三</strong> — 中点均匀分布导出（平面上有平移+旋转不变性）</li>
+      </ul>
+
+      <p style="margin-bottom:8px"><strong style="color:var(--pink)">关键洞察：</strong>我们可以构造一种看似自然的画弦方法，让"弦长大于√3"的概率取<strong style="color:var(--pink)">任意一个 0 到 1 之间的值</strong>。比如：以圆内任意一点为中点画弦，但圆的半径选取不同的加权方式——通过改变加权函数，概率可以从 0 连续变到 1。</p>
+
+      <p style="margin-bottom:8px"><strong style="color:var(--a1)">本质原因：</strong>"所有可能的弦"这个集合是一个<strong style="color:var(--a1)">无限维空间</strong>，不存在任何"自然"的概率测度。人类直觉中的"均匀"在无限集上没有唯一的推广——这是测度论教给我们的最深刻的教训。</p>
     </div>
+
+    <div class="formula-box" style="margin:12px 0">
+      对任意 p ∈ (0,1)，存在一种"随机画弦"方法使得<br>
+      <strong style="color:var(--amber)">P(弦长 &gt; √3) = p</strong>
+    </div>
+
     <blockquote class="quote">
-      "伯特兰悖论是20世纪概率论公理化的催化剂。它直接推动了柯尔莫哥洛夫在1933年建立概率的公理化基础——用测度论的语言精确地定义'概率空间'。"
+      "伯特兰悖论是 20 世纪概率论公理化的催化剂。它直接推动了柯尔莫哥洛夫在 1933 年建立概率的公理化基础——用测度论的语言精确地定义'概率空间'。不是三种概率，而是无穷多种：每当你声称一个事件'随机'时，你都必须指定——在什么空间上，用什么测度。"
       <span class="q-author">— 概率论历史上的关键转折点</span>
     </blockquote>
-    <div class="insight"><span class="ins-icon">🧠</span> 实践中的教训：当有人说"随机挑选"时，一定要追问——<strong>在什么空间上按什么分布随机？</strong> 否则就没有唯一的答案。</div>
+
+    <div style="padding:12px 14px;border-radius:10px;background:rgba(16,185,129,.05);border:1px solid rgba(16,185,129,.12);margin-top:10px;font-size:12px;color:var(--a2);line-height:1.6">
+      <strong>💡 一个构造任意概率的方法：</strong><br>
+      1. 在圆内选一个点 A（按圆盘上的均匀分布）。<br>
+      2. 以 A 为中点作弦。<br>
+      3. 现在，<em>不直接取这个弦</em>，而是取以 A 为圆心、r 为半径的圆上的某个点作为弦中点。通过调节 r 的分布（一个连续参数），你可以让概率取任何 0 到 1 之间的值。<br>
+      4. 这说明：<strong style="color:var(--a2)">"随机"没有客观定义——它始终是一个建模选择。</strong>
+    </div>
+
+    <div class="insight" style="margin-top:10px"><span class="ins-icon">🧠</span> 实践中的教训：当有人说"随机挑选"时，一定要追问——<strong>在什么空间上按什么分布随机？</strong> 否则就没有唯一的答案。这在统计学、机器学习、抽样调查中都是核心问题。</div>
   </div>
 </section>
 
