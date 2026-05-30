@@ -144,9 +144,9 @@ blockquote.quote .q-author{display:block;margin-top:6px;font-style:normal;font-s
 <div class="hero-wrap" id="heroWrap">
   <canvas id="heroCanvas"></canvas>
   <div class="hero-content">
-    <div class="hero-badge">🔬 基于 Transformer 论文 + 漫士科普视频</div>
-    <h1>注意力机制到底在做什么？</h1>
-    <p class="sub">从 "老板告诉员工他必须加班" 这个句子开始，<br>一步一步理解 Transformer 最核心的动作——Attention。</p>
+    <div class="hero-badge">🔬 综合 3Blue1Brown 官方双语 + Transformer 论文</div>
+    <h1>直观解释注意力机制 —— Transformer 的核心</h1>
+    <p class="sub">12288 个数字如何表示一个细微复杂的含义？<br>从 Q·K·V 到多头注意力，一步一步理解大模型如何"读懂"文本。</p>
   </div>
 </div>
 
@@ -159,6 +159,8 @@ blockquote.quote .q-author{display:block;margin-top:6px;font-style:normal;font-s
   <a href="#s5">5. V——真正的"搬"</a>
   <a href="#s6">6. 因果掩码</a>
   <a href="#s7">7. 多头注意力</a>
+  <a href="#s8">8. 交叉注意力</a>
+  <a href="#s9">9. 全流程回顾</a>
   <a href="#games">🎮 小游戏</a>
 </nav>
 
@@ -181,10 +183,13 @@ blockquote.quote .q-author{display:block;margin-top:6px;font-style:normal;font-s
     <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
       <strong>没有注意力时：</strong>模型把每个词当成独立符号。"他"就是一个字，和小狗叫"他"、别人口中的"他"完全相同——没有上下文信息。
     </p>
-    <p style="font-size:13px;color:var(--tx);line-height:1.7">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
       <strong>有了注意力：</strong>模型在处理"他"时，会主动去<strong style="color:var(--cyan)">查询</strong>前面所有词——"老板"、"告诉"、"员工"——然后发现"员工"与"他"在语义上最相关，于是把注意力权重更多地分配给"员工"。
     </p>
-    <div class="insight"><span class="ins-icon">💡</span> 注意力本质上是：<strong style="color:var(--a1)">让每个词去"打听"其他所有词，找出谁和自己最有关系。</strong>这就是 Transformer 里最关键的一步。</div>
+    <p style="font-size:13px;color:var(--tx);line-height:1.7">
+      <strong>🐾 3B1B 的经典例子：</strong>"一个毛茸茸的蓝色生物漫步于葱郁的森林"——当模型读到"生物"时，注意力会同时回顾前面的形容词"毛茸茸的"和"蓝色"，把它们的语义信息<strong style="color:var(--pink)">搬运</strong>到"生物"的表示中，让"生物"变得具体：是毛茸茸的、蓝色的、在森林里的。
+    </p>
+    <div class="insight"><span class="ins-icon">💡</span> 注意力本质上是：<strong style="color:var(--a1)">让每个词去"打听"其他所有词，找出谁和自己最有关系。</strong>这就是 Transformer 里最关键的一步。正如 3Blue1Brown 所说——名词从形容词那里获取信息，让含义变得更精确。</div>
   </div>
 </section>
 
@@ -355,6 +360,10 @@ blockquote.quote .q-author{display:block;margin-top:6px;font-style:normal;font-s
       经过 softmax 后，-∞ 位置的注意力权重恰好为 0——模型对未来的词完全"视而不见"。
     </p>
     <div class="insight"><span class="ins-icon">🔮</span> 如果没有因果掩码，模型会在训练时"作弊"——直接偷看答案再猜答案，就像先看试卷反面再做题。这样的模型到了推理时（没有答案可看）就会完全失效。</div>
+
+    <p style="font-size:12px;color:var(--tx2);line-height:1.6;margin-top:12px;padding:10px 14px;background:rgba(6,182,212,.05);border-radius:10px;border:1px solid rgba(6,182,212,.1)">
+      <strong style="color:var(--cyan)">上下文窗口大小：</strong>掩码只看"前面"，但"前面"有多长？GPT-3 的上下文窗口是 2048 个 token，GPT-4 扩展到 128K。窗口越大，模型能"回忆"的上下文越远，但计算量随窗口长度的平方增长——因为每个词都要和所有前面的词做注意力计算。
+    </p>
   </div>
 </section>
 
@@ -381,54 +390,105 @@ blockquote.quote .q-author{display:block;margin-top:6px;font-style:normal;font-s
     <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
       <strong>多头注意力：</strong>同时有多套（Q<sub>1</sub>, K<sub>1</sub>, V<sub>1</sub>）、（Q<sub>2</sub>, K<sub>2</sub>, V<sub>2</sub>）、……，每个"头"独立计算注意力，最后拼接起来再用 W<sub>O</sub> 融合。
     </p>
-    <p style="font-size:12px;color:var(--tx2);line-height:1.6">
+    <p style="font-size:12px;color:var(--tx2);line-height:1.6;margin-bottom:10px">
       <strong>不同头学到不同的关注模式：</strong>有的头关注"代词指代"（他 → 员工），有的头关注"动词搭配"（加班 → 工作），有的头关注"句法结构"（主语→谓语→宾语）。
       GPT-3 用了 <strong style="color:var(--a1)">96 个头</strong>，每个头 128 维，让模型从 96 个不同角度同时理解文本。
+    </p>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.6;padding:10px 14px;background:rgba(168,85,247,.05);border-radius:10px;border:1px solid rgba(168,85,247,.1)">
+      <strong style="color:var(--vio)">输出矩阵 W<sub>O</sub>：</strong>96 个头的输出拼接起来是一个巨大的向量——但这不能直接送进下一层。W<sub>O</sub> 是一个可训练的矩阵，把所有头的信息<strong style="color:var(--vio)">融合压缩</strong>回原始维度。<br>
+      <span style="color:var(--tx3)">3B1B 的视角：W<sub>O</sub> × V 其实是嵌入空间到自身的一个低秩映射——每个头的 d<sub>v</sub> 远小于总维度，所以注意力本质上是"用较小的计算量，在低秩子空间里高效地搬运信息"。</span>
     </p>
   </div>
 </section>
 
 <!-- ============================================================ -->
-<!-- SECTION 8: 全流程回顾 -->
+<!-- SECTION 8: 交叉注意力 (Cross-Attention) -->
 <!-- ============================================================ -->
 <section class="section" id="s8">
-  <div class="section-hd"><span class="s-icon">🔄</span><h2>全流程回顾——96层里的「他」</h2><span class="s-num">第 8 章</span></div>
+  <div class="section-hd"><span class="s-icon">🔀</span><h2>交叉注意力——当查询来自另一个序列</h2><span class="s-num">第 8 章</span></div>
+
+  <div class="viz-card">
+    <canvas id="crossCanvas" width="800" height="300"></canvas>
+    <div class="viz-ctrls">
+      <button class="viz-btn active" id="crossSelf">🔄 自注意力</button>
+      <button class="viz-btn" id="crossCross">🔀 交叉注意力</button>
+    </div>
+  </div>
+
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
+      <strong>自注意力 (Self-Attention)：</strong>Q、K、V 全部来自<strong style="color:var(--a1)">同一个序列</strong>。在 GPT 这类解码器模型中，每个词都在自己的句子里"打听"其他词。
+    </p>
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
+      <strong>交叉注意力 (Cross-Attention)：</strong>Q 来自一个序列，K 和 V 来自<strong style="color:var(--pink)">另一个序列</strong>。典型的场景是机器翻译的编码器-解码器架构：
+    </p>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num" style="background:rgba(99,102,241,.15);border-color:rgba(99,102,241,.25);color:var(--a1)">编码</div>
+        <div class="step-body"><h4>编码器处理源语言</h4><p>"I love you" → 编码器输出三个富含上下文的向量</p></div>
+      </div>
+      <div class="step-item">
+        <div class="step-num" style="background:rgba(236,72,153,.15);border-color:rgba(236,72,153,.25);color:var(--pink)">解码</div>
+        <div class="step-body"><h4>解码器生成目标语言</h4><p>生成"我"时，用"我"的 Q 去查询英文句子的 K 和 V，注意力指向" I "</p></div>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.6;margin-top:10px">
+      每次解码器生成一个中文词，它都会<strong style="color:var(--a1)">重新查询</strong>整个英文源句："我现在要翻译的词对应英文里的哪一个？"
+      这就是为什么翻译模型能准确对齐不同语言的语序。
+    </p>
+    <div class="insight"><span class="ins-icon">🔑</span> 自注意力 = 自己查自己（理解上下文）。交叉注意力 = 拿我的问题查你的知识库（翻译/问答）。GPT 只用了自注意力，但翻译模型和早期的 Transformer 都依赖交叉注意力连接编码器和解码器。</div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 9: 全流程回顾 -->
+<!-- ============================================================ -->
+<section class="section" id="s9">
+  <div class="section-hd"><span class="s-icon">🔄</span><h2>全流程回顾——12288维里的语义之旅</h2><span class="s-num">第 9 章</span></div>
 
   <div class="viz-card" style="padding:16px">
     <div class="step-list">
       <div class="step-item">
         <div class="step-num">1</div>
-        <div class="step-body"><h4>Embedding</h4><p>"老板"、"告诉"、"员工"、"他"……每个词查嵌入表，变成 12288 维向量（GPT-3）。</p></div>
+        <div class="step-body"><h4>Embedding</h4><p>每个词查嵌入表，变成 12288 维向量（GPT-3 的 d<sub>model</sub>）。这 12288 个数字就是这个词的"全部身份"。</p></div>
       </div>
       <div class="step-item">
         <div class="step-num">2</div>
-        <div class="step-body"><h4>第 1 层 Attention</h4><p>每个词生成 Q, K, V（96 个头 × 3）。"他"的 Q 和所有词的 K 做点积，得到初步的注意力热力图。</p></div>
+        <div class="step-body"><h4>QKV 投影</h4><p>通过三个权重矩阵 W<sub>Q</sub>、W<sub>K</sub>、W<sub>V</sub>（各 12288×12288），每个词生成 96 组 Q/K/V，每组 128 维。</p></div>
       </div>
       <div class="step-item">
         <div class="step-num">3</div>
-        <div class="step-body"><h4>Causal Mask</h4><p>只看当前位置及之前的词。后面的词全部 mask 掉。</p></div>
+        <div class="step-body"><h4>Q·Kᵀ 计算 + Causal Mask</h4><p>每个头的 Q 和所有词的 K 做点积，得到注意力分数矩阵。右上角填 -∞ 屏蔽未来。</p></div>
       </div>
       <div class="step-item">
         <div class="step-num">4</div>
-        <div class="step-body"><h4>Softmax + V 加权</h4><p>注意力变成预算，按比例搬运 V。"他"的表示开始向"员工"靠近。</p></div>
+        <div class="step-body"><h4>Softmax + V 加权</h4><p>分数 / √128，经过 softmax 变成注意力预算，按比例搬运 V。</p></div>
       </div>
       <div class="step-item">
         <div class="step-num">5</div>
-        <div class="step-body"><h4>96 个头拼接 → FeedForward</h4><p>96 个头的输出拼在一起，经过全连接层，信息被进一步整合和转换。</p></div>
+        <div class="step-body"><h4>W<sub>O</sub> 输出投影</h4><p>96 头 × 128 维 = 12288 维拼接，乘以 W<sub>O</sub>（12288×12288）融合回统一表示。这一步将各头的信息交叉整合。</p></div>
       </div>
       <div class="step-item">
         <div class="step-num">6</div>
-        <div class="step-body"><h4>层层传递 × 96 层</h4><p>经过 96 个 Transformer Block 后，"他"的向量已经<strong>装载了"员工"的语义信息</strong>。模型通过这个词向量来预测下一个词。</p></div>
+        <div class="step-body"><h4>Attention 输出 → Add & Norm → FeedForward</h4><p>残差连接（加上原始输入）→ 层归一化 → 全连接层（一个 4× 宽的 MLP）→ 再次残差 + 归一化。一个 Transformer Block 完成。</p></div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">7</div>
+        <div class="step-body"><h4>层层传递 × 96 层</h4><p>96 个 Block 之后，每个词都被整个句子的上下文充分"浸泡"过。"他"的 12288 维向量已经<strong>装载了"员工"的语义信息</strong>。</p></div>
       </div>
     </div>
 
     <div class="tone-box" style="margin-top:14px">
-      💡 96 层之后，"他"这个字的表示已经走过了从"孤立字符"到"满载上下文"的完整旅程。
+      💡 96 层之后，"他"这个字的 12288 维表示已经走过了从"孤立字符"到"满载上下文"的完整旅程。
     </div>
+
+    <p style="font-size:12px;color:var(--tx2);line-height:1.6;padding:10px 14px;background:rgba(245,158,11,.05);border-radius:10px;border:1px solid rgba(245,158,11,.1);margin-bottom:10px">
+      <strong style="color:var(--amber)">参数有多少？</strong>GPT-3 有 1750 亿参数。粗略计算：每层 Attention 的 QKV 投影矩阵 ≈ 3 × 12288 × 12288 ≈ 4.5 亿，加上 W<sub>O</sub> 约 1.5 亿，FeedForward 约 2 × 12288 × 49152 ≈ 12 亿——<strong style="color:var(--amber)">单层约 18 亿参数</strong>，96 层 = 约 1700 亿。绝大多数参数不在注意力里，而在 FeedForward 层中。
+    </p>
 
     <blockquote class="quote">
       "注意力机制非常重要，但它不是全部。没有词向量表 / 没有前馈网络 / 没有训练数据，那几个 W 矩阵永远学不出来。"
-      <span class="q-author">—— 漫士，B站视频简介</span>
+      <span class="q-author">—— 漫士</span>
     </blockquote>
   </div>
 </section>
@@ -975,6 +1035,98 @@ blockquote.quote .q-author{display:block;margin-top:6px;font-style:normal;font-s
   document.getElementById('mh12').addEventListener('click',function(){numHeads=12;document.getElementById('mh1').classList.remove('active');document.getElementById('mh4').classList.remove('active');this.classList.add('active');document.getElementById('mh96').classList.remove('active');});
   document.getElementById('mh96').addEventListener('click',function(){numHeads=96;document.getElementById('mh1').classList.remove('active');document.getElementById('mh4').classList.remove('active');document.getElementById('mh12').classList.remove('active');this.classList.add('active');});
 })();
+
+// ============================================================
+// CANVAS 8: Cross-Attention vs Self-Attention
+// ============================================================
+(function(){
+  var c=document.getElementById('crossCanvas'),w=c.parentNode.clientWidth-40,h=300;
+  c.width=w*2;c.height=h*2;c.style.width=w+'px';c.style.height=h+'px';
+  var ctx=c.getContext('2d'),W=c.width,H=c.height;
+  var mode='self'; // 'self' or 'cross'
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='rgba(255,255,255,.45)';ctx.font='13px Inter,sans-serif';ctx.textAlign='center';
+    ctx.fillText(mode==='self'?'自注意力：Q、K、V 来自同一序列':'交叉注意力：Q 来自解码器，K、V 来自编码器',W/2,24);
+
+    var srcWords, tgtWords;
+    if(mode==='self'){
+      srcWords=['I','love','you'];
+      tgtWords=['I','love','you'];
+    }else{
+      srcWords=['I','love','you']; // Encoder output (source of K,V)
+      tgtWords=['我','爱','你']; // Decoder (source of Q)
+    }
+
+    var srcY=H*0.38, tgtY=H*0.68;
+    var srcXs=[],tgtXs=[],nodeR=22;
+    var srcTotal=srcWords.length*nodeR*3.2;
+    var srcStartX=(W-srcTotal)/2+nodeR*1.6;
+    for(var i=0;i<srcWords.length;i++) srcXs.push(srcStartX+i*(W*0.85/(srcWords.length-1)));
+    var tgtTotal=tgtWords.length*nodeR*3.2;
+    var tgtStartX=(W-tgtTotal)/2+nodeR*1.6;
+    for(var i=0;i<tgtWords.length;i++) tgtXs.push(tgtStartX+i*(W*0.85/(tgtWords.length-1)));
+
+    // Draw nodes
+    for(var i=0;i<srcWords.length;i++){
+      ctx.beginPath();ctx.arc(srcXs[i],srcY,nodeR,0,Math.PI*2);
+      ctx.fillStyle=mode==='cross'?'rgba(16,185,129,.15)':'rgba(99,102,241,.12)';
+      ctx.fill();ctx.strokeStyle=mode==='cross'?'rgba(16,185,129,.35)':'rgba(99,102,241,.3)';ctx.lineWidth=2;ctx.stroke();
+      ctx.fillStyle='rgba(255,255,255,.85)';ctx.font='14px Inter,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(srcWords[i],srcXs[i],srcY);
+    }
+    for(var i=0;i<tgtWords.length;i++){
+      ctx.beginPath();ctx.arc(tgtXs[i],tgtY,nodeR,0,Math.PI*2);
+      ctx.fillStyle=mode==='cross'?'rgba(236,72,153,.15)':'rgba(99,102,241,.12)';
+      ctx.fill();ctx.strokeStyle=mode==='cross'?'rgba(236,72,153,.35)':'rgba(99,102,241,.3)';ctx.lineWidth=2;ctx.stroke();
+      ctx.fillStyle='rgba(255,255,255,.85)';ctx.font='14px Inter,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(tgtWords[i],tgtXs[i],tgtY);
+    }
+
+    // Labels
+    if(mode==='cross'){
+      ctx.fillStyle='rgba(16,185,129,.7)';ctx.font='11px Inter,sans-serif';ctx.textAlign='center';
+      ctx.fillText('编码器输出（提供 K, V）',W/2,srcY-nodeR-18);
+      ctx.fillStyle='rgba(236,72,153,.7)';
+      ctx.fillText('解码器当前词（提供 Q）',W/2,tgtY+nodeR+30);
+    }
+
+    // Arrows from attention
+    var arrowAlpha=mode==='self'?0.3:0.7;
+    for(var i=0;i<tgtWords.length;i++){
+      for(var j=0;j<srcWords.length;j++){
+        var alpha;
+        if(mode==='self') alpha=(i===j)?0.5:0.06;
+        else alpha=(wordsMatch(tgtWords[i],srcWords[j]))?0.75:0.04;
+
+        if(alpha<0.05) continue;
+        ctx.beginPath();
+        ctx.moveTo(tgtXs[i],tgtY+nodeR+2);
+        var midY=(tgtY+nodeR+srcY-nodeR)/2;
+        ctx.quadraticCurveTo(tgtXs[i],midY,srcXs[j],srcY-nodeR-2);
+        ctx.strokeStyle='rgba(6,182,212,'+alpha.toFixed(2)+')';ctx.lineWidth=alpha*4+0.5;ctx.stroke();
+      }
+    }
+
+    // Key insight
+    ctx.fillStyle='rgba(255,255,255,.3)';ctx.font='11px Inter,sans-serif';ctx.textAlign='center';
+    if(mode==='self'){
+      ctx.fillText('Q = K = V 来源相同 → 每个词在自己的句子里"打听"',W/2,H-12);
+    }else{
+      ctx.fillText('「我」的 Q 查询英文 K/V → 注意力指向「I」→ 翻译对齐',W/2,H-12);
+    }
+
+    function wordsMatch(a,b){
+      var map={'我':'I','爱':'love','你':'you'};
+      return map[a]===b || a===b;
+    }
+  }
+
+  draw();
+  document.getElementById('crossSelf').addEventListener('click',function(){mode='self';this.classList.add('active');document.getElementById('crossCross').classList.remove('active');draw();});
+  document.getElementById('crossCross').addEventListener('click',function(){mode='cross';document.getElementById('crossSelf').classList.remove('active');this.classList.add('active');draw();});
+})();
 </script>
 
 <!-- ============================================================ -->
@@ -986,8 +1138,10 @@ blockquote.quote .q-author{display:block;margin-top:6px;font-style:normal;font-s
   var qq=[
     {q:'Attention(Q,K,V) 公式中，Q 和 K 做的是什么运算？',opts:['点积 (dot product)','加法','卷积','矩阵求逆'],ans:0,exp:'Q 和 K 做点积来计算相似度。Q·Kᵀ 得到一个分数矩阵，表示每对词之间的"匹配度"。'},
     {q:'为什么要除以 √d_k？',opts:['防止点积值过大导致 softmax 太尖锐','为了让 Q 和 K 正交','这是随机初始化的一部分','为了让结果变成整数'],ans:0,exp:'向量维度 d_k 很大时（如 64），点积值会很大，softmax 会变得极度尖锐（接近 one-hot），梯度消失，训练不动。除以 √d_k 像调低"温度"。'},
-    {q:'因果掩码 (causal mask) 的作用是什么？',opts:['防止模型偷看未来的词','让模型更快训练','增加模型的参数量','减少显存占用'],ans:0,exp:'自回归生成时，当前位置只能看到它自己及之前的词。因果掩码把注意力矩阵右上角（"未来"位置）填成 -∞，经过 softmax 后权重为 0。'},
+    {q:'因果掩码 (causal mask) 的作用是什么？',opts:['防止模型偷看未来的词','让模型更快训练','增加模型的参数量','减少显存占用'],ans:0,exp:'自回归生成时，当前位置只能看到它自己及之前的词。因果掩码把注意力矩阵右上角填成 -∞，经过 softmax 后权重为 0。'},
     {q:'多头注意力的主要优势是什么？',opts:['让模型从多个角度同时关注不同模式','让计算速度变快','减少参数数量','让输出更稀疏'],ans:0,exp:'不同头学到不同的关注模式：有的关注代词指代，有的关注句法结构，有的关注动词搭配。GPT-3 用了 96 个头。'},
+    {q:'交叉注意力 (Cross-Attention) 和自注意力的关键区别是什么？',opts:['Q 和 K/V 来自不同序列','交叉注意力不用 softmax','交叉注意力没有 V 矩阵','交叉注意力计算更快'],ans:0,exp:'自注意力的 Q、K、V 都来自同一序列。交叉注意力中，Q 来自解码器（要生成的序列），K 和 V 来自编码器（源序列），用于翻译等任务。'},
+    {q:'上下文窗口越大越好吗？主要代价是什么？',opts:['计算量随窗口长度的平方增长','窗口越大模型越不准','窗口大小不影响计算量','窗口越大训练越不稳定'],ans:0,exp:'每个词要和所有前面的词做注意力计算，所以计算量是 O(n²)。GPT-3 窗口 2048 token，GPT-4 扩展到 128K，但代价巨大。'},
   ];
   var idx=0,score=0,total=0;
   var el=document.getElementById('quiz1');
@@ -1023,6 +1177,8 @@ blockquote.quote .q-author{display:block;margin-top:6px;font-style:normal;font-s
     {left:'Softmax',right:'把分数变成概率分布，总和为 1',id:3},
     {left:'√d_k',right:'缩放因子，防止点积太大导致梯度消失',id:4},
     {left:'Multi-Head',right:'多组 QKV 并行计算，关注不同模式',id:5},
+    {left:'Cross-Attention',right:'Q 来自解码器，K/V 来自编码器——翻译专用',id:6},
+    {left:'W_O 输出矩阵',right:'融合多头输出，是嵌入空间的低秩映射',id:7},
   ];
   var shuffledLeft=[],shuffledRight=[];
   var selectedLeft=null,selectedRight=null,matched={},score=0,totalPairs=pairs.length;
