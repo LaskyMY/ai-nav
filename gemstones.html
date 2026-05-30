@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>宝石耐久度指南 — 哪些宝石真正值得买？</title>
+<link rel="icon" href="./icon.svg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.6;min-height:100vh;padding-bottom:calc(100px + env(safe-area-inset-bottom,0));-webkit-font-smoothing:antialiased;overflow-x:hidden;letter-spacing:-.01em}
+::-webkit-scrollbar{width:2px;height:2px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.04);border-radius:1px}
+::selection{background:rgba(99,102,241,.3)}
+
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(99,102,241,.05),rgba(236,72,153,.04) 20%,rgba(168,85,247,.02) 45%,transparent 70%)}
+
+.header{position:sticky;top:0;z-index:50;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-top:none;padding:10px 20px;border-radius:0 0 22px 22px;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 40px rgba(99,102,241,.1),0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04)}
+.header-in{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.header-logo{font-size:17px;font-weight:700;white-space:nowrap;letter-spacing:-.02em;background:linear-gradient(135deg,var(--a1),var(--pink),var(--vio));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 6s ease-in-out infinite}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+.back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.home-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none;margin-left:auto}
+.home-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+
+.container{max-width:900px;margin:0 auto;padding:18px 20px;position:relative;z-index:1}
+
+.hero-wrap{position:relative;text-align:center;padding:40px 0 20px;overflow:hidden}
+#heroCanvas{position:absolute;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:900px;height:100%;pointer-events:none;z-index:0;opacity:.6}
+.hero-content{position:relative;z-index:1}
+.hero-content h1{font-size:32px;font-weight:700;letter-spacing:-.03em;margin-bottom:8px;background:linear-gradient(135deg,var(--a2),var(--cyan),var(--vio));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+.hero-content .sub{color:var(--tx2);font-size:15px;max-width:540px;margin:0 auto;line-height:1.6}
+.hero-badge{display:inline-block;padding:4px 12px;border-radius:12px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);font-size:11px;color:var(--a2);margin-bottom:12px;letter-spacing:.04em}
+
+.section{position:relative;z-index:1;margin-bottom:32px;scroll-margin-top:80px}
+.section-hd{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-left:2px}
+.section-hd .s-icon{font-size:24px}
+.section-hd h2{font-size:18px;font-weight:700;color:var(--tx);letter-spacing:-.02em}
+.section-hd .s-num{font-size:12px;color:var(--tx3);background:rgba(255,255,255,.05);padding:3px 10px;border-radius:8px}
+
+.viz-card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:20px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(99,102,241,.04),0 4px 24px rgba(0,0,0,.1)}
+.viz-card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.viz-card canvas{display:block;width:100%;max-width:100%;border-radius:12px;margin-bottom:12px}
+.viz-card .viz-info{font-size:12px;color:var(--tx2);line-height:1.6;margin-top:8px;padding:10px 14px;background:rgba(255,255,255,.03);border-radius:10px;border-left:2px solid var(--a1)}
+.viz-card .viz-info strong{color:var(--tx)}
+
+.viz-ctrls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;justify-content:center}
+.viz-btn{padding:7px 16px;border-radius:8px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.viz-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:rgba(99,102,241,.2)}
+.viz-btn.active{background:rgba(99,102,241,.2);border-color:rgba(99,102,241,.4);color:var(--a1)}
+
+.insight{display:flex;align-items:flex-start;gap:8px;padding:10px 14px;border-radius:10px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.15);margin-top:10px;font-size:12px;color:var(--amber);line-height:1.5}
+.insight .ins-icon{font-size:16px;flex-shrink:0}
+
+/* Tier badge */
+.tier-badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:.04em}
+.tier-S{background:rgba(245,158,11,.2);color:var(--amber);border:1px solid rgba(245,158,11,.3)}
+.tier-A{background:rgba(99,102,241,.15);color:var(--a1);border:1px solid rgba(99,102,241,.25)}
+.tier-B{background:rgba(6,182,212,.15);color:var(--cyan);border:1px solid rgba(6,182,212,.25)}
+.tier-C{background:rgba(16,185,129,.15);color:var(--a2);border:1px solid rgba(16,185,129,.25)}
+.tier-D{background:rgba(168,85,247,.15);color:var(--vio);border:1px solid rgba(168,85,247,.25)}
+.tier-E{background:rgba(236,72,153,.15);color:var(--pink);border:1px solid rgba(236,72,153,.25)}
+.tier-F{background:rgba(239,68,68,.15);color:var(--a3);border:1px solid rgba(239,68,68,.25)}
+
+/* Gem card grid */
+.gem-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.gem-card{padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);transition:all .3s}
+.gem-card:hover{border-color:rgba(99,102,241,.15);background:rgba(255,255,255,.04)}
+.gem-card h4{font-size:13px;color:var(--tx);margin-bottom:2px}
+.gem-card .gem-stats{font-size:10px;color:var(--tx3);line-height:1.5}
+
+/* Three-factor bar */
+.factor-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.factor-label{font-size:11px;color:var(--tx2);width:36px;text-align:right;flex-shrink:0}
+.factor-bar{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden}
+.factor-fill{height:100%;border-radius:3px;transition:width .6s var(--ease)}
+.factor-fill.good{background:linear-gradient(90deg,var(--a2),var(--cyan))}
+.factor-fill.ok{background:linear-gradient(90deg,var(--amber),var(--a1))}
+.factor-fill.bad{background:linear-gradient(90deg,var(--pink),var(--a3))}
+
+blockquote.quote{border-left:3px solid var(--a1);padding:10px 16px;margin:14px 0;background:rgba(99,102,241,.05);border-radius:0 10px 10px 0;font-size:13px;color:var(--tx2);font-style:italic;line-height:1.6}
+blockquote.quote .q-author{display:block;margin-top:6px;font-style:normal;font-size:11px;color:var(--tx3)}
+
+/* mini-games CSS */
+.mg-quiz4{margin-top:10px;position:relative;z-index:1}
+.mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:rgba(99,102,241,.2)}
+.mg-btn.correct{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.35);color:var(--a2)}
+.mg-btn.wrong{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.35);color:var(--a3);animation:shake .4s}
+.mg-right{color:var(--a2)}.mg-wrong{color:var(--a3)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+.mg-q4-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.mg-q4-q{font-size:12px;color:var(--tx2);margin:0;line-height:1.5}
+.mg-q4-counter{font-size:11px;color:var(--tx3);min-width:24px;text-align:center}
+.mg-q4-opt{display:block;width:100%;text-align:left;padding:8px 12px;margin:4px 0;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-q4-opt:hover{background:rgba(255,255,255,.08);color:var(--tx);border-color:rgba(99,102,241,.2)}
+.mg-q4-opt.correct{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:var(--a2)}
+.mg-q4-opt.wrong{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:var(--a3)}
+.mg-q4-explain{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:6px;line-height:1.5}
+.mg-q4-explain.show{display:block;animation:fadeUp .3s var(--ease) both}
+.mg-spot-cards{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mg-spot-card{padding:8px 10px;border-radius:8px;border:1px solid var(--card-border);font-size:11px;color:var(--tx2);cursor:pointer;background:rgba(255,255,255,.02);transition:all .2s;line-height:1.4;min-height:50px;-webkit-tap-highlight-color:transparent}
+.mg-spot-card:hover{border-color:rgba(99,102,241,.2);background:rgba(255,255,255,.05)}
+.mg-spot-card.correct{border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:var(--a2)}
+.mg-spot-card.wrong{border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.08);color:var(--a3)}
+.mg-spot-fb{display:none;font-size:12px;margin-top:6px;line-height:1.5}
+.mg-spot-fb.show{display:block;animation:fadeUp .3s var(--ease) both}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)scale(.97)}to{opacity:1;transform:translateY(0)scale(1)}}
+
+.toc{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;padding:0 2px}
+.toc a{font-size:11px;color:var(--tx3);text-decoration:none;padding:4px 10px;border-radius:6px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04);transition:all .2s;white-space:nowrap}
+.toc a:hover{color:var(--tx);background:rgba(255,255,255,.06)}
+
+.bottom-nav{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0));left:50%;transform:translateX(-50%);width:calc(100% - 28px);max-width:440px;height:58px;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-radius:22px;display:flex;justify-content:center;align-items:center;gap:16px;z-index:100;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 50px rgba(99,102,241,.12),0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.04)}
+.nav-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:var(--tx3);padding:6px 14px;border-radius:14px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .3s var(--ease);-webkit-tap-highlight-color:transparent;text-decoration:none}
+.nav-btn:hover{background:rgba(255,255,255,.08);color:var(--tx2)}
+.nav-btn svg{width:14px;height:14px}
+
+@media(max-width:480px){
+  .hero-content h1{font-size:22px}
+  .viz-card{padding:14px}
+  .mg-spot-cards{grid-template-columns:1fr}
+  .section-hd h2{font-size:16px}
+  .gem-grid{grid-template-columns:1fr 1fr}
+  .toc{gap:4px}.toc a{font-size:10px;padding:3px 7px}
+}
+</style>
+</head>
+<body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot"></div>
+
+<div class="header">
+  <div class="header-in">
+    <a class="back-btn" href="./index.html" title="返回主页"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
+    <a class="back-btn" href="./knowledge.html" title="知识百科" style="margin-left:2px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></a>
+    <span class="header-logo">宝石耐久度</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- Hero -->
+<div class="hero-wrap" id="heroWrap">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-badge">💎 基于 Mason Mignanelli 宝石排名视频</div>
+    <h1>宝石耐久度指南</h1>
+    <p class="sub">一颗价值上万美元的宝石，在厨房台面上轻轻一磕就碎了。<br>价格不等于耐久——了解硬度、韧性和解理，买到真正适合日常佩戴的宝石。</p>
+  </div>
+</div>
+
+<nav class="toc">
+  <a href="#s1">1. 三要素</a>
+  <a href="#s2">2. S级王者</a>
+  <a href="#s3">3. A-B级</a>
+  <a href="#s4">4. C-D级</a>
+  <a href="#s5">5. E-F级</a>
+  <a href="#s6">6. 购买建议</a>
+  <a href="#games">🎮 小游戏</a>
+</nav>
+
+<!-- S1: 耐久性三要素 -->
+<section class="section" id="s1">
+  <div class="section-hd"><span class="s-icon">📐</span><h2>耐久性三要素——宝石不是越硬越好</h2><span class="s-num">第 1 章</span></div>
+
+  <div class="viz-card">
+    <canvas id="factorCanvas" width="800" height="340"></canvas>
+  </div>
+
+  <div class="viz-card" style="padding:16px">
+    <div style="display:grid;gap:12px">
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <span style="font-size:28px;flex-shrink:0">🔪</span>
+        <div>
+          <strong style="color:var(--a1)">硬度 (Hardness)</strong><br>
+          <span style="font-size:12px;color:var(--tx2)">莫氏硬度 1-10。抵抗<strong style="color:var(--tx)">刮擦</strong>的能力。金刚石（钻石）硬度=10，是最硬的天然物质。但硬度高≠耐摔——钻石用锤子敲会碎。</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <span style="font-size:28px;flex-shrink:0">🏋️</span>
+        <div>
+          <strong style="color:var(--a2)">韧性 (Toughness)</strong><br>
+          <span style="font-size:12px;color:var(--tx2)">抵抗<strong style="color:var(--tx)">断裂和碎裂</strong>的能力。这是日常佩戴最重要的指标。翡翠韧性极好（纤维交织结构），但硬度只有6.5-7。</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <span style="font-size:28px;flex-shrink:0">🪓</span>
+        <div>
+          <strong style="color:var(--a3)">解理 (Cleavage)</strong><br>
+          <span style="font-size:12px;color:var(--tx2)">晶体内部<strong style="color:var(--tx)">容易沿特定方向裂开</strong>的薄弱面。这是宝石的"阿喀琉斯之踵"——一个看似坚固的宝石，在解理方向一碰就裂。钻石有完美的八面体解理。</span>
+        </div>
+      </div>
+    </div>
+    <div class="insight"><span class="ins-icon">💡</span> <strong>宝石的价格主要由稀有度和品牌溢价决定，而非耐久性。</strong>很多稀有昂贵的宝石（如祖母绿、欧泊）反而非常脆弱。了解三要素，才能避免花大钱买"玻璃大炮"。</div>
+  </div>
+</section>
+
+<!-- S2: S级王者 -->
+<section class="section" id="s2">
+  <div class="section-hd"><span class="s-icon">👑</span><h2>S级——真正耐造的王者</h2><span class="s-num">第 2 章</span></div>
+
+  <div class="viz-card" style="padding:16px">
+    <div class="gem-grid">
+      <div class="gem-card">
+        <span class="tier-badge tier-S">神级</span>
+        <h4>刚玉 (红宝石/蓝宝石)</h4>
+        <div class="gem-stats">硬度 9 | 韧性极佳 | 无解理<br>颜色丰富，几乎没有短板<br>"珠宝商私下最爱的宝石"</div>
+      </div>
+      <div class="gem-card">
+        <span class="tier-badge tier-S">S级</span>
+        <h4>尖晶石 Spineli</h4>
+        <div class="gem-stats">硬度 8 | 韧性好 | 无解理<br>"历史上著名的'红宝石'其实都是红色尖晶石"——超被低估</div>
+      </div>
+      <div class="gem-card">
+        <span class="tier-badge tier-S">S级</span>
+        <h4>实验室培育钻石</h4>
+        <div class="gem-stats">硬度 10 | 韧性好 | 有解理<br>成分性能完全=天然钻石，价格便宜太多<br>性价比之王</div>
+      </div>
+      <div class="gem-card">
+        <span class="tier-badge tier-S">S级</span>
+        <h4>莫桑石 Moissanite</h4>
+        <div class="gem-stats">硬度 9.25 | 韧性好<br>火彩是钻石的2.4倍！<br>超高性价比，日常佩戴完美</div>
+      </div>
+    </div>
+
+    <div style="margin-top:14px;font-size:13px;color:var(--tx);line-height:1.7">
+      <p><strong style="color:var(--amber)">为什么这几位是王者？</strong></p>
+      <p style="font-size:12px;color:var(--tx2);margin-top:4px">它们共同的特点：<strong style="color:var(--tx)">硬度≥8 + 韧性好 + 无解理（或解理不影响日常）</strong>。日常佩戴几乎不用担心刮花或磕碎。</p>
+      <p style="font-size:12px;color:var(--tx2);margin-top:6px"><strong style="color:var(--a2)">尖晶石是最被低估的宝石：</strong>英国皇冠上的"黑王子红宝石"（170克拉）和俄罗斯皇冠上的"凯瑟琳大帝红宝石"（398克拉），后来都被鉴定为红色尖晶石。硬度高、韧性好、没解理、颜色鲜艳——它才是真正的"平民宝石之王"。</p>
+    </div>
+  </div>
+</section>
+
+<!-- S3: A-B级 -->
+<section class="section" id="s3">
+  <div class="section-hd"><span class="s-icon">👍</span><h2>A-B级——不错的日常选择</h2><span class="s-num">第 3 章</span></div>
+
+  <div class="viz-card" style="padding:16px">
+    <div class="gem-grid">
+      <div class="gem-card">
+        <span class="tier-badge tier-A">A级</span>
+        <h4>金绿宝石 Chrysoberyl</h4>
+        <div class="gem-stats">硬度 8.5 | 韧性好<br>含变石（亚历山大石）——变色效应极罕见</div>
+      </div>
+      <div class="gem-card">
+        <span class="tier-badge tier-B">B级</span>
+        <h4>石榴石 Garnet</h4>
+        <div class="gem-stats">硬度 7-7.5 | 韧性中等<br>颜色丰富（不只有红色）<br>日常佩戴基本没问题</div>
+      </div>
+      <div class="gem-card">
+        <span class="tier-badge tier-B">B级</span>
+        <h4>石英家族 Quartz</h4>
+        <div class="gem-stats">硬度 7 | 韧性好 | 无解理<br>紫晶、黄晶、烟晶……<br>便宜大碗，随便戴不心疼</div>
+      </div>
+      <div class="gem-card">
+        <span class="tier-badge tier-B">B级</span>
+        <h4>立方氧化锆 CZ</h4>
+        <div class="gem-stats">硬度 8-8.5 | 易碎<br>钻石的经典替代品<br>极便宜，但久了会变雾</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S4: C-D级 -->
+<section class="section" id="s4">
+  <div class="section-hd"><span class="s-icon">⚡</span><h2>C-D级——美丽但需要小心</h2><span class="s-num">第 4 章</span></div>
+
+  <div class="viz-card" style="padding:16px">
+    <div class="gem-grid">
+      <div class="gem-card">
+        <span class="tier-badge tier-C">C级</span>
+        <h4>天然钻石 Diamond</h4>
+        <div class="gem-stats">硬度 10 | 有八面体解理<br>性能无敌，但价格太高<br>而且<strong style="color:var(--a3)">会沿解理裂开</strong></div>
+      </div>
+      <div class="gem-card">
+        <span class="tier-badge tier-C">C级</span>
+        <h4>海蓝宝石 Aquamarine</h4>
+        <div class="gem-stats">硬度 7.5-8 | 边缘易崩<br>市面颜色偏浅——"像被轻声说了句'蓝色'的石英"<br>比想象中容易坏</div>
+      </div>
+      <div class="gem-card">
+        <span class="tier-badge tier-C">C级</span>
+        <h4>托帕石 Topaz</h4>
+        <div class="gem-stats">硬度 8 | 完美基底解理<br>"特定方向撞击会直接裂成两半"<br>硬，但不耐撞</div>
+      </div>
+      <div class="gem-card">
+        <span class="tier-badge tier-C">C级</span>
+        <h4>坦桑石 Tanzanite</h4>
+        <div class="gem-stats">硬度 6.5-7 | 有解理<br>蓝紫色极美，但只产自坦桑尼亚<br>稀有但脆弱</div>
+      </div>
+      <div class="gem-card">
+        <span class="tier-badge tier-C">C级</span>
+        <h4>橄榄石 Peridot</h4>
+        <div class="gem-stats">硬度 6.5-7 | 易碎<br>独特的橄榄绿，但非常脆<br>"陨石里才有的宝石"</div>
+      </div>
+      <div class="gem-card">
+        <span class="tier-badge tier-D">D级</span>
+        <h4>碧玺 Tourmaline</h4>
+        <div class="gem-stats">硬度 7-7.5 | 解理明显<br>颜色极丰富（西瓜碧玺）<br>但耐久性不如看起来好</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S5: E-F级 -->
+<section class="section" id="s5">
+  <div class="section-hd"><span class="s-icon">⚠️</span><h2>E-F级——美丽但脆弱的"玻璃大炮"</h2><span class="s-num">第 5 章</span></div>
+
+  <div class="viz-card" style="padding:16px">
+    <div class="gem-grid">
+      <div class="gem-card">
+        <span class="tier-badge tier-E">E级</span>
+        <h4>祖母绿 Emerald</h4>
+        <div class="gem-stats">硬度 8 | 天生多裂<br>内部"花园"状包裹体是天然特征<br>"祖母绿切工"就是为保护边角而设计</div>
+      </div>
+      <div class="gem-card">
+        <span class="tier-badge tier-E">E级</span>
+        <h4>合成金红石 Rutile</h4>
+        <div class="gem-stats">硬度 6-6.5 | 火彩极强<br>比钻石还闪，但太软<br>实验室产品，耐久不够</div>
+      </div>
+      <div class="gem-card">
+        <span class="tier-badge tier-F">F级</span>
+        <h4>珍珠 Pearl</h4>
+        <div class="gem-stats">硬度 2.5-4.5 | 碳酸钙<br>金子都能划伤它，醋能溶解它<br>"埃及艳后把珍珠溶在醋里喝掉——是真的"</div>
+      </div>
+      <div class="gem-card">
+        <span class="tier-badge tier-F">F级</span>
+        <h4>欧泊 Opal</h4>
+        <div class="gem-stats">硬度 5.5-6.5 | 含水！<br>温度剧烈变化→从内向外裂开<br>（龟裂现象）极美的"定时炸弹"</div>
+      </div>
+      <div class="gem-card">
+        <span class="tier-badge tier-F">F级</span>
+        <h4>长石家族 Feldspar</h4>
+        <div class="gem-stats">硬度 6-6.5 | 两组解理<br>月光石、日光石、拉长石<br>美但脆，碰不得</div>
+      </div>
+      <div class="gem-card">
+        <span class="tier-badge tier-F">F级</span>
+        <h4>摩根石 Morganite</h4>
+        <div class="gem-stats">硬度 7.5-8 | 有个怪毛病<br>"特别容易沾油污，戴几周就像抹了黄油"<br>得经常清洗</div>
+      </div>
+    </div>
+    <div class="insight" style="margin-top:12px"><span class="ins-icon">⚠️</span> <strong>祖母绿是最大的"坑"：</strong>虽然硬度有8（接近刚玉），但天然祖母绿几乎都有大量裂隙和内含物。"祖母绿切工"之所以把四个角切掉，就是为了防止尖角受力崩裂。花几万元买一颗祖母绿戒指，轻轻一碰边角就崩了——这不是质量问题，是物理特性。</div>
+  </div>
+</section>
+
+<!-- S6: 购买建议 -->
+<section class="section" id="s6">
+  <div class="section-hd"><span class="s-icon">🛒</span><h2>购买建议——按场景选宝石</h2><span class="s-num">第 6 章</span></div>
+
+  <div class="viz-card" style="padding:16px">
+    <table style="width:100%;font-size:12px;border-collapse:collapse;color:var(--tx2);line-height:1.6">
+      <tr style="border-bottom:1px solid rgba(255,255,255,.06)">
+        <td style="padding:8px 4px;color:var(--tx);font-weight:700">日常婚戒</td>
+        <td style="padding:8px 4px">刚玉(蓝宝石) / 尖晶石 / 培育钻石</td>
+        <td style="padding:8px 4px;color:var(--a2)">S级</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(255,255,255,.06)">
+        <td style="padding:8px 4px;color:var(--tx);font-weight:700">偶尔佩戴</td>
+        <td style="padding:8px 4px">坦桑石 / 碧玺 / 石榴石 / 海蓝宝</td>
+        <td style="padding:8px 4px;color:var(--amber)">B-C级</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(255,255,255,.06)">
+        <td style="padding:8px 4px;color:var(--tx);font-weight:700">收藏欣赏</td>
+        <td style="padding:8px 4px">欧泊 / 祖母绿 / 亚历山大变石</td>
+        <td style="padding:8px 4px;color:var(--a3)">E-F级</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(255,255,255,.06)">
+        <td style="padding:8px 4px;color:var(--tx);font-weight:700">性价比之选</td>
+        <td style="padding:8px 4px">莫桑石 / 立方氧化锆 / 石英家族</td>
+        <td style="padding:8px 4px;color:var(--cyan)">B-S级</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 4px;color:var(--tx);font-weight:700">不推荐日常</td>
+        <td style="padding:8px 4px">珍珠 / 摩根石 / 长石 / 橄榄石</td>
+        <td style="padding:8px 4px;color:var(--a3)">F级</td>
+      </tr>
+    </table>
+    <blockquote class="quote" style="margin-top:14px">
+      "宝石的销售基于稀有性、声望和数世纪的神话——但这些都无法改变物理特性。一颗宝石可能稀有、昂贵且知名，但仍可能不适合用于戒指。"
+      <span class="q-author">—— Mason Mignanelli</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- Games -->
+<section class="section" id="games">
+  <div class="section-hd"><span class="s-icon">🎮</span><h2>宝石知识测试</h2><span class="s-num">检测理解</span></div>
+
+  <div class="viz-card" style="padding:16px">
+    <h3 style="font-size:14px;color:var(--tx);margin-bottom:4px">💎 宝石耐久度测验</h3>
+    <p style="font-size:11px;color:var(--tx3);margin-bottom:10px">6道题，测试你对宝石的了解</p>
+    <div id="quiz1" class="mg-quiz4">
+      <div class="mg-q4-header"><p class="mg-q4-q"></p><span class="mg-q4-counter"></span></div>
+      <div class="mg-q4-opts"></div>
+      <div class="mg-q4-explain"></div>
+    </div>
+  </div>
+
+  <div class="viz-card" style="padding:16px">
+    <h3 style="font-size:14px;color:var(--tx);margin-bottom:4px">🔍 宝石与特性配对</h3>
+    <p style="font-size:11px;color:var(--tx3);margin-bottom:10px">点击宝石名称和对应的关键特性</p>
+    <div id="spot1" class="mg-spot">
+      <div class="mg-spot-cards"></div>
+      <div class="mg-spot-fb"></div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<nav class="bottom-nav">
+  <a class="nav-btn" href="./knowledge.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> 知识百科
+  </a>
+  <a class="nav-btn" href="./index.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> 主页
+  </a>
+</nav>
+
+<script>
+// HERO CANVAS — Floating gem particles
+(function(){
+  var c=document.getElementById('heroCanvas'),w=c.parentNode.offsetWidth,h=360;
+  c.width=w*2;c.height=h*2;c.style.width=w+'px';c.style.height=h+'px';
+  var ctx=c.getContext('2d'),W=c.width,H=c.height;
+  var pts=[],colors=['99,102,241','16,185,129','236,72,153','6,182,212','245,158,11','168,85,247'];
+  for(var i=0;i<36;i++){
+    pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*1,vy:(Math.random()-.5)*1,r:3+Math.random()*4,c:colors[Math.floor(Math.random()*colors.length)],sides:4+Math.floor(Math.random()*4)});
+  }
+  function drawGem(ctx,cx,cy,r,sides,col){
+    ctx.beginPath();
+    for(var i=0;i<sides;i++){
+      var ang=Math.PI*2*i/sides-Math.PI/2,ang2=Math.PI*2*(i+0.5)/sides-Math.PI/2;
+      if(i===0) ctx.moveTo(cx+Math.cos(ang)*r,cy+Math.sin(ang)*r);
+      ctx.lineTo(cx+Math.cos(ang2)*r*0.5,cy+Math.sin(ang2)*r*0.5);
+      ctx.lineTo(cx+Math.cos(ang+Math.PI*2/sides)*r,cy+Math.sin(ang+Math.PI*2/sides)*r);
+    }
+    ctx.fillStyle='rgba('+col+',0.25)';ctx.fill();
+    ctx.strokeStyle='rgba('+col+',0.5)';ctx.lineWidth=1;ctx.stroke();
+  }
+  function heroLoop(){
+    ctx.clearRect(0,0,W,H);
+    for(var i=0;i<pts.length;i++){var p=pts[i];
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<-20)p.x=W+20;if(p.x>W+20)p.x=-20;if(p.y<-20)p.y=H+20;if(p.y>H+20)p.y=-20;
+      drawGem(ctx,p.x,p.y,p.r,p.sides,p.c);
+    }
+    requestAnimationFrame(heroLoop);
+  }
+  heroLoop();
+})();
+
+// CANVAS 1: Three-factor comparison chart
+(function(){
+  var c=document.getElementById('factorCanvas'),w=c.parentNode.clientWidth-40,h=340;
+  c.width=w*2;c.height=h*2;c.style.width=w+'px';c.style.height=h+'px';
+  var ctx=c.getContext('2d'),W=c.width,H=c.height;
+  var gems=[
+    {name:'钻石',h:10,t:3,c:'bad',hh:10,th:30,ch:10},
+    {name:'刚玉',h:9,t:9,c:'good',hh:90,th:90,ch:100},
+    {name:'尖晶石',h:8,t:8,c:'good',hh:80,th:80,ch:100},
+    {name:'莫桑石',h:9.25,t:8,c:'good',hh:92,th:80,ch:95},
+    {name:'祖母绿',h:8,t:4,c:'bad',hh:80,th:40,ch:15},
+    {name:'欧泊',h:6,t:3,c:'bad',hh:60,th:30,ch:10},
+    {name:'珍珠',h:3,t:4,c:'bad',hh:30,th:40,ch:10},
+    {name:'托帕石',h:8,t:5,c:'bad',hh:80,th:50,ch:20},
+  ];
+  var barH=18,barGap=10,startY=50,leftX=W*0.22;
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='rgba(255,255,255,.45)';ctx.font='13px Inter,sans-serif';ctx.textAlign='center';
+    ctx.fillText('宝石耐久三要素对比（蓝色=硬度 / 绿色=韧性 / 红色=解理风险）',W/2,26);
+    // Headers
+    ctx.fillStyle='rgba(99,102,241,.7)';ctx.font='10px Inter,sans-serif';ctx.textAlign='center';
+    ctx.fillText('硬度',W*0.48,startY-10);
+    ctx.fillText('韧性',W*0.7,startY-10);
+    ctx.fillText('解理风险',W*0.88,startY-10);
+
+    for(var i=0;i<gems.length;i++){
+      var g=gems[i],y=startY+i*(barH*3+barGap);
+      // Label
+      ctx.fillStyle='rgba(255,255,255,.8)';ctx.font='12px Inter,sans-serif';ctx.textAlign='right';
+      ctx.fillText(g.name,leftX-10,y+barH);
+      // Hardness bar
+      var hx=W*0.38,val=g.h/10;
+      ctx.fillStyle='rgba(99,102,241,'+(0.2+val*0.6)+')';ctx.fillRect(hx,y+barH,val*(W*0.2),barH);
+      ctx.fillStyle='rgba(255,255,255,.65)';ctx.font='10px Inter,sans-serif';ctx.textAlign='left';
+      ctx.fillText(g.h.toFixed(1),hx+val*(W*0.2)+6,y+barH+6);
+      // Toughness bar
+      var tx=W*0.6,val2=g.t/10;
+      ctx.fillStyle='rgba(16,185,129,'+(0.2+val2*0.6)+')';ctx.fillRect(tx,y+barH,val2*(W*0.2),barH);
+      ctx.fillText(g.t.toFixed(0),tx+val2*(W*0.2)+6,y+barH+6);
+      // Cleavage bar (inverted — higher bar = worse)
+      var cx=W*0.82,val3=(g.c==='good'?0.1:0.8);
+      ctx.fillStyle='rgba(239,68,68,'+(0.15+val3*0.65)+')';ctx.fillRect(cx,y+barH,val3*(W*0.1),barH);
+    }
+    ctx.fillStyle='rgba(255,255,255,.28)';ctx.font='10px Inter,sans-serif';ctx.textAlign='center';
+    ctx.fillText('解理条越长 = 越容易裂。刚玉和尖晶石几乎没有解理 → 真正的王者',W/2,H-10);
+  }
+  draw();
+})();
+</script>
+
+<!-- GAME SCRIPTS -->
+<script>
+// Quiz
+(function(){
+  var qq=[
+    {q:'宝石的"硬度"和"韧性"有什么区别？',opts:['硬度=抗刮擦，韧性=抗碎裂','硬度=抗碎裂，韧性=抗刮擦','两个是一回事','硬度=光泽度，韧性=重量'],ans:0,exp:'硬度（莫氏硬度）衡量抵抗刮擦的能力。韧性衡量抵抗断裂和碎裂的能力。钻石硬度=10但韧性不如翡翠——锤子敲会碎。'},
+    {q:'为什么天然钻石被排在C级？',opts:['钻石有八面体解理，会沿薄弱面裂开','钻石不够硬','钻石太便宜','钻石颜色不好'],ans:0,exp:'天然钻石性能无敌（硬度=10），但有完美的八面体解理——特定方向撞击会裂开。加上价格极高，性价比不如培育钻石和莫桑石。'},
+    {q:'尖晶石被称为"最被低估的宝石"，原因是什么？',opts:['历史上著名"红宝石"其实是尖晶石，且硬度+韧性双高','尖晶石比钻石还硬','尖晶石是最近才发现的','尖晶石和水晶一样便宜'],ans:0,exp:'英国皇冠上的"黑王子红宝石"和俄罗斯皇冠的"凯瑟琳大帝红宝石"都是红色尖晶石。硬度8、韧性好、无解理——却不像刚玉那样昂贵。'},
+    {q:'祖母绿为什么需要特殊的"祖母绿切工"？',opts:['保护脆弱的边角不被崩裂','为了让宝石看起来更大','这是传统，没有实用原因','为了节省原料'],ans:0,exp:'祖母绿虽然硬度有8，但天然多裂，内含物丰富（"花园"状包裹体）。祖母绿切工切掉四个角，是为了防止尖角受力时崩裂。'},
+    {q:'珍珠为什么被排在F级？',opts:['硬度极低(2.5-4.5)，碳酸钙会被酸溶解','珍珠不够漂亮','珍珠太常见了','珍珠不能做戒指'],ans:0,exp:'珍珠硬度只有2.5-4.5（金子都能划伤它），主要成分碳酸钙碰到醋或酸性汗液会溶解。埃及艳后把珍珠溶在醋里喝掉的故事在科学上完全可行。'},
+    {q:'莫桑石和钻石相比，优势和劣势各是什么？',opts:['火彩更强+价格低很多，但硬度略低(9.25)','莫桑石比钻石更硬','莫桑石完全不闪','莫桑石比钻石更贵'],ans:0,exp:'莫桑石硬度9.25（仅次于钻石），火彩是钻石的2.4倍。实验室合成价格极低。对于日常佩戴来说，它是极高的性价比之选（S级）。'},
+  ];
+  var idx=0,score=0,total=0;
+  var el=document.getElementById('quiz1');
+  var qEl=el.querySelector('.mg-q4-q'),cEl=el.querySelector('.mg-q4-counter'),oEl=el.querySelector('.mg-q4-opts'),xEl=el.querySelector('.mg-q4-explain');
+  function show(){
+    if(idx>=qq.length){qEl.textContent='测验完成！';cEl.textContent=score+'/'+total;oEl.innerHTML='';xEl.textContent='恭喜！你已成为宝石耐久度专家。记住：价格≠耐久，了解三要素再做选择。';xEl.classList.add('show');return;}
+    var q=qq[idx];
+    qEl.textContent='Q'+(idx+1)+'/'+qq.length+': '+q.q;
+    cEl.textContent=score+'/'+total;
+    var h='';
+    for(var i=0;i<q.opts.length;i++){h+='<button class="mg-q4-opt" data-idx="'+i+'">'+String.fromCharCode(65+i)+'. '+q.opts[i]+'</button>';}
+    oEl.innerHTML=h;xEl.classList.remove('show');
+  }
+  oEl.addEventListener('click',function(e){
+    var btn=e.target.closest('.mg-q4-opt');if(!btn)return;
+    var si=parseInt(btn.dataset.idx),q=qq[idx];total++;
+    if(si===q.ans){score++;btn.classList.add('correct');}else{btn.classList.add('wrong');oEl.querySelector('.mg-q4-opt[data-idx="'+q.ans+'"]').classList.add('correct');}
+    xEl.textContent='💎 '+q.exp;xEl.classList.add('show');
+    setTimeout(function(){idx++;show();},2000);
+  });
+  show();
+})();
+
+// Spot matching
+(function(){
+  var pairs=[
+    {left:'刚玉 (红/蓝宝石)',right:'硬度9，韧性极佳，无解理——神级',id:0},
+    {left:'尖晶石',right:'被低估之王——历史"红宝石"的真身',id:1},
+    {left:'莫桑石',right:'硬度9.25，火彩是钻石2.4倍——S级性价比',id:2},
+    {left:'祖母绿',right:'硬度8但多裂，祖母绿切工就是保护它',id:3},
+    {left:'欧泊',right:'含水，温度剧变会龟裂——美丽的定时炸弹',id:4},
+    {left:'天然钻石',right:'硬度10但有八面体解理，C级因为价格',id:5},
+  ];
+  var sL=[],sR=[],selL=null,selR=null,matched={},score=0,total=pairs.length;
+  var el=document.getElementById('spot1'),cardsEl=el.querySelector('.mg-spot-cards'),fbEl=el.querySelector('.mg-spot-fb');
+
+  function init(){
+    sL=pairs.map(function(p,i){return {text:p.left,id:p.id};});
+    sR=pairs.map(function(p,i){return {text:p.right,id:p.id};});
+    for(var i=sL.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=sL[i];sL[i]=sL[j];sL[j]=t;}
+    for(var i=sR.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=sR[i];sR[i]=sR[j];sR[j]=t;}
+    score=0;matched={};selL=null;selR=null;render();
+  }
+
+  function render(){
+    var h='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div><p style="font-size:10px;color:var(--tx3);margin-bottom:4px">💎 宝石</p>';
+    for(var i=0;i<sL.length;i++){
+      var l=sL[i];
+      if(matched[l.id]) h+='<div class="mg-spot-card correct" style="opacity:.5">'+l.text+' ✓</div>';
+      else h+='<div class="mg-spot-card'+(selL&&selL.id===l.id?' correct':'')+'" data-side="left" data-idx="'+i+'">'+l.text+'</div>';
+    }
+    h+='</div><div><p style="font-size:10px;color:var(--tx3);margin-bottom:4px">📋 特性</p>';
+    for(var i=0;i<sR.length;i++){
+      var r=sR[i];
+      if(matched[r.id]) h+='<div class="mg-spot-card correct" style="opacity:.5">'+r.text+' ✓</div>';
+      else h+='<div class="mg-spot-card'+(selR&&selR.id===r.id?' correct':'')+'" data-side="right" data-idx="'+i+'">'+r.text+'</div>';
+    }
+    h+='</div></div>';
+    cardsEl.innerHTML=h;
+    fbEl.textContent='已配对: '+score+'/'+total;
+    fbEl.classList.add('show');
+  }
+
+  cardsEl.addEventListener('click',function(e){
+    var card=e.target.closest('.mg-spot-card');if(!card)return;
+    var side=card.dataset.side,idx=parseInt(card.dataset.idx);
+    if(side==='left'){var item=sL[idx];if(matched[item.id])return;selL=item;}
+    else{var item=sR[idx];if(matched[item.id])return;selR=item;}
+    if(selL&&selR){
+      if(selL.id===selR.id){matched[selL.id]=true;score++;fbEl.textContent='✅ 正确！'+score+'/'+total;fbEl.style.color='var(--a2)';}
+      else{fbEl.textContent='❌ 不对，再想想';fbEl.style.color='var(--a3)';}
+      selL=null;selR=null;
+      if(score===total){fbEl.textContent='🎉 完美！你已经是宝石专家了！';fbEl.style.color='var(--amber)';}
+    }
+    render();
+  });
+  init();
+})();
+</script>
+</body>
+</html>
