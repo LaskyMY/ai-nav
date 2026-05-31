@@ -5,165 +5,144 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>AI Nav · 时钟面板</title>
 <style>
-/* ===== Reset & Base ===== */
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%;overflow:hidden}
 body{
-font-family:'Roboto',sans-serif;
-background:#0a0a14;color:rgba(255,255,255,.88);
-display:flex;flex-direction:column;align-items:center;
+font-family:sans-serif;
+background:#08081a;color:rgba(255,255,255,.88);
+display:flex;flex-direction:column;
 -webkit-user-select:none;user-select:none;
 -webkit-tap-highlight-color:transparent;
+padding:4px 6px 6px 6px;
 }
 .bg{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:0;
-background:radial-gradient(ellipse at 50% 25%,rgba(0,210,255,.045) 0%,transparent 55%),
-           radial-gradient(ellipse at 30% 65%,rgba(138,43,226,.03) 0%,transparent 50%);}
+background:radial-gradient(ellipse at 50% 15%,rgba(0,210,255,.04) 0%,transparent 55%),
+           radial-gradient(ellipse at 30% 60%,rgba(138,43,226,.025) 0%,transparent 50%);}
 
-/* ===== Dot indicators ===== */
-.dots{flex-shrink:0;display:flex;justify-content:center;z-index:10;padding:10px 0 6px;}
-.dot{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.15);margin:0 5px;transition:width .35s ease,background .35s ease;}
-.dot.act{width:18px;background:rgba(0,210,255,.7);box-shadow:0 0 8px rgba(0,210,255,.25);}
+/* ===== Card base ===== */
+.card{flex-shrink:0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
+border-radius:10px;padding:8px 10px;position:relative;z-index:1;margin-top:3px;overflow:hidden;}
+.card::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;border-radius:inherit;
+background:linear-gradient(135deg,rgba(255,255,255,.012) 0%,transparent 40%);pointer-events:none;}
 
-/* ===== Card stage ===== */
-.stage{flex:1;width:100%;position:relative;z-index:5;overflow:hidden;display:flex;align-items:center;justify-content:center;}
-.card-wrap{position:absolute;width:92%;max-width:380px;
-transition:transform .55s cubic-bezier(.25,.8,.25,1),opacity .55s ease;
-will-change:transform,opacity;
-}
-.card-wrap.above{transform:translateY(-110%);opacity:0;pointer-events:none;}
-.card-wrap.center{transform:translateY(0);opacity:1;pointer-events:auto;}
-.card-wrap.below{transform:translateY(110%);opacity:0;pointer-events:none;}
-.card-wrap.hidden{display:none;}
+/* Card header bar */
+.chdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.chdr .lbl{font-size:9px;font-weight:700;color:rgba(0,210,255,.55);letter-spacing:.06em;text-transform:uppercase;}
+.chdr .dots{display:flex;}
+.chdr .dot{width:4px;height:4px;border-radius:2px;background:rgba(255,255,255,.12);margin-left:4px;transition:width .3s ease,background .3s ease;}
+.chdr .dot.act{width:12px;background:rgba(0,210,255,.55);box-shadow:0 0 4px rgba(0,210,255,.15);}
 
-/* ===== Card body ===== */
-.c{background:rgba(255,255,255,.032);border:1px solid rgba(255,255,255,.06);border-radius:14px;
-padding:14px 16px;position:relative;overflow:hidden;
-box-shadow:0 4px 24px rgba(0,0,0,.25);}
-.c::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;border-radius:inherit;
-background:linear-gradient(135deg,rgba(255,255,255,.015) 0%,transparent 40%);pointer-events:none;}
+/* Card pages container */
+.pages{position:relative;overflow:hidden;}
+.page{transition:transform .45s cubic-bezier(.23,1,.32,1),opacity .45s ease;
+will-change:transform,opacity;}
+.page.out-up{transform:translateY(-105%);opacity:0;position:absolute;top:0;left:0;right:0;}
+.page.in-up{transform:translateY(0);opacity:1;}
+.page.out-dn{transform:translateY(105%);opacity:0;position:absolute;top:0;left:0;right:0;}
 
-/* Expand "+" button */
-.c-xp{position:absolute;top:6px;right:10px;width:24px;height:24px;border-radius:12px;
-background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.45);
-font-size:14px;line-height:22px;text-align:center;cursor:pointer;z-index:2;
-transition:transform .35s ease,background .25s;}
-.c-xp:active{background:rgba(255,255,255,.12);}
-.c-xp.open{transform:rotate(45deg);}
+/* ===== Card 1: Clock & Date ===== */
+.c1-body{display:flex;align-items:center;justify-content:space-between;}
+.c1-time{font-size:34px;font-weight:700;letter-spacing:.01em;color:#fff;
+text-shadow:0 0 20px rgba(0,210,255,.22);line-height:1;}
+.c1-ms{font-size:15px;font-weight:600;color:#00d2ff;min-width:44px;display:inline-block;text-align:left;opacity:.8;}
+.c1-right{text-align:right;line-height:1.5;}
+.c1-date{font-size:12px;color:rgba(255,255,255,.55);font-weight:500;}
+.c1-lunar{font-size:10px;color:rgba(255,255,255,.28);}
+.c1-city{font-size:10px;color:rgba(0,210,255,.38);}
 
-/* ===== Card 1: Clock ===== */
-.c1-time{font-size:52px;font-weight:700;letter-spacing:.02em;color:#fff;
-text-shadow:0 0 30px rgba(0,210,255,.28);line-height:1.05;text-align:center;}
-.c1-ms{font-size:20px;font-weight:600;color:#00d2ff;min-width:52px;display:inline-block;text-align:left;opacity:.82;}
-.c1-date{text-align:center;font-size:13px;color:rgba(255,255,255,.55);margin-top:6px;font-weight:500;}
-.c1-lunar{text-align:center;font-size:12px;color:rgba(255,255,255,.32);margin-top:3px;}
-.c1-city{text-align:center;font-size:11px;color:rgba(0,210,255,.4);margin-top:4px;}
+/* ===== Card 2: Weather (flips 4 pages) ===== */
+.wx-main{display:flex;align-items:center;justify-content:space-between;}
+.wx-temp{font-size:28px;font-weight:600;color:#fff;}
+.wx-desc{font-size:12px;color:rgba(255,255,255,.5);}
+.wx-hum{font-size:10px;color:rgba(255,255,255,.25);margin-top:1px;}
+.wx-pg{text-align:center;}
+.wx-pg .val{font-size:24px;font-weight:600;color:#fff;line-height:1;}
+.wx-pg .lbl{font-size:10px;color:rgba(255,255,255,.35);margin-top:2px;}
+.wx-rain{font-size:10px;color:rgba(0,210,255,.5);margin-top:1px;}
 
-/* ===== Card 2: Weather ===== */
-.c2-now{display:flex;align-items:center;justify-content:center;margin-bottom:10px;}
-.c2-temp{font-size:40px;font-weight:600;color:#fff;}
-.c2-info{margin-left:10px;}
-.c2-desc{font-size:14px;color:rgba(255,255,255,.6);}
-.c2-hum{font-size:12px;color:rgba(255,255,255,.32);margin-top:2px;}
-.c2-hourly{display:flex;justify-content:center;}
-.c2-h{flex:1;text-align:center;background:rgba(255,255,255,.025);border-radius:8px;padding:6px 4px;margin:0 3px;border:1px solid rgba(255,255,255,.04);}
-.c2-h .hdr{font-size:9px;color:rgba(255,255,255,.28);margin-bottom:3px;}
-.c2-h .wx{font-size:14px;font-weight:600;color:rgba(255,255,255,.75);}
-.c2-h .tmp{font-size:12px;font-weight:600;color:#fff;margin-top:2px;}
-.c2-h .rain{font-size:9px;color:rgba(0,210,255,.55);margin-top:1px;}
+/* ===== Card 3: News (flips per item) ===== */
+.ns-item{min-height:40px;display:flex;align-items:center;}
+.ns-tag{font-size:9px;color:#00d2ff;font-weight:700;margin-right:5px;white-space:nowrap;}
+.ns-text{font-size:11px;color:rgba(255,255,255,.6);line-height:1.4;}
+.ns-pg{text-align:right;font-size:9px;color:rgba(255,255,255,.18);margin-top:2px;}
 
-/* ===== Card 3: News ===== */
-.c3-title{font-size:13px;font-weight:700;color:#00d2ff;margin-bottom:8px;}
-.c3-item{font-size:11px;color:rgba(255,255,255,.6);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);line-height:1.45;}
-.c3-tag{font-size:9px;color:#00d2ff;font-weight:600;margin-right:4px;}
-.c3-pg{text-align:center;font-size:10px;color:rgba(255,255,255,.2);margin-top:8px;}
+/* ===== Card 4: AI Brief (flips per section) ===== */
+.brief-card{flex:1 1 auto;overflow:hidden;min-height:100px;display:flex;flex-direction:column;}
+.brief-card .pages{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.brief-page{font-size:10px;line-height:1.5;}
+.brief-page h2{font-size:13px;font-weight:700;color:#fff;margin:6px 0 3px;}
+.brief-page h3{font-size:11px;font-weight:600;color:rgba(255,255,255,.7);margin:5px 0 2px;}
+.brief-page p{color:rgba(255,255,255,.5);margin:2px 0;}
+.brief-page strong{color:#f0a020;font-weight:600;}
+.brief-page table{width:100%;border-collapse:collapse;margin:3px 0;font-size:9px;}
+.brief-page td,.brief-page th{border:1px solid rgba(255,255,255,.07);padding:2px 4px;}
+.brief-page th{background:rgba(0,210,255,.06);color:#00d2ff;font-size:9px;}
+.brief-page .kc{background:rgba(138,43,226,.06);border:1px solid rgba(138,43,226,.1);border-radius:6px;padding:6px 8px;margin:4px 0;}
+.brief-page .kc p{color:rgba(255,255,255,.6);}
 
-/* ===== Card 4: AI Brief ===== */
-.c4 h2{font-size:14px;font-weight:700;color:#fff;margin:8px 0 4px;}
-.c4 h3{font-size:12px;font-weight:600;color:rgba(255,255,255,.7);margin:6px 0 3px;}
-.c4 p{font-size:11px;color:rgba(255,255,255,.5);margin:3px 0;line-height:1.5;}
-.c4 strong{color:#f0a020;font-weight:600;}
-.c4 table{width:100%;border-collapse:collapse;margin:4px 0;font-size:10px;}
-.c4 td,.c4 th{border:1px solid rgba(255,255,255,.08);padding:3px 5px;text-align:left;}
-.c4 th{background:rgba(0,210,255,.06);color:#00d2ff;font-size:10px;}
-.c4 .kc{background:rgba(138,43,226,.06);border:1px solid rgba(138,43,226,.1);border-radius:8px;padding:8px 10px;margin:5px 0;}
-.c4 .kc p{color:rgba(255,255,255,.6);}
-
-/* ===== Floating refresh ===== */
-.fab{position:fixed;bottom:16px;right:16px;z-index:100;
-width:40px;height:40px;border-radius:20px;
-background:rgba(0,210,255,.1);border:1px solid rgba(0,210,255,.18);
+/* ===== Floating FAB ===== */
+.fab{position:fixed;bottom:14px;right:14px;z-index:100;
+width:38px;height:38px;border-radius:19px;
+background:rgba(0,210,255,.1);border:1px solid rgba(0,210,255,.16);
 display:flex;align-items:center;justify-content:center;cursor:pointer;
-transition:transform .3s ease,background .2s;
-box-shadow:0 2px 12px rgba(0,0,0,.3);}
-.fab:active{transform:scale(.9);background:rgba(0,210,255,.18);}
-.fab svg{width:18px;height:18px;stroke:#00d2ff;fill:none;stroke-width:2;}
+box-shadow:0 2px 10px rgba(0,0,0,.3);}
+.fab:active{transform:scale(.88);background:rgba(0,210,255,.18);}
+.fab svg{width:17px;height:17px;stroke:#00d2ff;fill:none;stroke-width:2;}
 .fab.spin svg{animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ===== Loading ===== */
-.ld{display:inline-block;width:10px;height:10px;border:2px solid rgba(255,255,255,.1);border-top-color:#00d2ff;border-radius:50%;
-animation:spin .6s linear infinite;vertical-align:middle;margin:0 3px;}
-
-/* ===== Top bar ===== */
-.topbar{flex-shrink:0;text-align:center;padding:10px 0 4px;z-index:10;}
-.topbar span{font-size:9px;color:rgba(255,255,255,.15);letter-spacing:.1em;}
+.ld{display:inline-block;width:8px;height:8px;border:2px solid rgba(255,255,255,.1);border-top-color:#00d2ff;border-radius:50%;
+animation:spin .6s linear infinite;vertical-align:middle;margin:0 2px;}
 </style>
 </head>
 <body>
 <div class="bg"></div>
 
-<div class="topbar"><span>AI NAV · 时钟面板</span></div>
-
-<!-- Dot indicators -->
-<div class="dots" id="dots">
-  <span class="dot act" data-i="0"></span>
-  <span class="dot" data-i="1"></span>
-  <span class="dot" data-i="2"></span>
-  <span class="dot" data-i="3"></span>
-</div>
-
-<!-- Card stage -->
-<div class="stage" id="stage">
-  <!-- Card 1: Clock -->
-  <div class="card-wrap center" data-card="0">
-    <div class="c">
-      <span class="c-xp" onclick="toggleExpand(this)" title="展开">+</span>
-      <div class="c1-time"><span id="hms">--:--:--</span><span class="c1-ms" id="ms">.--</span></div>
-      <div class="c1-date" id="c1date">--月--日 周-</div>
-      <div class="c1-lunar" id="c1lunar">农历 ----</div>
+<!-- Card 1: Clock + Date (no flip) -->
+<div class="card">
+  <div class="chdr"><span class="lbl">时间</span></div>
+  <div class="c1-body">
+    <div><span class="c1-time" id="hms">--:--:--</span><span class="c1-ms" id="ms">.--</span></div>
+    <div class="c1-right">
+      <div class="c1-date" id="c1date">加载中...</div>
+      <div class="c1-lunar" id="c1lunar">--</div>
       <div class="c1-city" id="c1city">广州</div>
     </div>
   </div>
+</div>
 
-  <!-- Card 2: Weather -->
-  <div class="card-wrap below" data-card="1">
-    <div class="c">
-      <span class="c-xp" onclick="toggleExpand(this)" title="展开">+</span>
-      <div class="c2-now"><span class="c2-temp" id="c2temp">--°</span><span class="c2-info"><div class="c2-desc" id="c2desc">--</div><div class="c2-hum" id="c2hum">湿度 --%</div></span></div>
-      <div class="c2-hourly" id="c2hourly"></div>
-    </div>
+<!-- Card 2: Weather (4-page flip: now, +1h, +3h, +6h) -->
+<div class="card" id="wxCard" style="display:none">
+  <div class="chdr">
+    <span class="lbl">天气</span>
+    <span class="dots" id="wxDots"></span>
   </div>
+  <div class="pages" id="wxPages"></div>
+</div>
 
-  <!-- Card 3: News -->
-  <div class="card-wrap below" data-card="2">
-    <div class="c">
-      <span class="c-xp" onclick="toggleExpand(this)" title="展开">+</span>
-      <div class="c3-title">新闻速览</div>
-      <div id="c3list"><div class="c3-item">加载中<span class="ld"></span></div></div>
-      <div class="c3-pg" id="c3pg"></div>
-    </div>
+<!-- Card 3: News (per-item flip) -->
+<div class="card">
+  <div class="chdr">
+    <span class="lbl">快讯</span>
+    <span class="dots" id="nsDots"></span>
   </div>
-
-  <!-- Card 4: AI Brief -->
-  <div class="card-wrap below" data-card="3">
-    <div class="c" style="max-height:320px;overflow-y:auto;-webkit-overflow-scrolling:touch;">
-      <span class="c-xp" onclick="toggleExpand(this)" title="展开">+</span>
-      <div class="c4" id="c4">AI 简报生成中<span class="ld"></span></div>
-    </div>
+  <div class="pages" id="nsPages">
+    <div class="ns-item"><span class="ns-text">加载中<span class="ld"></span></span></div>
   </div>
 </div>
 
-<!-- Floating refresh -->
+<!-- Card 4: AI Brief (per-section flip) -->
+<div class="card brief-card">
+  <div class="chdr">
+    <span class="lbl">AI 简报</span>
+    <span class="dots" id="bfDots"></span>
+  </div>
+  <div class="pages" id="bfPages">
+    <p style="color:rgba(255,255,255,.3);text-align:center;padding:8px;">简报生成中<span class="ld"></span></p>
+  </div>
+</div>
+
+<!-- FAB -->
 <div class="fab" id="fab" onclick="doRefresh()">
   <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
 </div>
@@ -178,85 +157,100 @@ function fetchWithTimeout(url,ms){
 }
 
 var API='https://c46872d35aeba559-183-6-87-29.serveousercontent.com';
-var curCard=0,TOTAL=4,autoTimer=null,autoDelay=12000;
 var WX={0:'晴',1:'多云',2:'阴',3:'阴',45:'雾',48:'雾',51:'雨',53:'雨',55:'雨',61:'雨',63:'雨',65:'雨',71:'雪',73:'雪',75:'雪',77:'雪',80:'雨',81:'雨',82:'雨',85:'雪',86:'雪',95:'雷',96:'雷',97:'雷'};
+var WXN={0:'晴天',1:'少云',2:'多云',3:'阴天',45:'雾',48:'霜雾',51:'小雨',53:'小雨',55:'中雨',61:'小雨',63:'中雨',65:'大雨',71:'小雪',73:'中雪',75:'大雪',77:'雪',80:'阵雨',81:'阵雨',82:'暴雨',85:'阵雪',86:'阵雪',95:'雷暴',96:'雷暴',97:'强雷暴'};
 
 function save(k,v){try{localStorage.setItem('oc_'+k,JSON.stringify(v));}catch(e){}}
 function load(k){try{return JSON.parse(localStorage.getItem('oc_'+k));}catch(e){return null;}}
 
-// ===== Cache clear =====
-function doRefresh(){
-  var fab=document.getElementById('fab');fab.classList.add('spin');
-  localStorage.removeItem('oc_wx');localStorage.removeItem('oc_news');localStorage.removeItem('oc_brief');
-  fetchWeather();fetchNews();fetchBrief();
-  setTimeout(function(){fab.classList.remove('spin');},1500);
+// ===== Helpers =====
+function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+
+// Flip control: each card has independent page index and timer
+var flips={};
+
+function initFlip(cardId,pageCount,interval,renderFn){
+  flips[cardId]={idx:0,total:pageCount,ival:interval,render:renderFn,timer:null};
+  renderDots(cardId);
+  renderFn(0);
+  scheduleFlip(cardId);
 }
 
-// ===== Card rotation =====
-function goCard(i,dir){
-  if(i===curCard)return;
-  var wraps=document.querySelectorAll('.card-wrap');
-  var oldW=wraps[curCard],newW=wraps[i];
-  if(!oldW||!newW)return;
-
-  var clsOut=dir>0?'above':'below',clsIn=dir<0?'above':'below';
-  oldW.className='card-wrap '+clsOut;
-  newW.className='card-wrap center';
-  for(var j=0;j<wraps.length;j++){if(j!==i&&j!==curCard)wraps[j].className='card-wrap hidden';}
-  curCard=i;
-  updateDots();
-  resetAuto();
+function scheduleFlip(id){
+  var f=flips[id];if(!f||f.total<=1)return;
+  if(f.timer)clearTimeout(f.timer);
+  f.timer=setTimeout(function(){nextFlip(id);},f.ival);
 }
 
-function goNext(){var n=(curCard+1)%TOTAL;goCard(n,1);}
-function goPrev(){var n=(curCard-1+TOTAL)%TOTAL;goCard(n,-1);}
-
-function updateDots(){
-  var dots=document.querySelectorAll('.dot');
-  for(var i=0;i<dots.length;i++)dots[i].className='dot'+(i===curCard?' act':'');
+function nextFlip(id){
+  var f=flips[id];if(!f)return;
+  var next=(f.idx+1)%f.total;
+  animateFlip(id,f.idx,next,1);
+  f.idx=next;
+  scheduleFlip(id);
 }
 
-function resetAuto(){
-  if(autoTimer)clearTimeout(autoTimer);
-  autoTimer=setTimeout(goNext,autoDelay);
+function prevFlip(id){
+  var f=flips[id];if(!f)return;
+  var next=(f.idx-1+f.total)%f.total;
+  animateFlip(id,f.idx,next,-1);
+  f.idx=next;
+  scheduleFlip(id);
 }
 
-// ===== Expand/Collapse =====
-function toggleExpand(el){
-  el.classList.toggle('open');
-  var card=el.parentElement;
-  if(el.classList.contains('open')){
-    card.style.maxHeight='none';
-    card.style.overflow='visible';
-  }else{
-    card.style.maxHeight='';
-    card.style.overflow='';
+function animateFlip(id,from,to,dir){
+  var pages=document.querySelectorAll('#'+id+' .page');
+  if(!pages.length)return;
+  // Clone or reuse: simple approach — re-render the target page
+  var f=flips[id];
+  f.render(to);
+  if(pages.length>=2){
+    var curPage=pages[0],nextPage=pages[1];
+    curPage.className='page out-up';
+    nextPage.className='page in-up';
+    // Swap after animation
+    setTimeout(function(){
+      curPage.className='page';curPage.style.display='none';
+      nextPage.className='page';
+    },450);
   }
+  renderDots(id);
 }
 
-// ===== Touch swipe =====
-(function(){
-  var startY=0,startX=0;
-  document.addEventListener('touchstart',function(e){startY=e.touches[0].clientY;startX=e.touches[0].clientX;},false);
-  document.addEventListener('touchend',function(e){
-    var dy=e.changedTouches[0].clientY-startY;
-    var dx=e.changedTouches[0].clientX-startX;
-    if(Math.abs(dy)<40||Math.abs(dy)<Math.abs(dx))return;
-    if(dy>50)goPrev();else if(dy<-50)goNext();
-  },false);
-})();
+function renderDots(id){
+  var f=flips[id];if(!f)return;
+  var container;
+  if(id==='wxPages')container=document.getElementById('wxDots');
+  else if(id==='nsPages')container=document.getElementById('nsDots');
+  else if(id==='bfPages')container=document.getElementById('bfDots');
+  if(!container)return;
+  var html='';
+  for(var i=0;i<f.total;i++)html+='<span class="dot'+(i===f.idx?' act':'')+'" onclick="goFlip(\''+id+'\','+i+')"></span>';
+  container.innerHTML=html;
+}
 
-// ===== Tap dots =====
-document.getElementById('dots').addEventListener('click',function(e){
-  var d=e.target.closest('.dot');if(!d)return;
-  var i=parseInt(d.getAttribute('data-i'));if(i!==curCard)goCard(i,i>curCard?1:-1);
-});
+function goFlip(id,i){
+  var f=flips[id];if(!f||i===f.idx)return;
+  var dir=i>f.idx?1:-1;
+  animateFlip(id,f.idx,i,dir);
+  f.idx=i;
+  scheduleFlip(id);
+}
+
+// ===== Card 1: Clock =====
+function updateClock(){
+  var n=new Date();
+  document.getElementById('hms').textContent=('0'+n.getHours()).slice(-2)+':'+('0'+n.getMinutes()).slice(-2)+':'+('0'+n.getSeconds()).slice(-2);
+  document.getElementById('ms').textContent='.'+('00'+n.getMilliseconds()).slice(-3);
+  document.getElementById('c1date').textContent=(n.getMonth()+1)+'月'+n.getDate()+'日 周'+['日','一','二','三','四','五','六'][n.getDay()];
+  document.getElementById('c1lunar').textContent='农历 '+lunarStr(n);
+}
+setInterval(updateClock,80);updateClock();
 
 // ===== Lunar =====
 var LU_M=['正','二','三','四','五','六','七','八','九','十','冬','腊'];
 var LU_D=['','初一','初二','初三','初四','初五','初六','初七','初八','初九','初十','十一','十二','十三','十四','十五','十六','十七','十八','十九','二十','廿一','廿二','廿三','廿四','廿五','廿六','廿七','廿八','廿九','三十'];
 var LU_INFO=[0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,0x06566,0x0d4a0,0x0ea50,0x16a95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b6a0,0x195a6,0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0,0x0c960,0x0d954,0x0d4a0,0x0da50,0x07552,0x056a0,0x0abb7,0x025d0,0x092d0,0x0cab5,0x0a950,0x0b4a0,0x0baa4,0x0ad50,0x055d9,0x04ba0,0x0a5b0,0x15176,0x052b0,0x0a930,0x07954,0x06aa0,0x0ad50,0x05b52,0x04b60,0x0a6e6,0x0a4e0,0x0d260,0x0ea65,0x0d530,0x05aa0,0x076a3,0x096d0,0x04afb,0x04ad0,0x0a4d0,0x1d0b6,0x0d250,0x0d520,0x0dd45,0x0b5a0,0x056d0,0x055b2,0x049b0,0x0a577,0x0a4b0,0x0aa50,0x1b255,0x06d20,0x0ada0,0x14b63,0x09370,0x049f8,0x04970,0x064b0,0x168a6,0x0ea50,0x06aa0,0x1a6c4,0x0aae0,0x092e0,0x0d2e3,0x0c960,0x0d557,0x0d4a0,0x0da50,0x05d55,0x056a0,0x0a6d0,0x055d4,0x052d0,0x0a9b8,0x0a950,0x0b4a0,0x0b6a6,0x0ad50,0x055a0,0x0aba4,0x0a5b0,0x052b0,0x0b273,0x06930,0x07337,0x06aa0,0x0ad50,0x14b55,0x04b60,0x0a570,0x054e4,0x0d160,0x0e968,0x0d520,0x0daa0,0x16aa6,0x056d0,0x04ae0,0x0a9d4,0x0a4d0,0x0d150,0x0f252,0x0d520];
-
 function lunarDay(y,m,d){
   var i,leap=0,temp=0,offset=(Date.UTC(y,m,d)-Date.UTC(1900,0,31))/86400000;
   for(i=1900;i<2100&&offset>0;i++){temp=lunarYearDays(i);offset-=temp;}
@@ -269,39 +263,24 @@ function lunarDay(y,m,d){
     offset-=temp;
   }
   if(offset===0&&leap===i&&!isLeap)isLeap=true;
-  if(offset<0)offset+=temp;
-  month=i;
+  if(offset<0)offset+=temp;month=i;
   return{year:year,month:month,day:offset+1,isLeap:isLeap};
 }
-function lunarYearDays(y){var i,sum=348;for(i=0x8000;i>0x8;i>>=1){sum+=(LU_INFO[y-1900]&i)?1:0;}return sum+leapDays(y);}
+function lunarYearDays(y){var i,s=348;for(i=0x8000;i>0x8;i>>=1){s+=(LU_INFO[y-1900]&i)?1:0;}return s+leapDays(y);}
 function leapMonth(y){return LU_INFO[y-1900]&0xf;}
 function leapDays(y){return leapMonth(y)?((LU_INFO[y-1900]&0x10000)?30:29):0;}
 function leapMonthDays(y){return(LU_INFO[y-1900]&0x10000)?30:29;}
-function monthDays(y,m,isLeap){return isLeap?leapMonthDays(y):((LU_INFO[y-1900]&(0x10000>>m))?30:29);}
-function lunarStr(d){
-  var l=lunarDay(d.getFullYear(),d.getMonth(),d.getDate());
-  return (l.isLeap?'闰':'')+LU_M[l.month-1]+'月'+LU_D[l.day];
-}
-function weekdayStr(d){return['日','一','二','三','四','五','六'][d.getDay()];}
+function monthDays(y,m,l){return l?leapMonthDays(y):((LU_INFO[y-1900]&(0x10000>>m))?30:29);}
+function lunarStr(d){var l=lunarDay(d.getFullYear(),d.getMonth(),d.getDate());return(l.isLeap?'闰':'')+LU_M[l.month-1]+'月'+LU_D[l.day];}
 
-// ===== Card 1: Clock update =====
-function updateClock(){
-  var n=new Date();
-  document.getElementById('hms').textContent=('0'+n.getHours()).slice(-2)+':'+('0'+n.getMinutes()).slice(-2)+':'+('0'+n.getSeconds()).slice(-2);
-  document.getElementById('ms').textContent='.'+('00'+n.getMilliseconds()).slice(-3);
-  document.getElementById('c1date').textContent=(n.getMonth()+1)+'月'+n.getDate()+'日 周'+weekdayStr(n);
-  document.getElementById('c1lunar').textContent='农历 '+lunarStr(n);
-}
-setInterval(updateClock,80);
-updateClock();
+// ===== Card 2: Weather flip =====
+var wxData=null;
 
-// ===== Card 2: Weather =====
 function fetchWeather(){
   fetchWithTimeout(API+'/api/geocode?lat=23.13&lon=113.26',4000)
     .then(function(r){return r.ok?r.json():null;})
     .then(function(d){
-      if(!d)return;
-      var a=d.address||d,c=a.city||a.town||a.county||a.state||'';
+      if(!d)return;var a=d.address||d,c=a.city||a.town||a.county||'';
       if(c){document.getElementById('c1city').textContent=c;save('city',c);}
     }).catch(function(){});
 
@@ -309,73 +288,118 @@ function fetchWeather(){
     .then(function(r){return r.ok?r.json():null;})
     .then(function(w){
       if(!w||!w.current)throw new Error('no data');
-      save('wx',{d:w,ts:Date.now()});
-      renderWeather(w);
+      wxData=w;save('wx',{d:w,ts:Date.now()});
+      buildWxPages();
     }).catch(function(){
-      var c=load('wx');
-      if(c&&Date.now()-c.ts<600000)renderWeather(c.d);
+      var c=load('wx');if(c&&Date.now()-c.ts<600000){wxData=c.d;buildWxPages();}
     });
 }
 
-function renderWeather(w){
-  var c=w.current;
-  document.getElementById('c2temp').textContent=Math.round(c.temperature_2m)+'°C';
-  document.getElementById('c2desc').textContent=WX[c.weather_code]||'--';
-  document.getElementById('c2hum').textContent='湿度 '+(c.relative_humidity_2m||'--')+'%';
+function buildWxPages(){
+  document.getElementById('wxCard').style.display='block';
+  var w=wxData,c=w.current,hh=w.hourly;
+  var pages=[];
 
-  var hh=w.hourly;
+  // Page 0: current
+  var p0='<div class="wx-main"><span class="wx-temp">'+Math.round(c.temperature_2m)+'°C</span><span style="font-size:12px;color:rgba(255,255,255,.5);">'+(WXN[c.weather_code]||'--')+'</span></div>';
+  p0+='<div style="font-size:10px;color:rgba(255,255,255,.25);margin-top:3px;">湿度 '+(c.relative_humidity_2m||'--')+'%</div>';
+  pages.push(p0);
+
+  // Pages 1-3: hourly forecasts
   if(hh&&hh.time){
-    var cur=new Date().getHours(),off=[1,3,6],lab=['+1时','+3时','+6时'],h='';
+    var cur=new Date().getHours();
+    var off=[1,3,6],lab=['+1 小时后','+3 小时后','+6 小时后'];
     for(var i=0;i<off.length;i++){
       var idx=cur+off[i];if(idx>=hh.time.length)idx=hh.time.length-1;
       var code=hh.weather_code[idx],tmp=hh.temperature_2m[idx];
       var rain=hh.precipitation_probability?hh.precipitation_probability[idx]:0;
-      h+='<div class="c2-h"><div class="hdr">'+lab[i]+'</div><div class="wx">'+(WX[code]||'--')+'</div><div class="tmp">'+Math.round(tmp)+'°</div><div class="rain">'+(rain>0?'雨'+rain+'%':'')+'</div></div>';
+      var pg='<div class="wx-pg"><div class="lbl">'+lab[i]+'</div>';
+      pg+='<div class="val">'+(WX[code]||'--')+' '+Math.round(tmp)+'°</div>';
+      if(rain>0)pg+='<div class="wx-rain">降水概率 '+rain+'%</div>';
+      pg+='</div>';
+      pages.push(pg);
     }
-    document.getElementById('c2hourly').innerHTML=h;
   }
+
+  var container=document.getElementById('wxPages');
+  container.innerHTML='<div class="page in-up">'+pages[0]+'</div><div class="page out-up" style="display:none">'+pages[1]+'</div>';
+
+  initFlip('wxPages',pages.length,5000,function(i){
+    var allPages=container.querySelectorAll('.page');
+    if(allPages.length<2)return;
+    var hidden=allPages[1];hidden.innerHTML=pages[i];
+    // Re-init dot clicks
+    renderDots('wxPages');
+  });
 }
 
-// ===== Card 3: News =====
-var nsCur=0,nsPageSize=4;
+// ===== Card 3: News flip =====
+var nsData=[];
 function fetchNews(){
   fetchWithTimeout(API+'/api/news',8000)
     .then(function(r){return r.ok?r.json():[];})
     .then(function(d){
-      if(d&&d.length){save('news',{d:d,ts:Date.now()});renderNews(d);}
-      else{var c=load('news');if(c&&c.d)renderNews(c.d);}
+      if(d&&d.length){nsData=d;save('news',{d:d,ts:Date.now()});buildNsPages();}
+      else{var c=load('news');if(c&&c.d.length){nsData=c.d;buildNsPages();}}
     }).catch(function(){
-      var c=load('news');if(c&&c.d)renderNews(c.d);
+      var c=load('news');if(c&&c.d.length){nsData=c.d;buildNsPages();}
     });
 }
 
-function renderNews(data){
-  if(!data||!data.length){document.getElementById('c3list').innerHTML='<div class="c3-item">暂无新闻</div>';return;}
-  var total=data.length,pages=Math.ceil(total/nsPageSize);
-  var start=nsCur*nsPageSize,end=Math.min(start+nsPageSize,total);
-  var html='';
-  for(var i=start;i<end;i++)html+='<div class="c3-item"><span class="c3-tag">['+data[i].source+']</span>'+esc(data[i].title)+'</div>';
-  document.getElementById('c3list').innerHTML=html;
-  document.getElementById('c3pg').textContent=(nsCur+1)+'/'+pages+' (每'+(autoDelay/1000)+'秒自动翻页)';
-  nsCur=(nsCur+1)%pages;
+function buildNsPages(){
+  if(!nsData.length)return;
+  var container=document.getElementById('nsPages');
+  var pages=[];
+  for(var i=0;i<nsData.length;i++)pages.push('<div class="ns-item"><span class="ns-tag">['+nsData[i].source+']</span><span class="ns-text">'+esc(nsData[i].title)+'</span></div>');
+
+  container.innerHTML='<div class="page in-up">'+pages[0]+'</div><div class="page out-up" style="display:none">'+pages[1]+'</div>';
+
+  initFlip('nsPages',pages.length,18000,function(i){
+    var allPages=container.querySelectorAll('.page');
+    if(allPages.length<2)return;
+    allPages[1].innerHTML=pages[i];
+    renderDots('nsPages');
+  });
 }
 
-function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+// ===== Card 4: AI Brief flip (split into sections) =====
+var briefSections=[];
 
-// ===== Card 4: AI Brief =====
 function fetchBrief(){
   fetchWithTimeout(API+'/api/news-summary',8000)
     .then(function(r){return r.ok?r.json():null;})
     .then(function(d){
       if(!d||!d.summary)return;
       save('brief',{s:d.summary,ts:Date.now()});
-      renderBrief(d.summary);
+      parseBrief(d.summary);
     }).catch(function(){
-      var c=load('brief');if(c&&c.s)renderBrief(c.s);
+      var c=load('brief');if(c&&c.s)parseBrief(c.s);
     });
 }
 
-function renderBrief(md){
+function parseBrief(md){
+  // Split markdown into sections by ## headings
+  briefSections=[];
+  var parts=md.split(/(?=^## )/m);
+  for(var i=0;i<parts.length;i++){
+    var section=parts[i].trim();
+    if(!section)continue;
+    briefSections.push('<div class="brief-page">'+renderMd(section)+'</div>');
+  }
+  if(!briefSections.length)briefSections.push('<div class="brief-page">'+renderMd(md)+'</div>');
+
+  var container=document.getElementById('bfPages');
+  container.innerHTML='<div class="page in-up">'+briefSections[0]+'</div><div class="page out-up" style="display:none">'+(briefSections[1]||'')+'</div>';
+
+  initFlip('bfPages',briefSections.length,10000,function(i){
+    var allPages=container.querySelectorAll('.page');
+    if(allPages.length<2)return;
+    allPages[1].innerHTML=briefSections[i]||'';
+    renderDots('bfPages');
+  });
+}
+
+function renderMd(md){
   var lines=md.split('\n'),html='',inTable=false;
   for(var i=0;i<lines.length;i++){
     var line=lines[i];
@@ -395,22 +419,49 @@ function renderBrief(md){
     html+='<p>'+line.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')+'</p>';
   }
   if(inTable)html+='</table>';
-  document.getElementById('c4').innerHTML=html||'暂无简报';
+  return html;
 }
 
+// ===== Refresh =====
+function doRefresh(){
+  var fab=document.getElementById('fab');fab.classList.add('spin');
+  localStorage.removeItem('oc_wx');localStorage.removeItem('oc_news');localStorage.removeItem('oc_brief');
+  fetchWeather();fetchNews();fetchBrief();
+  setTimeout(function(){fab.classList.remove('spin');},1500);
+}
+
+// Touch swipe per card
+(function(){
+  var sy=0,sx=0,el=null;
+  document.addEventListener('touchstart',function(e){
+    var card=e.target.closest('.card');if(!card)return;
+    // Only act on brief card for vertical swipe space
+    sy=e.touches[0].clientY;sx=e.touches[0].clientX;el=null;
+    var rect=card.getBoundingClientRect();
+    if(e.touches[0].clientY>=rect.top&&e.touches[0].clientY<=rect.bottom)el=card;
+  },false);
+  document.addEventListener('touchend',function(e){
+    if(!el)return;var dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dy)<35)return;
+    // Determine which card
+    if(el.classList.contains('brief-card')){if(dy>60)prevFlip('bfPages');else if(dy<-60)nextFlip('bfPages');}
+    else if(el.querySelector('#wxPages')){if(dy>60)prevFlip('wxPages');else if(dy<-60)nextFlip('wxPages');}
+    else if(el.querySelector('#nsPages')){if(dy>60)prevFlip('nsPages');else if(dy<-60)nextFlip('nsPages');}
+    el=null;
+  },false);
+})();
+
 // ===== Init =====
-(function init(){
-  // Restore cached
-  var c=load('wx');if(c&&Date.now()-c.ts<600000)renderWeather(c.d);
-  var cn=load('news');if(cn&&cn.d)renderNews(cn.d);
-  var cb=load('brief');if(cb&&cb.s)renderBrief(cb.s);
-  var cc=load('city');if(cc)document.getElementById('c1city').textContent=cc;
+(function(){
+  var c=load('city');if(c)document.getElementById('c1city').textContent=c;
+  var w=load('wx');if(w&&Date.now()-w.ts<600000){wxData=w.d;buildWxPages();}
+  var n=load('news');if(n&&n.d.length){nsData=n.d;buildNsPages();}
+  var b=load('brief');if(b&&b.s)parseBrief(b.s);
 
   fetchWeather();fetchNews();fetchBrief();
   setInterval(fetchWeather,600000);
   setInterval(fetchNews,300000);
   setInterval(fetchBrief,900000);
-  resetAuto();
 })();
 </script>
 </body>
