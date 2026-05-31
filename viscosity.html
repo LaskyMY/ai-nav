@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>深入理解粘度 — 流体行为的基础知识</title>
+<link rel="icon" href="./icon.svg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#06B6D4;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#6366f1;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.6;min-height:100vh;padding-bottom:calc(100px + env(safe-area-inset-bottom,0));-webkit-font-smoothing:antialiased;overflow-x:hidden;letter-spacing:-.01em}
+::-webkit-scrollbar{width:2px;height:2px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.04);border-radius:1px}
+::selection{background:rgba(6,182,212,.3)}
+
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--cyan) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--a2) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(6,182,212,.05),rgba(16,185,129,.04) 20%,rgba(99,102,241,.02) 45%,transparent 70%)}
+
+.header{position:sticky;top:0;z-index:50;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-top:none;padding:10px 20px;border-radius:0 0 22px 22px;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 40px rgba(6,182,212,.1),0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04)}
+.header-in{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.header-logo{font-size:17px;font-weight:700;white-space:nowrap;letter-spacing:-.02em;background:linear-gradient(135deg,var(--cyan),var(--a2),var(--vio));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 6s ease-in-out infinite}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+.back-btn,.home-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.back-btn:hover,.home-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.home-btn{margin-left:auto}
+
+.container{max-width:900px;margin:0 auto;padding:18px 20px;position:relative;z-index:1}
+.hero{text-align:center;padding:24px 0 10px}
+.hero h1{font-size:26px;font-weight:700;letter-spacing:-.03em;margin-bottom:6px;background:linear-gradient(135deg,var(--cyan),var(--a2));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 4s ease-in-out infinite}
+.hero .sub{color:var(--tx2);font-size:14px}
+.hero-canvas-wrap{width:100%;max-width:600px;height:260px;margin:16px auto 0;border-radius:var(--r);overflow:hidden;border:1px solid var(--card-border);background:var(--card-bg);position:relative}
+.hero-canvas-wrap canvas{width:100%;height:100%;display:block}
+
+.section{margin:28px 0}
+.section-hd{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}
+.section-num{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--cyan),var(--a2));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0}
+.section-hd h2{font-size:19px;font-weight:700;letter-spacing:-.02em;line-height:1.3}
+.section-hd .sub{color:var(--tx2);font-size:13px;margin-top:2px}
+
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:20px;margin-bottom:14px;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.03) 0%,transparent 40%,transparent 60%,rgba(255,255,255,.01) 100%);pointer-events:none}
+.card p{color:var(--tx2);margin-bottom:8px}
+.card p strong{color:var(--tx);font-weight:600}
+.card .highlight{background:rgba(6,182,212,.12);border-left:2px solid var(--cyan);padding:10px 14px;border-radius:0 10px 10px 0;margin:12px 0;font-size:14px;color:var(--tx)}
+
+.canvas-wrap{width:100%;border-radius:calc(var(--r) - 4px);overflow:hidden;border:1px solid var(--card-border);background:rgba(0,0,0,.3);margin:14px 0;position:relative}
+.canvas-wrap canvas{width:100%;display:block}
+.canvas-label{position:absolute;top:10px;left:14px;font-size:11px;color:var(--tx3);pointer-events:none}
+
+.formula{text-align:center;font-size:18px;font-weight:600;color:var(--cyan);padding:12px;letter-spacing:.02em;font-family:'Inter',monospace}
+.formula span{color:var(--tx2);font-weight:400;font-size:14px}
+
+.compare-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;margin:14px 0}
+.compare-item{background:rgba(255,255,255,.03);border:1px solid var(--card-border);border-radius:12px;padding:14px;text-align:center}
+.compare-item .val{font-size:22px;font-weight:700;color:var(--cyan)}
+.compare-item .lbl{font-size:11px;color:var(--tx3);margin-top:4px}
+
+.game-section{margin:32px 0}
+.game-hd{font-size:18px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.game-hd .emoji{font-size:24px}
+.quiz-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--r);padding:20px;margin-bottom:14px;backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px)}
+.quiz-card .q{font-weight:600;margin-bottom:10px}
+.quiz-card .opts{display:flex;flex-direction:column;gap:6px}
+.quiz-card .opt{background:rgba(255,255,255,.04);border:1px solid var(--card-border);border-radius:10px;padding:10px 14px;cursor:pointer;transition:all .2s var(--ease);font-size:14px;color:var(--tx2)}
+.quiz-card .opt:hover{background:rgba(255,255,255,.08);color:var(--tx)}
+.quiz-card .opt.correct{background:rgba(16,185,129,.15);border-color:var(--a2);color:var(--a2)}
+.quiz-card .opt.wrong{background:rgba(239,68,68,.12);border-color:var(--a3);color:var(--a3)}
+.quiz-card .opt.done{pointer-events:none}
+.quiz-card .fb{font-size:13px;margin-top:8px;min-height:20px;color:var(--tx2)}
+
+.spot-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:500px){.spot-grid{grid-template-columns:1fr}}
+.spot-col{}
+.spot-col h4{font-size:13px;color:var(--tx2);margin-bottom:8px;font-weight:500}
+.spot-item{padding:10px 14px;background:rgba(255,255,255,.04);border:1px solid var(--card-border);border-radius:10px;margin-bottom:6px;cursor:pointer;transition:all .2s var(--ease);font-size:14px;user-select:none}
+.spot-item:hover{background:rgba(255,255,255,.08)}
+.spot-item.sel{background:rgba(6,182,212,.12);border-color:var(--cyan);color:var(--cyan)}
+.spot-item.matched{background:rgba(16,185,129,.1);border-color:var(--a2);color:var(--a2);pointer-events:none;opacity:.8}
+.spot-item.wrong-flash{background:rgba(239,68,68,.15);border-color:var(--a3)}
+.spot-score{text-align:center;font-size:14px;color:var(--tx2);margin-top:10px}
+
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:50;padding:0 20px calc(14px + env(safe-area-inset-bottom,0))}
+.bottom-nav-in{max-width:900px;margin:0 auto;display:flex;gap:8px}
+.bottom-nav a{flex:1;text-align:center;padding:10px;border-radius:14px;background:rgba(24,24,32,.85);backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);border:1px solid var(--card-border);color:var(--tx2);text-decoration:none;font-size:13px;font-weight:500;transition:all .3s var(--ease)}
+.bottom-nav a:hover{color:var(--tx);border-color:rgba(6,182,212,.2)}
+
+.emoji-big{font-size:48px;display:block;text-align:center;margin-bottom:8px}
+</style>
+</head>
+<body>
+
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot"></div>
+
+<div class="header"><div class="header-in">
+<a class="back-btn" href="./knowledge.html" title="返回百科"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></a>
+<span class="header-logo">深入理解粘度</span>
+<a class="home-btn" href="./index.html" title="首页"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a>
+</div></div>
+
+<div class="container">
+
+<!-- Hero -->
+<div class="hero">
+<h1>深入理解粘度</h1>
+<p class="sub">流体行为的基础知识 — 为什么蜂蜜比水流得慢？</p>
+<div class="hero-canvas-wrap"><canvas id="heroCanvas"></canvas></div>
+</div>
+
+<!-- Section 1: 粘性概念 -->
+<div class="section">
+<div class="section-hd"><span class="section-num">1</span><div><h2>什么是粘性？</h2><p class="sub">无滑移边界条件与层流模型</p></div></div>
+<div class="card">
+<p>想象两片玻璃板中间夹着一层流体。下板固定，<strong>上板向右移动</strong>——你会发现流体被"拖拽"着分层滑动。</p>
+<p>紧贴上板的流体分子因<strong>无滑移条件（no-slip condition）</strong>与板面同速运动；贴下板的流体则静止不动。中间各层以不同速度滑动，这就是<strong>层流（laminar flow）</strong>。</p>
+<div class="highlight">粘性的本质：流体内部各层之间的<strong>内摩擦力</strong>。这种力抵抗相邻层之间的相对滑动——粘性越大，抵抗越强。</div>
+<div class="canvas-wrap" style="height:280px"><canvas id="laminarCanvas"></canvas><span class="canvas-label">拖拽上层板观察速度梯度变化</span></div>
+<p style="font-size:13px;color:var(--tx3);text-align:center">👆 上下拖动红色上层板，观察速度剖面（箭头长度 = 速度）的变化</p>
+</div>
+</div>
+
+<!-- Section 2: 牛顿粘性定律 -->
+<div class="section">
+<div class="section-hd"><span class="section-num">2</span><div><h2>牛顿粘性定律</h2><p class="sub">剪切应力与速度梯度的线性关系</p></div></div>
+<div class="card">
+<p>要使上层板以速度 <strong>U</strong> 运动，需要施加一个力 <strong>F</strong>。这个力与：</p>
+<div class="formula">τ = μ · <span style="color:var(--cyan)">du/dy</span></div>
+<p style="text-align:center;font-size:13px;color:var(--tx3)">τ = 剪切应力（单位面积的力）&nbsp;&nbsp;|&nbsp;&nbsp;du/dy = 速度梯度&nbsp;&nbsp;|&nbsp;&nbsp;μ = 动力粘度</p>
+<p><strong>牛顿流体</strong>：满足上述线性关系的流体。水、空气、油都是牛顿流体。非牛顿流体（如番茄酱、牙膏）不满足线性关系——<strong>搅得越快，粘度会变</strong>。</p>
+<div class="highlight">粘度系数 μ 是流体的<strong>材料属性</strong>，就像弹性模量之于固体。它衡量的是流体抵抗剪切变形的能力。</div>
+<div class="canvas-wrap" style="height:240px"><canvas id="newtonCanvas"></canvas></div>
+</div>
+</div>
+
+<!-- Section 3: 动力粘度 vs 运动粘度 -->
+<div class="section">
+<div class="section-hd"><span class="section-num">3</span><div><h2>动力粘度 vs 运动粘度</h2><p class="sub">两个容易混淆的概念</p></div></div>
+<div class="card">
+<p><strong>动力粘度 μ</strong>（dynamic viscosity）：直接衡量流体抵抗剪切的能力。单位：Pa·s（帕斯卡·秒）或 P（泊）。</p>
+<p><strong>运动粘度 ν</strong>（kinematic viscosity）：动力粘度除以密度。</p>
+<div class="formula">ν = μ / ρ</div>
+<p>为什么需要运动粘度？因为流体的<strong>惯性力</strong>与密度相关。很多流动问题（如管道流动）中，ν 比 μ 更有意义。<strong>雷诺数</strong> Re = UL/ν 就是判断层流还是湍流的无量纲数。</p>
+<div class="highlight"><strong>流体 vs 固体的关键区别</strong>：固体抵抗<strong>变形量</strong>（应变），而流体抵抗<strong>变形速率</strong>（应变率）。给流体足够时间，它会无限变形——这就是为什么水总是"找平"。</div>
+</div>
+</div>
+
+<!-- Section 4: 常见物质粘度对比 -->
+<div class="section">
+<div class="section-hd"><span class="section-num">4</span><div><h2>常见物质粘度对比</h2><p class="sub">从空气到沥青——跨度超过 10 个数量级</p></div></div>
+<div class="card">
+<div class="canvas-wrap" style="height:320px"><canvas id="compareCanvas"></canvas><span class="canvas-label">小球在不同粘度流体中的下落速度对比</span></div>
+<div class="compare-grid">
+<div class="compare-item"><div class="val">~10⁻⁵</div><div class="lbl">空气</div></div>
+<div class="compare-item"><div class="val">~10⁻³</div><div class="lbl">水</div></div>
+<div class="compare-item"><div class="val">~10⁻¹</div><div class="lbl">橄榄油</div></div>
+<div class="compare-item"><div class="val">~10⁰</div><div class="lbl">蜂蜜</div></div>
+<div class="compare-item"><div class="val">~10⁷</div><div class="lbl">沥青</div></div>
+</div>
+<p style="font-size:12px;color:var(--tx3)">粘度单位：Pa·s。沥青的粘度是水的 <strong>100 亿倍</strong>——著名的"沥青滴落实验"已持续近 100 年，至今只滴下 9 滴。</p>
+</div>
+</div>
+
+<!-- Section 5: 超流体 -->
+<div class="section">
+<div class="section-hd"><span class="section-num">5</span><div><h2>超流体——零粘性</h2><p class="sub">当温度接近绝对零度时的量子现象</p></div></div>
+<div class="card">
+<p>将液氦冷却到 <strong>2.17 K</strong>（约 -271°C）以下，它会发生相变成为<strong>超流体（superfluid）</strong>——此时粘性<strong>完全消失</strong>。</p>
+<p>超流体的不可思议行为：</p>
+<p>• 能流过直径仅几个纳米的微孔——普通液体会被"卡住"</p>
+<p>• 能<strong>爬上容器壁</strong>并从顶部溢出——形成"爬壁膜"</p>
+<p>• 一旦开始流动就<strong>永不停止</strong>——没有任何内摩擦来消耗动能</p>
+<div class="highlight">超流体是量子力学在<strong>宏观尺度</strong>上的表现。液氦原子进入玻色-爱因斯坦凝聚态，所有原子占据同一个量子态，集体行为如同一个"超级原子"。</div>
+</div>
+</div>
+
+<!-- Section 6: 温度与压力影响 -->
+<div class="section">
+<div class="section-hd"><span class="section-num">6</span><div><h2>温度与压力如何影响粘度？</h2><p class="sub">液体和气体行为截然相反</p></div></div>
+<div class="card">
+<p>粘性起源于分子间的<strong>动量交换</strong>。分子在热运动中不断碰撞，将动量从一层传递到相邻层——这种传递就是粘性的微观机制。</p>
+<p><strong>液体</strong>：温度升高 → 分子动能增大 → 更容易挣脱分子间吸引力 → 粘度<strong style="color:var(--a3)">降低</strong></p>
+<p><strong>气体</strong>：温度升高 → 分子运动加剧 → 碰撞和动量交换更频繁 → 粘度<strong style="color:var(--a2)">升高</strong></p>
+<div class="canvas-wrap" style="height:260px"><canvas id="tempCanvas"></canvas><span class="canvas-label">拖动滑块改变温度</span></div>
+<p style="font-size:13px;text-align:center;color:var(--tx3)">蓝色=液体曲线（随温度下降），橙色=气体曲线（随温度上升）</p>
+<p>压力对液体粘度影响很小（高密度使分子间距难压缩），对气体粘度影响也相对有限——在工程应用中常忽略不计。</p>
+</div>
+</div>
+
+<!-- Section 7: 非粘性流与工程简化 -->
+<div class="section">
+<div class="section-hd"><span class="section-num">7</span><div><h2>非粘性流 & 工程简化</h2><p class="sub">什么时候可以忽略粘性？</p></div></div>
+<div class="card">
+<p>在<strong>高雷诺数</strong>流动（Re >> 1）中，惯性力远大于粘性力。此时流体行为接近<strong>无粘性流（inviscid flow）</strong>——这是空气动力学和飞机设计的核心简化。</p>
+<p>但注意：即使 Re 很高，<strong>边界层（boundary layer）</strong>仍然存在。在壁面附近一个薄层内，速度从壁面的零速急剧过渡到主流速度——粘性在这个薄层内<strong>不能被忽略</strong>。</p>
+<div class="highlight"><strong>工程智慧</strong>：在远离壁面的区域用无粘理论（如伯努利方程），在壁面附近用边界层理论——这种"分而治之"的方法支撑了现代航空工程。</div>
+</div>
+</div>
+
+<!-- Games -->
+<div class="game-section">
+<div class="game-hd"><span class="emoji">🎮</span> 粘度概念检测</div>
+<div id="quizContainer"></div>
+</div>
+
+<div class="game-section">
+<div class="game-hd"><span class="emoji">🧪</span> 物质粘度匹配</div>
+<p style="color:var(--tx3);font-size:13px;margin-bottom:12px">点击左侧物质，再点右侧粘度值进行匹配</p>
+<div class="spot-grid" id="spotContainer"></div>
+<div class="spot-score" id="spotScore">已匹配: 0 / 6</div>
+</div>
+
+<!-- Bottom Nav -->
+<div class="bottom-nav"><div class="bottom-nav-in">
+<a href="./knowledge.html">📚 百科首页</a>
+<a href="./index.html">🏠 返回主页</a>
+</div></div>
+
+</div><!-- container -->
+
+<script>
+// ===== HERO: Fluid flow particles =====
+(function(){
+const c=document.getElementById('heroCanvas');
+const dpr=Math.min(window.devicePixelRatio||1,2);
+const W=c.parentElement.clientWidth;
+const H=260;
+c.width=W*dpr;c.height=H*dpr;c.style.width=W+'px';c.style.height=H+'px';
+const ctx=c.getContext('2d');ctx.scale(dpr,dpr);
+
+const particles=[];
+const N=120;
+for(let i=0;i<N;i++){
+particles.push({
+x:Math.random()*W,y:Math.random()*H,
+vx:0,vy:0,
+r:1+Math.random()*2.5,
+alpha:.15+Math.random()*.35,
+hue:180+Math.random()*30
+});
+}
+
+function draw(t){
+ctx.clearRect(0,0,W,H);
+
+// Velocity profile: parabolic (Poiseuille-like), faster in center
+const midH=H/2;
+for(const p of particles){
+// Velocity based on y position - parabolic profile
+const relY=(p.y-midH)/midH; // -1 to 1
+const speed=1.5*(1-relY*relY); // max at center
+p.vx=speed;
+p.x+=p.vx;
+if(p.x>W+10){p.x=-10;p.y=Math.random()*H}
+// Slight brownian wobble
+p.y+=(Math.random()-.5)*.4;
+p.y=Math.max(2,Math.min(H-2,p.y));
+}
+
+// Draw particles
+for(const p of particles){
+ctx.beginPath();
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+ctx.fillStyle=`hsla(${p.hue},70%,65%,${p.alpha})`;
+ctx.fill();
+}
+
+// Draw flow lines
+ctx.strokeStyle='rgba(255,255,255,.03)';
+ctx.lineWidth=1;
+for(let y=20;y<H;y+=30){
+ctx.beginPath();
+ctx.moveTo(0,y);
+for(let x=0;x<W;x+=8){
+const relY=(y-midH)/midH;
+const off=Math.sin(x*0.01+t*.001)*4*(1-relY*relY);
+ctx.lineTo(x,y+off);
+}
+ctx.stroke();
+}
+
+requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+})();
+
+// ===== CANVAS 1: Laminar flow with draggable plate =====
+(function(){
+const c=document.getElementById('laminarCanvas');
+const dpr=Math.min(window.devicePixelRatio||1,2);
+const wrap=c.parentElement;
+const W=wrap.clientWidth;
+const H=280;
+c.width=W*dpr;c.height=H*dpr;c.style.width=W+'px';c.style.height=H+'px';
+const ctx=c.getContext('2d');ctx.scale(dpr,dpr);
+
+const margin={t:40,b:40,l:80,r:60};
+const pw=W-margin.l-margin.r;
+const ph=H-margin.t-margin.b;
+let plateY=margin.t+30; // top plate y position (draggable)
+let dragging=false;
+let targetPlateY=plateY;
+const minPlateY=margin.t+20;
+const maxPlateY=margin.t+ph*0.7;
+
+function getPlateSpeed(){return (maxPlateY-plateY)/(maxPlateY-minPlateY)*3;}
+
+c.addEventListener('pointerdown',e=>{
+const rect=c.getBoundingClientRect();
+const mx=(e.clientX-rect.left)*(W/rect.width);
+const my=(e.clientY-rect.top)*(H/rect.height);
+if(Math.abs(my-plateY)<20&&mx>margin.l&&mx<margin.l+pw){dragging=true;c.setPointerCapture(e.pointerId)}
+});
+c.addEventListener('pointermove',e=>{
+if(!dragging)return;
+const rect=c.getBoundingClientRect();
+const my=(e.clientY-rect.top)*(H/rect.height);
+targetPlateY=Math.max(minPlateY,Math.min(maxPlateY,my));
+});
+c.addEventListener('pointerup',()=>{dragging=false;});
+c.addEventListener('pointerleave',()=>{dragging=false;});
+
+function draw(t){
+plateY+=(targetPlateY-plateY)*.15;
+const speed=getPlateSpeed();
+
+ctx.clearRect(0,0,W,H);
+
+// Background grid
+ctx.strokeStyle='rgba(255,255,255,.03)';ctx.lineWidth=1;
+for(let y=margin.t;y<=margin.t+ph;y+=20){
+ctx.beginPath();ctx.moveTo(margin.l,y);ctx.lineTo(margin.l+pw,y);ctx.stroke();
+}
+
+// Bottom plate (fixed)
+ctx.fillStyle='rgba(255,255,255,.12)';
+ctx.fillRect(margin.l,margin.t+ph-6,pw,12);
+ctx.fillStyle='var(--tx3)';ctx.font='11px Inter,sans-serif';
+ctx.fillText('固定下板',margin.l,margin.t+ph-10);
+
+// Top plate (movable)
+const topPlateBottom=plateY+6;
+ctx.fillStyle='rgba(239,68,68,.35)';
+ctx.fillRect(margin.l,plateY-6,pw,12);
+ctx.fillStyle='rgba(239,68,68,.7)';ctx.font='11px Inter,sans-serif';
+ctx.fillText('运动上板 (U='+speed.toFixed(1)+')',margin.l,plateY-12);
+
+// Velocity arrows
+const arrowCount=12;
+const fluidTop=topPlateBottom;
+const fluidBottom=margin.t+ph-6;
+const fluidH=fluidBottom-fluidTop;
+
+for(let i=0;i<arrowCount;i++){
+const frac=i/(arrowCount-1);
+const y=fluidTop+frac*fluidH;
+const vel=speed*frac; // linear profile for Newtonian fluid
+const arrowLen=vel*25;
+
+ctx.strokeStyle=`rgba(${99+vel*30},${180-vel*30},${220-vel*20},.7)`;
+ctx.lineWidth=2;
+const ax=margin.l+pw*0.35;
+ctx.beginPath();
+ctx.moveTo(ax,y);
+ctx.lineTo(ax+arrowLen,y);
+ctx.stroke();
+// Arrowhead
+ctx.beginPath();
+ctx.moveTo(ax+arrowLen,y);
+ctx.lineTo(ax+arrowLen-6,y-4);
+ctx.lineTo(ax+arrowLen-6,y+4);
+ctx.closePath();
+ctx.fillStyle=ctx.strokeStyle;
+ctx.fill();
+}
+
+// Labels
+ctx.fillStyle='var(--tx3)';ctx.font='11px Inter,sans-serif';
+ctx.fillText('y',margin.l-14,margin.t);
+ctx.fillText('速度 u(y)',margin.l+pw*0.35+30,margin.t+ph-10);
+
+// Axis
+ctx.strokeStyle='rgba(255,255,255,.08)';
+ctx.beginPath();ctx.moveTo(margin.l-2,margin.t);ctx.lineTo(margin.l-2,margin.t+ph);ctx.stroke();
+
+// Velocity profile line on the right
+ctx.strokeStyle='rgba(6,182,212,.4)';ctx.lineWidth=2;ctx.setLineDash([4,4]);
+ctx.beginPath();
+const vx=margin.l+pw*0.75;
+ctx.moveTo(vx,fluidBottom);
+ctx.lineTo(vx+speed*25,fluidTop);
+ctx.stroke();
+ctx.setLineDash([]);
+ctx.fillStyle='var(--cyan)';ctx.font='10px Inter,sans-serif';
+ctx.fillText('速度剖面',vx-10,fluidTop-8);
+
+requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+})();
+
+// ===== CANVAS 2: Newton's law demo - shear stress vs velocity gradient =====
+(function(){
+const c=document.getElementById('newtonCanvas');
+const dpr=Math.min(window.devicePixelRatio||1,2);
+const wrap=c.parentElement;
+const W=wrap.clientWidth;
+const H=240;
+c.width=W*dpr;c.height=H*dpr;c.style.width=W+'px';c.style.height=H+'px';
+const ctx=c.getContext('2d');ctx.scale(dpr,dpr);
+
+let time=0;
+function draw(t){
+time=t*.001;
+ctx.clearRect(0,0,W,H);
+
+const cx=W*.3,cy=H*.5,r=60;
+
+// Draw fluid element deformation
+const shear=Math.sin(time*.7)*.35+.35; // oscillating shear
+const elemW=80,elemH=80;
+const ex=cx-elemW/2,ey=cy-elemH/2;
+
+// Undeformed reference (dashed)
+ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+ctx.strokeRect(ex-5,ey-5,elemW+10,elemH+10);
+ctx.setLineDash([]);
+
+// Deformed element
+ctx.save();
+ctx.translate(cx,cy);
+ctx.transform(1,0,shear,1,0,0);
+ctx.fillStyle='rgba(6,182,212,.12)';
+ctx.fillRect(-elemW/2,-elemH/2,elemW,elemH);
+ctx.strokeStyle='rgba(6,182,212,.5)';ctx.lineWidth=2;
+ctx.strokeRect(-elemW/2,-elemH/2,elemW,elemH);
+ctx.restore();
+
+// Arrows showing force
+const arrowY=cy+elemH/2+20;
+ctx.strokeStyle='rgba(239,68,68,.6)';ctx.lineWidth=2;
+ctx.beginPath();ctx.moveTo(cx-elemW/2,arrowY);ctx.lineTo(cx+elemW/2,arrowY);ctx.stroke();
+// Arrowheads
+ctx.beginPath();ctx.moveTo(cx+elemW/2,arrowY);ctx.lineTo(cx+elemW/2-8,arrowY-4);ctx.lineTo(cx+elemW/2-8,arrowY+4);ctx.closePath();ctx.fillStyle='rgba(239,68,68,.6)';ctx.fill();
+ctx.fillStyle='var(--tx3)';ctx.font='11px Inter,sans-serif';
+ctx.fillText('F',cx+elemW/2+5,arrowY+4);
+
+// Labels
+ctx.fillStyle='rgba(6,182,212,.8)';ctx.font='13px Inter,sans-serif';
+ctx.fillText('τ = μ · du/dy',cx+80,cy-50);
+ctx.fillText('剪切应力 = 粘度 × 速度梯度',cx+80,cy-28);
+
+// Right side: formula explanation
+const rx=W*.68,ry=H*.35;
+ctx.fillStyle='var(--tx2)';ctx.font='12px Inter,sans-serif';
+ctx.fillText('变形前的方形流体微元',rx,ry-30);
+ctx.fillText('受剪切后变成平行四边形',rx,ry-12);
+ctx.fillText('变形速率 ∝ 剪切应力',rx,ry+8);
+ctx.fillText('比例常数 = 粘度 μ',rx,ry+28);
+
+requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+})();
+
+// ===== CANVAS 3: Viscosity comparison - falling balls =====
+(function(){
+const c=document.getElementById('compareCanvas');
+const dpr=Math.min(window.devicePixelRatio||1,2);
+const wrap=c.parentElement;
+const W=wrap.clientWidth;
+const H=320;
+c.width=W*dpr;c.height=H*dpr;c.style.width=W+'px';c.style.height=H+'px';
+const ctx=c.getContext('2d');ctx.scale(dpr,dpr);
+
+const fluids=[
+{name:'空气',visc:0.000018,color:'rgba(200,220,255,.15)',ballColor:'#ddd'},
+{name:'水',visc:0.001,color:'rgba(6,182,212,.2)',ballColor:'#0ef'},
+{name:'橄榄油',visc:0.08,color:'rgba(245,158,11,.2)',ballColor:'#f90'},
+{name:'蜂蜜',visc:5,color:'rgba(255,180,50,.25)',ballColor:'#fa0'},
+{name:'沥青',visc:2e7,color:'rgba(80,80,80,.3)',ballColor:'#666'},
+];
+
+const cols=fluids.length;
+const colW=W/cols;
+const ballR=10;
+let balls=fluids.map((f,i)=>{
+const topH=40,bottomH=H-20;
+const fallRange=bottomH-topH-ballR*2;
+return{
+x:colW*i+colW/2,
+y:topH+ballR+Math.random()*fallRange,
+vy:0,
+baseSpeed:0.3/Math.log10(f.visc+1),
+topH,bottomH
+};
+});
+
+function draw(t){
+ctx.clearRect(0,0,W,H);
+
+// Column dividers
+for(let i=1;i<cols;i++){
+ctx.strokeStyle='rgba(255,255,255,.05)';ctx.lineWidth=1;
+ctx.beginPath();ctx.moveTo(colW*i,28);ctx.lineTo(colW*i,H);ctx.stroke();
+}
+
+fluids.forEach((f,i)=>{
+const bx=colW*i;
+// Fluid background
+ctx.fillStyle=f.color;
+ctx.fillRect(bx+4,28,colW-8,H-28);
+
+// Label
+ctx.fillStyle='var(--tx2)';ctx.font='12px Inter,sans-serif';ctx.textAlign='center';
+ctx.fillText(f.name,colW*i+colW/2,20);
+
+// Viscosity value
+ctx.fillStyle='var(--tx3)';ctx.font='9px Inter,sans-serif';
+ctx.fillText(f.visc<1?f.visc.toExponential(1)+' Pa·s':f.visc>=1e6?(f.visc/1e6).toFixed(0)+'M Pa·s':f.visc+' Pa·s',colW*i+colW/2,H-6);
+});
+
+// Update and draw balls
+balls.forEach((b,i)=>{
+const maxSpeed=b.baseSpeed*2;
+b.vy+=b.baseSpeed*.02;
+b.vy=Math.min(b.vy,maxSpeed);
+b.y+=b.vy;
+if(b.y>b.bottomH-b.ballR-2){b.y=b.bottomH-b.ballR-2;b.vy=0}
+// Reset from top occasionally
+if(b.y<=b.topH+b.ballR+2&&b.vy<=0){b.y=b.topH+b.ballR+2;b.vy=0}
+if(Math.random()<.003){b.y=b.topH+b.ballR+5;b.vy=0}
+
+ctx.beginPath();
+ctx.arc(b.x,b.y,ballR,0,Math.PI*2);
+ctx.fillStyle=fluids[i].ballColor;
+ctx.fill();
+ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=1;
+ctx.stroke();
+});
+
+ctx.textAlign='start';
+
+// Title
+ctx.fillStyle='var(--tx3)';ctx.font='10px Inter,sans-serif';
+ctx.fillText('小球下落速度 ∝ 1/粘度',12,12);
+
+requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+})();
+
+// ===== CANVAS 4: Temperature effect =====
+(function(){
+const c=document.getElementById('tempCanvas');
+const dpr=Math.min(window.devicePixelRatio||1,2);
+const wrap=c.parentElement;
+const W=wrap.clientWidth;
+const H=260;
+c.width=W*dpr;c.height=H*dpr;c.style.width=W+'px';c.style.height=H+'px';
+const ctx=c.getContext('2d');ctx.scale(dpr,dpr);
+
+const margin={t:30,b:45,l:55,r:30};
+const pw=W-margin.l-margin.r;
+const ph=H-margin.t-margin.b;
+
+let tempSlider=0.5; // 0 to 1
+let targetTemp=0.5;
+let draggingTemp=false;
+
+// Slider rect
+const sldX=margin.l,sldY=H-margin.b+12,sldW=pw,sldH=8;
+
+function getSliderPos(mx){
+return Math.max(0,Math.min(1,(mx-sldX)/sldW));
+}
+
+c.addEventListener('pointerdown',e=>{
+const rect=c.getBoundingClientRect();
+const mx=(e.clientX-rect.left)*(W/rect.width);
+const my=(e.clientY-rect.top)*(H/rect.height);
+if(my>sldY-8&&my<sldY+sldH+8){draggingTemp=true;targetTemp=getSliderPos(mx)}
+});
+c.addEventListener('pointermove',e=>{
+if(!draggingTemp)return;
+const rect=c.getBoundingClientRect();
+const mx=(e.clientX-rect.left)*(W/rect.width);
+targetTemp=getSliderPos(mx);
+});
+c.addEventListener('pointerup',()=>{draggingTemp=false;});
+
+function draw(t){
+tempSlider+=(targetTemp-tempSlider)*.12;
+const temp=tempSlider;
+const Tlabel=(-50+temp*350).toFixed(0)+'°C';
+
+ctx.clearRect(0,0,W,H);
+
+// Axes
+ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=1;
+ctx.beginPath();ctx.moveTo(margin.l,margin.t);ctx.lineTo(margin.l,margin.t+ph);ctx.stroke();
+ctx.beginPath();ctx.moveTo(margin.l,margin.t+ph);ctx.lineTo(margin.l+pw,margin.t+ph);ctx.stroke();
+
+// Labels
+ctx.fillStyle='var(--tx3)';ctx.font='10px Inter,sans-serif';
+ctx.fillText('粘度',margin.l-40,margin.t+10);
+ctx.fillText('高',margin.l-18,margin.t+14);
+ctx.fillText('低',margin.l-18,margin.t+ph-4);
+ctx.fillText('温度 →',margin.l+pw-30,margin.t+ph-14);
+ctx.fillText('-50°C',margin.l,margin.t+ph+15);
+ctx.fillText('300°C',margin.l+pw-30,margin.t+ph+15);
+
+// Grid lines
+for(let i=1;i<5;i++){
+const gx=margin.l+(pw*i/4);
+ctx.strokeStyle='rgba(255,255,255,.03)';ctx.lineWidth=1;
+ctx.beginPath();ctx.moveTo(gx,margin.t);ctx.lineTo(gx,margin.t+ph);ctx.stroke();
+}
+
+// Liquid curve (decreasing)
+ctx.strokeStyle='rgba(6,182,212,.7)';ctx.lineWidth=2.5;
+ctx.beginPath();
+for(let x=0;x<=pw;x+=2){
+const frac=x/pw;
+const y=margin.t+ph*(1-Math.exp(-frac*4)*.9);
+if(x===0)ctx.moveTo(margin.l+x,y);else ctx.lineTo(margin.l+x,y);
+}
+ctx.stroke();
+
+// Gas curve (increasing)
+ctx.strokeStyle='rgba(245,158,11,.7)';ctx.lineWidth=2.5;
+ctx.beginPath();
+for(let x=0;x<=pw;x+=2){
+const frac=x/pw;
+const y=margin.t+ph*(.1+frac*.4);
+if(x===0)ctx.moveTo(margin.l+x,y);else ctx.lineTo(margin.l+x,y);
+}
+ctx.stroke();
+
+// Legend
+ctx.fillStyle='rgba(6,182,212,.8)';ctx.font='11px Inter,sans-serif';ctx.fillText('液体 (如机油)',margin.l+10,margin.t+20);
+ctx.fillStyle='rgba(245,158,11,.8)';ctx.fillText('气体 (如空气)',margin.l+10,margin.t+36);
+
+// Temperature indicator line
+const tx=margin.l+tempSlider*pw;
+ctx.strokeStyle='rgba(255,255,255,.4)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+ctx.beginPath();ctx.moveTo(tx,margin.t);ctx.lineTo(tx,margin.t+ph);ctx.stroke();
+ctx.setLineDash([]);
+
+// Label on indicator
+ctx.fillStyle='var(--tx)';ctx.font='11px Inter,sans-serif';
+const lx=tempSlider>.7?tx-40:tx+6;
+ctx.fillText(Tlabel,lx,margin.t+ph-6);
+
+// Slider track
+ctx.fillStyle='rgba(255,255,255,.06)';ctx.beginPath();
+const r=4;
+ctx.moveTo(sldX+r,sldY);ctx.arcTo(sldX+sldW,sldY,sldX+sldW,sldY+sldH,r);
+ctx.arcTo(sldX+sldW,sldY+sldH,sldX,sldY+sldH,r);
+ctx.arcTo(sldX,sldY+sldH,sldX,sldY,r);ctx.arcTo(sldX,sldY,sldX+r,sldY,r);
+ctx.fill();
+
+// Slider thumb
+const thumbX=sldX+tempSlider*sldW;
+ctx.fillStyle='rgba(6,182,212,.8)';ctx.beginPath();
+ctx.arc(thumbX,sldY+sldH/2,8,0,Math.PI*2);ctx.fill();
+ctx.fillStyle='#fff';ctx.beginPath();
+ctx.arc(thumbX,sldY+sldH/2,4,0,Math.PI*2);ctx.fill();
+
+// Molecular illustration
+const molCX=margin.l+pw*.75,molCY=margin.t+ph*.45;
+const nMol=8+Math.floor(temp*6);
+for(let i=0;i<nMol;i++){
+const a=i/nMol*Math.PI*2;
+const dist=18+temp*15;
+const mx=molCX+Math.cos(a+time*.001)*dist;
+const my=molCY+Math.sin(a+time*.001)*dist;
+ctx.beginPath();ctx.arc(mx,my,2.5,0,Math.PI*2);
+ctx.fillStyle='rgba(255,255,255,'+(.2+temp*.3)+')';ctx.fill();
+// Velocity lines
+if(temp>.3){
+ctx.strokeStyle='rgba(255,255,255,'+(.1+temp*.15)+')';ctx.lineWidth=.5;
+ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx+(Math.random()-.5)*8*Math.sqrt(temp),my+(Math.random()-.5)*8*Math.sqrt(temp));ctx.stroke();
+}
+}
+
+requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+})();
+
+// ===== QUIZ GAME =====
+(function(){
+const quizData=[
+{
+q:'粘性的本质是什么？',
+opts:['流体内部各层之间的内摩擦力','流体对外部物体的排斥力','流体表面张力的一种表现','重力对流体分子的作用'],
+ans:0,
+exp:'粘性是流体层与层之间相对滑动时的内摩擦力——它抵抗相邻层之间的速度差。'
+},
+{
+q:'以下哪一个是牛顿流体？',
+opts:['番茄酱','牙膏','水','泥浆'],
+ans:2,
+exp:'水是典型的牛顿流体——剪切应力与速度梯度成正比。番茄酱和牙膏是非牛顿流体，搅动会改变它们的粘度。'
+},
+{
+q:'液体温度升高时，粘度通常如何变化？',
+opts:['升高','降低','不变','先升后降'],
+ans:1,
+exp:'液体温度升高→分子动能增大→更容易挣脱分子间吸引力→粘度降低。气体则相反，温度升高时粘度升高。'
+},
+{
+q:'运动粘度 ν 和动力粘度 μ 的关系是？',
+opts:['ν = μ / ρ (除以密度)','ν = μ × ρ (乘以密度)','ν = μ + ρ','它们是完全相同的概念'],
+ans:0,
+exp:'ν = μ / ρ，运动粘度是动力粘度除以密度。它在涉及惯性力的流动问题（如雷诺数计算）中更有意义。'
+},
+{
+q:'超流体最不可思议的特性是？',
+opts:['密度极大','零粘性——一旦流动永不停止','表面张力无穷大','不能被加热'],
+ans:1,
+exp:'超流体（如2.17K以下的液氦）粘性完全消失，能流过纳米级微孔、爬上容器壁、一旦开始流动就永不停止。'
+},
+{
+q:'为什么飞机设计中可以忽略部分粘性效应？',
+opts:['飞机飞得太快了','高雷诺数下惯性力远大于粘性力','空气中根本没有粘性','粘性只在水里存在'],
+ans:1,
+exp:'高雷诺数（Re>>1）意味着惯性力主导。但在壁面附近的边界层内，粘性仍然不能被忽略。'
+},
+];
+
+const container=document.getElementById('quizContainer');
+let score=0,total=quizData.length,answered=0;
+
+quizData.forEach((item,i)=>{
+const card=document.createElement('div');card.className='quiz-card';
+card.innerHTML=`
+<div class="q">${i+1}. ${item.q}</div>
+<div class="opts">${item.opts.map((o,j)=>`<div class="opt" data-idx="${j}">${String.fromCharCode(65+j)}. ${o}</div>`).join('')}</div>
+<div class="fb"></div>`;
+container.appendChild(card);
+
+const opts=card.querySelectorAll('.opt');
+const fb=card.querySelector('.fb');
+
+opts.forEach(opt=>{
+opt.addEventListener('click',()=>{
+if(card.classList.contains('done'))return;
+card.classList.add('done');
+const idx=parseInt(opt.dataset.idx);
+if(idx===item.ans){
+opt.classList.add('correct');score++;
+fb.textContent='✓ '+item.exp;
+fb.style.color='var(--a2)';
+}else{
+opt.classList.add('wrong');
+opts[item.ans].classList.add('correct');
+fb.textContent='✗ '+item.exp;
+fb.style.color='var(--a3)';
+}
+answered++;
+if(answered===total){
+setTimeout(()=>{
+const summary=document.createElement('div');
+summary.style.cssText='text-align:center;padding:16px;font-size:16px;font-weight:600';
+summary.innerHTML=score===total?'🏆 全部答对！你对粘性理解得很透彻！':score>=total*.7?'👍 答对 '+score+'/'+total+'，不错！':'📖 答对 '+score+'/'+total+'，再看看上面的内容吧～';
+container.appendChild(summary);
+},400);
+}
+});
+});
+});
+})();
+
+// ===== SPOT MATCHING GAME =====
+(function(){
+const items=[
+{name:'空气',pair:'~10⁻⁵ Pa·s'},
+{name:'水',pair:'~10⁻³ Pa·s'},
+{name:'蜂蜜',pair:'~10⁰ Pa·s'},
+{name:'沥青',pair:'~10⁷ Pa·s'},
+{name:'液氦(超流体)',pair:'0 Pa·s'},
+{name:'橄榄油',pair:'~10⁻¹ Pa·s'},
+];
+
+const container=document.getElementById('spotContainer');
+const leftCol=document.createElement('div');leftCol.className='spot-col';
+leftCol.innerHTML='<h4>物质</h4>';
+const rightCol=document.createElement('div');rightCol.className='spot-col';
+rightCol.innerHTML='<h4>粘度值</h4>';
+
+const shuffledPairs=[...items].sort(()=>Math.random()-.5);
+
+items.forEach(item=>{
+const el=document.createElement('div');el.className='spot-item';
+el.textContent=item.name;el.dataset.name=item.name;
+leftCol.appendChild(el);
+});
+
+shuffledPairs.forEach(item=>{
+const el=document.createElement('div');el.className='spot-item';
+el.textContent=item.pair;el.dataset.pair=item.pair;
+rightCol.appendChild(el);
+});
+
+container.appendChild(leftCol);
+container.appendChild(rightCol);
+
+let selectedLeft=null;
+let matched=0;
+const scoreEl=document.getElementById('spotScore');
+
+leftCol.querySelectorAll('.spot-item').forEach(el=>{
+el.addEventListener('click',()=>{
+if(el.classList.contains('matched'))return;
+leftCol.querySelectorAll('.spot-item').forEach(e=>e.classList.remove('sel'));
+el.classList.add('sel');
+selectedLeft=el;
+});
+});
+
+rightCol.querySelectorAll('.spot-item').forEach(el=>{
+el.addEventListener('click',()=>{
+if(el.classList.contains('matched'))return;
+if(!selectedLeft)return;
+
+const leftName=selectedLeft.dataset.name;
+const rightPair=el.dataset.pair;
+const correctItem=items.find(i=>i.name===leftName);
+
+if(correctItem&&correctItem.pair===rightPair){
+selectedLeft.classList.add('matched');selectedLeft.classList.remove('sel');
+el.classList.add('matched');
+selectedLeft=null;
+matched++;
+scoreEl.textContent='已匹配: '+matched+' / 6';
+if(matched===items.length){
+scoreEl.textContent='🎉 全部匹配正确！你对各种物质的粘度已经了如指掌！';
+}
+}else{
+el.classList.add('wrong-flash');
+setTimeout(()=>el.classList.remove('wrong-flash'),400);
+}
+});
+});
+})();
+</script>
+</body>
+</html>
