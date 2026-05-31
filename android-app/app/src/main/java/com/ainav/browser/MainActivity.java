@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
@@ -85,11 +86,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Tap anywhere on screen to show refresh button
-        root.setOnClickListener(new View.OnClickListener() {
+        // Tap WebView to show refresh button
+        webView.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                showRefreshBtn();
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    showRefreshBtn();
+                }
+                return false; // don't consume — let WebView handle it too
             }
         });
 
