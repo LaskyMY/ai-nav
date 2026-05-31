@@ -80,15 +80,6 @@ text-shadow:0 0 20px rgba(0,210,255,.22);line-height:1;}
 .brief-page .kc{background:rgba(138,43,226,.06);border:1px solid rgba(138,43,226,.1);border-radius:6px;padding:6px 8px;margin:4px 0;}
 .brief-page .kc p{color:rgba(255,255,255,.6);}
 
-/* ===== Floating FAB ===== */
-.fab{position:fixed;bottom:14px;right:14px;z-index:100;
-width:38px;height:38px;border-radius:19px;
-background:rgba(0,210,255,.1);border:1px solid rgba(0,210,255,.16);
-display:flex;align-items:center;justify-content:center;cursor:pointer;
-box-shadow:0 2px 10px rgba(0,0,0,.3);}
-.fab:active{transform:scale(.88);background:rgba(0,210,255,.18);}
-.fab svg{width:17px;height:17px;stroke:#00d2ff;fill:none;stroke-width:2;}
-.fab.spin svg{animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 .ld{display:inline-block;width:8px;height:8px;border:2px solid rgba(255,255,255,.1);border-top-color:#00d2ff;border-radius:50%;
@@ -142,10 +133,7 @@ animation:spin .6s linear infinite;vertical-align:middle;margin:0 2px;}
   </div>
 </div>
 
-<!-- FAB -->
-<div class="fab" id="fab" onclick="doRefresh()">
-  <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-</div>
+<!-- Refresh handled by native Android button -->
 
 <script>
 // ===== fetchWithTimeout =====
@@ -420,14 +408,6 @@ function renderMd(md){
   }
   if(inTable)html+='</table>';
   return html;
-}
-
-// ===== Refresh =====
-function doRefresh(){
-  var fab=document.getElementById('fab');fab.classList.add('spin');
-  localStorage.removeItem('oc_wx');localStorage.removeItem('oc_news');localStorage.removeItem('oc_brief');
-  fetchWeather();fetchNews();fetchBrief();
-  setTimeout(function(){fab.classList.remove('spin');},1500);
 }
 
 // Touch swipe per card

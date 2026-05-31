@@ -1,12 +1,20 @@
 package com.ainav.browser;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.webkit.ConsoleMessage;
 import android.webkit.GeolocationPermissions;
 import android.webkit.WebChromeClient;
@@ -15,23 +23,61 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private WebView webView;
-    private List<String> errorLogs = new ArrayList<>();
+    private Button refreshBtn;
+    private boolean isRefreshing = false;
+    private Handler handler = new Handler(Looper.getMainLooper());
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        webView = new WebView(this);
-        setContentView(webView);
+        // FrameLayout: WebView + floating refresh button
+        FrameLayout root = new FrameLayout(this);
 
+        webView = new WebView(this);
+        FrameLayout.LayoutParams wvParams = new FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.MATCH_PARENT
+        );
+        root.addView(webView, wvParams);
+
+        // Native refresh button
+        refreshBtn = new Button(this);
+        refreshBtn.setText("↻"); // ↻ unicode refresh symbol
+        refreshBtn.setTextColor(Color.parseColor("#00d2ff"));
+        refreshBtn.setTextSize(20);
+
+        // Round button background
+        GradientDrawable bg = new GradientDrawable();
+        bg.setShape(GradientDrawable.OVAL);
+        bg.setColor(Color.parseColor("#1A00d2ff"));
+        bg.setStroke(1, Color.parseColor("#3300d2ff"));
+        refreshBtn.setBackground(bg);
+
+        int btnSize = dpToPx(40);
+        FrameLayout.LayoutParams btnParams = new FrameLayout.LayoutParams(btnSize, btnSize);
+        btnParams.gravity = Gravity.BOTTOM | Gravity.END;
+        btnParams.setMargins(0, 0, dpToPx(12), dpToPx(12));
+        root.addView(refreshBtn, btnParams);
+
+        refreshBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doRefresh();
+            }
+        });
+
+        setContentView(root);
         hideSystemUI();
 
         WebSettings s = webView.getSettings();
@@ -45,49 +91,44 @@ public class MainActivity extends AppCompatActivity {
         s.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         s.setUseWideViewPort(true);
         s.setLoadWithOverviewMode(true);
-        s.setSupportZoom(true);
-        s.setBuiltInZoomControls(true);
-        s.setDisplayZoomControls(false);
+        s.setSupportZoom(false);
+        s.setBuiltInZoomControls(false);
 
-        // Remove custom user agent — use default Chrome
-        // s.setUserAgentString(s.getUserAgentString() + " AINavBrowser/1.0");
-
-        // WebViewClient with error logging
+        // WebViewClient
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-                Log.i("AINav", "Page started: " + url);
+                Log.i("AINav", "Loading: " + url);
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                Log.i("AINav", "Page finished: " + url);
+                Log.i("AINav", "Loaded: " + url);
+                stopRefreshAnim();
             }
 
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
-                String msg = "ERROR: " + (request != null && request.getUrl() != null ? request.getUrl().toString() : "unknown") + " code=" + error.getErrorCode() + " desc=" + error.getDescription();
-                Log.e("AINav", msg);
-                errorLogs.add(msg);
+                Log.e("AINav", "Error: " + (request != null ? request.getUrl() : "") + " -> " + error.getDescription());
+                stopRefreshAnim();
             }
 
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 super.onReceivedError(view, errorCode, description, failingUrl);
-                String msg = "ERROR(deprecated): " + failingUrl + " code=" + errorCode + " desc=" + description;
-                Log.e("AINav", msg);
-                errorLogs.add(msg);
+                Log.e("AINav", "Error(dep): " + failingUrl + " -> " + description);
+                stopRefreshAnim();
             }
         });
 
-        // WebChromeClient with console logging
+        // WebChromeClient
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public boolean onConsoleMessage(ConsoleMessage cm) {
-                Log.i("AINav_JS", cm.messageLevel() + ": " + cm.message() + " [" + cm.sourceId() + ":" + cm.lineNumber() + "]");
+                Log.i("AINav_JS", cm.messageLevel() + ": " + cm.message());
                 return true;
             }
 
@@ -97,8 +138,67 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Load from serveo tunnel (works on old Android WebView where github.io is blocked)
+        // Load page
         webView.loadUrl("https://c46872d35aeba559-183-6-87-29.serveousercontent.com/clock-old.html");
+    }
+
+    private void doRefresh() {
+        if (isRefreshing) return;
+        isRefreshing = true;
+        startRefreshAnim();
+
+        // Clear WebView cache & storage
+        webView.clearCache(true);
+        webView.clearHistory();
+
+        // Clear localStorage via JavaScript
+        webView.evaluateJavascript(
+            "try{" +
+            "localStorage.removeItem('oc_wx');" +
+            "localStorage.removeItem('oc_news');" +
+            "localStorage.removeItem('oc_brief');" +
+            "localStorage.removeItem('oc_city');" +
+            "localStorage.removeItem('oc_clock_city');" +
+            "localStorage.removeItem('old_clock_wx');" +
+            "localStorage.removeItem('old_clock_city');" +
+            "}catch(e){}",
+            null
+        );
+
+        // Reload the page
+        webView.reload();
+
+        // Toast feedback
+        Toast.makeText(this, "已刷新", Toast.LENGTH_SHORT).show();
+
+        // Reset after 2 seconds
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                isRefreshing = false;
+                stopRefreshAnim();
+            }
+        }, 2000);
+    }
+
+    private void startRefreshAnim() {
+        RotateAnimation anim = new RotateAnimation(
+            0f, 360f,
+            Animation.RELATIVE_TO_SELF, 0.5f,
+            Animation.RELATIVE_TO_SELF, 0.5f
+        );
+        anim.setDuration(800);
+        anim.setRepeatCount(Animation.INFINITE);
+        refreshBtn.startAnimation(anim);
+    }
+
+    private void stopRefreshAnim() {
+        refreshBtn.clearAnimation();
+    }
+
+    private int dpToPx(int dp) {
+        float density = getResources().getDisplayMetrics().density;
+        return Math.round(dp * density);
     }
 
     @Override
@@ -157,9 +257,13 @@ public class MainActivity extends AppCompatActivity {
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
             );
         }
-        getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(visibility -> {
-            if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
-                hideSystemUI();
+        getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+            @Override
+            public void onSystemUiVisibilityChange(int visibility) {
+                if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+                    refreshBtn.setVisibility(View.VISIBLE);
+                    hideSystemUI();
+                }
             }
         });
     }
