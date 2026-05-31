@@ -67,6 +67,19 @@ h1{font-size:22px;font-weight:700;letter-spacing:-.01em;margin-bottom:4px}
 
 <!-- 2026-05-31 -->
 <div class="entry ver-fix">
+<div class="entry-date">2026-05-31 22:10</div>
+<div class="entry-title">
+<span class="entry-tag tag-fix">修复</span>
+时钟页面 JS 解析错误修复
+</div>
+<div class="entry-desc">
+clock.html: geolocation 回调函数中使用了 await 但未声明 async，导致整段 JS 解析失败。<br>
+移除 Google Fonts @import，国内网络被墙导致页面渲染卡住。<br>
+页脚版本号改为动态加载。
+</div>
+</div>
+
+<div class="entry ver-fix">
 <div class="entry-date">2026-05-31 21:05</div>
 <div class="entry-title">
 <span class="entry-tag tag-feat">系统</span>

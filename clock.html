@@ -9,7 +9,6 @@
 <title>毫秒时钟 · 天气 · 新闻</title>
 <link rel="icon" href="./icon.svg">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 :root{
 --sat:max(44px, env(safe-area-inset-top));
@@ -411,7 +410,7 @@ const cachedCity=loadCityCache();
 if(cachedCity)document.getElementById('cityName').textContent=cachedCity;
 const cachedW=loadWeatherCache();
 if(cachedW)renderWeather(cachedW);
-navigator.geolocation.getCurrentPosition(function(pos){
+navigator.geolocation.getCurrentPosition(async function(pos){
 const{latitude:lat,longitude:lon}=pos.coords;
 try{await fetchFreshWeather(lat,lon);}catch(e){if(!cachedW)document.getElementById('weatherDesc').textContent='加载失败';}
 },function(err){if(!cachedW){document.getElementById('cityName').textContent='无位置权限';document.getElementById('weatherDesc').textContent='需要位置';}},{enableHighAccuracy:false,timeout:5000,maximumAge:600000});
@@ -488,9 +487,9 @@ setInterval(tickNews,1000);
 initNews();
 setInterval(async()=>{const f=await fetchNewsFresh();if(f.length){newsItems=f;newsIdx=0;newsTimerSec=0;renderNews();saveNewsCache(f);}},1800000);
 </script>
-<script>(async function(){try{const r=await fetch('./version.json?t='+Date.now(),{cache:'no-store',signal:AbortSignal.timeout(3000)});const d=await r.json();const cur=localStorage.getItem('site_version');if(cur&&cur!==d.version){location.reload(true)}localStorage.setItem('site_version',d.version)}catch(e){}})();</script>
+<script>(async function(){try{const r=await fetch('./version.json?t='+Date.now(),{cache:'no-store',signal:AbortSignal.timeout(3000)});const d=await r.json();document.getElementById('verLabel').textContent='v'+d.version;document.getElementById('verTime').textContent=d.updated;const cur=localStorage.getItem('site_version');if(cur&&cur!==d.version){location.reload(true)}localStorage.setItem('site_version',d.version)}catch(e){}})();</script>
 <div style="text-align:center;padding:8px 0 4px;font-size:10px;color:var(--tx4);line-height:1.6">
-<a href="changelog.html" style="color:var(--tx4);text-decoration:none">v1.4</a> · Worker 不通时自动降级直连第三方 API，国内网络可用 · 2026-05-31 18:05
+<a href="changelog.html" style="color:var(--tx4);text-decoration:none" id="verLabel">v-</a> · <span id="verTime">--</span> · 时钟
 </div>
 </body>
 </html>
