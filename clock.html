@@ -367,7 +367,7 @@ document.getElementById('tomorrowCard').innerHTML=`
 <div class="ic-sub">${wTxt(d.weather_code[1])}</div></div>`;
 }
 
-const API_BASE='https://true-vans-hammer.loca.lt';
+const API_BASE='http://192.168.31.5:8765';
 
 async function tryWorkerOrDirect(workerPath,directUrl,timeoutMs){
 // Try Worker first (short timeout)
