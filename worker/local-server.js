@@ -180,11 +180,71 @@ async function handle(req) {
       return ok({ papers, summary: aiData.choices?.[0]?.message?.content || "" });
     }
 
-    return ok({ routes: ["/api/weather", "/api/news", "/api/geocode", "/api/papers", "/api/summary", "/api/papers-summary"] });
+    // ── News AI Summary (cached, refreshed every 15 min) ──
+	    if (path === "/api/news-summary") {
+	      const cached = cacheGet("news-summary", 900_000);
+	      if (cached) return ok(cached);
+	      return ok({ summary: "新闻简报生成中，请稍后再试...", updated: new Date().toISOString() });
+	    }
+
+	    return ok({ routes: ["/api/weather", "/api/news", "/api/geocode", "/api/papers", "/api/summary", "/api/papers-summary", "/api/news-summary"] });
   } catch (e) {
     return err("internal error", 500);
   }
 }
+
+
+// ── Background: refresh news AI summary every 15 minutes ──
+async function refreshNewsSummary() {
+  try {
+    console.log("[news-summary] fetching news...");
+    const sources = [
+      { url: "https://api.vvhan.com/api/hotlist/news", parse: d => (d.data || []).map(i => ({ title: i.title, source: i.source || "综合" })) },
+      { url: "https://api.oioweb.cn/api/top/hot", parse: d => (d.result || []).map(i => ({ title: i.title || i.name, source: i.desc || "热榜" })) },
+    ];
+    const results = await Promise.all(sources.map(async s => {
+      try { const r = await fetch(s.url, { signal: AbortSignal.timeout(5000) }); return r.ok ? (s.parse(await r.json()) || []) : []; } catch (_) { return []; }
+    }));
+    const seen = new Set(), merged = [];
+    for (const items of results) for (const item of items) { const k = item.title.slice(0, 10); if (!seen.has(k)) { seen.add(k); merged.push(item); } }
+    const topNews = merged.slice(0, 15);
+
+    if (topNews.length === 0) { console.log("[news-summary] no news fetched"); return; }
+
+    const titles = topNews.map((n, i) => `${i + 1}. [${n.source}] ${n.title}`).join("\n");
+    console.log(`[news-summary] got ${topNews.length} items, sending to DeepSeek...`);
+
+    const r = await fetch("https://api.deepseek.com/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${DEEPSEEK_KEY}` },
+      body: JSON.stringify({
+        model: "deepseek-chat",
+        messages: [{
+          role: "system",
+          content: "你是一个专业的中文新闻简报编辑。用户会给你当前热门新闻标题列表，请用3-5句话概括当前的主要新闻热点话题，然后列出5-7条最重要的新闻做一句话摘要。风格简洁有力，适合快速阅读。纯文本输出，不要markdown格式。控制在300字以内。"
+        }, {
+          role: "user",
+          content: `以下是当前热门新闻标题，请生成新闻简报：\n\n${titles}`
+        }],
+        temperature: 0.4, max_tokens: 600
+      }),
+    });
+
+    if (!r.ok) { console.log(`[news-summary] DeepSeek error: ${r.status}`); return; }
+    const data = await r.json();
+    const summary = data.choices?.[0]?.message?.content || "";
+    if (!summary) { console.log("[news-summary] empty response"); return; }
+
+    cacheSet("news-summary", { summary, updated: new Date().toISOString(), newsCount: topNews.length });
+    console.log(`[news-summary] updated (${summary.length} chars, ${topNews.length} news)`);
+  } catch (e) {
+    console.log(`[news-summary] error: ${e.message}`);
+  }
+}
+
+// Run immediately, then every 15 minutes
+refreshNewsSummary();
+setInterval(refreshNewsSummary, 900_000);
 
 const PORT = parseInt(Deno.env.get("PORT") || "8765");
 console.log(`AI Nav API server running on http://localhost:${PORT}`);

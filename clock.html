@@ -120,6 +120,13 @@ padding:8px 6px;text-align:center;backdrop-filter:blur(20px);-webkit-backdrop-fi
 .info-card .ic-num-label{font-size:10px;color:var(--tx3);}
 
 /* News */
+.ai-brief{flex-shrink:0;padding:12px 14px;border-color:rgba(168,85,247,.15);}
+.ai-brief .ab-header{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.ai-brief .ab-dot{width:5px;height:5px;border-radius:50%;background:var(--purple);animation:pulse-dot 2s ease-in-out infinite}
+.ai-brief .ab-label{font-size:10px;font-weight:600;color:#a855f7;text-transform:uppercase;letter-spacing:.06em}
+.ai-brief .ab-time{font-size:9px;color:var(--tx4);margin-left:auto}
+.ai-brief .ab-text{font-size:12px;color:var(--tx2);line-height:1.65}
+
 .news-card{flex-shrink:0;padding:10px 14px;min-height:0;}
 .news-card .ns-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
 .news-card .ns-source{font-size:9px;font-weight:500;color:var(--tx4);text-transform:uppercase;letter-spacing:.06em;}
@@ -181,6 +188,11 @@ display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hi
 <span class="ic-icon">🎌</span>
 <div class="ic-body" id="holidayBody"><div class="ic-label">节日倒计时</div><div class="ic-main">加载中...</div></div>
 </div>
+</div>
+
+<div class="card ai-brief" id="aiBrief" style="display:none">
+<div class="ab-header"><div class="ab-dot"></div><span class="ab-label">AI 新闻简报</span><span class="ab-time" id="abTime"></span></div>
+<div class="ab-text" id="abText">加载中...</div>
 </div>
 
 <div class="card news-card" id="newsCard">
@@ -481,6 +493,22 @@ document.querySelector('#newsCard .ns-text').textContent='新闻加载失败，�
 }
 
 setInterval(tickNews,1000);
+
+// AI Brief
+async function updateAIBrief(){
+try{
+const r=await fetch(API_BASE+'/api/news-summary');
+if(!r.ok)return;
+const d=await r.json();
+if(!d.summary||d.summary==='新闻简报生成中，请稍后再试...')return;
+document.getElementById('aiBrief').style.display='';
+document.getElementById('abText').textContent=d.summary;
+const t=new Date(d.updated);
+document.getElementById('abTime').textContent=t.getHours().toString().padStart(2,'0')+':'+t.getMinutes().toString().padStart(2,'0');
+}catch(e){}
+}
+updateAIBrief();
+setInterval(updateAIBrief,900000);
 initNews();
 setInterval(async()=>{const f=await fetchNewsFresh();if(f.length){newsItems=f;newsIdx=0;newsTimerSec=0;renderNews();saveNewsCache(f);}},1800000);
 </script>
