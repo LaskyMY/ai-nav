@@ -1,25 +1,17 @@
 package com.ainav.browser;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
-import android.webkit.ConsoleMessage;
 import android.webkit.GeolocationPermissions;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -35,13 +27,13 @@ public class MainActivity extends AppCompatActivity {
     private Button refreshBtn;
     private boolean isRefreshing = false;
     private Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable hideBtnRunnable;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // FrameLayout: WebView + floating refresh button
         FrameLayout root = new FrameLayout(this);
 
         webView = new WebView(this);
@@ -51,29 +43,53 @@ public class MainActivity extends AppCompatActivity {
         );
         root.addView(webView, wvParams);
 
-        // Native refresh button
+        // Semi-transparent refresh button — hidden by default
         refreshBtn = new Button(this);
-        refreshBtn.setText("↻"); // ↻ unicode refresh symbol
-        refreshBtn.setTextColor(Color.parseColor("#00d2ff"));
-        refreshBtn.setTextSize(20);
+        refreshBtn.setText("↻"); // ↻
+        refreshBtn.setTextColor(Color.argb(180, 0, 210, 255)); // semi-transparent cyan
+        refreshBtn.setTextSize(22);
+        refreshBtn.setGravity(Gravity.CENTER);
+        refreshBtn.setPadding(0, 0, 0, 0);
+        refreshBtn.setIncludeFontPadding(false);
 
-        // Round button background
         GradientDrawable bg = new GradientDrawable();
         bg.setShape(GradientDrawable.OVAL);
-        bg.setColor(Color.parseColor("#1A00d2ff"));
-        bg.setStroke(1, Color.parseColor("#3300d2ff"));
+        bg.setColor(Color.argb(60, 0, 210, 255)); // very transparent
+        bg.setStroke(1, Color.argb(60, 0, 210, 255));
         refreshBtn.setBackground(bg);
 
-        int btnSize = dpToPx(40);
+        int btnSize = dpToPx(42);
         FrameLayout.LayoutParams btnParams = new FrameLayout.LayoutParams(btnSize, btnSize);
         btnParams.gravity = Gravity.BOTTOM | Gravity.END;
-        btnParams.setMargins(0, 0, dpToPx(12), dpToPx(12));
+        btnParams.setMargins(0, 0, dpToPx(10), dpToPx(10));
         root.addView(refreshBtn, btnParams);
+
+        refreshBtn.setVisibility(View.GONE); // hidden initially
 
         refreshBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                doRefresh();
+                if (isRefreshing) return;
+                isRefreshing = true;
+                refreshBtn.setAlpha(0.4f);
+                webView.reload();
+                Toast.makeText(MainActivity.this, "已刷新", Toast.LENGTH_SHORT).show();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        isRefreshing = false;
+                        refreshBtn.setAlpha(1.0f);
+                        scheduleHideBtn();
+                    }
+                }, 1500);
+            }
+        });
+
+        // Tap anywhere on screen to show refresh button
+        root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showRefreshBtn();
             }
         });
 
@@ -94,87 +110,42 @@ public class MainActivity extends AppCompatActivity {
         s.setSupportZoom(false);
         s.setBuiltInZoomControls(false);
 
-        // WebViewClient
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-                Log.i("AINav", "Loading: " + url);
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                Log.i("AINav", "Loaded: " + url);
-                stopRefreshAnim();
-            }
-
-            @Override
-            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                super.onReceivedError(view, request, error);
-                Log.e("AINav", "Error: " + (request != null ? request.getUrl() : "") + " -> " + error.getDescription());
-                stopRefreshAnim();
-            }
-
-            @Override
-            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                super.onReceivedError(view, errorCode, description, failingUrl);
-                Log.e("AINav", "Error(dep): " + failingUrl + " -> " + description);
-                stopRefreshAnim();
-            }
-        });
-
-        // WebChromeClient
+        webView.setWebViewClient(new WebViewClient());
         webView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public boolean onConsoleMessage(ConsoleMessage cm) {
-                Log.i("AINav_JS", cm.messageLevel() + ": " + cm.message());
-                return true;
-            }
-
             @Override
             public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
                 callback.invoke(origin, true, false);
             }
         });
 
-        // Load page
         webView.loadUrl("https://c46872d35aeba559-183-6-87-29.serveousercontent.com/clock-old.html");
     }
 
-    private void doRefresh() {
-        if (isRefreshing) return;
-        isRefreshing = true;
-        startRefreshAnim();
-        webView.reload();
-        Toast.makeText(this, "已刷新", Toast.LENGTH_SHORT).show();
-        handler.postDelayed(new Runnable() {
+    private void showRefreshBtn() {
+        refreshBtn.setVisibility(View.VISIBLE);
+        refreshBtn.setAlpha(0.0f);
+        refreshBtn.animate().alpha(1.0f).setDuration(200).start();
+        scheduleHideBtn();
+    }
+
+    private void scheduleHideBtn() {
+        if (hideBtnRunnable != null) handler.removeCallbacks(hideBtnRunnable);
+        hideBtnRunnable = new Runnable() {
             @Override
             public void run() {
-                isRefreshing = false;
-                stopRefreshAnim();
+                refreshBtn.animate().alpha(0.0f).setDuration(400).withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshBtn.setVisibility(View.GONE);
+                    }
+                }).start();
             }
-        }, 2000);
-    }
-
-    private void startRefreshAnim() {
-        RotateAnimation anim = new RotateAnimation(
-            0f, 360f,
-            Animation.RELATIVE_TO_SELF, 0.5f,
-            Animation.RELATIVE_TO_SELF, 0.5f
-        );
-        anim.setDuration(800);
-        anim.setRepeatCount(Animation.INFINITE);
-        refreshBtn.startAnimation(anim);
-    }
-
-    private void stopRefreshAnim() {
-        refreshBtn.clearAnimation();
+        };
+        handler.postDelayed(hideBtnRunnable, 3000);
     }
 
     private int dpToPx(int dp) {
-        float density = getResources().getDisplayMetrics().density;
-        return Math.round(dp * density);
+        return Math.round(dp * getResources().getDisplayMetrics().density);
     }
 
     @Override
@@ -201,9 +172,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (webView != null) {
-            webView.destroy();
-        }
+        if (webView != null) webView.destroy();
         super.onDestroy();
     }
 
@@ -219,9 +188,7 @@ public class MainActivity extends AppCompatActivity {
             WindowInsetsController ctrl = getWindow().getInsetsController();
             if (ctrl != null) {
                 ctrl.hide(WindowInsets.Type.systemBars());
-                ctrl.setSystemBarsBehavior(
-                    WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                );
+                ctrl.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
             }
         } else {
             getWindow().getDecorView().setSystemUiVisibility(
@@ -236,10 +203,7 @@ public class MainActivity extends AppCompatActivity {
         getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
             @Override
             public void onSystemUiVisibilityChange(int visibility) {
-                if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
-                    refreshBtn.setVisibility(View.VISIBLE);
-                    hideSystemUI();
-                }
+                if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) hideSystemUI();
             }
         });
     }

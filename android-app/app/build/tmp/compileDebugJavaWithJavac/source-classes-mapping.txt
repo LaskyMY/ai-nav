@@ -3,7 +3,9 @@ com/ainav/browser/BuildConfig.java
 com/ainav/browser/MainActivity.java
  com.ainav.browser.MainActivity
  com.ainav.browser.MainActivity$1
+ com.ainav.browser.MainActivity$1$1
  com.ainav.browser.MainActivity$2
  com.ainav.browser.MainActivity$3
  com.ainav.browser.MainActivity$4
+ com.ainav.browser.MainActivity$4$1
  com.ainav.browser.MainActivity$5
