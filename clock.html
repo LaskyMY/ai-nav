@@ -64,10 +64,7 @@ transition:all .3s var(--ease);
 .clock-section{flex-shrink:0;text-align:center;padding:0;}
 .time-row{display:flex;align-items:baseline;justify-content:center;gap:0;}
 .time-hms{font-family:'Inter','SF Pro Display',-apple-system,sans-serif;font-size:52px;font-weight:700;
-font-variant-numeric:tabular-nums;letter-spacing:.03em;color:var(--tx);
-background:linear-gradient(180deg,rgba(255,255,255,.98) 0%,rgba(255,255,255,.78) 100%);
--webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-text-shadow:0 0 50px var(--cyan3),0 0 100px var(--cyan3);
+font-variant-numeric:tabular-nums;letter-spacing:.03em;color:rgba(255,255,255,.95); text-shadow:0 0 30px rgba(0,229,255,.3),0 0 80px rgba(0,229,255,.15);
 line-height:1;
 }
 .time-ms{font-family:'Inter','SF Pro Display',-apple-system,sans-serif;font-size:24px;font-weight:600;
@@ -252,8 +249,8 @@ for(let lon=-150;lon<=150;lon+=30){const[x]=ll2xy(lon,0,W,H);ctx.beginPath();ctx
 ctx.fillStyle='rgba(0,229,255,.06)';ctx.strokeStyle='rgba(0,229,255,.1)';ctx.lineWidth=.6;
 for(const poly of Object.values(continents)){
 ctx.beginPath();
-if(poly[0]&&Array.isArray(poly[0])&&Array.isArray(poly[0][0])){poly=poly[0];}
-for(let i=0;i<poly.length;i++){const[x,y]=ll2xy(poly[i][0],poly[i][1],W,H);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}
+var pts=poly;if(pts[0]&&Array.isArray(pts[0])&&Array.isArray(pts[0][0])){pts=pts[0];}
+for(let i=0;i<pts.length;i++){const[x,y]=ll2xy(pts[i][0],pts[i][1],W,H);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}
 ctx.closePath();ctx.fill();ctx.stroke();
 }
 
@@ -487,7 +484,7 @@ setInterval(tickNews,1000);
 initNews();
 setInterval(async()=>{const f=await fetchNewsFresh();if(f.length){newsItems=f;newsIdx=0;newsTimerSec=0;renderNews();saveNewsCache(f);}},1800000);
 </script>
-<script>(async function(){try{const r=await fetch('./version.json?t='+Date.now(),{cache:'no-store',signal:AbortSignal.timeout(3000)});const d=await r.json();document.getElementById('verLabel').textContent='v'+d.version;document.getElementById('verTime').textContent=d.updated;const cur=localStorage.getItem('site_version');if(cur&&cur!==d.version){location.reload(true)}localStorage.setItem('site_version',d.version)}catch(e){}})();</script>
+<script>(async function(){try{const r=await fetch('./version.json?t='+Date.now(),{cache:'no-store',signal:AbortSignal.timeout(3000)});const d=await r.json();document.getElementById('verLabel').textContent='v'+d.version;document.getElementById('verTime').textContent=d.updated;const cur=localStorage.getItem('site_version');localStorage.setItem('site_version',d.version);if(cur&&cur!==d.version){location.reload(true)}}catch(e){}})();</script>
 <div style="text-align:center;padding:8px 0 4px;font-size:10px;color:var(--tx4);line-height:1.6">
 <a href="changelog.html" style="color:var(--tx4);text-decoration:none" id="verLabel">v-</a> · <span id="verTime">--</span> · 时钟
 </div>
