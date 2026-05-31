@@ -68,18 +68,19 @@ async function handle(req) {
       const cached = cacheGet("news", 120_000);
       if (cached) return ok(cached);
       const sources = [
+        { url: "https://feeds.npr.org/1001/rss.xml", type: "xml", parse: r => { const items = [...r.matchAll(/<item>([\s\S]*?)<\/item>/g)]; return items.slice(0, 20).map(m => { const t = (m[1].match(/<title>([^<]+)<\/title>/) || [])[1] || ""; return { title: t.replace(/&#39;/g,"'").replace(/&apos;/g,"'").replace(/&amp;/g,"&").replace(/&quot;/g,'"'), source: "NPR" }; }); } },
         { url: "https://api.vvhan.com/api/hotlist/news", parse: d => (d.data || []).map(i => ({ title: i.title, source: i.source || "综合" })) },
         { url: "https://api.oioweb.cn/api/top/hot", parse: d => (d.result || []).map(i => ({ title: i.title || i.name, source: i.desc || "热榜" })) },
       ];
       const results = await Promise.all(sources.map(async s => {
-        try { const r = await fetch(s.url, { signal: AbortSignal.timeout(4000) }); return r.ok ? (s.parse(await r.json()) || []) : []; } catch (_) { return []; }
+        try { const r = await fetch(s.url, { signal: AbortSignal.timeout(4000) }); if (!r.ok) return []; const raw = s.type === "xml" ? await r.text() : await r.json(); return s.parse(raw) || []; } catch (_) { return []; }
       }));
       const seen = new Set(), merged = [];
       for (const items of results) for (const item of items) { const k = item.title.slice(0, 10); if (!seen.has(k)) { seen.add(k); merged.push(item); } }
       // HN fallback when Chinese sources unreachable
       if (merged.length === 0) {
         try {
-          const idsResp = await fetch("https://hacker-news.firebaseio.com/v0/topstories.json", { signal: AbortSignal.timeout(5000) });
+          const idsResp = await fetch("https://hacker-news.firebaseio.com/v0/topstories.json", { signal: AbortSignal.timeout(8000) });
           if (idsResp.ok) {
             const ids = await idsResp.json();
             const stories = await Promise.all(ids.slice(0, 20).map(async id => {
@@ -214,11 +215,12 @@ async function refreshNewsSummary() {
   try {
     console.log("[news-summary] fetching news...");
     const sources = [
+      { url: "https://feeds.npr.org/1001/rss.xml", type: "xml", parse: r => { const items = [...r.matchAll(/<item>([\s\S]*?)<\/item>/g)]; return items.slice(0, 20).map(m => { const t = (m[1].match(/<title>([^<]+)<\/title>/) || [])[1] || ""; return { title: t.replace(/&#39;/g,"'").replace(/&apos;/g,"'").replace(/&amp;/g,"&").replace(/&quot;/g,'"'), source: "NPR" }; }); } },
       { url: "https://api.vvhan.com/api/hotlist/news", parse: d => (d.data || []).map(i => ({ title: i.title, source: i.source || "综合" })) },
       { url: "https://api.oioweb.cn/api/top/hot", parse: d => (d.result || []).map(i => ({ title: i.title || i.name, source: i.desc || "热榜" })) },
     ];
     const results = await Promise.all(sources.map(async s => {
-      try { const r = await fetch(s.url, { signal: AbortSignal.timeout(5000) }); return r.ok ? (s.parse(await r.json()) || []) : []; } catch (_) { return []; }
+      try { const r = await fetch(s.url, { signal: AbortSignal.timeout(8000) }); if (!r.ok) return []; const raw = s.type === "xml" ? await r.text() : await r.json(); return s.parse(raw) || []; } catch (_) { return []; }
     }));
     const seen = new Set(), merged = [];
     for (const items of results) for (const item of items) { const k = item.title.slice(0, 10); if (!seen.has(k)) { seen.add(k); merged.push(item); } }
@@ -228,7 +230,7 @@ async function refreshNewsSummary() {
 	    if (topNews.length === 0) {
 	      console.log("[news-summary] Chinese sources empty, trying HackerNews...");
 	      try {
-	        const idsResp = await fetch("https://hacker-news.firebaseio.com/v0/topstories.json", { signal: AbortSignal.timeout(5000) });
+	        const idsResp = await fetch("https://hacker-news.firebaseio.com/v0/topstories.json", { signal: AbortSignal.timeout(8000) });
 	        if (idsResp.ok) {
 	          const ids = await idsResp.json();
 	          const topIds = ids.slice(0, 15);
