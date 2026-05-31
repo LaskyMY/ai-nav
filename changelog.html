@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>更新日志</title>
+<style>
+:root{
+--bg:#050510;--card-bg:rgba(255,255,255,.04);--card-border:rgba(255,255,255,.07);
+--cyan:#00e5ff;--cyan2:rgba(0,229,255,.5);--cyan3:rgba(0,229,255,.12);
+--purple:#a855f7;--purple3:rgba(168,85,247,.12);
+--amber:#f59e0b;--amber3:rgba(245,158,11,.12);
+--green:#10b981;--green3:rgba(16,185,129,.12);
+--pink:#ec4899;--pink3:rgba(236,72,153,.12);
+--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.28);--tx4:rgba(255,255,255,.1);
+--r:18px;--r2:12px;--ease:cubic-bezier(.4,0,.2,1);
+--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow-x:hidden}
+body{
+display:flex;flex-direction:column;
+background:var(--bg);color:var(--tx);font-size:14px;line-height:1.5;
+font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;
+padding:var(--sat) 14px calc(24px + var(--sab));
+max-width:520px;margin:0 auto;width:100%;
+-webkit-font-smoothing:antialiased;
+}
+.back-btn{
+display:inline-flex;align-items:center;gap:3px;color:var(--cyan);
+font-size:12px;font-weight:600;text-decoration:none;padding:6px 14px;
+border-radius:16px;background:var(--cyan3);border:1px solid rgba(0,229,255,.08);
+align-self:flex-start;margin-bottom:12px;
+}
+h1{font-size:22px;font-weight:700;letter-spacing:-.01em;margin-bottom:4px}
+.sub{font-size:12px;color:var(--tx3);margin-bottom:20px}
+
+.timeline{position:relative;padding-left:20px}
+.timeline::before{content:'';position:absolute;left:6px;top:4px;bottom:4px;width:1px;background:var(--tx4)}
+
+.entry{position:relative;margin-bottom:22px}
+.entry::before{content:'';position:absolute;left:-16px;top:6px;width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan2)}
+.entry.ver-major::before{background:var(--purple);box-shadow:0 0 8px var(--purple)}
+.entry.ver-page::before{background:var(--green);box-shadow:0 0 8px var(--green)}
+.entry.ver-fix::before{background:var(--amber);box-shadow:0 0 8px var(--amber)}
+
+.entry-date{font-size:10px;color:var(--tx3);font-weight:500;margin-bottom:4px;letter-spacing:.03em}
+.entry-title{font-size:14px;font-weight:600;color:var(--tx);margin-bottom:4px}
+.entry-desc{font-size:12px;color:var(--tx2);line-height:1.6}
+.entry-tag{display:inline-block;font-size:9px;font-weight:600;padding:1px 6px;border-radius:4px;margin-right:4px;vertical-align:middle}
+.tag-api{background:var(--purple3);color:var(--purple)}
+.tag-page{background:var(--green3);color:var(--green)}
+.tag-fix{background:var(--amber3);color:var(--amber)}
+.tag-feat{background:var(--cyan3);color:var(--cyan)}
+
+.footer{text-align:center;font-size:10px;color:var(--tx4);padding:20px 0 0}
+</style>
+</head>
+<body>
+
+<a href="index.html" class="back-btn">← 返回主页</a>
+
+<h1>更新日志</h1>
+<p class="sub">每次迭代的记录，最近更新在上方</p>
+
+<div class="timeline">
+
+<!-- 2026-05-31 -->
+<div class="entry ver-major">
+<div class="entry-date">2026.05.31</div>
+<div class="entry-title">
+<span class="entry-tag tag-api">API</span>
+Cloudflare Worker 后端框架搭建
+</div>
+<div class="entry-desc">
+部署 ai-nav-api Worker，收敛天气/新闻/地理编码/论文检索/AI 总结为统一 API 网关。<br>
+6 个端点：weather, news, geocode, papers, summary, papers-summary。<br>
+DeepSeek API Key 通过 CF Secret 安全存储，AI 端点加 IP 级别限流保护。
+</div>
+</div>
+
+<div class="entry ver-page">
+<div class="entry-date">2026.05.31</div>
+<div class="entry-title">
+<span class="entry-tag tag-page">新页面</span>
+前沿论文速览 papers.html
+</div>
+<div class="entry-desc">
+arXiv 论文关键词检索 + DeepSeek AI 自动生成中文趋势分析。<br>
+快速标签：大语言模型、AI Agent、计算机视觉、强化学习、扩散模型、图神经网络。
+</div>
+</div>
+
+<div class="entry ver-page">
+<div class="entry-date">2026.05.31</div>
+<div class="entry-title">
+<span class="entry-tag tag-fix">优化</span>
+clock.html v1.1 — API 迁移
+</div>
+<div class="entry-desc">
+毫秒时钟页面的天气、新闻、地理编码全部从浏览器直调改为走 CF Worker 后端。<br>
+减少浏览器端第三方 API 暴露，Worker 层统一缓存加速。
+</div>
+</div>
+
+<!-- 2026-05-30 -->
+<div class="entry ver-major">
+<div class="entry-date">2026.05.30</div>
+<div class="entry-title">
+<span class="entry-tag tag-page">新页面</span>
+毫秒时钟仪表盘 clock.html v1.0
+</div>
+<div class="entry-desc">
+iPhone 竖屏单页仪表盘：毫秒级时钟、实时天气（当前+未来3小时+明天）、<br>
+每分钟轮播中文新闻、节日倒计时、世界地图日夜间动画背景、15 个主要城市标记。<br>
+无滚动卡片布局，小程序安全区适配，localStorage 新闻缓存。
+</div>
+</div>
+
+<div class="entry ver-page">
+<div class="entry-date">2026.05.30</div>
+<div class="entry-title">
+<span class="entry-tag tag-page">新页面</span>
+流体粘度科普 viscosity.html
+</div>
+<div class="entry-desc">
+7 个教学章节 + 4 个交互 Canvas + 2 个小游戏（quiz + spot matching）。<br>
+涵盖牛顿粘性定律、动力/运动粘度、超流体、温度影响等。
+</div>
+</div>
+
+<!-- Earlier -->
+<div class="entry ver-page">
+<div class="entry-date">2026.05.29</div>
+<div class="entry-title">
+<span class="entry-tag tag-page">新页面</span>
+因果关系科普 causality.html
+</div>
+<div class="entry-desc">
+基于 Judea Pearl《The Book of Why》+ B站漫士视频。<br>
+5 个章节交互可视化：相关≠因果、辛普森悖论、因果图 DAG、混杂因子、do-算子。<br>
+2 个小游戏：因果侦探 + 混杂猎手。
+</div>
+</div>
+
+<div class="entry ver-page">
+<div class="entry-date">2026.05.29</div>
+<div class="entry-title">
+<span class="entry-tag tag-page">新页面</span>
+注意力机制 attention.html · 宝石耐久度 gemstones.html
+</div>
+<div class="entry-desc">
+attention.html：Q·K·V、Softmax、多头注意力直观理解。<br>
+gemstones.html：26 种宝石 S-F 级耐久排名，硬度/韧性/解理三维评估。
+</div>
+</div>
+
+<div class="entry ver-page">
+<div class="entry-date">2026.05.28</div>
+<div class="entry-title">
+<span class="entry-tag tag-page">新页面</span>
+红蓝眼谜题 logic-puzzle.html · 伯特兰悖论 bertrand-paradox.html · 游戏数学 game-theory.html · 音乐数学 music-math.html
+</div>
+<div class="entry-desc">
+4 个数学与逻辑科普页面，均有交互可视化和小游戏。
+</div>
+</div>
+
+<div class="entry ver-major">
+<div class="entry-date">2026.05</div>
+<div class="entry-title">
+<span class="entry-tag tag-feat">系统</span>
+mini-games.js 游戏库 + build_games.py 注入系统
+</div>
+<div class="entry-desc">
+统一 8 种游戏类型（quiz4, spot, timeline, sort, fill, match, wordfind, codebreak），<br>
+Python 脚本批量注入到所有页面。
+</div>
+</div>
+
+<div class="entry ver-major">
+<div class="entry-date">2026.05</div>
+<div class="entry-title">
+<span class="entry-tag tag-feat">系统</span>
+普行男养成计划 22 个页面
+</div>
+<div class="entry-desc">
+外形篇 7 集 + 能力篇 9 集 + 思想行为篇 3 集 + 总览页 + Python 批量生成脚本。
+</div>
+</div>
+
+<div class="entry ver-major">
+<div class="entry-date">2026.05</div>
+<div class="entry-title">
+<span class="entry-tag tag-feat">系统</span>
+液态玻璃设计系统 + PWA + iOS 打磨
+</div>
+<div class="entry-desc">
+CSS 变量驱动的 glassmorphism 设计系统，所有页面统一迁移。<br>
+PWA Service Worker 离线缓存，iOS Tab Bar 风格底部导航，3D 倾斜与鼠标光晕效果。
+</div>
+</div>
+
+<div class="entry ver-major">
+<div class="entry-date">2026.05</div>
+<div class="entry-title">
+<span class="entry-tag tag-feat">系统</span>
+知识百科 knowledge.html 上线
+</div>
+<div class="entry-desc">
+统一的知识导航 hub 页，心理与认知 / 数学与AI / 科学常识 / 自我提升四大分类。
+</div>
+</div>
+
+<div class="entry ver-major">
+<div class="entry-date">2026.05</div>
+<div class="entry-title">
+<span class="entry-tag tag-feat">系统</span>
+AI Nav 主站重建
+</div>
+<div class="entry-desc">
+从零重建 AI Nav 网站：液态玻璃风格 + 30+ AI 工具导航 + 论文追踪 + 搜索。<br>
+VFX 部署指南、概率学教学、轨道模拟、涌现复杂性、文本渲染管线、LLM 解剖学等页面陆续上线。
+</div>
+</div>
+
+</div>
+
+<div class="footer">持续迭代中 · ai-nav</div>
+
+</body>
+</html>
