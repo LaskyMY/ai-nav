@@ -132,15 +132,12 @@ animation:spin .6s linear infinite;vertical-align:middle;margin:0 2px;}
 <!-- Refresh handled by native Android button -->
 
 <script>
-// ===== fetchWithTimeout =====
-function fetchWithTimeout(url,ms){
-  return new Promise(function(resolve,reject){
-    var t=setTimeout(function(){reject(new Error('timeout'));},ms);
-    fetch(url).then(function(r){clearTimeout(t);resolve(r);},function(e){clearTimeout(t);reject(e);});
-  });
-}
-
 var API='https://c46872d35aeba559-183-6-87-29.serveousercontent.com';
+
+// Simple fetch that always resolves (null on error)
+function safeFetch(url){
+  return fetch(url).then(function(r){return r.ok?r:null;}).catch(function(){return null;});
+}
 var WX={0:'晴',1:'多云',2:'阴',3:'阴',45:'雾',48:'雾',51:'雨',53:'雨',55:'雨',61:'雨',63:'雨',65:'雨',71:'雪',73:'雪',75:'雪',77:'雪',80:'雨',81:'雨',82:'雨',85:'雪',86:'雪',95:'雷',96:'雷',97:'雷'};
 var WXN={0:'晴天',1:'少云',2:'多云',3:'阴天',45:'雾',48:'霜雾',51:'小雨',53:'小雨',55:'中雨',61:'小雨',63:'中雨',65:'大雨',71:'小雪',73:'中雪',75:'大雪',77:'雪',80:'阵雨',81:'阵雨',82:'暴雨',85:'阵雪',86:'阵雪',95:'雷暴',96:'雷暴',97:'强雷暴'};
 
@@ -257,14 +254,14 @@ function lunarStr(d){var l=lunarDay(d.getFullYear(),d.getMonth(),d.getDate());re
 var wxData=null;
 
 function fetchWeather(){
-  fetchWithTimeout(API+'/api/geocode?lat=23.13&lon=113.26',4000)
+  safeFetch(API+'/api/geocode?lat=23.13&lon=113.26',4000)
     .then(function(r){return r.ok?r.json():null;})
     .then(function(d){
       if(!d)return;var a=d.address||d,c=a.city||a.town||a.county||'';
       if(c){document.getElementById('c1city').textContent=c;save('city',c);}
     }).catch(function(){});
 
-  fetchWithTimeout(API+'/api/weather?lat=23.13&lon=113.26',8000)
+  safeFetch(API+'/api/weather?lat=23.13&lon=113.26',8000)
     .then(function(r){return r.ok?r.json():null;})
     .then(function(w){
       if(!w||!w.current)throw new Error('no data');
@@ -305,7 +302,7 @@ function buildWxPages(){
 // ===== Card 3: News flip =====
 var nsData=[];
 function fetchNews(){
-  fetchWithTimeout(API+'/api/news',8000)
+  safeFetch(API+'/api/news',8000)
     .then(function(r){return r.ok?r.json():[];})
     .then(function(d){
       if(d&&d.length){nsData=d;save('news',{d:d,ts:Date.now()});buildNsPages();}
@@ -326,7 +323,7 @@ function buildNsPages(){
 var briefSections=[];
 
 function fetchBrief(){
-  fetchWithTimeout(API+'/api/news-summary',8000)
+  safeFetch(API+'/api/news-summary',8000)
     .then(function(r){return r.ok?r.json():null;})
     .then(function(d){
       if(!d||!d.summary)return;
