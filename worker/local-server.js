@@ -76,6 +76,21 @@ async function handle(req) {
       }));
       const seen = new Set(), merged = [];
       for (const items of results) for (const item of items) { const k = item.title.slice(0, 10); if (!seen.has(k)) { seen.add(k); merged.push(item); } }
+      // HN fallback when Chinese sources unreachable
+      if (merged.length === 0) {
+        try {
+          const idsResp = await fetch("https://hacker-news.firebaseio.com/v0/topstories.json", { signal: AbortSignal.timeout(5000) });
+          if (idsResp.ok) {
+            const ids = await idsResp.json();
+            const stories = await Promise.all(ids.slice(0, 20).map(async id => {
+              try { const r = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`, { signal: AbortSignal.timeout(3000) }); return r.ok ? await r.json() : null; } catch (_) { return null; }
+            }));
+            for (const s of stories) {
+              if (s && s.title) merged.push({ title: s.title, source: "HackerNews" });
+            }
+          }
+        } catch (_) {}
+      }
       const data = merged.slice(0, 20);
       cacheSet("news", data);
       return ok(data);
@@ -240,12 +255,33 @@ async function refreshNewsSummary() {
         model: "deepseek-chat",
         messages: [{
           role: "system",
-          content: "你是一个专业的中文新闻简报编辑。用户会给你当前热门新闻标题列表，请用3-5句话概括当前的主要新闻热点话题，然后列出5-7条最重要的新闻做一句话摘要。风格简洁有力，适合快速阅读。纯文本输出，不要markdown格式。控制在300字以内。"
+          content: `你是一个专业的中文新闻简报编辑。用户会给你当前热门新闻标题列表，请生成一份结构清晰的新闻简报。
+
+输出格式要求（使用markdown）：
+## 今日热点聚焦
+用2-3句话概括当前最重要的趋势
+
+## 要闻速览
+| 序号 | 新闻 | 要点 |
+|------|------|------|
+| 1 | 新闻标题 | 一句话要点 |
+
+## 深度关注 🔍
+选2-3条最重要的新闻，用加粗小标题分段，每段2-3句话分析
+
+## 一句话总结
+用一句话概括今天最值得关注的事
+
+注意：
+- 表格至少5行
+- 每个栏目标题用 ## 开头
+- 适当使用emoji增加可读性
+- 总体控制在500字以内`
         }, {
           role: "user",
           content: `以下是当前热门新闻标题，请生成新闻简报：\n\n${titles}`
         }],
-        temperature: 0.4, max_tokens: 600
+        temperature: 0.4, max_tokens: 800
       }),
     });
 
