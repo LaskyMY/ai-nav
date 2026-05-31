@@ -82,14 +82,14 @@ animation:spin .6s linear infinite;vertical-align:middle;margin:0 4px;}
 <div class="clock-wrap">
 <div><span class="time-hms" id="hms">--:--:--</span><span class="time-ms" id="ms">.---</span></div>
 <div class="date-line" id="dateLine">----年--月--日 周-</div>
-<div class="city-line" id="cityLine">📍 定位中...</div>
+<div class="city-line" id="cityLine">广东 广州</div>
 </div>
 
 <div class="card" id="wxCard" style="display:none">
 <div class="wx-row">
 <span class="wx-icon" id="wxIcon">--</span>
 <span class="wx-temp" id="wxTemp">--°</span>
-<span><div class="wx-desc" id="wxDesc">--</div><div class="wx-hum" id="wxHum">💧 --%</div></span>
+<span><div class="wx-desc" id="wxDesc">--</div><div class="wx-hum" id="wxHum">湿度 --%</div></span>
 </div>
 <div class="wx-hourly" id="wxHourly"></div>
 </div>
@@ -182,10 +182,10 @@ setInterval(updateClock, 50);
 updateClock();
 
 // ===== Weather =====
-var WX_CODES = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌧️',53:'🌧️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',77:'❄️',80:'🌦️',81:'🌦️',82:'🌦️',85:'❄️',86:'❄️',95:'⛈️',96:'⛈️',97:'⛈️'};
-var WX_NAMES = {0:'晴',1:'少云',2:'多云',3:'阴',45:'雾',48:'霜雾',51:'小毛毛雨',53:'毛毛雨',55:'大毛毛雨',61:'小雨',63:'中雨',65:'大雨',71:'小雪',73:'中雪',75:'大雪',77:'雪粒',80:'阵雨',81:'大阵雨',82:'强阵雨',85:'小阵雪',86:'大阵雪',95:'雷暴',96:'雷暴+冰雹',97:'强雷暴'};
+var WX_CODES = {0:'晴',1:'多云',2:'阴',3:'阴',45:'雾',48:'雾',51:'雨',53:'雨',55:'雨',61:'雨',63:'雨',65:'雨',71:'雪',73:'雪',75:'雪',77:'雪',80:'雨',81:'雨',82:'雨',85:'雪',86:'雪',95:'雷',96:'雷',97:'雷'};
+var WX_NAMES = {0:'晴天',1:'少云',2:'多云',3:'阴天',45:'雾',48:'霜雾',51:'小雨',53:'小雨',55:'中雨',61:'小雨',63:'中雨',65:'大雨',71:'小雪',73:'中雪',75:'大雪',77:'雪',80:'阵雨',81:'阵雨',82:'暴雨',85:'阵雪',86:'阵雪',95:'雷暴',96:'雷暴',97:'强雷暴'};
 
-function wxIcon(code) { return WX_CODES[code] || '🌡️'; }
+function wxIcon(code) { return WX_CODES[code] || '--'; }
 function wxName(code) { return WX_NAMES[code] || '未知'; }
 
 function fetchWeather(lat, lon) {
@@ -200,7 +200,7 @@ function fetchWeather(lat, lon) {
       var a = d.address || d;
       var city = a.city || a.town || a.county || a.state || '';
       if (city) {
-        document.getElementById('cityLine').textContent = '📍 ' + city;
+        document.getElementById('cityLine').textContent = city;
         saveCity(city);
       }
     }).catch(function() {});
@@ -215,7 +215,7 @@ function fetchWeather(lat, lon) {
     }).catch(function() {
       var cached = loadWx();
       if (cached) renderWeather(cached);
-      else document.getElementById('cityLine').textContent = '📍 天气加载失败';
+      else document.getElementById('cityLine').textContent = '天气加载失败';
     });
 }
 
@@ -225,7 +225,7 @@ function renderWeather(w) {
   document.getElementById('wxIcon').textContent = wxIcon(c.weather_code);
   document.getElementById('wxTemp').textContent = Math.round(c.temperature_2m) + '°';
   document.getElementById('wxDesc').textContent = wxName(c.weather_code);
-  document.getElementById('wxHum').innerHTML = '&#x1F4A7; ' + (c.relative_humidity_2m || '--') + '%';
+  document.getElementById('wxHum').textContent = '湿度 ' + (c.relative_humidity_2m || '--') + '%';
 
   // Hourly
   var h = w.hourly;
@@ -241,31 +241,17 @@ function renderWeather(w) {
       var code = h.weather_code[idx];
       var tmp = h.temperature_2m[idx];
       var rain = h.precipitation_probability ? h.precipitation_probability[idx] : 0;
-      html += '<div class="wx-h"><div class="hdr">'+labels[i]+'</div><div class="icon">'+wxIcon(code)+'</div><div class="tmp">'+Math.round(tmp)+'°</div><div class="rain">'+(rain>0?'💧'+rain+'%':'&nbsp;')+'</div></div>';
+      html += '<div class="wx-h"><div class="hdr">'+labels[i]+'</div><div class="icon">'+wxIcon(code)+'</div><div class="tmp">'+Math.round(tmp)+'°</div><div class="rain">'+(rain>0?'雨'+rain+'%':'&nbsp;')+'</div></div>';
     }
     document.getElementById('wxHourly').innerHTML = html;
   }
 }
 
 function initWeather() {
-  var cachedCity = loadCity();
-  if (cachedCity) document.getElementById('cityLine').textContent = '📍 ' + cachedCity;
   var cachedWx = loadWx();
   if (cachedWx) renderWeather(cachedWx);
-
-  if (!navigator.geolocation) {
-    fetchWeather(23.13, 113.26); // default Guangzhou
-    return;
-  }
-  navigator.geolocation.getCurrentPosition(
-    function(pos) {
-      fetchWeather(pos.coords.latitude, pos.coords.longitude);
-    },
-    function(err) {
-      fetchWeather(23.13, 113.26); // default Guangzhou
-    },
-    {enableHighAccuracy: false, timeout: 5000, maximumAge: 600000}
-  );
+  // Default to Guangzhou directly — old device GPS unreliable
+  fetchWeather(23.13, 113.26);
 }
 
 // ===== News Ticker =====
