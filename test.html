@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>诊断测试</title>
+<style>
+body{background:#050510;color:#fff;font-family:-apple-system,sans-serif;padding:20px;margin:0;font-size:14px;line-height:1.8;}
+.pass{color:#10b981}.fail{color:#ef4444}.warn{color:#f59e0b}
+h2{font-size:16px;margin:16px 0 8px;color:#00e5ff}
+.item{padding:4px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+</style>
+</head>
+<body>
+<h1>clock.html 诊断测试</h1>
+<div id="results"></div>
+
+<script>
+var out = document.getElementById('results');
+function add(label, ok, detail) {
+    var cls = ok ? 'pass' : ok === false ? 'fail' : 'warn';
+    var icon = ok ? '✅' : ok === false ? '❌' : '⏳';
+    out.innerHTML += '<div class="item"><span class="'+cls+'">' + icon + ' ' + label + '</span>' + (detail ? ' — <small>' + detail + '</small>' : '') + '</div>';
+}
+
+function sleep(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
+
+// Test 1: Basic JS
+add('1. JS 引擎执行', true, navigator.userAgent.substring(0, 60));
+
+// Test 2: DOM
+var h1 = document.querySelector('h1');
+add('2. DOM 读取 h1', h1 && h1.textContent ? h1.textContent : false, '');
+
+// Test 3: localStorage
+try { localStorage.setItem('_diag', '1'); localStorage.removeItem('_diag'); add('3. localStorage', true); }
+catch(e) { add('3. localStorage', false, e.message); }
+
+// Test 4: version.json fetch
+fetch('./version.json?t='+Date.now(), {cache:'no-store'})
+.then(function(r) { return r.json(); })
+.then(function(d) {
+    add('4. version.json', true, 'v=' + d.version + ' updated=' + d.updated);
+    document.title = 'v'+d.version + ' 诊断';
+})
+.catch(function(e) { add('4. version.json', false, e.message); });
+
+// Test 5: api-config.json
+fetch('./api-config.json?t='+Date.now(), {cache:'no-store'})
+.then(function(r) { return r.json(); })
+.then(function(d) {
+    add('5. api-config.json', true, 'api=' + d.api.substring(0, 50) + '...');
+    return d.api;
+})
+.catch(function(e) { add('5. api-config.json', false, e.message); });
+
+// Test 6: API weather (with short timeout)
+var API_BASE = 'https://c46872d35aeba559-183-6-87-29.serveousercontent.com';
+setTimeout(function() {
+    var ctrl = new AbortController();
+    var t = setTimeout(function() { ctrl.abort(); }, 5000);
+    fetch(API_BASE + '/api/weather?lat=31.2&lon=121.5', {signal: ctrl.signal})
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+        clearTimeout(t);
+        add('6. API 天气', true, '上海 ' + Math.round(d.current.temperature_2m) + '°C');
+    })
+    .catch(function(e) {
+        clearTimeout(t);
+        add('6. API 天气', false, e.message);
+    });
+}, 500);
+
+// Test 7: API news
+setTimeout(function() {
+    var ctrl = new AbortController();
+    var t = setTimeout(function() { ctrl.abort(); }, 5000);
+    fetch(API_BASE + '/api/news', {signal: ctrl.signal})
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+        clearTimeout(t);
+        add('7. API 新闻', true, Array.isArray(d) ? d.length + '条' : 'ok');
+    })
+    .catch(function(e) {
+        clearTimeout(t);
+        add('7. API 新闻', false, e.message);
+    });
+}, 1000);
+
+// Test 8: Geolocation
+if (navigator.geolocation) {
+    add('8. 地理定位 API', null, '检测中...');
+    navigator.geolocation.getCurrentPosition(
+        function(pos) {
+            add('8. 地理定位 OK', true, pos.coords.latitude.toFixed(2) + ',' + pos.coords.longitude.toFixed(2));
+        },
+        function(err) {
+            add('8. 地理定位', false, 'code=' + err.code + ' ' + err.message);
+        },
+        {enableHighAccuracy: false, timeout: 5000, maximumAge: 600000}
+    );
+} else {
+    add('8. 地理定位', false, 'navigator.geolocation 不存在');
+}
+
+// Test 9: CSS variables
+setTimeout(function() {
+    var style = getComputedStyle(document.body);
+    var bg = style.getPropertyValue('--bg');
+    var cyan = style.getPropertyValue('--cyan');
+    add('9. CSS 变量', !!bg && bg.trim().length > 0, '--bg=' + bg.trim() + ' --cyan=' + cyan.trim());
+}, 300);
+
+// Test 10: Screen info
+add('10. 屏幕信息', true, window.innerWidth + '×' + window.innerHeight + ' dpr=' + window.devicePixelRatio);
+
+// Final: clock page redirect
+setTimeout(function() {
+    add('', null, '');
+    add('所有测试完成。5秒后跳转到时钟页面...', true);
+    setTimeout(function() { location.href = 'clock.html'; }, 5000);
+}, 8000);
+</script>
+</body>
+</html>
