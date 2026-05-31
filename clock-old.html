@@ -117,9 +117,7 @@ animation:spin .6s linear infinite;vertical-align:middle;margin:0 2px;}
     <span class="lbl">快讯</span>
     <span class="dots" id="nsDots"></span>
   </div>
-  <div class="pages" id="nsPages">
-    <div class="ns-item"><span class="ns-text">加载中<span class="ld"></span></span></div>
-  </div>
+  <div class="pages" id="nsPages" style="opacity:1">加载中<span class="ld"></span></div>
 </div>
 
 <!-- Card 4: AI Brief (per-section flip) -->
@@ -128,9 +126,7 @@ animation:spin .6s linear infinite;vertical-align:middle;margin:0 2px;}
     <span class="lbl">AI 简报</span>
     <span class="dots" id="bfDots"></span>
   </div>
-  <div class="pages" id="bfPages">
-    <p style="color:rgba(255,255,255,.3);text-align:center;padding:8px;">简报生成中<span class="ld"></span></p>
-  </div>
+  <div class="pages" id="bfPages" style="opacity:1">简报生成中<span class="ld"></span></div>
 </div>
 
 <!-- Refresh handled by native Android button -->
@@ -154,13 +150,13 @@ function load(k){try{return JSON.parse(localStorage.getItem('oc_'+k));}catch(e){
 // ===== Helpers =====
 function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 
-// Flip control: each card has independent page index and timer
+// Simple flip: single element fade transition
 var flips={};
 
-function initFlip(cardId,pageCount,interval,renderFn){
-  flips[cardId]={idx:0,total:pageCount,ival:interval,render:renderFn,timer:null};
+function initFlip(cardId,pageCount,interval,getHtmlFn){
+  flips[cardId]={idx:0,total:pageCount,ival:interval,getHtml:getHtmlFn,timer:null};
   renderDots(cardId);
-  renderFn(0);
+  showPage(cardId,0,false);
   scheduleFlip(cardId);
 }
 
@@ -173,7 +169,7 @@ function scheduleFlip(id){
 function nextFlip(id){
   var f=flips[id];if(!f)return;
   var next=(f.idx+1)%f.total;
-  animateFlip(id,f.idx,next,1);
+  showPage(id,next,true);
   f.idx=next;
   scheduleFlip(id);
 }
@@ -181,27 +177,25 @@ function nextFlip(id){
 function prevFlip(id){
   var f=flips[id];if(!f)return;
   var next=(f.idx-1+f.total)%f.total;
-  animateFlip(id,f.idx,next,-1);
+  showPage(id,next,true);
   f.idx=next;
   scheduleFlip(id);
 }
 
-function animateFlip(id,from,to,dir){
-  var pages=document.querySelectorAll('#'+id+' .page');
-  if(!pages.length)return;
-  // Clone or reuse: simple approach — re-render the target page
-  var f=flips[id];
-  f.render(to);
-  if(pages.length>=2){
-    var curPage=pages[0],nextPage=pages[1];
-    curPage.className='page out-up';
-    nextPage.className='page in-up';
-    // Swap after animation
-    setTimeout(function(){
-      curPage.className='page';curPage.style.display='none';
-      nextPage.className='page';
-    },450);
+function showPage(id,i,animate){
+  var f=flips[id];if(!f)return;
+  var el=document.getElementById(id);
+  if(!el)return;
+  var html=f.getHtml(i);
+  if(animate){
+    el.style.opacity='0';
+    el.style.transition='opacity .3s ease';
+    setTimeout(function(){el.innerHTML=html;el.style.opacity='1';},300);
+  }else{
+    el.innerHTML=html;
+    el.style.opacity='1';
   }
+  f.idx=i;
   renderDots(id);
 }
 
@@ -219,9 +213,7 @@ function renderDots(id){
 
 function goFlip(id,i){
   var f=flips[id];if(!f||i===f.idx)return;
-  var dir=i>f.idx?1:-1;
-  animateFlip(id,f.idx,i,dir);
-  f.idx=i;
+  showPage(id,i,true);
   scheduleFlip(id);
 }
 
@@ -288,12 +280,10 @@ function buildWxPages(){
   var w=wxData,c=w.current,hh=w.hourly;
   var pages=[];
 
-  // Page 0: current
   var p0='<div class="wx-main"><span class="wx-temp">'+Math.round(c.temperature_2m)+'°C</span><span style="font-size:12px;color:rgba(255,255,255,.5);">'+(WXN[c.weather_code]||'--')+'</span></div>';
   p0+='<div style="font-size:10px;color:rgba(255,255,255,.25);margin-top:3px;">湿度 '+(c.relative_humidity_2m||'--')+'%</div>';
   pages.push(p0);
 
-  // Pages 1-3: hourly forecasts
   if(hh&&hh.time){
     var cur=new Date().getHours();
     var off=[1,3,6],lab=['+1 小时后','+3 小时后','+6 小时后'];
@@ -309,16 +299,7 @@ function buildWxPages(){
     }
   }
 
-  var container=document.getElementById('wxPages');
-  container.innerHTML='<div class="page in-up">'+pages[0]+'</div><div class="page out-up" style="display:none">'+pages[1]+'</div>';
-
-  initFlip('wxPages',pages.length,5000,function(i){
-    var allPages=container.querySelectorAll('.page');
-    if(allPages.length<2)return;
-    var hidden=allPages[1];hidden.innerHTML=pages[i];
-    // Re-init dot clicks
-    renderDots('wxPages');
-  });
+  initFlip('wxPages',pages.length,5000,function(i){return pages[i];});
 }
 
 // ===== Card 3: News flip =====
@@ -336,18 +317,9 @@ function fetchNews(){
 
 function buildNsPages(){
   if(!nsData.length)return;
-  var container=document.getElementById('nsPages');
   var pages=[];
   for(var i=0;i<nsData.length;i++)pages.push('<div class="ns-item"><span class="ns-tag">['+nsData[i].source+']</span><span class="ns-text">'+esc(nsData[i].title)+'</span></div>');
-
-  container.innerHTML='<div class="page in-up">'+pages[0]+'</div><div class="page out-up" style="display:none">'+pages[1]+'</div>';
-
-  initFlip('nsPages',pages.length,18000,function(i){
-    var allPages=container.querySelectorAll('.page');
-    if(allPages.length<2)return;
-    allPages[1].innerHTML=pages[i];
-    renderDots('nsPages');
-  });
+  initFlip('nsPages',pages.length,18000,function(i){return pages[i];});
 }
 
 // ===== Card 4: AI Brief flip (split into sections) =====
@@ -366,7 +338,6 @@ function fetchBrief(){
 }
 
 function parseBrief(md){
-  // Split markdown into sections by ## headings
   briefSections=[];
   var parts=md.split(/(?=^## )/m);
   for(var i=0;i<parts.length;i++){
@@ -375,16 +346,7 @@ function parseBrief(md){
     briefSections.push('<div class="brief-page">'+renderMd(section)+'</div>');
   }
   if(!briefSections.length)briefSections.push('<div class="brief-page">'+renderMd(md)+'</div>');
-
-  var container=document.getElementById('bfPages');
-  container.innerHTML='<div class="page in-up">'+briefSections[0]+'</div><div class="page out-up" style="display:none">'+(briefSections[1]||'')+'</div>';
-
-  initFlip('bfPages',briefSections.length,10000,function(i){
-    var allPages=container.querySelectorAll('.page');
-    if(allPages.length<2)return;
-    allPages[1].innerHTML=briefSections[i]||'';
-    renderDots('bfPages');
-  });
+  initFlip('bfPages',briefSections.length,10000,function(i){return briefSections[i]||'';});
 }
 
 function renderMd(md){

@@ -146,32 +146,8 @@ public class MainActivity extends AppCompatActivity {
         if (isRefreshing) return;
         isRefreshing = true;
         startRefreshAnim();
-
-        // Clear WebView cache & storage
-        webView.clearCache(true);
-        webView.clearHistory();
-
-        // Clear localStorage via JavaScript
-        webView.evaluateJavascript(
-            "try{" +
-            "localStorage.removeItem('oc_wx');" +
-            "localStorage.removeItem('oc_news');" +
-            "localStorage.removeItem('oc_brief');" +
-            "localStorage.removeItem('oc_city');" +
-            "localStorage.removeItem('oc_clock_city');" +
-            "localStorage.removeItem('old_clock_wx');" +
-            "localStorage.removeItem('old_clock_city');" +
-            "}catch(e){}",
-            null
-        );
-
-        // Reload the page
         webView.reload();
-
-        // Toast feedback
         Toast.makeText(this, "已刷新", Toast.LENGTH_SHORT).show();
-
-        // Reset after 2 seconds
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
