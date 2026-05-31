@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>AI 底层逻辑 — 从 LLM 到 Agent Skill</title>
+<link rel="icon" href="./icon.svg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.6;min-height:100vh;padding-bottom:calc(100px + env(safe-area-inset-bottom,0));-webkit-font-smoothing:antialiased;overflow-x:hidden;letter-spacing:-.01em}
+::-webkit-scrollbar{width:2px;height:2px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.04);border-radius:1px}
+::selection{background:rgba(99,102,241,.3)}
+
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--cyan) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(99,102,241,.05),rgba(6,182,212,.04) 20%,rgba(168,85,247,.02) 45%,transparent 70%)}
+
+.header{position:sticky;top:0;z-index:50;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-top:none;padding:10px 20px;border-radius:0 0 22px 22px;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 40px rgba(99,102,241,.1),0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04)}
+.header-in{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.header-logo{font-size:17px;font-weight:700;white-space:nowrap;letter-spacing:-.02em;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 6s ease-in-out infinite}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+.back-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none}
+.back-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.home-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);transition:all .3s var(--ease);flex-shrink:0;text-decoration:none;margin-left:auto}
+.home-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+
+.container{max-width:900px;margin:0 auto;padding:18px 20px;position:relative;z-index:1}
+
+.hero-wrap{position:relative;text-align:center;padding:40px 0 20px;overflow:hidden}
+#heroCanvas{position:absolute;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:900px;height:100%;pointer-events:none;z-index:0;opacity:.6}
+.hero-content{position:relative;z-index:1}
+.hero-content h1{font-size:32px;font-weight:700;letter-spacing:-.03em;margin-bottom:8px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+.hero-content .sub{color:var(--tx2);font-size:15px;max-width:540px;margin:0 auto;line-height:1.6}
+.hero-badge{display:inline-block;padding:4px 12px;border-radius:12px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);font-size:11px;color:var(--a1);margin-bottom:12px;letter-spacing:.04em}
+
+.section{position:relative;z-index:1;margin-bottom:32px;scroll-margin-top:80px}
+.section-hd{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-left:2px}
+.section-hd .s-icon{font-size:24px}
+.section-hd h2{font-size:18px;font-weight:700;color:var(--tx);letter-spacing:-.02em}
+.section-hd .s-num{font-size:12px;color:var(--tx3);background:rgba(255,255,255,.05);padding:3px 10px;border-radius:8px}
+
+.viz-card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:20px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(99,102,241,.04),0 4px 24px rgba(0,0,0,.1)}
+.viz-card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.viz-card canvas{display:block;width:100%;max-width:100%;border-radius:12px;margin-bottom:12px}
+.viz-card .viz-info{font-size:12px;color:var(--tx2);line-height:1.6;margin-top:8px;padding:10px 14px;background:rgba(255,255,255,.03);border-radius:10px;border-left:2px solid var(--a1)}
+.viz-card .viz-info strong{color:var(--tx)}
+
+.viz-ctrls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;justify-content:center}
+.viz-btn{padding:7px 16px;border-radius:8px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.viz-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:rgba(99,102,241,.2)}
+.viz-btn.active{background:rgba(99,102,241,.2);border-color:rgba(99,102,241,.4);color:var(--a1)}
+
+.insight{display:flex;align-items:flex-start;gap:8px;padding:10px 14px;border-radius:10px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.15);margin-top:10px;font-size:12px;color:var(--amber);line-height:1.5}
+.insight .ins-icon{font-size:16px;flex-shrink:0}
+
+/* Chain flow */
+.chain{display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center;padding:12px 0}
+.chain-node{padding:8px 14px;border-radius:10px;font-size:12px;font-weight:600;text-align:center;white-space:nowrap}
+.chain-node.llm{background:rgba(99,102,241,.15);color:var(--a1);border:1px solid rgba(99,102,241,.25)}
+.chain-node.token{background:rgba(16,185,129,.12);color:var(--a2);border:1px solid rgba(16,185,129,.2)}
+.chain-node.ctx{background:rgba(6,182,212,.12);color:var(--cyan);border:1px solid rgba(6,182,212,.2)}
+.chain-node.prompt{background:rgba(236,72,153,.12);color:var(--pink);border:1px solid rgba(236,72,153,.2)}
+.chain-node.tool{background:rgba(245,158,11,.12);color:var(--amber);border:1px solid rgba(245,158,11,.2)}
+.chain-node.agent{background:rgba(168,85,247,.12);color:var(--vio);border:1px solid rgba(168,85,247,.2)}
+.chain-node.skill{background:rgba(239,68,68,.12);color:var(--a3);border:1px solid rgba(239,68,68,.2)}
+.chain-arrow{color:var(--tx4);font-size:14px;margin:0 2px;flex-shrink:0}
+
+.step-list{display:grid;gap:10px}
+.step-item{display:flex;align-items:flex-start;gap:10px;padding:12px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)}
+.step-item:hover{background:rgba(255,255,255,.04);border-color:rgba(99,102,241,.15)}
+.step-num{width:28px;height:28px;border-radius:50%;background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.25);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--a1);flex-shrink:0}
+.step-body h4{font-size:13px;color:var(--tx);margin-bottom:2px}
+.step-body p{font-size:11px;color:var(--tx2);line-height:1.5}
+
+blockquote.quote{border-left:3px solid var(--a1);padding:10px 16px;margin:14px 0;background:rgba(99,102,241,.05);border-radius:0 10px 10px 0;font-size:13px;color:var(--tx2);font-style:italic;line-height:1.6}
+blockquote.quote .q-author{display:block;margin-top:6px;font-style:normal;font-size:11px;color:var(--tx3)}
+
+/* Compare boxes */
+.cmp2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cmp2-box{padding:12px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);font-size:12px;line-height:1.6}
+.cmp2-box h4{font-size:13px;margin-bottom:4px}
+.cmp2-box .lbl{font-size:10px;color:var(--tx3)}
+
+/* mini-games CSS */
+.mg-quiz4,.mg-spot{margin-top:10px;position:relative;z-index:1}
+.mg-btn{display:inline-block;padding:6px 14px;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;margin:3px 4px 3px 0;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-btn:hover{background:rgba(255,255,255,.1);color:var(--tx);border-color:rgba(99,102,241,.2)}
+.mg-btn.correct{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.35);color:var(--a2)}
+.mg-btn.wrong{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.35);color:var(--a3);animation:shake .4s}
+.mg-right{color:var(--a2)}.mg-wrong{color:var(--a3)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+.mg-q4-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.mg-q4-q{font-size:12px;color:var(--tx2);margin:0;line-height:1.5}
+.mg-q4-counter{font-size:11px;color:var(--tx3);min-width:24px;text-align:center}
+.mg-q4-opt{display:block;width:100%;text-align:left;padding:8px 12px;margin:4px 0;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;min-height:36px;-webkit-tap-highlight-color:transparent}
+.mg-q4-opt:hover{background:rgba(255,255,255,.08);color:var(--tx);border-color:rgba(99,102,241,.2)}
+.mg-q4-opt.correct{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:var(--a2)}
+.mg-q4-opt.wrong{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:var(--a3)}
+.mg-q4-explain{display:none;font-size:12px;color:var(--tx2);padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.04);margin-top:6px;line-height:1.5}
+.mg-q4-explain.show{display:block;animation:fadeUp .3s var(--ease) both}
+.mg-spot-cards{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mg-spot-card{padding:8px 10px;border-radius:8px;border:1px solid var(--card-border);font-size:11px;color:var(--tx2);cursor:pointer;background:rgba(255,255,255,.02);transition:all .2s;line-height:1.4;min-height:50px;-webkit-tap-highlight-color:transparent}
+.mg-spot-card:hover{border-color:rgba(99,102,241,.2);background:rgba(255,255,255,.05)}
+.mg-spot-card.correct{border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:var(--a2)}
+.mg-spot-card.wrong{border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.08);color:var(--a3)}
+.mg-spot-fb{display:none;font-size:12px;margin-top:6px;line-height:1.5}
+.mg-spot-fb.show{display:block;animation:fadeUp .3s var(--ease) both}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)scale(.97)}to{opacity:1;transform:translateY(0)scale(1)}}
+
+.toc{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;padding:0 2px}
+.toc a{font-size:11px;color:var(--tx3);text-decoration:none;padding:4px 10px;border-radius:6px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04);transition:all .2s;white-space:nowrap}
+.toc a:hover{color:var(--tx);background:rgba(255,255,255,.06)}
+
+.bottom-nav{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0));left:50%;transform:translateX(-50%);width:calc(100% - 28px);max-width:440px;height:58px;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);border-radius:22px;display:flex;justify-content:center;align-items:center;gap:16px;z-index:100;backdrop-filter:saturate(200%) blur(60px);-webkit-backdrop-filter:saturate(200%) blur(60px);box-shadow:0 0 50px rgba(99,102,241,.12),0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.04)}
+.nav-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:var(--tx3);padding:6px 14px;border-radius:14px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .3s var(--ease);-webkit-tap-highlight-color:transparent;text-decoration:none}
+.nav-btn:hover{background:rgba(255,255,255,.08);color:var(--tx2)}
+.nav-btn svg{width:14px;height:14px}
+
+@media(max-width:480px){
+  .hero-content h1{font-size:22px}
+  .viz-card{padding:14px}
+  .mg-spot-cards{grid-template-columns:1fr}
+  .section-hd h2{font-size:16px}
+  .cmp2{grid-template-columns:1fr}
+  .toc{gap:4px}.toc a{font-size:10px;padding:3px 7px}
+}
+</style>
+</head>
+<body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot"></div>
+
+<div class="header">
+  <div class="header-in">
+    <a class="back-btn" href="./index.html" title="返回主页"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></a>
+    <a class="back-btn" href="./knowledge.html" title="知识百科" style="margin-left:2px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></a>
+    <span class="header-logo">AI 底层逻辑</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- Hero -->
+<div class="hero-wrap" id="heroWrap">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-badge">🤖 基于马克的技术工作坊视频 | 100万+播放</div>
+    <h1>从 LLM 到 Agent Skill</h1>
+    <p class="sub">AI 核心概念大串联：Token · Context · Prompt · Tool · MCP · Agent<br>一期打通 AI 底层逻辑——每个概念都在前一个之上构建。</p>
+  </div>
+</div>
+
+<nav class="toc">
+  <a href="#s0">0. 概念链总览</a>
+  <a href="#s1">1. LLM</a>
+  <a href="#s2">2. Token</a>
+  <a href="#s3">3. Context</a>
+  <a href="#s4">4. Prompt</a>
+  <a href="#s5">5. Tool</a>
+  <a href="#s6">6. MCP</a>
+  <a href="#s7">7. Agent</a>
+  <a href="#s8">8. Skill</a>
+  <a href="#games">🎮 小游戏</a>
+</nav>
+
+<!-- S0: Chain overview -->
+<section class="section" id="s0">
+  <div class="section-hd"><span class="s-icon">🔗</span><h2>概念链总览——从底层到顶层</h2><span class="s-num">总览</span></div>
+
+  <div class="viz-card">
+    <canvas id="chainCanvas" width="800" height="200"></canvas>
+  </div>
+
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
+      AI 世界不是凭空出现的。每个新概念都是<strong style="color:var(--a1)">在之前概念的局限上</strong>生长出来的：
+    </p>
+    <div style="font-size:12px;color:var(--tx2);line-height:1.8">
+      <p>LLM 能预测下一个词，但记不住太长的对话 → 有了 <strong style="color:var(--cyan)">Context Window</strong></p>
+      <p>模型没有目标，不知道怎么"对话" → 有了 <strong style="color:var(--pink)">Prompt</strong></p>
+      <p>只会生成文字，不会查天气、不会算数 → 引入了 <strong style="color:var(--amber)">Tool / Function Calling</strong></p>
+      <p>每个 API 的工具格式不一样，太乱了 → 有了 <strong style="color:var(--vio)">MCP</strong> 统一协议</p>
+      <p>单个工具不够，需要自主规划+循环执行 → 这就是 <strong style="color:var(--a3)">Agent</strong></p>
+      <p>Agent 能力复用和组合 → 形成 <strong style="color:var(--a3)">Agent Skill</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- S1: LLM -->
+<section class="section" id="s1">
+  <div class="section-hd"><span class="s-icon">🧠</span><h2>LLM——预测下一个词的机器</h2><span class="s-num">第 1 章</span></div>
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
+      大语言模型 (LLM) 的核心任务极其简单：<strong style="color:var(--a1)">给定前面的文字，猜下一个最合适的词。</strong>
+    </p>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.7;margin-bottom:10px">
+      比如输入 "中国的首都是"，模型会输出 "北京"。输入 "1+1="，模型会输出 "2"。
+      把"猜下一个词"这个能力训练到极致（大量数据+大算力+注意力机制），就产生了<strong style="color:var(--cyan)">涌现</strong>——
+      模型开始表现出推理、翻译、写代码等"智能"行为。
+    </p>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.7">
+      LLM 内部是一个巨大的<strong style="color:var(--tx)">神经网络</strong>（注意力机制 + 前馈网络 × N层），通过海量文本训练学会了语言的统计规律。
+      但它没有"意识"，没有"目标"，也没有"记忆"——它只是一台精密的、会接话的机器。
+    </p>
+    <div class="insight"><span class="ins-icon">💡</span> <strong>关键洞察：</strong>LLM 本身只是一个"文本接龙器"。让它变聪明、变有用的，是围绕它构建的所有上层机制——从 Prompt 到 Agent。</div>
+  </div>
+</section>
+
+<!-- S2: Token -->
+<section class="section" id="s2">
+  <div class="section-hd"><span class="s-icon">✂️</span><h2>Token——AI的"最小语义单元"</h2><span class="s-num">第 2 章</span></div>
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
+      LLM 不直接看"字"，而是看 <strong style="color:var(--a2)">Token</strong>（词元）。一个 Token 可能是：一个完整的常见词、词的一部分（子词）、一个标点符号、或一个特殊标记。
+    </p>
+    <div class="cmp2" style="margin-bottom:10px">
+      <div class="cmp2-box"><h4 style="color:var(--a2)">英文 Token 化</h4><p style="font-size:11px;color:var(--tx2)">"unbelievable" → "un" + "believe" + "able" (3 tokens)<br>"Hello world!" → "Hello" + " world" + "!" (3 tokens)</p></div>
+      <div class="cmp2-box"><h4 style="color:var(--a1)">中文 Token 化</h4><p style="font-size:11px;color:var(--tx2)">"人工智能" → "人工" + "智能" (2 tokens)<br>"我喜欢编程" → "我" + "喜欢" + "编程" (3 tokens)</p></div>
+    </div>
+    <div style="font-size:12px;color:var(--tx2);line-height:1.7;padding:10px 14px;background:rgba(245,158,11,.05);border-radius:10px;border:1px solid rgba(245,158,11,.1)">
+      <strong style="color:var(--amber)">为什么 Token 重要？</strong><br>
+      1. <strong style="color:var(--tx)">计费单位：</strong>API 按 Token 数量收费（输入+输出）<br>
+      2. <strong style="color:var(--tx)">上下文窗口的"容量"：</strong>模型的 Context Window 用 Token 数来衡量<br>
+      3. <strong style="color:var(--tx)">Token 不是字：</strong>1000 个中文字 ≈ 1500-2000 个 Token（取决于分词器）
+    </div>
+  </div>
+</section>
+
+<!-- S3: Context & Context Window -->
+<section class="section" id="s3">
+  <div class="section-hd"><span class="s-icon">🪟</span><h2>Context — AI的"记忆"，但有上限</h2><span class="s-num">第 3 章</span></div>
+  <div class="viz-card">
+    <canvas id="ctxCanvas" width="800" height="280"></canvas>
+  </div>
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
+      <strong style="color:var(--cyan)">Context（上下文）= 模型当前能"看到"的所有内容的集合。</strong>
+    </p>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.7;margin-bottom:10px">
+      每次你向模型发送消息，实际发送的不是"你刚刚那句话"，而是<strong style="color:var(--tx)">整个对话历史</strong>（或其中最近的部分）。
+      模型"看到"你的新问题 + 之前的对话 + 系统提示 = 这全部就是 Context。
+    </p>
+    <div class="insight"><span class="ins-icon">⚠️</span> <strong>Context Window（上下文窗口）= 模型一次最多能"记住"多少 Token。</strong>
+      GPT-3 的窗口是 2048 token，GPT-4 Turbo 扩展到 128K。当对话超过窗口，模型就会"失忆"——
+      你之前说过的话被裁剪掉，模型完全不知道发生过什么。这是当前 AI 最核心的限制之一。</div>
+  </div>
+</section>
+
+<!-- S4: Prompt -->
+<section class="section" id="s4">
+  <div class="section-hd"><span class="s-icon">📝</span><h2>Prompt——你怎么跟AI说话，决定了它怎么回答</h2><span class="s-num">第 4 章</span></div>
+  <div class="viz-card" style="padding:16px">
+    <div class="cmp2" style="margin-bottom:10px">
+      <div class="cmp2-box">
+        <h4 style="color:var(--pink)">System Prompt（系统提示）</h4>
+        <p style="font-size:11px;color:var(--tx2)">在对话开始时，开发者<strong>预先设定</strong>的规则。它定义了 AI 的"角色"、"风格"和"限制"。用户<strong>看不到</strong>它，但 AI 始终遵守。</p>
+        <div style="margin-top:6px;font-size:10px;color:var(--tx3);border-top:1px solid rgba(255,255,255,.06);padding-top:6px">
+          例："你是一个专业的法律顾问，用通俗易懂的语言解释法律知识。不要提供具体法律建议。"
+        </div>
+      </div>
+      <div class="cmp2-box">
+        <h4 style="color:var(--a1)">User Prompt（用户提示）</h4>
+        <p style="font-size:11px;color:var(--tx2)">你每次输入的内容。这是你直接和 AI 对话的部分，叠加在 System Prompt 之上。</p>
+        <div style="margin-top:6px;font-size:10px;color:var(--tx3);border-top:1px solid rgba(255,255,255,.06);padding-top:6px">
+          例："我和邻居因为围墙高度发生了纠纷，我该怎么办？"
+        </div>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.7">
+      <strong style="color:var(--tx)">Prompt Engineering（提示工程）</strong>
+      本质上就是设计 System Prompt 和 User Prompt，让 LLM 在有限的 Context Window 内产出最有效的回答。
+      好的 Prompt：明确角色、提供格式要求、给出思考步骤（Chain-of-Thought）、限制输出范围。
+    </p>
+  </div>
+</section>
+
+<!-- S5: Tool / Function Calling -->
+<section class="section" id="s5">
+  <div class="section-hd"><span class="s-icon">🔧</span><h2>Tool Calling——AI 不再是"嘴炮"</h2><span class="s-num">第 5 章</span></div>
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
+      LLM 只会生成文字——它不会查天气、不会算精确的日期、不会爬网页、不会写文件。
+      <strong style="color:var(--amber)">Tool Calling (Function Calling)</strong> 让模型可以"调用外部工具"。
+    </p>
+    <div class="step-list" style="margin-bottom:10px">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-body"><h4>用户问："今天上海天气怎么样？"</h4><p>LLM 判断：我无法回答，但我有一个 get_weather 工具可以用。</p></div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-body"><h4>LLM 返回工具调用请求</h4><p>不是文字回复，而是一个结构化的 JSON：{"function":"get_weather","arguments":{"city":"上海","date":"2026-05-31"}}</p></div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-body"><h4>程序执行该函数，把结果返回给 LLM</h4><p>get_weather 函数被调用 → 返回 "上海今天晴，22-28°C"</p></div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-body"><h4>LLM 用工具结果生成最终回答</h4><p>"根据最新数据，上海今天天气晴朗，气温22到28摄氏度，非常适合出行。"</p></div>
+      </div>
+    </div>
+    <div class="insight"><span class="ins-icon">🔑</span> Tool Calling 是 LLM 从"聊天机器人"进化到"Agent"的关键一步。有了工具，AI 就不再只是说话——它可以<strong style="color:var(--amber)">行动</strong>。</div>
+  </div>
+</section>
+
+<!-- S6: MCP -->
+<section class="section" id="s6">
+  <div class="section-hd"><span class="s-icon">🔌</span><h2>MCP——工具的"USB 协议"</h2><span class="s-num">第 6 章</span></div>
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
+      每个 LLM 平台（OpenAI、Google、Anthropic）的 Tool Calling 格式都不一样。开发者每换一个模型就得重新适配——直到
+      <strong style="color:var(--vio)">MCP (Model Context Protocol)</strong> 出现。
+    </p>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.7;margin-bottom:10px">
+      MCP 由 Anthropic 提出，是一个<strong style="color:var(--vio)">开放的、标准化的协议</strong>，让 AI 应用和外部工具之间用一个统一的"语言"通信。
+      类比：USB — 不管你是什么设备，插上去就能用。MCP — 不管你的工具是什么，AI 都能理解怎么调用它。
+    </p>
+    <div class="cmp2">
+      <div class="cmp2-box"><h4 style="color:var(--a3)">没有 MCP 时</h4><p style="font-size:11px;color:var(--tx2)">每个工具都要为每个模型单独写适配代码。n 个工具 × m 个模型 = n×m 种适配。</p></div>
+      <div class="cmp2-box"><h4 style="color:var(--a2)">有了 MCP</h4><p style="font-size:11px;color:var(--tx2)">工具只需按 MCP 标准暴露接口，所有支持 MCP 的 AI 都能直接使用。n + m 种关系。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- S7: Agent -->
+<section class="section" id="s7">
+  <div class="section-hd"><span class="s-icon">🤖</span><h2>Agent——LLM + 工具 + 自主规划</h2><span class="s-num">第 7 章</span></div>
+  <div class="viz-card">
+    <canvas id="agentCanvas" width="800" height="300"></canvas>
+  </div>
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
+      <strong style="color:var(--a3)">Agent（智能体）= LLM + 工具 + 自主规划 + 循环执行。</strong>
+      它不是"一问一答"，而是"给一个目标，自己去想、去查、去做、去检查、去修正"。
+    </p>
+    <div class="step-list" style="margin-bottom:10px">
+      <div class="step-item">
+        <div class="step-num" style="background:rgba(168,85,247,.15);color:var(--vio);border-color:rgba(168,85,247,.25)">1</div>
+        <div class="step-body"><h4>感知 (Observe)</h4><p>读入用户目标和当前状态。"我需要帮用户订一张从北京到上海的机票。"</p></div>
+      </div>
+      <div class="step-item">
+        <div class="step-num" style="background:rgba(99,102,241,.15);color:var(--a1);border-color:rgba(99,102,241,.25)">2</div>
+        <div class="step-body"><h4>规划 (Plan)</h4><p>拆解任务：①查航班 → ②比较价格 → ③选最优 → ④确认 → ⑤下单。"每一步需要什么工具？"</p></div>
+      </div>
+      <div class="step-item">
+        <div class="step-num" style="background:rgba(16,185,129,.15);color:var(--a2);border-color:rgba(16,185,129,.25)">3</div>
+        <div class="step-body"><h4>执行 (Act)</h4><p>调用工具：搜索航班 API → 获取价格列表 → 筛选 → 展示给用户确认 → 调用支付/预订 API。</p></div>
+      </div>
+      <div class="step-item">
+        <div class="step-num" style="background:rgba(236,72,153,.15);color:var(--pink);border-color:rgba(236,72,153,.25)">4</div>
+        <div class="step-body"><h4>反思 (Reflect)</h4><p>"搜索失败了 → 换一个搜索引擎。价格不在预算内 → 换一个日期。用户拒绝了我的建议 → 重新搜索。"</p></div>
+      </div>
+    </div>
+    <div style="padding:10px 14px;background:rgba(168,85,247,.05);border-radius:10px;border:1px solid rgba(168,85,247,.1);font-size:12px;line-height:1.6;color:var(--tx2)">
+      <strong style="color:var(--vio)">Agent 和普通 Chatbot 的区别：</strong>Chatbot 是"我问你答"，Agent 是"我告诉你目标，你自己看着办"。
+      Agent 会自己拆任务、选工具、试错、重试——它有一个<strong style="color:var(--vio)">闭环</strong>。
+    </div>
+  </div>
+</section>
+
+<!-- S8: Agent Skill -->
+<section class="section" id="s8">
+  <div class="section-hd"><span class="s-icon">🎯</span><h2>Agent Skill——让 Agent 从"能干"到"擅长"</h2><span class="s-num">第 8 章</span></div>
+  <div class="viz-card" style="padding:16px">
+    <p style="font-size:13px;color:var(--tx);line-height:1.7;margin-bottom:10px">
+      <strong style="color:var(--a3)">Agent Skill（Agent 技能）</strong>是把 Agent 的某项能力<strong style="color:var(--tx)">打包复用</strong>的概念。
+      一个 Agent 可能有多个 Skill——"搜索 Skill"、"订票 Skill"、"代码审查 Skill"。
+    </p>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.7;margin-bottom:10px">
+      Skill = <strong style="color:var(--a1)">知识</strong>（这个任务该怎么做）+ <strong style="color:var(--amber)">工具</strong>（需要哪些 API/函数）+
+      <strong style="color:var(--pink)">流程</strong>（先做什么后做什么）+ <strong style="color:var(--a2)">检验标准</strong>（怎么判断做完了、做好了）。
+    </p>
+    <p style="font-size:12px;color:var(--tx2);line-height:1.7">
+      <strong style="color:var(--tx)">实际例子 — Claude Code 的 Skill：</strong>
+      一个"创建新页面"的 Skill 包含：(1) 知道页面的设计系统规范，(2) 能读写文件，(3) 先规划再写代码的流程，(4) 写完要测试验证的标准。
+      用户只需说"创建一个关于 XYZ 的新页面"，Agent 就自动执行整个 Skill。
+    </p>
+    <blockquote class="quote">
+      "AI 发展的方向不是更大的模型，而是更自主的 Agent。Agent Skill 是让 Agent 从'一次性的任务执行者'变成'可复用的能力单元'。"
+      <span class="q-author">— 马克的技术工作坊</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- Full chain review -->
+<section class="section" id="review">
+  <div class="section-hd"><span class="s-icon">🔄</span><h2>全链回顾——一张图看明白</h2></div>
+  <div class="viz-card" style="padding:16px">
+    <div class="chain" style="flex-direction:column;gap:6px;align-items:stretch">
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center">
+        <span class="chain-node llm">LLM<br><span style="font-size:9px">预测下一个词</span></span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node token">Token<br><span style="font-size:9px">最小语义单元</span></span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node ctx">Context<br><span style="font-size:9px">记忆+窗口</span></span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node prompt">Prompt<br><span style="font-size:9px">System+User</span></span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node tool">Tool Calling<br><span style="font-size:9px">能用外部工具</span></span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center">
+        <span class="chain-node agent">MCP<br><span style="font-size:9px">标准化协议</span></span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node agent">Agent<br><span style="font-size:9px">自主规划+执行</span></span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node skill">Agent Skill<br><span style="font-size:9px">能力打包复用</span></span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:var(--tx3);text-align:center;margin-top:10px">
+      每一个上层概念都是为了解决下层概念的局限性而诞生的。<br>
+      这就是 AI 世界的"底层逻辑"。
+    </p>
+  </div>
+</section>
+
+<!-- Games -->
+<section class="section" id="games">
+  <div class="section-hd"><span class="s-icon">🎮</span><h2>AI 概念测试</h2><span class="s-num">检测理解</span></div>
+
+  <div class="viz-card" style="padding:16px">
+    <h3 style="font-size:14px;color:var(--tx);margin-bottom:4px">🧩 AI 底层逻辑测验</h3>
+    <p style="font-size:11px;color:var(--tx3);margin-bottom:10px">6道题，测试你对 AI 概念链的理解</p>
+    <div id="quiz1" class="mg-quiz4">
+      <div class="mg-q4-header"><p class="mg-q4-q"></p><span class="mg-q4-counter"></span></div>
+      <div class="mg-q4-opts"></div>
+      <div class="mg-q4-explain"></div>
+    </div>
+  </div>
+
+  <div class="viz-card" style="padding:16px">
+    <h3 style="font-size:14px;color:var(--tx);margin-bottom:4px">🔍 AI 概念配对</h3>
+    <p style="font-size:11px;color:var(--tx3);margin-bottom:10px">将概念和其核心描述配对</p>
+    <div id="spot1" class="mg-spot">
+      <div class="mg-spot-cards"></div>
+      <div class="mg-spot-fb"></div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<nav class="bottom-nav">
+  <a class="nav-btn" href="./knowledge.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> 知识百科
+  </a>
+  <a class="nav-btn" href="./index.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> 主页
+  </a>
+  <a class="nav-btn" href="./attention.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 注意力机制
+  </a>
+</nav>
+
+<script>
+// HERO CANVAS — Neural nodes
+(function(){
+  var c=document.getElementById('heroCanvas'),w=c.parentNode.offsetWidth,h=360;
+  c.width=w*2;c.height=h*2;c.style.width=w+'px';c.style.height=h+'px';
+  var ctx=c.getContext('2d'),W=c.width,H=c.height,pts=[];
+  for(var i=0;i<40;i++) pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*1.2,vy:(Math.random()-.5)*1.2,r:2+Math.random()*3,c:Math.random()>.5?'99,102,241':'6,182,212'});
+  (function loop(){
+    ctx.clearRect(0,0,W,H);
+    for(var i=0;i<pts.length;i++){var p=pts[i];
+      p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba('+p.c+','+(0.3+Math.random()*0.3)+')';ctx.fill();
+      for(var j=i+1;j<pts.length;j++){var q=pts[j],dx=p.x-q.x,dy=p.y-q.y,dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<120){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.strokeStyle='rgba(99,102,241,'+(0.02*(1-dist/120))+')';ctx.lineWidth=1;ctx.stroke();}}
+    }
+    requestAnimationFrame(loop);
+  })();
+})();
+
+// CANVAS: Concept chain diagram
+(function(){
+  var c=document.getElementById('chainCanvas'),w=c.parentNode.clientWidth-40,h=200;
+  c.width=w*2;c.height=h*2;c.style.width=w+'px';c.style.height=h+'px';
+  var ctx=c.getContext('2d'),W=c.width,H=c.height;
+  var nodes=[
+    {label:'LLM',x:0.07},{label:'Token',x:0.19},{label:'Context',x:0.31},{label:'Prompt',x:0.43},
+    {label:'Tool',x:0.55},{label:'MCP',x:0.67},{label:'Agent',x:0.79},{label:'Skill',x:0.91}
+  ];
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    var colors=['#6366f1','#10B981','#06B6D4','#ec4899','#F59E0B','#a855f7','#a855f7','#EF4444'];
+    var nodeW=W*0.08,nodeH=40,cy=H/2;
+    for(var i=0;i<nodes.length;i++){
+      var nx=nodes[i].x*W,ny=cy;
+      // Arrow
+      if(i<nodes.length-1){
+        var nx2=nodes[i+1].x*W;
+        ctx.beginPath();ctx.moveTo(nx+nodeW/2+2,ny);ctx.lineTo(nx2-nodeW/2-2,ny);
+        ctx.strokeStyle='rgba(255,255,255,0.15)';ctx.lineWidth=2;ctx.stroke();
+        // Arrowhead
+        ctx.beginPath();ctx.moveTo(nx2-nodeW/2-2,ny-6);ctx.lineTo(nx2-nodeW/2+4,ny);ctx.lineTo(nx2-nodeW/2-2,ny+6);
+        ctx.fillStyle='rgba(255,255,255,0.2)';ctx.fill();
+      }
+      // Node
+      ctx.fillStyle=colors[i].replace(')','').replace('rgb','rgba').replace('a','').replace('#','');
+      if(colors[i].startsWith('#')){
+        var r=parseInt(colors[i].substr(1,2),16),g=parseInt(colors[i].substr(3,2),16),b=parseInt(colors[i].substr(5,2),16);
+        ctx.fillStyle='rgba('+r+','+g+','+b+',0.2)';
+        ctx.strokeStyle='rgba('+r+','+g+','+b+',0.5)';
+      }
+      ctx.beginPath();ctx.roundRect(nx-nodeW/2,ny-nodeH/2,nodeW,nodeH,8);ctx.fill();ctx.stroke();
+      ctx.fillStyle='rgba(255,255,255,0.85)';ctx.font='12px Inter,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(nodes[i].label,nx,ny);
+    }
+    ctx.fillStyle='rgba(255,255,255,0.3)';ctx.font='11px Inter,sans-serif';ctx.textAlign='center';
+    ctx.fillText('LLM → Token → Context → Prompt → Tool → MCP → Agent → Agent Skill',W/2,H-16);
+  }
+  draw();
+})();
+
+// CANVAS: Agent Loop diagram
+(function(){
+  var c=document.getElementById('agentCanvas'),w=c.parentNode.clientWidth-40,h=300;
+  c.width=w*2;c.height=h*2;c.style.width=w+'px';c.style.height=h+'px';
+  var ctx=c.getContext('2d'),W=c.width,H=c.height;
+  var phase=0;
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='rgba(255,255,255,.45)';ctx.font='13px Inter,sans-serif';ctx.textAlign='center';
+    ctx.fillText('Agent 循环：Observe → Plan → Act → Reflect',W/2,24);
+
+    var cx=W/2,cy=H/2,rr=70;
+    var steps=[
+      {label:'观察',sub:'Observe',ang:-Math.PI/2,col:'a855f7'},
+      {label:'规划',sub:'Plan',ang:0,col:'6366f1'},
+      {label:'执行',sub:'Act',ang:Math.PI/2,col:'10B981'},
+      {label:'反思',sub:'Reflect',ang:Math.PI,col:'ec4899'}
+    ];
+
+    for(var i=0;i<steps.length;i++){
+      var s=steps[i],sx=cx+Math.cos(s.ang)*rr,sy=cy+Math.sin(s.ang)*rr;
+      // Connection line
+      var na=steps[(i+1)%4].ang;
+      ctx.beginPath();ctx.arc(cx,cy,rr,s.ang,na);ctx.strokeStyle='rgba(168,85,247,0.3)';ctx.lineWidth=2;ctx.setLineDash([6,4]);ctx.stroke();ctx.setLineDash([]);
+      // Node
+      ctx.beginPath();ctx.arc(sx,sy,26,0,Math.PI*2);
+      ctx.fillStyle='rgba('+(s.col==='a855f7'?'168,85,247':s.col==='6366f1'?'99,102,241':s.col==='10B981'?'16,185,129':'236,72,153')+',0.2)';
+      ctx.fill();
+      ctx.strokeStyle='rgba('+(s.col==='a855f7'?'168,85,247':s.col==='6366f1'?'99,102,241':s.col==='10B981'?'16,185,129':'236,72,153')+',0.5)';
+      ctx.lineWidth=2;ctx.stroke();
+      // Label
+      ctx.fillStyle='rgba(255,255,255,.85)';ctx.font='bold 13px Inter,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(s.label,sx,sy-4);
+      ctx.fillStyle='rgba(255,255,255,.4)';ctx.font='9px Inter,sans-serif';
+      ctx.fillText(s.sub,sx,sy+12);
+    }
+    // Center icon
+    ctx.beginPath();ctx.arc(cx,cy,16,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,255,255,.06)';ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,.5)';ctx.font='16px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('🤖',cx,cy);
+
+    ctx.fillStyle='rgba(255,255,255,.25)';ctx.font='11px Inter,sans-serif';ctx.textAlign='center';
+    ctx.fillText('Agent 在循环中不断优化：做错了 → 换个方法 → 直到达成目标',W/2,H-14);
+  }
+  draw();
+})();
+
+// CANVAS: Context Window visualization
+(function(){
+  var c=document.getElementById('ctxCanvas'),w=c.parentNode.clientWidth-40,h=280;
+  c.width=w*2;c.height=h*2;c.style.width=w+'px';c.style.height=h+'px';
+  var ctx=c.getContext('2d'),W=c.width,H=c.height,animPhase=0;
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='rgba(255,255,255,.45)';ctx.font='13px Inter,sans-serif';ctx.textAlign='center';
+    ctx.fillText('Context Window 示意图——超过窗口的内容被"遗忘"',W/2,22);
+
+    var barY=60,barH=H-barY-50,barW=W*0.8,barX=(W-barW)/2;
+    ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=2;ctx.strokeRect(barX,barY,barW,barH);
+
+    // Fill segments
+    var segments=[
+      {label:'System Prompt',pct:0.08,col:'rgba(236,72,153,0.2)'},
+      {label:'历史对话 #1-#5',pct:0.25,col:'rgba(99,102,241,0.15)'},
+      {label:'历史对话 #6-#10',pct:0.25,col:'rgba(99,102,241,0.1)'},
+      {label:'当前用户问题',pct:0.12,col:'rgba(6,182,212,0.2)'},
+      {label:'剩余空间',pct:0.3,col:'rgba(255,255,255,0.03)'}
+    ];
+    var curY=barY;
+    for(var i=0;i<segments.length;i++){
+      var segH=segments[i].pct*barH;
+      ctx.fillStyle=segments[i].col;
+      ctx.fillRect(barX+2,curY,barW-4,segH);
+      ctx.fillStyle='rgba(255,255,255,.6)';ctx.font='10px Inter,sans-serif';ctx.textAlign='left';
+      if(segH>16) ctx.fillText(segments[i].label,barX+10,curY+segH/2+3);
+      curY+=segH;
+    }
+
+    // Over-window warning area
+    var warnY=barY+0.68*barH;
+    ctx.fillStyle='rgba(239,68,68,0.08)';ctx.fillRect(barX+2,warnY,barW-4,barY+barH-warnY);
+    ctx.fillStyle='rgba(239,68,68,.5)';ctx.font='11px Inter,sans-serif';ctx.textAlign='center';
+    ctx.fillText('△ 超出窗口的内容将被裁剪',W/2,warnY+16);
+    ctx.fillText('模型完全不知道被裁剪的部分',W/2,warnY+34);
+
+    ctx.fillStyle='rgba(255,255,255,.3)';ctx.font='11px Inter,sans-serif';ctx.textAlign='center';
+    ctx.fillText('窗口大小：GPT-3=2K token | GPT-4 Turbo=128K | Claude=200K',W/2,H-10);
+  }
+  draw();
+})();
+</script>
+
+<!-- GAME SCRIPTS -->
+<script>
+// Quiz
+(function(){
+  var qq=[
+    {q:'LLM 的核心任务是什么？',opts:['预测下一个词','理解人类情感','控制机器人','存储知识'],ans:0,exp:'LLM 的核心任务是"给定前面的文字，猜下一个最合适的词"。其它能力（推理、翻译、编码）都是从"预测下一个词"这个能力中涌现出来的。'},
+    {q:'Token 和"字"的区别是什么？',opts:['Token 是AI处理的最小语义单元，可能包含多个字或半个词','Token就是字——一个Token=一个汉字','Token比字更大——一个Token=一个句子','Token只存在于英文中'],ans:0,exp:'Token 是分词器把文本切分成的最小单元。"人工智能"可能被切成"人工"+"智能"两个Token，而"the"是一个Token。'},
+    {q:'Context Window（上下文窗口）是什么？',opts:['模型一次最多能"记住"的Token数量','模型训练时用的数据量','用户的浏览器窗口大小','API 的调用频率限制'],ans:0,exp:'Context Window 是模型单次推理能处理的最大 Token 数。超过窗口的内容会被裁剪掉，模型完全"看不见"。'},
+    {q:'System Prompt 和 User Prompt 的区别是什么？',opts:['System Prompt预设角色规则，User Prompt是用户每次输入','System Prompt是给程序员看的，User Prompt是给AI看的','两者完全相同，只是叫法不同','System Prompt只有付费用户才能用'],ans:0,exp:'System Prompt 是开发者在对话开始前预设的规则（角色、风格、限制），用户不可见。User Prompt 是用户每次输入的具体问题。'},
+    {q:'MCP (Model Context Protocol) 解决什么问题？',opts:['统一AI和外部工具的通信协议——不再每个工具为每个模型单独适配','让AI模型运行得更快','让提示词写得更短','管理用户的对话历史'],ans:0,exp:'MCP 像一个"USB协议"——工具按MCP标准暴露接口，所有支持MCP的AI都能直接使用，不再需要n×m种适配。'},
+    {q:'Agent 和普通 Chatbot 最本质的区别是什么？',opts:['Agent有自主规划+工具使用+循环执行的闭环','Agent回复得更快','Agent不需要Prompt','Agent不需要token'],ans:0,exp:'Chatbot是"一问一答"。Agent是"我告诉你目标，你自己拆任务、选工具、试错、修正、直到完成"。Agent有观察→规划→执行→反思的闭环。'},
+  ];
+  var idx=0,score=0,total=0;
+  var el=document.getElementById('quiz1'),qEl=el.querySelector('.mg-q4-q'),cEl=el.querySelector('.mg-q4-counter'),oEl=el.querySelector('.mg-q4-opts'),xEl=el.querySelector('.mg-q4-explain');
+  function show(){
+    if(idx>=qq.length){qEl.textContent='测验完成！';cEl.textContent=score+'/'+total;oEl.innerHTML='';xEl.innerHTML='恭喜！你已打通AI底层逻辑——从LLM到Agent Skill。';xEl.classList.add('show');return;}
+    var q=qq[idx];qEl.textContent='Q'+(idx+1)+'/'+qq.length+': '+q.q;cEl.textContent=score+'/'+total;
+    var h='';for(var i=0;i<q.opts.length;i++)h+='<button class="mg-q4-opt" data-idx="'+i+'">'+String.fromCharCode(65+i)+'. '+q.opts[i]+'</button>';
+    oEl.innerHTML=h;xEl.classList.remove('show');
+  }
+  oEl.addEventListener('click',function(e){
+    var btn=e.target.closest('.mg-q4-opt');if(!btn)return;
+    var si=parseInt(btn.dataset.idx),q=qq[idx];total++;
+    if(si===q.ans){score++;btn.classList.add('correct');}else{btn.classList.add('wrong');oEl.querySelector('.mg-q4-opt[data-idx="'+q.ans+'"]').classList.add('correct');}
+    xEl.textContent='💡 '+q.exp;xEl.classList.add('show');
+    setTimeout(function(){idx++;show();},2000);
+  });
+  show();
+})();
+
+// Spot
+(function(){
+  var pairs=[
+    {left:'LLM',right:'预测下一个词的神经网络——一切的基础',id:0},
+    {left:'Token',right:'AI的最小语义单元——计费+窗口的计量单位',id:1},
+    {left:'Context Window',right:'模型一次能"记住"的上限——超了就遗忘',id:2},
+    {left:'System Prompt',right:'预设的规则和角色——用户不可见但AI始终遵守',id:3},
+    {left:'Tool Calling',right:'让AI调用外部函数——从"说"到"做"的跨越',id:4},
+    {left:'MCP',right:'工具通信的标准化协议——AI世界的USB',id:5},
+    {left:'Agent',right:'LLM+工具+自主规划+循环执行',id:6},
+    {left:'Agent Skill',right:'Agent能力的打包复用——知识与流程的组合',id:7},
+  ];
+  var sL=[],sR=[],selL=null,selR=null,matched={},score=0,total=pairs.length;
+  var el=document.getElementById('spot1'),cardsEl=el.querySelector('.mg-spot-cards'),fbEl=el.querySelector('.mg-spot-fb');
+  function init(){
+    sL=pairs.map(function(p,i){return{text:p.left,id:p.id};});
+    sR=pairs.map(function(p,i){return{text:p.right,id:p.id};});
+    for(var i=sL.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=sL[i];sL[i]=sL[j];sL[j]=t;}
+    for(var i=sR.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=sR[i];sR[i]=sR[j];sR[j]=t;}
+    score=0;matched={};selL=null;selR=null;render();
+  }
+  function render(){
+    var h='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div><p style="font-size:10px;color:var(--tx3);margin-bottom:4px">📋 概念</p>';
+    for(var i=0;i<sL.length;i++){var l=sL[i];if(matched[l.id])h+='<div class="mg-spot-card correct" style="opacity:.5">'+l.text+' ✓</div>';else h+='<div class="mg-spot-card'+(selL&&selL.id===l.id?' correct':'')+'" data-side="left" data-idx="'+i+'">'+l.text+'</div>';}
+    h+='</div><div><p style="font-size:10px;color:var(--tx3);margin-bottom:4px">💬 描述</p>';
+    for(var i=0;i<sR.length;i++){var r=sR[i];if(matched[r.id])h+='<div class="mg-spot-card correct" style="opacity:.5">'+r.text+' ✓</div>';else h+='<div class="mg-spot-card'+(selR&&selR.id===r.id?' correct':'')+'" data-side="right" data-idx="'+i+'">'+r.text+'</div>';}
+    h+='</div></div>';cardsEl.innerHTML=h;
+    fbEl.textContent='已配对: '+score+'/'+total;fbEl.classList.add('show');
+  }
+  cardsEl.addEventListener('click',function(e){
+    var card=e.target.closest('.mg-spot-card');if(!card)return;
+    var side=card.dataset.side,idx=parseInt(card.dataset.idx);
+    if(side==='left'){var item=sL[idx];if(matched[item.id])return;selL=item;}
+    else{var item=sR[idx];if(matched[item.id])return;selR=item;}
+    if(selL&&selR){
+      if(selL.id===selR.id){matched[selL.id]=true;score++;fbEl.textContent='✅ 正确！'+score+'/'+total;fbEl.style.color='var(--a2)';}
+      else{fbEl.textContent='❌ 不对，再想想';fbEl.style.color='var(--a3)';}
+      selL=null;selR=null;
+      if(score===total){fbEl.textContent='🎉 完美！你已经打通了AI底层逻辑！';fbEl.style.color='var(--amber)';}
+    }
+    render();
+  });
+  init();
+})();
+</script>
+</body>
+</html>
