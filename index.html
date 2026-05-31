@@ -1524,4 +1524,17 @@ nav.scrollLeft += e.deltaY;
 	    <button class="modal-btn" id="modalBtn" onclick="Modal.hide()">知道了</button>
 	  </div>
 	</div>
+<div style="text-align:center;padding:8px 0 calc(12px + env(safe-area-inset-bottom,0px));font-size:10px;color:var(--tx4, rgba(255,255,255,.2));line-height:1.4">
+<span id="verLabel">v-</span> · <span id="verTime">--</span> · <a href="changelog.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px">更新日志</a>
+</div>
+<script>
+(async function(){
+try{
+const r=await fetch('./version.json?t='+Date.now(),{cache:'no-store'});
+const d=await r.json();
+document.getElementById('verLabel').textContent='v'+d.version;
+document.getElementById('verTime').textContent=d.updated;
+}catch(e){}
+})();
+</script>
 </html>
