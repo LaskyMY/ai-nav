@@ -410,10 +410,10 @@ const cachedCity=loadCityCache();
 if(cachedCity)document.getElementById('cityName').textContent=cachedCity;
 const cachedW=loadWeatherCache();
 if(cachedW)renderWeather(cachedW);
-navigator.geolocation.getCurrentPosition(async pos=>{
+navigator.geolocation.getCurrentPosition(function(pos){
 const{latitude:lat,longitude:lon}=pos.coords;
 try{await fetchFreshWeather(lat,lon);}catch(e){if(!cachedW)document.getElementById('weatherDesc').textContent='加载失败';}
-},{err=>{if(!cachedW){document.getElementById('cityName').textContent='无位置权限';document.getElementById('weatherDesc').textContent='需要位置';}}},{enableHighAccuracy:false,timeout:5000,maximumAge:600000});
+},function(err){if(!cachedW){document.getElementById('cityName').textContent='无位置权限';document.getElementById('weatherDesc').textContent='需要位置';}},{enableHighAccuracy:false,timeout:5000,maximumAge:600000});
 }
 initWeather();
 
@@ -434,7 +434,7 @@ const sources=[
 {url:'https://api.vvhan.com/api/hotlist/news',parse:d=>d.data?.map(i=>({title:i.title,source:i.source||'综合'}))},
 {url:'https://api.oioweb.cn/api/top/hot',parse:d=>d.result?.map(i=>({title:i.title||i.name,source:i.desc||'热榜'}))},
 ];
-const tasks=sources.map(async s=>{
+const tasks=sources.map(async(s)=>{
 try{const r=await fetchWithTimeout(s.url,4000);if(!r.ok)return null;const d=await r.json();const items=s.parse(d);return items?.length?items.slice(0,16):null;}catch(e){return null;}
 });
 const timeout=new Promise(r=>setTimeout(()=>r(null),5000));
