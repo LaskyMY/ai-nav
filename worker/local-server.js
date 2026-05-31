@@ -209,7 +209,26 @@ async function refreshNewsSummary() {
     for (const items of results) for (const item of items) { const k = item.title.slice(0, 10); if (!seen.has(k)) { seen.add(k); merged.push(item); } }
     const topNews = merged.slice(0, 15);
 
-    if (topNews.length === 0) { console.log("[news-summary] no news fetched"); return; }
+    // Fallback: HackerNews (works internationally via VPN)
+	    if (topNews.length === 0) {
+	      console.log("[news-summary] Chinese sources empty, trying HackerNews...");
+	      try {
+	        const idsResp = await fetch("https://hacker-news.firebaseio.com/v0/topstories.json", { signal: AbortSignal.timeout(5000) });
+	        if (idsResp.ok) {
+	          const ids = await idsResp.json();
+	          const topIds = ids.slice(0, 15);
+	          const stories = await Promise.all(topIds.map(async id => {
+	            try { const r = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`, { signal: AbortSignal.timeout(3000) }); return r.ok ? await r.json() : null; } catch (_) { return null; }
+	          }));
+	          for (const s of stories) {
+	            if (s && s.title) topNews.push({ title: s.title, source: "HackerNews" });
+	          }
+	          console.log(`[news-summary] HN fallback: got ${topNews.length} stories`);
+	        }
+	      } catch (_) { console.log("[news-summary] HN fallback also failed"); }
+	    }
+
+	    if (topNews.length === 0) { console.log("[news-summary] no news fetched"); return; }
 
     const titles = topNews.map((n, i) => `${i + 1}. [${n.source}] ${n.title}`).join("\n");
     console.log(`[news-summary] got ${topNews.length} items, sending to DeepSeek...`);
