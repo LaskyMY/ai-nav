@@ -9,7 +9,7 @@
 <title>毫秒时钟 · 天气 · 新闻</title>
 <link rel="icon" href="./icon.svg">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@200;300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&display=swap');
 
 :root{
 --sat:max(44px, env(safe-area-inset-top));
@@ -67,14 +67,15 @@ transition:all .3s var(--ease);letter-spacing:-.01em;
 /* ---- Clock ---- */
 .clock-section{text-align:center;padding:8px 0 6px;}
 .time-row{display:flex;align-items:baseline;justify-content:center;gap:0;}
-.time-hms{font-family:'JetBrains Mono','SF Mono',monospace;font-size:56px;font-weight:500;
-letter-spacing:.02em;color:var(--tx);
+.time-hms{font-family:'Inter','SF Pro Display',-apple-system,sans-serif;font-size:56px;font-weight:600;
+font-variant-numeric:tabular-nums;letter-spacing:.04em;color:var(--tx);
 background:linear-gradient(180deg,rgba(255,255,255,.98) 0%,rgba(255,255,255,.8) 100%);
 -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 text-shadow:0 0 60px var(--cyan3),0 0 120px var(--cyan3);
 line-height:1;
 }
-.time-ms{font-family:'JetBrains Mono','SF Mono',monospace;font-size:28px;font-weight:500;
+.time-ms{font-family:'Inter','SF Pro Display',-apple-system,sans-serif;font-size:28px;font-weight:500;
+font-variant-numeric:tabular-nums;
 color:var(--cyan);letter-spacing:.04em;line-height:1;
 text-shadow:0 0 20px var(--cyan3),0 0 40px var(--cyan3);
 min-width:70px;text-align:left;opacity:.85;
@@ -160,7 +161,7 @@ display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hi
 .news-card .news-dots{display:flex;gap:4px;}
 .news-card .news-dot{width:5px;height:5px;border-radius:50%;background:var(--tx4);transition:all .4s var(--ease);}
 .news-card .news-dot.on{background:var(--cyan);box-shadow:0 0 6px var(--cyan2);width:14px;border-radius:3px;}
-.news-card .news-counter{font-size:10px;color:var(--tx3);font-family:'JetBrains Mono',monospace;}
+.news-card .news-counter{font-size:11px;font-weight:500;color:var(--tx3);font-family:'Inter',-apple-system,sans-serif;font-variant-numeric:tabular-nums;}
 .news-card .news-timer{width:100%;height:1px;background:rgba(255,255,255,.03);margin-top:10px;border-radius:1px;overflow:hidden;}
 .news-card .news-timer-fill{height:100%;background:var(--cyan);border-radius:1px;
 transition:width 1s linear;width:0%;
