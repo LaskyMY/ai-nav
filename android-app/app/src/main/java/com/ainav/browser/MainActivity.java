@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String HOME_URL = "https://c46872d35aeba559-183-6-87-29.serveousercontent.com/clock.html";
+    private static final String HOME_URL = "https://laskymy.github.io/ai-nav/clock.html";
 
     private WebView webView;
 
