@@ -97,8 +97,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Load embedded diagnostic test page
-        webView.loadUrl("file:///android_asset/test.html");
+        // Load embedded clock page (no network needed for HTML — only API calls use serveo)
+        webView.loadUrl("file:///android_asset/clock-old.html");
     }
 
     @Override
