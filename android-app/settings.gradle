@@ -1,0 +1,2 @@
+rootProject.name = "AINavBrowser"
+include ':app'
