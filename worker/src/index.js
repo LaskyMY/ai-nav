@@ -6,6 +6,27 @@ const CORS = {
 
 const DEEPSEEK = 'https://api.deepseek.com/v1/chat/completions';
 
+// Simple sliding-window rate limiter (per IP, in-memory)
+const RL = new Map();
+function rateLimit(ip, route, limit, windowMs) {
+  const key = `${ip}:${route}`;
+  const now = Date.now();
+  let entry = RL.get(key);
+  if (!entry || now - entry.reset > windowMs) {
+    entry = { count: 1, reset: now + windowMs };
+    RL.set(key, entry);
+    return true;
+  }
+  if (entry.count >= limit) return false;
+  entry.count++;
+  return true;
+}
+// Periodic cleanup
+setInterval(() => {
+  const now = Date.now();
+  for (const [k, v] of RL) { if (now - v.reset > 120_000) RL.delete(k); }
+}, 60_000);
+
 function ok(data, extraHeaders) {
   return new Response(JSON.stringify(data), { headers: { ...CORS, ...extraHeaders } });
 }
@@ -119,6 +140,9 @@ export default {
       if (path === '/api/summary') {
         if (req.method !== 'POST') return err('POST required', 405);
 
+        const ip = req.headers.get('CF-Connecting-IP') || '127.0.0.1';
+        if (!rateLimit(ip, 'summary', 10, 60_000)) return err('请求太频繁，请等一分钟再试', 429);
+
         const body = await req.json().catch(() => null);
         if (!body || !body.text) return err('missing text', 400);
 
@@ -151,6 +175,9 @@ export default {
       if (path === '/api/papers-summary') {
         const q = url.searchParams.get('q');
         if (!q) return err('missing q', 400);
+
+        const ip = req.headers.get('CF-Connecting-IP') || '127.0.0.1';
+        if (!rateLimit(ip, 'papers-summary', 5, 60_000)) return err('请求太频繁，请等一分钟再试', 429);
 
         // Fetch papers
         const arxivUrl = `http://export.arxiv.org/api/query?search_query=all:${encodeURIComponent(q)}&start=0&max_results=5&sortBy=submittedDate&sortOrder=descending`;

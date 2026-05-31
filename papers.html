@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>前沿论文速览</title>
+<style>
+:root{
+--bg:#050510;--card-bg:rgba(255,255,255,.04);--card-border:rgba(255,255,255,.07);
+--cyan:#00e5ff;--cyan2:rgba(0,229,255,.5);--cyan3:rgba(0,229,255,.12);
+--purple:#a855f7;--purple2:rgba(168,85,247,.4);--purple3:rgba(168,85,247,.12);
+--amber:#f59e0b;--amber2:rgba(245,158,11,.5);
+--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.28);--tx4:rgba(255,255,255,.1);
+--r:18px;--r2:12px;--ease:cubic-bezier(.4,0,.2,1);
+--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow-x:hidden}
+body{
+display:flex;flex-direction:column;
+background:var(--bg);color:var(--tx);font-size:14px;line-height:1.5;
+font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;
+padding:var(--sat) 14px calc(14px + var(--sab));
+max-width:480px;margin:0 auto;width:100%;
+-webkit-font-smoothing:antialiased;
+}
+.back-btn{
+display:inline-flex;align-items:center;gap:3px;color:var(--cyan);
+font-size:12px;font-weight:600;text-decoration:none;padding:6px 14px;
+border-radius:16px;background:var(--cyan3);border:1px solid rgba(0,229,255,.08);
+align-self:flex-start;margin-bottom:8px;
+}
+.back-btn:hover{background:rgba(0,229,255,.18)}
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.top-bar h1{font-size:20px;font-weight:700;letter-spacing:-.01em}
+.top-bar .badge{
+font-size:10px;font-weight:600;color:var(--purple);padding:3px 10px;
+background:var(--purple3);border-radius:20px;border:1px solid rgba(168,85,247,.15);
+}
+/* Search */
+.search-wrap{
+position:relative;margin-bottom:20px;
+background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--r);
+padding:4px;display:flex;align-items:center;
+}
+.search-wrap:focus-within{border-color:rgba(0,229,255,.25);box-shadow:0 0 20px var(--cyan3)}
+.search-wrap input{
+flex:1;background:none;border:none;outline:none;
+color:var(--tx);font-size:15px;padding:10px 14px;font-family:inherit;
+}
+.search-wrap input::placeholder{color:var(--tx3)}
+.search-wrap button{
+flex-shrink:0;border:none;outline:none;
+background:var(--cyan);color:#000;font-weight:600;font-size:13px;
+padding:10px 18px;border-radius:calc(var(--r) - 4px);
+cursor:pointer;font-family:inherit;letter-spacing:.01em;
+}
+.search-wrap button:active{opacity:.8}
+/* Quick tags */
+.tags{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:24px}
+.tag{
+font-size:11px;font-weight:500;color:var(--tx2);padding:5px 12px;
+background:var(--card-bg);border:1px solid var(--card-border);border-radius:20px;
+cursor:pointer;transition:all .2s var(--ease);
+}
+.tag:hover{border-color:var(--cyan2);color:var(--cyan)}
+.tag.active{background:var(--cyan3);border-color:var(--cyan2);color:var(--cyan)}
+/* State messages */
+.state-msg{text-align:center;padding:40px 20px;color:var(--tx3)}
+.state-msg .icon{font-size:40px;margin-bottom:12px;display:block}
+.state-msg p{font-size:13px;line-height:1.6}
+/* Loading */
+.loading-spin{
+display:flex;flex-direction:column;align-items:center;gap:14px;padding:40px 0;
+}
+.spinner{
+width:32px;height:32px;border:2px solid var(--tx4);border-top-color:var(--cyan);
+border-radius:50%;animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-spin span{font-size:12px;color:var(--tx3)}
+/* Paper cards */
+.paper-list{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.paper-card{
+background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--r2);
+padding:14px 16px;cursor:pointer;transition:all .25s var(--ease);
+}
+.paper-card:hover{border-color:rgba(168,85,247,.25);box-shadow:0 0 16px var(--purple3)}
+.paper-card .pc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px}
+.paper-card .pc-title{font-size:14px;font-weight:600;color:var(--tx);line-height:1.4;flex:1}
+.paper-card .pc-date{font-size:10px;color:var(--tx3);white-space:nowrap;margin-top:1px}
+.paper-card .pc-authors{font-size:11px;color:var(--tx3);margin-bottom:6px}
+.paper-card .pc-abstract{font-size:12px;color:var(--tx2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.paper-card .pc-link{display:inline-block;margin-top:8px;font-size:11px;font-weight:500;color:var(--cyan);text-decoration:none}
+.paper-card .pc-link:hover{text-decoration:underline}
+.paper-card.expanded .pc-abstract{-webkit-line-clamp:unset}
+/* Summary panel */
+.summary-panel{
+background:var(--card-bg);border:1px solid var(--purple2);border-radius:var(--r);
+padding:18px;margin-bottom:24px;animation:slideUp .4s var(--ease);
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.summary-panel .sp-header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.summary-panel .sp-dot{width:6px;height:6px;border-radius:50%;background:var(--purple)}
+.summary-panel .sp-label{font-size:11px;font-weight:600;color:var(--purple);text-transform:uppercase;letter-spacing:.04em}
+.summary-panel .sp-content{font-size:13px;color:var(--tx);line-height:1.7}
+.summary-panel .sp-content h3{font-size:15px;font-weight:600;margin:14px 0 6px;color:var(--amber)}
+.summary-panel .sp-content p{margin-bottom:8px}
+.summary-panel .sp-content strong{color:var(--cyan)}
+/* Error */
+.error-msg{
+text-align:center;padding:20px;color:#ef4444;font-size:13px;
+background:rgba(239,68,68,.08);border-radius:var(--r2);margin-bottom:16px;
+}
+</style>
+</head>
+<body>
+
+<a href="knowledge.html" class="back-btn">← 返回百科</a>
+
+<div class="top-bar">
+<h1>前沿论文速览</h1>
+<span class="badge">arXiv + AI</span>
+</div>
+
+<div class="search-wrap">
+<input type="text" id="q" placeholder="搜索论文关键词..." autocomplete="off">
+<button id="btnSearch">检索</button>
+</div>
+
+<div class="tags">
+<span class="tag" data-q="large language model">大语言模型</span>
+<span class="tag" data-q="AI agent">AI Agent</span>
+<span class="tag" data-q="computer vision">计算机视觉</span>
+<span class="tag" data-q="reinforcement learning">强化学习</span>
+<span class="tag" data-q="diffusion model">扩散模型</span>
+<span class="tag" data-q="graph neural network">图神经网络</span>
+</div>
+
+<div id="state"><div class="state-msg"><span class="icon">🔍</span><p>输入关键词，搜索 arXiv 最新论文<br>AI 自动总结前沿趋势</p></div></div>
+<div id="loading" style="display:none"><div class="loading-spin"><div class="spinner"></div><span>正在检索并分析论文...</span></div></div>
+<div id="results"></div>
+
+<script>
+const API='https://ai-nav-api.laskymy.workers.dev';
+const q=document.getElementById('q');
+const btn=document.getElementById('btnSearch');
+const state=document.getElementById('state');
+const loading=document.getElementById('loading');
+const results=document.getElementById('results');
+
+function showState(html){state.style.display='';loading.style.display='none';results.innerHTML='';state.innerHTML=html}
+function showLoading(){state.style.display='none';loading.style.display='';results.innerHTML=''}
+function showResults(html){state.style.display='none';loading.style.display='none';results.innerHTML=html}
+
+function render(papers,summary){
+let html='';
+if(summary){
+html+=`<div class="summary-panel">
+<div class="sp-header"><div class="sp-dot"></div><span class="sp-label">AI 趋势分析</span></div>
+<div class="sp-content">${summary.replace(/\n/g,'<br>')}</div>
+</div>`;
+}
+if(papers.length){
+html+=`<div class="paper-list">`;
+papers.forEach((p,i)=>{
+const d=p.published?new Date(p.published).toLocaleDateString('zh-CN'):'';
+html+=`<div class="paper-card" onclick="this.classList.toggle('expanded')">
+<div class="pc-top"><div class="pc-title">${esc(p.title)}</div>${d?`<div class="pc-date">${d}</div>`:''}</div>
+<div class="pc-authors">${esc((p.authors||[]).slice(0,3).join(', '))}${(p.authors||[]).length>3?' 等':''}</div>
+<div class="pc-abstract">${esc(p.summary||'')}</div>
+<a class="pc-link" href="${esc(p.link||'https://arxiv.org/abs/'+p.id)}" target="_blank" onclick="event.stopPropagation()">arXiv:${esc(p.id)} →</a>
+</div>`;
+});
+html+=`</div>`;
+}else{
+html+=`<div class="state-msg"><span class="icon">📭</span><p>没有找到相关论文</p></div>`;
+}
+showResults(html);
+}
+
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+async function search(query){
+showLoading();
+try{
+const r=await fetch(`${API}/api/papers-summary?q=${encodeURIComponent(query)}`);
+if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.error||'搜索失败');}
+const d=await r.json();
+render(d.papers||[],d.summary||'');
+}catch(e){
+showResults(`<div class="error-msg">${esc(e.message)}</div>`);
+}
+}
+
+btn.addEventListener('click',()=>{const v=q.value.trim();if(v)search(v)});
+q.addEventListener('keydown',e=>{if(e.key==='Enter'){const v=q.value.trim();if(v)search(v)}});
+
+// Quick tags
+document.querySelectorAll('.tag').forEach(t=>{
+t.addEventListener('click',()=>{
+document.querySelectorAll('.tag').forEach(x=>x.classList.remove('active'));
+t.classList.add('active');
+q.value='';
+search(t.dataset.q);
+});
+});
+
+// Pre-select LLM tag
+document.querySelector('.tag[data-q="large language model"]').classList.add('active');
+</script>
+</body>
+</html>
