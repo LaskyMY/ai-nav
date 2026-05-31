@@ -452,6 +452,7 @@ setInterval(tickNews,1000);
 initNews();
 setInterval(async()=>{const f=await fetchNewsFresh();if(f.length){newsItems=f;newsIdx=0;newsTimerSec=0;renderNews();saveNewsCache(f);}},1800000);
 </script>
+<script>(async function(){try{const r=await fetch('./version.json?t='+Date.now(),{cache:'no-store'});const d=await r.json();const cur=localStorage.getItem('site_version');if(cur&&cur!==d.version){location.reload(true)}localStorage.setItem('site_version',d.version)}catch(e){}})();</script>
 <div style="text-align:center;padding:8px 0 4px;font-size:10px;color:var(--tx4);line-height:1.6">
 <a href="changelog.html" style="color:var(--tx4);text-decoration:none">v1.2</a> · 天气+城市 localStorage 缓存，二次打开即时显示 · 2026.05.31
 </div>

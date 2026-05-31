@@ -1450,7 +1450,9 @@ setInterval(()=>Weather.load(),600000);
 // Auto-refresh automations every 2 min
 setInterval(()=>Automations.load(),120000);
 // PWA Service Worker
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js')}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js');navigator.serviceWorker.addEventListener('message',e=>{if(e.data&&e.data.type==='version-check'){const cur=localStorage.getItem('site_version');if(cur&&cur!==e.data.version){localStorage.setItem('site_version',e.data.version);location.reload()}}})}
+// Version check on page load
+(async function(){try{const r=await fetch('./version.json?t='+Date.now(),{cache:'no-store'});const d=await r.json();const cur=localStorage.getItem('site_version');if(cur&&cur!==d.version){location.reload(true)}localStorage.setItem('site_version',d.version)}catch(e){}})();
 
 // ==================== BOTTOM NAV HORIZONTAL SCROLL ====================
 (function(){

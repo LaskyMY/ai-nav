@@ -1,8 +1,18 @@
 const CACHE = 'ai-nav-v3';
-const ASSETS = [
-  './icon.svg',
-  './manifest.json'
-];
+const ASSETS = ['./icon.svg','./manifest.json'];
+
+// Fetch version.json and compare with stored version
+async function checkVersion() {
+  try {
+    const r = await fetch('./version.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) return;
+    const data = await r.json();
+    const clients = await self.clients.matchAll();
+    for (const client of clients) {
+      client.postMessage({ type: 'version-check', version: data.version });
+    }
+  } catch(e) {}
+}
 
 self.addEventListener('install', e => {
   e.waitUntil(
@@ -18,11 +28,15 @@ self.addEventListener('activate', e => {
     ))
   );
   self.clients.claim();
+  // Check version on activation
+  e.waitUntil(checkVersion());
 });
+
+// Periodic version check (every 3 minutes)
+setInterval(checkVersion, 180000);
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
-  // Network-first for HTML, cache-first for static assets
   if (e.request.mode === 'navigate') {
     e.respondWith(
       fetch(e.request).catch(() => caches.match(e.request))
