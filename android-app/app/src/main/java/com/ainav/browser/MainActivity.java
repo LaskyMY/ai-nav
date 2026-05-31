@@ -1,20 +1,28 @@
 package com.ainav.browser;
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
+import android.webkit.ConsoleMessage;
 import android.webkit.GeolocationPermissions;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import androidx.appcompat.app.AppCompatActivity;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private WebView webView;
+    private List<String> errorLogs = new ArrayList<>();
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -41,18 +49,56 @@ public class MainActivity extends AppCompatActivity {
         s.setBuiltInZoomControls(true);
         s.setDisplayZoomControls(false);
 
-        s.setUserAgentString(s.getUserAgentString() + " AINavBrowser/1.0");
+        // Remove custom user agent — use default Chrome
+        // s.setUserAgentString(s.getUserAgentString() + " AINavBrowser/1.0");
 
-        webView.setWebViewClient(new WebViewClient());
+        // WebViewClient with error logging
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                Log.i("AINav", "Page started: " + url);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                Log.i("AINav", "Page finished: " + url);
+            }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                String msg = "ERROR: " + (request != null && request.getUrl() != null ? request.getUrl().toString() : "unknown") + " code=" + error.getErrorCode() + " desc=" + error.getDescription();
+                Log.e("AINav", msg);
+                errorLogs.add(msg);
+            }
+
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                super.onReceivedError(view, errorCode, description, failingUrl);
+                String msg = "ERROR(deprecated): " + failingUrl + " code=" + errorCode + " desc=" + description;
+                Log.e("AINav", msg);
+                errorLogs.add(msg);
+            }
+        });
+
+        // WebChromeClient with console logging
         webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onConsoleMessage(ConsoleMessage cm) {
+                Log.i("AINav_JS", cm.messageLevel() + ": " + cm.message() + " [" + cm.sourceId() + ":" + cm.lineNumber() + "]");
+                return true;
+            }
+
             @Override
             public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
                 callback.invoke(origin, true, false);
             }
         });
 
-        // Load old Android compatible clock page
-        webView.loadUrl("https://laskymy.github.io/ai-nav/clock-old.html");
+        // Load embedded diagnostic test page
+        webView.loadUrl("file:///android_asset/test.html");
     }
 
     @Override

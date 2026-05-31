@@ -3,46 +3,207 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>WebView Test</title>
+<title>诊断面板</title>
 <style>
-body{background:#050510;color:#fff;font-family:sans-serif;padding:16px;margin:0;font-size:13px;line-height:1.8;}
-h2{color:#00e5ff;font-size:15px;margin:10px 0 6px;}
-.pass{color:#10b981}.fail{color:#ef4444}
-.btn{display:block;width:100%;padding:10px;margin:5px 0;border-radius:8px;border:1px solid rgba(255,255,255,.15);
-background:rgba(255,255,255,.06);color:#fff;font-size:13px;cursor:pointer;text-align:left;}
+body{background:#050510;color:#fff;font-family:sans-serif;padding:12px;margin:0;font-size:12px;line-height:1.7;}
+
+h2{color:#f59e0b;font-size:15px;margin:8px 0 4px;}
+h3{color:#00e5ff;font-size:13px;margin:6px 0 3px;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:2px;}
+.ok{color:#10b981}.fail{color:#ef4444}.warn{color:#f59e0b}
+.log{background:rgba(255,255,255,.03);border-radius:8px;padding:8px;margin:4px 0;font-size:10px;max-height:150px;overflow-y:auto;font-family:monospace;word-break:break-all;}
+.btn{display:block;width:100%;padding:8px 10px;margin:3px 0;border-radius:6px;border:1px solid rgba(255,255,255,.15);
+background:rgba(255,255,255,.04);color:#fff;font-size:12px;cursor:pointer;text-align:left;}
 .btn b{color:#00e5ff;}
-#result{margin-top:8px;padding:8px;border-radius:8px;background:rgba(255,255,255,.03);font-size:11px;word-break:break-all;}
+.btn2{background:rgba(168,85,247,.12);border-color:rgba(168,85,247,.2);}
+.btn3{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.2);}
+.res{font-size:11px;margin:2px 0 2px 8px;color:rgba(255,255,255,.6);}
+#errors{margin-top:8px;padding:8px;border-radius:8px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);font-size:10px;font-family:monospace;word-break:break-all;max-height:120px;overflow-y:auto;}
 </style>
 </head>
 <body>
-<h2>AI Nav 测试面板</h2>
-<p>逐个点击，哪个能显示完整时钟界面？</p>
+<h2>🔍 AI Nav 诊断面板</h2>
 
-<button class="btn" onclick="test('1')"><b>1.</b> 本地 JS 基础测试</button>
-<button class="btn" onclick="test('2')"><b>2.</b> ⭐ 老版时钟 clock-old.html (推荐)</button>
-<button class="btn" onclick="test('3')"><b>3.</b> 新版时钟 clock.html</button>
-<button class="btn" onclick="test('4')"><b>4.</b> Serveo 直连</button>
-<button class="btn" onclick="test('5')"><b>5.</b> 百度 (测网络)</button>
+<h3>📋 基础信息</h3>
+<div style="font-size:11px;">
+<div>UA: <span id="ua"></span></div>
+<div>屏幕: <span id="screen"></span></div>
+<div>协议: <span id="proto"></span></div>
+<div>在线: <span id="online"></span></div>
+<div>WebView: <span id="isWV"></span></div>
+</div>
 
-<div id="result"></div>
+<h3>🌐 连通性测试</h3>
+<button class="btn" onclick="ping('1','https://www.baidu.com')"><b>1.</b> 百度 HTTPS</button>
+<button class="btn" onclick="ping('2','https://laskymy.github.io/ai-nav/clock-old.html')"><b>2.</b> GitHub Pages clock-old</button>
+<button class="btn" onclick="ping('3','https://laskymy.github.io/ai-nav/clock-old.html',true)"><b>3.</b> ⭐ GitHub Pages 全页加载 (iframe)</button>
+<button class="btn" onclick="ping('4','http://laskymy.github.io/ai-nav/clock-old.html')"><b>4.</b> GitHub Pages HTTP</button>
+<button class="btn" onclick="ping('5','https://laskymy.github.io/ai-nav/version.json')"><b>5.</b> GitHub Pages JSON (小文件)</button>
+<button class="btn btn3" onclick="ping('6','https://c46872d35aeba559-183-6-87-29.serveousercontent.com/')"><b>6.</b> Serveo API 根路径</button>
+<button class="btn" onclick="ping('7','https://httpbin.org/get')"><b>7.</b> httpbin (国际)</button>
+<button class="btn" onclick="ping('8','https://www.zhihu.com')"><b>8.</b> 知乎</button>
+
+<h3>📄 页面渲染测试</h3>
+<button class="btn" onclick="nav('https://laskymy.github.io/ai-nav/clock-old.html')"><b>A.</b> 跳转 clock-old (location.href)</button>
+<button class="btn" onclick="nav2('https://laskymy.github.io/ai-nav/clock-old.html')"><b>B.</b> 跳转 clock-old (location.replace)</button>
+<button class="btn" onclick="nav('https://www.baidu.com')"><b>C.</b> 跳转 百度 (location.href)</button>
+<button class="btn" onclick="nav2('https://www.baidu.com')"><b>D.</b> 跳转 百度 (location.replace)</button>
+<button class="btn btn2" onclick="testIframe('https://laskymy.github.io/ai-nav/clock-old.html')"><b>E.</b> iframe 嵌入 clock-old</button>
+<button class="btn btn2" onclick="testIframe('https://www.baidu.com')"><b>F.</b> iframe 嵌入 百度</button>
+<button class="btn btn3" onclick="loadLocal()"><b>G.</b> ⭐ 本地嵌入版时钟 (无网络)</button>
+
+<h3>🔧 JavaScript 兼容性</h3>
+<button class="btn" onclick="jsTests()"><b>JS.</b> 运行 JS 兼容性测试</button>
+
+<div class="log" id="output"></div>
+<div id="errors"></div>
 
 <script>
-var urls={
-'1':'about:blank',
-'2':'https://laskymy.github.io/ai-nav/clock-old.html',
-'3':'https://laskymy.github.io/ai-nav/clock.html',
-'4':'https://c46872d35aeba559-183-6-87-29.serveousercontent.com/clock.html',
-'5':'https://www.baidu.com'
-};
+// === Init ===
+(function(){
+document.getElementById('ua').textContent=navigator.userAgent.substring(0,90);
+document.getElementById('screen').textContent=screen.width+'×'+screen.height+' dpr='+(window.devicePixelRatio||1);
+document.getElementById('proto').textContent=location.protocol;
+document.getElementById('online').textContent=navigator.onLine?'在线':'离线';
+document.getElementById('isWV').textContent=/WebView|wv|Android/.test(navigator.userAgent)?'是 WebView':'否';
+})();
 
-function test(id){
-var r=document.getElementById('result');
-if(id==='1'){
-r.innerHTML='✅ JS OK<br>✅ DOM OK<br>✅ localStorage: '+(function(){try{localStorage.setItem("_t","1");localStorage.removeItem("_t");return"OK";}catch(e){return"FAIL: "+e.message;}})()+'<br>✅ UA: '+navigator.userAgent.substring(0,80)+'<br>✅ 屏幕: '+screen.width+'×'+screen.height;
-return;
+function log(msg,cls){
+var o=document.getElementById('output');
+var c=cls||'';
+o.innerHTML+='<div class="'+c+'">'+msg+'</div>';
+o.scrollTop=o.scrollHeight;
 }
-r.innerHTML='⏳ 跳转中...';
-window.location.href = urls[id];
+
+function clearLog(){document.getElementById('output').innerHTML='';document.getElementById('errors').innerHTML='';}
+
+// === Network ping tests ===
+function ping(id,url,useIframe){
+clearLog();
+log('<b>测试 '+id+':</b> GET '+url,'warn');
+var start=Date.now();
+var xhr=new XMLHttpRequest();
+xhr.open('GET',url,true);
+xhr.timeout=8000;
+xhr.onload=function(){
+var ms=Date.now()-start;
+var info='status='+xhr.status+' len='+(xhr.responseText||'').length+' time='+ms+'ms';
+var ct=xhr.getResponseHeader('content-type')||'';
+info+=' type='+ct;
+log('✅ 请求成功: '+info,'ok');
+if(useIframe){
+log('加载 iframe...','warn');
+testIframe(url);
+}
+};
+xhr.onerror=function(){
+var ms=Date.now()-start;
+log('❌ 请求失败 (网络错误) time='+ms+'ms','fail');
+};
+xhr.ontimeout=function(){
+log('❌ 请求超时','fail');
+};
+xhr.onabort=function(){
+log('❌ 请求被中止','fail');
+};
+try{xhr.send();}catch(e){log('❌ send()异常: '+e.message,'fail');}
+}
+
+// === Navigation tests ===
+function nav(url){
+log('⏳ location.href='+url,'warn');
+try{window.location.href=url;}catch(e){log('❌ 跳转失败: '+e.message,'fail');}
+}
+function nav2(url){
+log('⏳ location.replace='+url,'warn');
+try{window.location.replace(url);}catch(e){log('❌ 跳转失败: '+e.message,'fail');}
+}
+
+// === Iframe test ===
+function testIframe(url){
+clearLog();
+log('⏳ 加载 iframe: '+url,'warn');
+var old=document.querySelector('iframe');
+if(old)old.remove();
+var iframe=document.createElement('iframe');
+iframe.style.cssText='width:100%;height:280px;border:1px solid rgba(0,229,255,.3);border-radius:8px;margin-top:6px;';
+iframe.src=url;
+iframe.onload=function(){log('✅ iframe 加载完成','ok');};
+iframe.onerror=function(){log('❌ iframe 加载失败','fail');};
+var o=document.getElementById('output');
+o.parentNode.insertBefore(iframe,o.nextSibling);
+// Also do XHR check
+ping('_',''+url);
+}
+
+// === Local embedded test ===
+function loadLocal(){
+clearLog();
+log('⏳ 生成本地时钟...','warn');
+var now=new Date();
+var h=('0'+now.getHours()).slice(-2);
+var m=('0'+now.getMinutes()).slice(-2);
+var s=('0'+now.getSeconds()).slice(-2);
+var ms=('00'+now.getMilliseconds()).slice(-3);
+
+var html='<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><style>'+
+'*{margin:0;padding:0;box-sizing:border-box}'+
+'body{background:#050510;color:#fff;font-family:sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;padding:20px;text-align:center}'+
+'.time{font-size:42px;font-weight:700;color:#00e5ff;text-shadow:0 0 20px rgba(0,229,255,.3)}'+
+'.date{font-size:14px;color:rgba(255,255,255,.5);margin-top:4px}'+
+'.info{font-size:11px;color:rgba(255,255,255,.25);margin-top:12px}'+
+'</style></head><body>'+
+'<div class="time">'+h+':'+m+':'+s+'.'+ms+'</div>'+
+'<div class="date">'+now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日</div>'+
+'<div class="info">✅ 本地渲染成功<br>屏幕: '+screen.width+'×'+screen.height+'<br>UA: '+navigator.userAgent.substring(0,60)+'</div>'+
+'</body></html>';
+
+var blob=new Blob([html],{type:'text/html'});
+var url=URL.createObjectURL(blob);
+log('✅ 本地页面已生成，即将跳转...','ok');
+setTimeout(function(){window.location.href=url;},500);
+}
+
+// === JS compatibility tests ===
+function jsTests(){
+clearLog();
+log('<b>JS 兼容性测试:</b>','warn');
+var tests=[
+['Promise',typeof Promise!=='undefined'],
+['fetch',typeof fetch!=='undefined'],
+['localStorage',function(){try{localStorage.setItem("_t","1");localStorage.removeItem("_t");return true;}catch(e){return false;}}()],
+['Blob',typeof Blob!=='undefined'],
+['URL.createObjectURL',typeof URL!=='undefined' && typeof URL.createObjectURL!=='undefined'],
+['AbortController',typeof AbortController!=='undefined'],
+['Array.from',typeof Array.from!=='undefined'],
+['Object.assign',typeof Object.assign!=='undefined'],
+['String.startsWith',typeof String.prototype.startsWith!=='undefined'],
+['Arrow functions',function(){try{var f=function(x){return x+1;};return f(1)===2;}catch(e){return false;}}()],
+['Template literals',function(){try{var x=42;var s="test"+x;return s==='test42';}catch(e){return false;}}()],
+['CSS flexbox',function(){var d=document.createElement('div');d.style.display='flex';return d.style.display==='flex';}()],
+['CSS variables',function(){try{var d=document.createElement('div');d.style.setProperty('--test','1');return d.style.getPropertyValue('--test')==='1';}catch(e){return false;}}()],
+['XMLHttpRequest',typeof XMLHttpRequest!=='undefined'],
+['navigator.geolocation',!!navigator.geolocation],
+['navigator.onLine',typeof navigator.onLine!=='undefined'],
+['JSON.parse',typeof JSON!=='undefined' && typeof JSON.parse!=='undefined'],
+['Date.now',typeof Date.now!=='undefined'],
+['setTimeout',typeof setTimeout!=='undefined'],
+['requestAnimationFrame',typeof requestAnimationFrame!=='undefined'],
+];
+var pass=0,fail=0;
+for(var i=0;i<tests.length;i++){
+var t=tests[i];
+if(t[1]){log('✅ '+t[0],'ok');pass++;}
+else{log('❌ '+t[0],'fail');fail++;}
+}
+log('<b>'+pass+'/'+(pass+fail)+' 通过</b>',pass===tests.length?'ok':'warn');
+
+// Additional: test if navigation works
+log('<b>导航测试:</b> 尝试在新窗口打开百度...','warn');
+try{
+var w=window.open('https://www.baidu.com','_blank');
+if(w){log('✅ window.open 成功','ok');w.close();}
+else{log('⚠️ window.open 返回null (可能被拦截)','warn');}
+}catch(e){log('❌ window.open 失败: '+e.message,'fail');}
 }
 </script>
 </body>
