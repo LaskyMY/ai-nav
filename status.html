@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>服务状态监控</title>
+<style>
+:root{
+--bg:#050510;--card-bg:rgba(255,255,255,.04);--card-border:rgba(255,255,255,.07);
+--cyan:#00e5ff;--cyan2:rgba(0,229,255,.5);--cyan3:rgba(0,229,255,.12);
+--green:#10b981;--green2:rgba(16,185,129,.5);--green3:rgba(16,185,129,.12);
+--amber:#f59e0b;--amber2:rgba(245,158,11,.5);--amber3:rgba(245,158,11,.12);
+--red:#ef4444;--red2:rgba(239,68,68,.5);--red3:rgba(239,68,68,.12);
+--purple:#a855f7;--purple3:rgba(168,85,247,.12);
+--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.28);--tx4:rgba(255,255,255,.1);
+--r:18px;--r2:12px;--ease:cubic-bezier(.4,0,.2,1);
+--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow-x:hidden}
+body{
+display:flex;flex-direction:column;
+background:var(--bg);color:var(--tx);font-size:13px;line-height:1.5;
+font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;
+padding:var(--sat) 14px calc(24px + var(--sab));
+max-width:520px;margin:0 auto;width:100%;
+-webkit-font-smoothing:antialiased;
+}
+.back-btn{
+display:inline-flex;align-items:center;gap:3px;color:var(--cyan);
+font-size:12px;font-weight:600;text-decoration:none;padding:6px 14px;
+border-radius:16px;background:var(--cyan3);border:1px solid rgba(0,229,255,.08);
+align-self:flex-start;margin-bottom:12px;
+}
+.top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+h1{font-size:20px;font-weight:700;letter-spacing:-.01em}
+.status-badge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600}
+.status-badge.ok{background:var(--green3);color:var(--green);border:1px solid rgba(16,185,129,.15)}
+.status-badge.warn{background:var(--amber3);color:var(--amber);border:1px solid rgba(245,158,11,.15)}
+.status-badge.err{background:var(--red3);color:var(--red);border:1px solid rgba(239,68,68,.15)}
+.meta-row{display:flex;gap:16px;margin-bottom:18px;font-size:11px;color:var(--tx3)}
+.meta-row span{display:flex;align-items:center;gap:4px}
+.meta-dot{width:5px;height:5px;border-radius:50%}
+.meta-dot.live{background:var(--green);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 3px var(--green)}50%{box-shadow:0 0 10px var(--green2)}}
+
+.endpoint-list{display:flex;flex-direction:column;gap:8px}
+.ep-card{
+background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--r2);
+padding:12px 14px;transition:all .25s var(--ease);
+}
+.ep-card.fail{border-color:var(--red3);background:rgba(239,68,68,.03)}
+.ep-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.ep-method{font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;letter-spacing:.03em}
+.ep-method.GET{background:var(--green3);color:var(--green)}
+.ep-method.POST{background:var(--purple3);color:var(--purple)}
+.ep-path{font-size:13px;font-weight:600;flex:1;margin-left:8px}
+.ep-status{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px}
+.ep-status.pass{background:var(--green3);color:var(--green)}
+.ep-status.fail{background:var(--red3);color:var(--red)}
+.ep-detail{display:flex;gap:16px;font-size:10px;color:var(--tx3)}
+.ep-detail .val{color:var(--tx2);font-weight:500;font-variant-numeric:tabular-nums}
+.ep-latency{display:flex;align-items:center;gap:3px}
+.ep-dot{width:4px;height:4px;border-radius:50%}
+.ep-dot.fast{background:var(--green)}
+.ep-dot.mid{background:var(--amber)}
+.ep-dot.slow{background:var(--red)}
+
+.summary-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:18px}
+.s-card{
+background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--r2);
+padding:14px 12px;text-align:center;
+}
+.s-card .val{font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.s-card .val.green{color:var(--green)}.s-card .val.amber{color:var(--amber)}.s-card .val.red{color:var(--red)}
+.s-card .lbl{font-size:10px;color:var(--tx3);margin-top:2px}
+
+.refresh-bar{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px}
+.refresh-bar span{font-size:11px;color:var(--tx3)}
+.refresh-bar button{
+background:var(--cyan3);border:1px solid rgba(0,229,255,.1);color:var(--cyan);
+font-size:11px;font-weight:600;padding:6px 16px;border-radius:14px;
+cursor:pointer;font-family:inherit;
+}
+.refresh-bar button:active{opacity:.7}
+.countdown{font-variant-numeric:tabular-nums;color:var(--tx2)}
+</style>
+</head>
+<body>
+
+<a href="index.html" class="back-btn">← 返回主页</a>
+
+<div class="top-row">
+<h1>服务状态监控</h1>
+<span class="status-badge" id="overallBadge">检测中</span>
+</div>
+<div class="meta-row">
+<span><span class="meta-dot live"></span> Worker: ai-nav-api.laskymy.workers.dev</span>
+<span id="checkTime">--</span>
+</div>
+
+<div class="summary-cards">
+<div class="s-card"><div class="val" id="passCount">-</div><div class="lbl">正常</div></div>
+<div class="s-card"><div class="val" id="failCount">-</div><div class="lbl">异常</div></div>
+<div class="s-card"><div class="val" id="avgLatency">-</div><div class="lbl">平均延迟</div></div>
+</div>
+
+<div class="endpoint-list" id="epList"></div>
+
+<div class="refresh-bar">
+<button id="btnRefresh">立即刷新</button>
+<span>下次刷新: <span class="countdown" id="countdown">30s</span></span>
+</div>
+
+<script>
+const API='https://ai-nav-api.laskymy.workers.dev';
+
+const ENDPOINTS=[
+{method:'GET',path:'/api/weather?lat=31.2&lon=121.5',key:'weather',desc:'天气 (上海)'},
+{method:'GET',path:'/api/news',key:'news',desc:'新闻聚合'},
+{method:'GET',path:'/api/geocode?lat=31.2&lon=121.5',key:'geocode',desc:'地理编码 (上海)'},
+{method:'GET',path:'/api/papers?q=test',key:'papers',desc:'arXiv 论文检索'},
+{method:'POST',path:'/api/summary',body:{text:'hello'},key:'summary',desc:'AI 总结 (DeepSeek)'},
+{method:'GET',path:'/api/papers-summary?q=test',key:'papersSum',desc:'论文+AI总结'},
+];
+
+function dotClass(ms){return ms<500?'fast':ms<2000?'mid':'slow';}
+function colorClass(ms){return ms<500?'green':ms<2000?'amber':'red';}
+function labelClass(ok){return ok?'pass':'fail';}
+
+async function checkEndpoint(ep){
+const start=performance.now();
+try{
+const opts={method:ep.method,headers:{'Content-Type':'application/json'}};
+if(ep.body)opts.body=JSON.stringify(ep.body);
+const r=await fetch(API+ep.path,{...opts,signal:AbortSignal.timeout(12000)});
+const ms=Math.round(performance.now()-start);
+return{ok:r.ok,status:r.status,ms,cfCache:r.headers.get('CF-Cache-Status')||'-'};
+}catch(e){
+const ms=Math.round(performance.now()-start);
+return{ok:false,status:e.name==='TimeoutError'?'TIMEOUT':'ERR',ms,cfCache:'-'};
+}
+}
+
+async function runChecks(){
+document.getElementById('btnRefresh').disabled=true;
+const results=[];
+for(const ep of ENDPOINTS){
+const r=await checkEndpoint(ep);
+results.push({...ep,...r});
+}
+render(results);
+document.getElementById('btnRefresh').disabled=false;
+return results;
+}
+
+function render(results){
+let pass=0,fail=0,totalMs=0,count=0;
+let html='';
+
+for(const r of results){
+if(r.ok){pass++;totalMs+=r.ms;count++;}else{fail++;if(r.status==='TIMEOUT')totalMs+=12000;else totalMs+=r.ms;count++;}
+html+=`<div class="ep-card${r.ok?'':' fail'}">
+<div class="ep-top">
+<span class="ep-method ${r.method}">${r.method}</span>
+<span class="ep-path">${esc(r.desc)}</span>
+<span class="ep-status ${labelClass(r.ok)}">${r.ok?r.status+' OK':r.status}</span>
+</div>
+<div class="ep-detail">
+<span class="ep-latency"><span class="ep-dot ${dotClass(r.ms)}"></span><span class="val">${r.ms}ms</span></span>
+<span>${esc(r.path)}</span>
+<span>缓存: <span class="val">${r.cfCache}</span></span>
+</div>
+</div>`;
+}
+
+document.getElementById('epList').innerHTML=html;
+document.getElementById('passCount').textContent=pass;
+document.getElementById('passCount').className='val '+(fail===0?'green':fail<=2?'amber':'red');
+document.getElementById('failCount').textContent=fail;
+document.getElementById('failCount').className='val '+(fail===0?'green':fail<=2?'amber':'red');
+const avg=count>0?Math.round(totalMs/count):0;
+document.getElementById('avgLatency').textContent=avg+'ms';
+document.getElementById('avgLatency').className='val '+colorClass(avg);
+
+const badge=document.getElementById('overallBadge');
+if(fail===0){badge.textContent='全部正常';badge.className='status-badge ok';}
+else if(fail<=2){badge.textContent=fail+'项异常';badge.className='status-badge warn';}
+else{badge.textContent=fail+'项异常';badge.className='status-badge err';}
+document.getElementById('checkTime').textContent=new Date().toLocaleTimeString('zh-CN');
+}
+
+let timer=30;
+function tickCountdown(){timer--;document.getElementById('countdown').textContent=timer+'s';if(timer<=0){timer=30;runChecks();}}
+setInterval(tickCountdown,1000);
+document.getElementById('btnRefresh').addEventListener('click',()=>{timer=30;runChecks();});
+
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+
+runChecks();
+</script>
+<script>(async function(){try{const r=await fetch('./version.json?t='+Date.now(),{cache:'no-store',signal:AbortSignal.timeout(3000)});const d=await r.json();const cur=localStorage.getItem('site_version');if(cur&&cur!==d.version){location.reload(true)}localStorage.setItem('site_version',d.version)}catch(e){}})();</script>
+</body>
+</html>
