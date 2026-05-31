@@ -113,7 +113,8 @@ cursor:pointer;font-family:inherit;
 </div>
 
 <script>
-const API='https://5deaa833dbe1972c-183-6-87-29.serveousercontent.com';
+let API='https://c46872d35aeba559-183-6-87-29.serveousercontent.com';
+(async function(){try{const r=await fetch('./api-config.json?t='+Date.now(),{cache:'no-store'});const d=await r.json();if(d.api)API=d.api;}catch(e){}})();
 
 const ENDPOINTS=[
 {method:'GET',path:'/api/weather?lat=31.2&lon=121.5',key:'weather',desc:'天气 (上海)'},
