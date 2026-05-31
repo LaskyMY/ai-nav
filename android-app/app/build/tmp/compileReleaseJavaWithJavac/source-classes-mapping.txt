@@ -1,0 +1,5 @@
+com/ainav/browser/BuildConfig.java
+ com.ainav.browser.BuildConfig
+com/ainav/browser/MainActivity.java
+ com.ainav.browser.MainActivity
+ com.ainav.browser.MainActivity$1
