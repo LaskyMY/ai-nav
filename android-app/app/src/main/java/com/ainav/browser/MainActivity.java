@@ -51,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Load embedded test page
-        webView.loadUrl("file:///android_asset/test.html");
+        // Load old Android compatible clock page
+        webView.loadUrl("https://laskymy.github.io/ai-nav/clock-old.html");
     }
 
     @Override
