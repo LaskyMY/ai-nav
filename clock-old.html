@@ -8,98 +8,115 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%;overflow:hidden}
 body{
-font-family:-apple-system,sans-serif;
-background:#050510;color:rgba(255,255,255,.92);font-size:12px;line-height:1.35;
+font-family:sans-serif;
+background:#050510;color:rgba(255,255,255,.9);font-size:11px;line-height:1.3;
 display:flex;flex-direction:column;
 -webkit-user-select:none;user-select:none;
-padding:6px 8px 8px 8px;
+padding:4px 6px 6px 6px;
 }
-
-/* Background */
 .bg{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:0;
-background:
-radial-gradient(circle at 50% 20%,rgba(0,229,255,.04) 0%,transparent 60%),
-radial-gradient(circle at 30% 55%,rgba(0,229,255,.02) 0%,transparent 50%);
-}
+background:radial-gradient(circle at 50% 20%,rgba(0,229,255,.04) 0%,transparent 60%);}
 
-/* Clock */
-.clock-wrap{flex-shrink:0;text-align:center;position:relative;z-index:1;padding:4px 0 2px;}
-.time-hms{font-size:48px;font-weight:700;letter-spacing:.03em;color:rgba(255,255,255,.92);
-text-shadow:0 0 30px rgba(0,229,255,.25);line-height:1;}
-.time-ms{font-size:22px;font-weight:600;color:#00e5ff;opacity:.85;min-width:56px;display:inline-block;text-align:left;
-text-shadow:0 0 12px rgba(0,229,255,.2);}
-.date-line{font-size:12px;color:rgba(255,255,255,.5);margin-top:1px;}
-.city-line{font-size:11px;color:rgba(255,255,255,.5);margin-top:1px;}
+/* ===== Card base ===== */
+.card{flex-shrink:0;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);border-radius:8px;
+padding:5px 8px;position:relative;z-index:1;margin-top:3px;}
+.card-row{display:flex;margin-top:3px;z-index:1;position:relative;}
+.card-row>*+*{margin-left:4px;}
 
-/* Cards */
-.card{flex-shrink:0;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);border-radius:12px;
-padding:8px 12px;position:relative;z-index:1;overflow:hidden;margin-top:5px;}
+/* ===== Time card ===== */
+.tc{flex:0 0 auto;text-align:center;min-width:0;}
+.tc-hms{font-size:36px;font-weight:700;letter-spacing:.02em;color:rgba(255,255,255,.92);
+text-shadow:0 0 20px rgba(0,229,255,.2);line-height:1.1;}
+.tc-ms{font-size:16px;font-weight:600;color:#00e5ff;opacity:.8;min-width:48px;display:inline-block;text-align:left;
+text-shadow:0 0 10px rgba(0,229,255,.15);}
 
-/* Weather */
-.wx-row{display:flex;align-items:center;}
-.wx-row>*+*{margin-left:8px;}
-.wx-icon{font-size:30px;line-height:1;}
-.wx-temp{font-size:30px;font-weight:600;}
-.wx-desc{font-size:11px;color:rgba(255,255,255,.5);}
-.wx-hum{font-size:11px;color:rgba(255,255,255,.3);}
-.wx-hourly{display:flex;margin-top:6px;}
-.wx-hourly>*+*{margin-left:6px;}
-.wx-h{flex:1;text-align:center;background:rgba(255,255,255,.03);border-radius:8px;padding:4px 2px;border:1px solid rgba(255,255,255,.05);}
-.wx-h .hdr{font-size:9px;color:rgba(255,255,255,.35);margin-bottom:2px;}
-.wx-h .icon{font-size:16px;}
-.wx-h .tmp{font-size:11px;font-weight:600;margin-top:1px;}
-.wx-h .rain{font-size:9px;color:rgba(0,229,255,.7);}
+/* ===== Date/Lunar card ===== */
+.dc{flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;text-align:right;}
+.dc-date{font-size:13px;font-weight:600;color:rgba(255,255,255,.75);}
+.dc-lunar{font-size:11px;color:rgba(255,255,255,.45);margin-top:1px;}
+.dc-city{font-size:10px;color:rgba(0,229,255,.5);margin-top:1px;}
 
-/* AI Brief */
-.ai-brief h2{font-size:14px;font-weight:700;color:rgba(255,255,255,.9);margin:8px 0 4px;}
-.ai-brief h3{font-size:12px;font-weight:600;color:rgba(255,255,255,.75);margin:6px 0 3px;}
-.ai-brief p{font-size:11px;color:rgba(255,255,255,.55);margin:3px 0;line-height:1.5;}
-.ai-brief strong{color:#f59e0b;font-weight:600;}
-.ai-brief table{width:100%;border-collapse:collapse;margin:4px 0;font-size:10px;}
-.ai-brief table td,.ai-brief table th{border:1px solid rgba(255,255,255,.1);padding:3px 5px;text-align:left;}
-.ai-brief table th{background:rgba(0,229,255,.08);color:#00e5ff;}
-.ai-brief .kcard{background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.12);border-radius:8px;padding:8px 10px;margin:6px 0;}
-.ai-brief .kcard p{color:rgba(255,255,255,.7);}
+/* ===== Weather card ===== */
+.wx-row{display:flex;align-items:center;margin-bottom:3px;}
+.wx-row>*+*{margin-left:6px;}
+.wx-temp{font-size:26px;font-weight:600;min-width:48px;}
+.wx-desc{font-size:10px;color:rgba(255,255,255,.5);}
+.wx-hum{font-size:10px;color:rgba(255,255,255,.3);margin-top:1px;}
+.wx-hourly{display:flex;}
+.wx-hourly>*+*{margin-left:4px;}
+.wx-h{flex:1;text-align:center;background:rgba(255,255,255,.03);border-radius:6px;padding:3px 1px;border:1px solid rgba(255,255,255,.04);}
+.wx-h .hdr{font-size:8px;color:rgba(255,255,255,.3);margin-bottom:1px;}
+.wx-h .icon{font-size:13px;}
+.wx-h .tmp{font-size:10px;font-weight:600;margin-top:1px;}
+.wx-h .rain{font-size:8px;color:rgba(0,229,255,.6);}
 
-/* Info bar */
-.info-bar{flex-shrink:0;text-align:center;font-size:10px;color:rgba(255,255,255,.2);position:relative;z-index:1;margin-top:4px;}
+/* ===== News scroll card ===== */
+.ns-inner{font-size:10px;color:rgba(255,255,255,.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ns-tag{color:#00e5ff;font-size:9px;font-weight:600;}
 
-/* Scroll support */
-.scroll{overflow-y:auto;-webkit-overflow-scrolling:touch;}
+/* ===== AI Brief card ===== */
+.brief{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:60px;font-size:10px;}
+.brief h2{font-size:12px;font-weight:700;color:rgba(255,255,255,.9);margin:6px 0 3px;}
+.brief h3{font-size:11px;font-weight:600;color:rgba(255,255,255,.75);margin:4px 0 2px;}
+.brief p{font-size:10px;color:rgba(255,255,255,.5);margin:2px 0;line-height:1.4;}
+.brief strong{color:#f59e0b;font-weight:600;}
+.brief table{width:100%;border-collapse:collapse;margin:3px 0;font-size:9px;}
+.brief table td,.brief table th{border:1px solid rgba(255,255,255,.1);padding:2px 4px;text-align:left;}
+.brief table th{background:rgba(0,229,255,.08);color:#00e5ff;font-size:9px;}
+.brief .kcard{background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.1);border-radius:6px;padding:5px 8px;margin:4px 0;}
+.brief .kcard p{color:rgba(255,255,255,.65);}
 
-/* Loading */
-.spin{display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.1);border-top-color:#00e5ff;border-radius:50%;
-animation:spin .6s linear infinite;vertical-align:middle;margin:0 4px;}
+/* ===== Refresh button ===== */
+.btn-row{flex-shrink:0;position:relative;z-index:1;margin-top:3px;display:flex;gap:4px;}
+.btn-row>*+*{margin-left:4px;}
+.btn-r{flex:1;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.1);color:#00e5ff;
+font-size:10px;font-weight:600;padding:5px;border-radius:6px;text-align:center;cursor:pointer;font-family:inherit;}
+.btn-r:active{background:rgba(0,229,255,.15);}
+
+.spin{display:inline-block;width:10px;height:10px;border:2px solid rgba(255,255,255,.1);border-top-color:#00e5ff;border-radius:50%;
+animation:spin .6s linear infinite;vertical-align:middle;margin:0 3px;}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 <div class="bg"></div>
 
-<div class="clock-wrap">
-<div><span class="time-hms" id="hms">--:--:--</span><span class="time-ms" id="ms">.---</span></div>
-<div class="date-line" id="dateLine">----年--月--日 周-</div>
-<div class="city-line" id="cityLine">广东 广州</div>
+<!-- Row: Time + Date -->
+<div class="card-row">
+  <div class="card tc">
+    <div><span class="tc-hms" id="hms">--:--:--</span><span class="tc-ms" id="ms">.--</span></div>
+  </div>
+  <div class="card dc">
+    <div class="dc-date" id="dateShort">--月--日 周-</div>
+    <div class="dc-lunar" id="lunarLine">农历 ----</div>
+    <div class="dc-city" id="cityLine">广州</div>
+  </div>
 </div>
 
+<!-- Weather -->
 <div class="card" id="wxCard" style="display:none">
-<div class="wx-row">
-<span class="wx-icon" id="wxIcon">--</span>
-<span class="wx-temp" id="wxTemp">--°</span>
-<span><div class="wx-desc" id="wxDesc">--</div><div class="wx-hum" id="wxHum">湿度 --%</div></span>
-</div>
-<div class="wx-hourly" id="wxHourly"></div>
-</div>
-
-<div class="card ai-brief" id="briefCard" style="flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:80px;">
-<p style="color:rgba(255,255,255,.3);text-align:center;padding:8px;">AI 简报生成中<span class="spin"></span></p>
+  <div class="wx-row">
+    <span class="wx-temp" id="wxTemp">--°</span>
+    <span><div class="wx-desc" id="wxDesc">--</div><div class="wx-hum" id="wxHum">湿度 --%</div></span>
+  </div>
+  <div class="wx-hourly" id="wxHourly"></div>
 </div>
 
-<div class="info-bar">AI Nav v1.0 · 时钟面板</div>
+<!-- News scroll -->
+<div class="card"><div class="ns-inner" id="nsText">新闻加载中<span class="spin"></span></div></div>
+
+<!-- AI Brief -->
+<div class="card brief" id="briefCard">
+  <p style="color:rgba(255,255,255,.3);text-align:center;padding:4px;">AI 简报生成中<span class="spin"></span></p>
+</div>
+
+<!-- Refresh buttons -->
+<div class="btn-row">
+  <button class="btn-r" id="btnRefresh" onclick="doRefresh()">刷新数据</button>
+</div>
 
 <script>
-// ===== Polyfill: fetch with timeout for old WebView =====
-// Chrome 44 on Android 6.0 lacks AbortController entirely
+// ===== fetchWithTimeout (Chrome 44 compat) =====
 function fetchWithTimeout(url, ms) {
   return new Promise(function(resolve, reject) {
     var timer = setTimeout(function() { reject(new Error('timeout')); }, ms);
@@ -107,209 +124,210 @@ function fetchWithTimeout(url, ms) {
   });
 }
 
-// ===== API Config =====
+// ===== Config =====
 var API = 'https://c46872d35aeba559-183-6-87-29.serveousercontent.com';
 
-// API base hardcoded for embedded use
-// Update this to your serveo URL if it changes
+// ===== Cache helpers =====
+function save(k,v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} }
+function load(k) { try { var r = JSON.parse(localStorage.getItem(k)); return r; } catch(e) { return null; } }
 
-// ===== City Cache =====
-function saveCity(c) { try { localStorage.setItem('old_clock_city', c); } catch(e) {} }
-function loadCity() { try { return localStorage.getItem('old_clock_city'); } catch(e) { return null; } }
-
-// ===== Weather Cache =====
-function saveWx(w) { try { localStorage.setItem('old_clock_wx', JSON.stringify({d:w,ts:Date.now()})); } catch(e) {} }
-function loadWx() { try { var r = JSON.parse(localStorage.getItem('old_clock_wx')); return r && Date.now()-r.ts<600000 ? r.d : null; } catch(e) { return null; } }
-
-// ===== Lunar Calendar =====
-var LUNAR_MONTH = ['正','二','三','四','五','六','七','八','九','十','冬','腊'];
-var LUNAR_DAY = ['','初一','初二','初三','初四','初五','初六','初七','初八','初九','初十','十一','十二','十三','十四','十五','十六','十七','十八','十九','二十','廿一','廿二','廿三','廿四','廿五','廿六','廿七','廿八','廿九','三十'];
-var LUNAR_INFO = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,0x06566,0x0d4a0,0x0ea50,0x16a95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b6a0,0x195a6,0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0,0x0c960,0x0d954,0x0d4a0,0x0da50,0x07552,0x056a0,0x0abb7,0x025d0,0x092d0,0x0cab5,0x0a950,0x0b4a0,0x0baa4,0x0ad50,0x055d9,0x04ba0,0x0a5b0,0x15176,0x052b0,0x0a930,0x07954,0x06aa0,0x0ad50,0x05b52,0x04b60,0x0a6e6,0x0a4e0,0x0d260,0x0ea65,0x0d530,0x05aa0,0x076a3,0x096d0,0x04afb,0x04ad0,0x0a4d0,0x1d0b6,0x0d250,0x0d520,0x0dd45,0x0b5a0,0x056d0,0x055b2,0x049b0,0x0a577,0x0a4b0,0x0aa50,0x1b255,0x06d20,0x0ada0,0x14b63,0x09370,0x049f8,0x04970,0x064b0,0x168a6,0x0ea50,0x06aa0,0x1a6c4,0x0aae0,0x092e0,0x0d2e3,0x0c960,0x0d557,0x0d4a0,0x0da50,0x05d55,0x056a0,0x0a6d0,0x055d4,0x052d0,0x0a9b8,0x0a950,0x0b4a0,0x0b6a6,0x0ad50,0x055a0,0x0aba4,0x0a5b0,0x052b0,0x0b273,0x06930,0x07337,0x06aa0,0x0ad50,0x14b55,0x04b60,0x0a570,0x054e4,0x0d160,0x0e968,0x0d520,0x0daa0,0x16aa6,0x056d0,0x04ae0,0x0a9d4,0x0a4d0,0x0d150,0x0f252,0x0d520];
+// ===== Lunar =====
+var LU_M = ['正','二','三','四','五','六','七','八','九','十','冬','腊'];
+var LU_D = ['','初一','初二','初三','初四','初五','初六','初七','初八','初九','初十','十一','十二','十三','十四','十五','十六','十七','十八','十九','二十','廿一','廿二','廿三','廿四','廿五','廿六','廿七','廿八','廿九','三十'];
+var LU_INFO = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,0x06566,0x0d4a0,0x0ea50,0x16a95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b6a0,0x195a6,0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0,0x0c960,0x0d954,0x0d4a0,0x0da50,0x07552,0x056a0,0x0abb7,0x025d0,0x092d0,0x0cab5,0x0a950,0x0b4a0,0x0baa4,0x0ad50,0x055d9,0x04ba0,0x0a5b0,0x15176,0x052b0,0x0a930,0x07954,0x06aa0,0x0ad50,0x05b52,0x04b60,0x0a6e6,0x0a4e0,0x0d260,0x0ea65,0x0d530,0x05aa0,0x076a3,0x096d0,0x04afb,0x04ad0,0x0a4d0,0x1d0b6,0x0d250,0x0d520,0x0dd45,0x0b5a0,0x056d0,0x055b2,0x049b0,0x0a577,0x0a4b0,0x0aa50,0x1b255,0x06d20,0x0ada0,0x14b63,0x09370,0x049f8,0x04970,0x064b0,0x168a6,0x0ea50,0x06aa0,0x1a6c4,0x0aae0,0x092e0,0x0d2e3,0x0c960,0x0d557,0x0d4a0,0x0da50,0x05d55,0x056a0,0x0a6d0,0x055d4,0x052d0,0x0a9b8,0x0a950,0x0b4a0,0x0b6a6,0x0ad50,0x055a0,0x0aba4,0x0a5b0,0x052b0,0x0b273,0x06930,0x07337,0x06aa0,0x0ad50,0x14b55,0x04b60,0x0a570,0x054e4,0x0d160,0x0e968,0x0d520,0x0daa0,0x16aa6,0x056d0,0x04ae0,0x0a9d4,0x0a4d0,0x0d150,0x0f252,0x0d520];
 
 function lunarDay(y,m,d) {
   var i, leap=0, temp=0, offset=(Date.UTC(y,m,d)-Date.UTC(1900,0,31))/86400000;
-  for (i=1900; i<2100 && offset>0; i++) { temp = lunarYearDays(i); offset -= temp; }
-  if (offset<0) { offset+=temp; i--; }
-  var year=i;
-  var month=1, isLeap=false;
-  for (i=1; i<13 && offset>0; i++) {
-    if (leap>0 && i==(leap+1) && !isLeap) { i--; isLeap=true; temp = leapMonthDays(year); }
-    else { temp = monthDays(year,i,isLeap); isLeap=false; }
-    if (isLeap && i==(leap+1)) isLeap=false;
-    offset -= temp;
+  for(i=1900;i<2100&&offset>0;i++){temp=lunarYearDays(i);offset-=temp;}
+  if(offset<0){offset+=temp;i--;}
+  var year=i,month=1,isLeap=false;
+  for(i=1;i<13&&offset>0;i++){
+    if(leap>0&&i==(leap+1)&&!isLeap){i--;isLeap=true;temp=leapMonthDays(year);}
+    else{temp=monthDays(year,i,isLeap);isLeap=false;}
+    if(isLeap&&i==(leap+1))isLeap=false;
+    offset-=temp;
   }
-  if (offset==0 && leap==i && !isLeap) { isLeap=true; }
-  if (offset<0) { offset+=temp; }
-  month = i;
-  var day = offset+1;
-  return {year:year,month:month,day:day,isLeap:isLeap};
+  if(offset==0&&leap==i&&!isLeap)isLeap=true;
+  if(offset<0)offset+=temp;
+  month=i;
+  return{year:year,month:month,day:offset+1,isLeap:isLeap};
 }
-
-function lunarYearDays(y) { var i,sum=348; for(i=0x8000;i>0x8;i>>=1){sum+=(LUNAR_INFO[y-1900]&i)?1:0;} return sum+leapDays(y); }
-function leapMonth(y) { return LUNAR_INFO[y-1900]&0xf; }
-function leapDays(y) { return leapMonth(y)?((LUNAR_INFO[y-1900]&0x10000)?30:29):0; }
-function leapMonthDays(y) { return (LUNAR_INFO[y-1900]&0x10000)?30:29; }
-function monthDays(y,m,isLeap) { return isLeap?leapMonthDays(y):((LUNAR_INFO[y-1900]&(0x10000>>m))?30:29); }
-
-function lunarStr(d) {
-  var l = lunarDay(d.getFullYear(), d.getMonth(), d.getDate());
-  var leap = l.isLeap ? '闰' : '';
-  return '农历' + leap + LUNAR_MONTH[l.month-1] + '月' + LUNAR_DAY[l.day];
+function lunarYearDays(y){var i,sum=348;for(i=0x8000;i>0x8;i>>=1){sum+=(LU_INFO[y-1900]&i)?1:0;}return sum+leapDays(y);}
+function leapMonth(y){return LU_INFO[y-1900]&0xf;}
+function leapDays(y){return leapMonth(y)?((LU_INFO[y-1900]&0x10000)?30:29):0;}
+function leapMonthDays(y){return (LU_INFO[y-1900]&0x10000)?30:29;}
+function monthDays(y,m,isLeap){return isLeap?leapMonthDays(y):((LU_INFO[y-1900]&(0x10000>>m))?30:29);}
+function lunarStr(d){
+  var l=lunarDay(d.getFullYear(),d.getMonth(),d.getDate());
+  return (l.isLeap?'闰':'')+LU_M[l.month-1]+'月'+LU_D[l.day];
 }
-
-function weekdayStr(d) { return ['日','一','二','三','四','五','六'][d.getDay()]; }
+function weekdayStr(d){return['日','一','二','三','四','五','六'][d.getDay()];}
 
 // ===== Clock =====
-function updateClock() {
-  var now = new Date();
-  var h = ('0'+now.getHours()).slice(-2);
-  var m = ('0'+now.getMinutes()).slice(-2);
-  var s = ('0'+now.getSeconds()).slice(-2);
-  var ms = ('00'+now.getMilliseconds()).slice(-3);
-  document.getElementById('hms').textContent = h+':'+m+':'+s;
-  document.getElementById('ms').textContent = '.'+ms;
-  document.getElementById('dateLine').textContent =
-    now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日 周'+weekdayStr(now)+' '+lunarStr(now);
+function updateClock(){
+  var n=new Date();
+  var h=('0'+n.getHours()).slice(-2);
+  var m=('0'+n.getMinutes()).slice(-2);
+  var s=('0'+n.getSeconds()).slice(-2);
+  var ms=('00'+n.getMilliseconds()).slice(-3);
+  document.getElementById('hms').textContent=h+':'+m+':'+s;
+  document.getElementById('ms').textContent='.'+ms;
+  document.getElementById('dateShort').textContent=(n.getMonth()+1)+'月'+n.getDate()+'日 周'+weekdayStr(n);
+  document.getElementById('lunarLine').textContent='农历 '+lunarStr(n);
 }
-setInterval(updateClock, 50);
+setInterval(updateClock,100);
 updateClock();
 
-// ===== Weather =====
-var WX_CODES = {0:'晴',1:'多云',2:'阴',3:'阴',45:'雾',48:'雾',51:'雨',53:'雨',55:'雨',61:'雨',63:'雨',65:'雨',71:'雪',73:'雪',75:'雪',77:'雪',80:'雨',81:'雨',82:'雨',85:'雪',86:'雪',95:'雷',96:'雷',97:'雷'};
-var WX_NAMES = {0:'晴天',1:'少云',2:'多云',3:'阴天',45:'雾',48:'霜雾',51:'小雨',53:'小雨',55:'中雨',61:'小雨',63:'中雨',65:'大雨',71:'小雪',73:'中雪',75:'大雪',77:'雪',80:'阵雨',81:'阵雨',82:'暴雨',85:'阵雪',86:'阵雪',95:'雷暴',96:'雷暴',97:'强雷暴'};
+// ===== Weather codes =====
+var WX={0:'晴',1:'多云',2:'阴',3:'阴',45:'雾',48:'雾',51:'雨',53:'雨',55:'雨',61:'雨',63:'雨',65:'雨',71:'雪',73:'雪',75:'雪',77:'雪',80:'雨',81:'雨',82:'雨',85:'雪',86:'雪',95:'雷',96:'雷',97:'雷'};
 
-function wxIcon(code) { return WX_CODES[code] || '--'; }
-function wxName(code) { return WX_NAMES[code] || '未知'; }
+function fetchWeather(lat,lon){
+  var geoU=API+'/api/geocode?lat='+lat+'&lon='+lon;
+  var wxU=API+'/api/weather?lat='+lat+'&lon='+lon;
 
-function fetchWeather(lat, lon) {
-  var geourl = API + '/api/geocode?lat=' + lat + '&lon=' + lon;
-  var wxurl = API + '/api/weather?lat=' + lat + '&lon=' + lon;
+  fetchWithTimeout(geoU,4000)
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(d){
+      if(!d)return;
+      var a=d.address||d;
+      var c=a.city||a.town||a.county||a.state||'';
+      if(c){document.getElementById('cityLine').textContent=c;save('city',c);}
+    }).catch(function(){});
 
-  // Geo
-  fetchWithTimeout(geourl, 4000)
-    .then(function(r) { return r.ok ? r.json() : null; })
-    .then(function(d) {
-      if (!d) return;
-      var a = d.address || d;
-      var city = a.city || a.town || a.county || a.state || '';
-      if (city) {
-        document.getElementById('cityLine').textContent = city;
-        saveCity(city);
-      }
-    }).catch(function() {});
-
-  // Weather
-  fetchWithTimeout(wxurl, 8000)
-    .then(function(r) { return r.ok ? r.json() : null; })
-    .then(function(w) {
-      if (!w || !w.current) throw new Error('no data');
-      saveWx(w);
+  fetchWithTimeout(wxU,8000)
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(w){
+      if(!w||!w.current)throw new Error('no data');
+      save('wx',{d:w,ts:Date.now()});
       renderWeather(w);
-    }).catch(function() {
-      var cached = loadWx();
-      if (cached) renderWeather(cached);
-      else document.getElementById('cityLine').textContent = '天气加载失败';
+    }).catch(function(){
+      var c=load('wx');
+      if(c&&Date.now()-c.ts<600000)renderWeather(c.d);
+      else document.getElementById('cityLine').textContent='天气加载失败';
     });
 }
 
-function renderWeather(w) {
-  var c = w.current;
-  document.getElementById('wxCard').style.display = 'block';
-  document.getElementById('wxIcon').textContent = wxIcon(c.weather_code);
-  document.getElementById('wxTemp').textContent = Math.round(c.temperature_2m) + '°';
-  document.getElementById('wxDesc').textContent = wxName(c.weather_code);
-  document.getElementById('wxHum').textContent = '湿度 ' + (c.relative_humidity_2m || '--') + '%';
+function renderWeather(w){
+  var c=w.current;
+  document.getElementById('wxCard').style.display='block';
+  document.getElementById('wxTemp').textContent=Math.round(c.temperature_2m)+'°C';
+  document.getElementById('wxDesc').textContent=WX[c.weather_code]||'--';
+  document.getElementById('wxHum').textContent='湿度 '+(c.relative_humidity_2m||'--')+'%';
 
-  // Hourly
-  var h = w.hourly;
-  if (h && h.time) {
-    var now = new Date();
-    var curHour = now.getHours();
-    var offsets = [1, 3, 6];
-    var labels = ['+1时','+3时','+6时'];
-    var html = '';
-    for (var i = 0; i < offsets.length; i++) {
-      var idx = curHour + offsets[i];
-      if (idx >= h.time.length) idx = h.time.length - 1;
-      var code = h.weather_code[idx];
-      var tmp = h.temperature_2m[idx];
-      var rain = h.precipitation_probability ? h.precipitation_probability[idx] : 0;
-      html += '<div class="wx-h"><div class="hdr">'+labels[i]+'</div><div class="icon">'+wxIcon(code)+'</div><div class="tmp">'+Math.round(tmp)+'°</div><div class="rain">'+(rain>0?'雨'+rain+'%':'&nbsp;')+'</div></div>';
+  var hh=w.hourly;
+  if(hh&&hh.time){
+    var cur=new Date().getHours();
+    var off=[1,3,6],lab=['+1时','+3时','+6时'];
+    var h='';
+    for(var i=0;i<off.length;i++){
+      var idx=cur+off[i];
+      if(idx>=hh.time.length)idx=hh.time.length-1;
+      var code=hh.weather_code[idx],tmp=hh.temperature_2m[idx];
+      var rain=hh.precipitation_probability?hh.precipitation_probability[idx]:0;
+      h+='<div class="wx-h"><div class="hdr">'+lab[i]+'</div><div class="icon">'+(WX[code]||'--')+'</div><div class="tmp">'+Math.round(tmp)+'°</div><div class="rain">'+(rain>0?'雨'+rain+'%':'&nbsp;')+'</div></div>';
     }
-    document.getElementById('wxHourly').innerHTML = html;
+    document.getElementById('wxHourly').innerHTML=h;
   }
 }
 
-function initWeather() {
-  var cachedWx = loadWx();
-  if (cachedWx) renderWeather(cachedWx);
-  // Default to Guangzhou directly — old device GPS unreliable
-  fetchWeather(23.13, 113.26);
+function initWeather(){
+  var c=load('wx');
+  if(c&&Date.now()-c.ts<600000)renderWeather(c.d);
+  fetchWeather(23.13,113.26);
 }
 
-// ===== AI Brief (Chinese news summary) =====
-function fetchBrief() {
-  fetchWithTimeout(API + '/api/news-summary', 8000)
-    .then(function(r) { return r.ok ? r.json() : null; })
-    .then(function(d) {
-      if (!d || !d.summary) return;
-      var html = renderMarkdown(d.summary);
-      var el = document.getElementById('briefCard');
-      if (el) el.innerHTML = html;
-    }).catch(function() {});
+// ===== News scroll (15s cycle) =====
+var nsIdx=0,nsData=[],nsTimer=null;
+
+function fetchNews(){
+  fetchWithTimeout(API+'/api/news',8000)
+    .then(function(r){return r.ok?r.json():[];})
+    .then(function(d){
+      if(d&&d.length){nsData=d;nsIdx=0;save('news',{d:d,ts:Date.now()});tickNews();}
+      else{var c=load('news');if(c&&c.d.length){nsData=c.d;tickNews();}}
+    }).catch(function(){
+      var c=load('news');if(c&&c.d.length){nsData=c.d;tickNews();}
+    });
 }
 
-function renderMarkdown(md) {
-  var lines = md.split('\n');
-  var html = '';
-  var inTable = false;
-  for (var i = 0; i < lines.length; i++) {
-    var line = lines[i];
-    // H2
-    if (/^##\s/.test(line)) {
-      if (inTable) { html += '</table>'; inTable = false; }
-      html += '<h2>' + line.replace(/^##\s*/, '') + '</h2>';
-      continue;
+function tickNews(){
+  if(!nsData.length){document.getElementById('nsText').textContent='暂无新闻';return;}
+  var item=nsData[nsIdx];
+  document.getElementById('nsText').innerHTML='<span class="ns-tag">['+(item.source||'News')+']</span> '+escHtml(item.title);
+  nsIdx=(nsIdx+1)%nsData.length;
+  if(nsTimer)clearTimeout(nsTimer);
+  nsTimer=setTimeout(tickNews,15000);
+}
+
+function escHtml(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+
+// ===== AI Brief =====
+function fetchBrief(){
+  fetchWithTimeout(API+'/api/news-summary',8000)
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(d){
+      if(!d||!d.summary)return;
+      save('brief',{s:d.summary,ts:Date.now()});
+      renderBrief(d.summary);
+    }).catch(function(){
+      var c=load('brief');
+      if(c&&c.s)renderBrief(c.s);
+    });
+}
+
+function renderBrief(md){
+  var el=document.getElementById('briefCard');
+  if(!el)return;
+  var lines=md.split('\n'),html='',inTable=false;
+  for(var i=0;i<lines.length;i++){
+    var line=lines[i];
+    if(/^##\s/.test(line)){if(inTable){html+='</table>';inTable=false;}html+='<h2>'+line.replace(/^##\s*/,'')+'</h2>';continue;}
+    if(/^###\s/.test(line)){if(inTable){html+='</table>';inTable=false;}html+='<h3>'+line.replace(/^###\s*/,'')+'</h3>';continue;}
+    if(/^\|[-|\s]+\|$/.test(line))continue;
+    if(/^\|/.test(line)&&/\|$/.test(line)){
+      if(!inTable){html+='<table>';inTable=true;}
+      var cells=line.split('|').filter(function(c){return c.length>0;});
+      html+='<tr>';
+      for(var j=0;j<cells.length;j++)html+='<td>'+cells[j].trim()+'</td>';
+      html+='</tr>';continue;
     }
-    // H3
-    if (/^###\s/.test(line)) {
-      if (inTable) { html += '</table>'; inTable = false; }
-      html += '<h3>' + line.replace(/^###\s*/, '') + '</h3>';
-      continue;
-    }
-    // Table separator
-    if (/^\|[-|\s]+\|$/.test(line)) { continue; }
-    // Table row
-    if (/^\|/.test(line) && /\|$/.test(line)) {
-      if (!inTable) { html += '<table>'; inTable = true; }
-      var cells = line.split('|').filter(function(c) { return c.length > 0; });
-      html += '<tr>';
-      for (var j = 0; j < cells.length; j++) {
-        html += '<td>' + cells[j].trim() + '</td>';
-      }
-      html += '</tr>';
-      continue;
-    }
-    // Regular text
-    if (inTable) { html += '</table>'; inTable = false; }
-    if (line.trim() === '') { html += '<br>'; continue; }
-    // Knowledge card (> quote)
-    if (/^>\s/.test(line)) {
-      html += '<div class="kcard"><p>' + line.replace(/^>\s*/, '') + '</p></div>';
-      continue;
-    }
-    // Bold
-    var processed = line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-    html += '<p>' + processed + '</p>';
+    if(inTable){html+='</table>';inTable=false;}
+    if(line.trim()===''){html+='<br>';continue;}
+    if(/^>\s/.test(line)){html+='<div class="kcard"><p>'+line.replace(/^>\s*/,'')+'</p></div>';continue;}
+    html+='<p>'+line.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')+'</p>';
   }
-  if (inTable) html += '</table>';
-  return html;
+  if(inTable)html+='</table>';
+  el.innerHTML=html;
+}
+
+// ===== Refresh =====
+function doRefresh(){
+  var btn=document.getElementById('btnRefresh');
+  btn.textContent='刷新中...';btn.disabled=true;
+  // Clear all caches
+  localStorage.removeItem('wx');
+  localStorage.removeItem('news');
+  localStorage.removeItem('brief');
+  localStorage.removeItem('city');
+  // Re-fetch
+  fetchWeather(23.13,113.26);
+  fetchNews();
+  fetchBrief();
+  setTimeout(function(){btn.textContent='刷新数据';btn.disabled=false;},2000);
 }
 
 // ===== Init =====
+var cachedNews=load('news');
+if(cachedNews&&cachedNews.d&&cachedNews.d.length){nsData=cachedNews.d;tickNews();}
+
+var cachedBrief=load('brief');
+if(cachedBrief&&cachedBrief.s)renderBrief(cachedBrief.s);
+
 initWeather();
+fetchNews();
 fetchBrief();
-setInterval(fetchBrief, 900000);
+setInterval(fetchNews,900000);
+setInterval(fetchBrief,900000);
 </script>
 </body>
 </html>
