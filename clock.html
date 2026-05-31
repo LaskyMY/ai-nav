@@ -336,11 +336,11 @@ const{latitude:lat,longitude:lon}=pos.coords;
 try{
 // City name
 let city=lat.toFixed(1)+'°,'+lon.toFixed(1)+'°';
-try{const r=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=zh&zoom=12`);if(r.ok){const d=await r.json();const a=d.address||{};city=a.city||a.town||a.county||a.state||city;}}catch(e){}
+try{const r=await fetch(`https://ai-nav-api.laskymy.workers.dev/api/geocode?lat=${lat}&lon=${lon}`);if(r.ok){const d=await r.json();city=d.city||city;}}catch(e){}
 document.getElementById('cityName').textContent=city;
 
 // Weather
-const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,relative_humidity_2m&hourly=temperature_2m,weather_code,precipitation_probability&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&forecast_days=2`);
+const r=await fetch(`https://ai-nav-api.laskymy.workers.dev/api/weather?lat=${lat}&lon=${lon}`);
 if(!r.ok)throw new Error('bad');
 const w=await r.json();
 const cur=w.current;
@@ -392,18 +392,8 @@ try{const r=await fetch(url,{signal:ctrl.signal});clearTimeout(t);return r;}catc
 }
 
 async function fetchNewsFresh(){
-const sources=[
-{url:'https://api.vvhan.com/api/hotlist/news',parse:d=>d.data?.map(i=>({title:i.title,source:i.source||'综合'}))},
-{url:'https://api.oioweb.cn/api/top/hot',parse:d=>d.result?.map(i=>({title:i.title||i.name,source:i.desc||'热榜'}))},
-];
-const tasks=sources.map(async s=>{
-try{const r=await fetchWithTimeout(s.url,4000);if(!r.ok)return null;const d=await r.json();const items=s.parse(d);return items?.length?items.slice(0,16):null;}catch(e){return null;}
-});
-const timeout=new Promise(r=>setTimeout(()=>r(null),5000));
-const results=await Promise.race([Promise.all(tasks).then(a=>a.find(x=>x!==null)||[]),timeout]);
-return results||[];
+try{const r=await fetchWithTimeout('https://ai-nav-api.laskymy.workers.dev/api/news',5000);if(!r.ok)return[];const items=await r.json();return items?.length?items.slice(0,16):[];}catch(e){return[];}
 }
-
 function loadNewsCache(){
 try{const ts=localStorage.getItem(NEWS_TS);if(ts&&Date.now()-parseInt(ts)<NEWS_TTL){const data=localStorage.getItem(NEWS_KEY);if(data){const items=JSON.parse(data);if(items.length>0)return items;}}}catch(e){}
 return null;
