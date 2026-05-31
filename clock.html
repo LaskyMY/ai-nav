@@ -367,16 +367,41 @@ document.getElementById('tomorrowCard').innerHTML=`
 <div class="ic-sub">${wTxt(d.weather_code[1])}</div></div>`;
 }
 
+const API_BASE='https://ai-nav-api.laskymy.workers.dev';
+
+async function tryWorkerOrDirect(workerPath,directUrl,timeoutMs){
+// Try Worker first (short timeout)
+try{const r=await fetch(API_BASE+workerPath,{signal:AbortSignal.timeout(Math.min(timeoutMs,3000))});if(r.ok)return r;}catch(e){}
+// Fallback to direct
+return fetch(directUrl,{signal:AbortSignal.timeout(timeoutMs)});
+}
+
 async function fetchFreshWeather(lat,lon){
 let city=lat.toFixed(1)+'°,'+lon.toFixed(1)+'°';
-try{const r=await fetch(`https://ai-nav-api.laskymy.workers.dev/api/geocode?lat=${lat}&lon=${lon}`,{signal:AbortSignal.timeout(4000)});if(r.ok){const d=await r.json();city=d.city||city;}}catch(e){}
+try{
+const r=await tryWorkerOrDirect(
+`/api/geocode?lat=${lat}&lon=${lon}`,
+`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=zh&zoom=12`,
+4000
+);
+if(r.ok){
+try{const d=await r.json();const a=d.address||d;city=a.city||a.town||a.county||a.state||d.city||city;}catch(e){}
+}
+}catch(e){}
 document.getElementById('cityName').textContent=city;
 saveCityCache(city);
-const r=await fetch(`https://ai-nav-api.laskymy.workers.dev/api/weather?lat=${lat}&lon=${lon}`,{signal:AbortSignal.timeout(8000)});
+
+try{
+const r=await tryWorkerOrDirect(
+`/api/weather?lat=${lat}&lon=${lon}`,
+`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,relative_humidity_2m&hourly=temperature_2m,weather_code,precipitation_probability&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&forecast_days=2`,
+8000
+);
 if(!r.ok)throw new Error('bad');
 const w=await r.json();
 saveWeatherCache(w);
 renderWeather(w);
+}catch(e){if(!loadWeatherCache())document.getElementById('weatherDesc').textContent='加载失败';}
 }
 
 async function initWeather(){
@@ -404,7 +429,17 @@ try{const r=await fetch(url,{signal:ctrl.signal});clearTimeout(t);return r;}catc
 }
 
 async function fetchNewsFresh(){
-try{const r=await fetchWithTimeout('https://ai-nav-api.laskymy.workers.dev/api/news',5000);if(!r.ok)return[];const items=await r.json();return items?.length?items.slice(0,16):[];}catch(e){return[];}
+try{const r=await fetchWithTimeout(API_BASE+'/api/news',2500);if(r.ok){const items=await r.json();if(items?.length)return items.slice(0,16);}}catch(e){}
+const sources=[
+{url:'https://api.vvhan.com/api/hotlist/news',parse:d=>d.data?.map(i=>({title:i.title,source:i.source||'综合'}))},
+{url:'https://api.oioweb.cn/api/top/hot',parse:d=>d.result?.map(i=>({title:i.title||i.name,source:i.desc||'热榜'}))},
+];
+const tasks=sources.map(async s=>{
+try{const r=await fetchWithTimeout(s.url,4000);if(!r.ok)return null;const d=await r.json();const items=s.parse(d);return items?.length?items.slice(0,16):null;}catch(e){return null;}
+});
+const timeout=new Promise(r=>setTimeout(()=>r(null),5000));
+const results=await Promise.race([Promise.all(tasks).then(a=>a.find(x=>x!==null)||[]),timeout]);
+return results||[];
 }
 function loadNewsCache(){
 try{const ts=localStorage.getItem(NEWS_TS);if(ts&&Date.now()-parseInt(ts)<NEWS_TTL){const data=localStorage.getItem(NEWS_KEY);if(data){const items=JSON.parse(data);if(items.length>0)return items;}}}catch(e){}
@@ -454,7 +489,7 @@ setInterval(async()=>{const f=await fetchNewsFresh();if(f.length){newsItems=f;ne
 </script>
 <script>(async function(){try{const r=await fetch('./version.json?t='+Date.now(),{cache:'no-store',signal:AbortSignal.timeout(3000)});const d=await r.json();const cur=localStorage.getItem('site_version');if(cur&&cur!==d.version){location.reload(true)}localStorage.setItem('site_version',d.version)}catch(e){}})();</script>
 <div style="text-align:center;padding:8px 0 4px;font-size:10px;color:var(--tx4);line-height:1.6">
-<a href="changelog.html" style="color:var(--tx4);text-decoration:none">v1.3</a> · 所有 API 调用增加超时保护，避免网络不通时无限挂起 · 2026.05.31
+<a href="changelog.html" style="color:var(--tx4);text-decoration:none">v1.4</a> · Worker 不通时自动降级直连第三方 API，国内网络可用 · 2026.05.31
 </div>
 </body>
 </html>
