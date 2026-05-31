@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>WebView Test</title>
+<style>
+body{background:#050510;color:#fff;font-family:sans-serif;padding:16px;margin:0;font-size:14px;line-height:1.8;}
+h2{color:#00e5ff;font-size:16px;margin:12px 0 8px;}
+.pass{color:#10b981}.fail{color:#ef4444}
+.btn{display:block;width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1px solid rgba(255,255,255,.15);
+background:rgba(255,255,255,.06);color:#fff;font-size:14px;cursor:pointer;text-align:left;}
+.btn span{color:#00e5ff;font-weight:600;}
+#result{margin-top:10px;padding:10px;border-radius:8px;background:rgba(255,255,255,.03);font-size:12px;word-break:break-all;}
+</style>
+</head>
+<body>
+<h2>AI Nav WebView 测试</h2>
+<p>逐个点击测试按钮，告诉我哪个能正常显示内容：</p>
+
+<button class="btn" onclick="test('1')">1️⃣ 本地 JS 测试</button>
+<button class="btn" onclick="test('2')">2️⃣ GitHub Pages clock.html</button>
+<button class="btn" onclick="test('3')">3️⃣ Serveo 直连 clock.html</button>
+<button class="btn" onclick="test('4')">4️⃣ 百度 (验证网络)</button>
+<button class="btn" onclick="test('5')">5️⃣ GitHub Pages 根路径</button>
+
+<div id="result"></div>
+
+<script>
+var urls={
+'1':'about:blank',
+'2':'https://laskymy.github.io/ai-nav/clock.html',
+'3':'https://c46872d35aeba559-183-6-87-29.serveousercontent.com/clock.html',
+'4':'https://www.baidu.com',
+'5':'https://laskymy.github.io/ai-nav/'
+};
+
+function test(id){
+var r=document.getElementById('result');
+r.innerHTML='⏳ 加载中...';
+if(id==='1'){
+r.innerHTML='✅ JS OK<br>✅ DOM OK<br>✅ localStorage: '+(function(){try{localStorage.setItem("_t","1");localStorage.removeItem("_t");return"OK";}catch(e){return"FAIL: "+e.message;}})()+'<br>✅ UserAgent: '+navigator.userAgent+'<br>✅ 屏幕: '+screen.width+'×'+screen.height+' dpr='+devicePixelRatio;
+return;
+}
+var start=Date.now();
+var iframe=document.createElement('iframe');
+iframe.style.cssText='width:100%;height:300px;border:1px solid rgba(255,255,255,.1);border-radius:8px;margin-top:8px;';
+iframe.src=urls[id];
+iframe.onload=function(){
+var ms=Date.now()-start;
+r.innerHTML='✅ 加载完成 ('+ms+'ms) — 内容应在上方显示';
+};
+iframe.onerror=function(){
+r.innerHTML='❌ 加载失败 (可能是网络问题或VPN拦截)';
+};
+var old=document.querySelector('iframe');
+if(old)old.remove();
+r.parentNode.insertBefore(iframe,r.nextSibling);
+try{fetch(urls[id],{signal:AbortSignal.timeout(5000)}).then(function(resp){r.innerHTML+='<br>HTTP '+resp.status+' '+resp.headers.get('content-type');}).catch(function(e){r.innerHTML+='<br>Fetch error: '+e.message;});}catch(e){}
+}
+</script>
+</body>
+</html>

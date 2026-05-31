@@ -14,8 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String HOME_URL = "https://laskymy.github.io/ai-nav/clock.html";
-
     private WebView webView;
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -26,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
         webView = new WebView(this);
         setContentView(webView);
 
-        // Full screen
         hideSystemUI();
 
         WebSettings s = webView.getSettings();
@@ -34,8 +31,8 @@ public class MainActivity extends AppCompatActivity {
         s.setDomStorageEnabled(true);
         s.setDatabaseEnabled(true);
         s.setGeolocationEnabled(true);
-        s.setAllowFileAccess(false);
-        s.setAllowContentAccess(false);
+        s.setAllowFileAccess(true);
+        s.setAllowContentAccess(true);
         s.setCacheMode(WebSettings.LOAD_DEFAULT);
         s.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         s.setUseWideViewPort(true);
@@ -44,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
         s.setBuiltInZoomControls(true);
         s.setDisplayZoomControls(false);
 
-        // User agent for compatibility
         s.setUserAgentString(s.getUserAgentString() + " AINavBrowser/1.0");
 
         webView.setWebViewClient(new WebViewClient());
@@ -55,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        webView.loadUrl(HOME_URL);
+        // Load embedded test page
+        webView.loadUrl("file:///android_asset/test.html");
     }
 
     @Override
