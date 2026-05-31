@@ -12,6 +12,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@200;300;400;500;600;700&display=swap');
 
 :root{
+--sat:max(44px, env(safe-area-inset-top));
 --bg:#050510;--card-bg:rgba(255,255,255,.03);--card-border:rgba(255,255,255,.06);
 --cyan:#00e5ff;--cyan2:rgba(0,229,255,.5);--cyan3:rgba(0,229,255,.15);
 --warm:#ff9100;--warm2:rgba(255,145,0,.5);--warm3:rgba(255,145,0,.15);
@@ -24,7 +25,7 @@ body{
 font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
 background:var(--bg);color:var(--tx);font-size:14px;line-height:1.5;
 min-height:100vh;min-height:100dvh;
-padding:0 16px 40px;
+padding:var(--sat) 16px 40px;
 -webkit-font-smoothing:antialiased;overflow-x:hidden;
 -webkit-user-select:none;user-select:none;
 -webkit-tap-highlight-color:transparent;
@@ -47,7 +48,7 @@ background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0
 }
 
 /* ---- Back button ---- */
-.back-bar{position:sticky;top:0;z-index:50;padding:12px 0 8px;
+.back-bar{position:sticky;top:var(--sat);z-index:50;padding:12px 0 8px;
 backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
 mask-image:linear-gradient(to bottom,black 60%,transparent);
 -webkit-mask-image:linear-gradient(to bottom,black 60%,transparent);
