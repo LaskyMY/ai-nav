@@ -105,13 +105,13 @@ animation:spin .6s linear infinite;vertical-align:middle;margin:0 4px;}
 <div class="info-bar">AI Nav v1.0 · 时钟面板</div>
 
 <script>
-// ===== Polyfill AbortSignal.timeout =====
-if (!AbortSignal.timeout) {
-  AbortSignal.timeout = function(ms) {
-    var ctrl = new AbortController();
-    setTimeout(function() { ctrl.abort(); }, ms);
-    return ctrl.signal;
-  };
+// ===== Polyfill: fetch with timeout for old WebView =====
+// Chrome 44 on Android 6.0 lacks AbortController entirely
+function fetchWithTimeout(url, ms) {
+  return new Promise(function(resolve, reject) {
+    var timer = setTimeout(function() { reject(new Error('timeout')); }, ms);
+    fetch(url).then(function(r) { clearTimeout(timer); resolve(r); }, function(e) { clearTimeout(timer); reject(e); });
+  });
 }
 
 // ===== API Config =====
@@ -193,7 +193,7 @@ function fetchWeather(lat, lon) {
   var wxurl = API + '/api/weather?lat=' + lat + '&lon=' + lon;
 
   // Geo
-  fetch(geourl, {signal: AbortSignal.timeout(4000)})
+  fetchWithTimeout(geourl, 4000)
     .then(function(r) { return r.ok ? r.json() : null; })
     .then(function(d) {
       if (!d) return;
@@ -206,7 +206,7 @@ function fetchWeather(lat, lon) {
     }).catch(function() {});
 
   // Weather
-  fetch(wxurl, {signal: AbortSignal.timeout(8000)})
+  fetchWithTimeout(wxurl, 8000)
     .then(function(r) { return r.ok ? r.json() : null; })
     .then(function(w) {
       if (!w || !w.current) throw new Error('no data');
@@ -273,7 +273,7 @@ var newsIdx = 0;
 var newsData = [];
 
 function fetchNews() {
-  fetch(API + '/api/news', {signal: AbortSignal.timeout(8000)})
+  fetchWithTimeout(API + '/api/news', 8000)
     .then(function(r) { return r.ok ? r.json() : []; })
     .then(function(data) {
       if (data && data.length) {
@@ -298,7 +298,7 @@ function tickNews() {
 
 // ===== AI Brief =====
 function fetchBrief() {
-  fetch(API + '/api/news-summary', {signal: AbortSignal.timeout(8000)})
+  fetchWithTimeout(API + '/api/news-summary', 8000)
     .then(function(r) { return r.ok ? r.json() : null; })
     .then(function(d) {
       if (!d || !d.summary) return;
