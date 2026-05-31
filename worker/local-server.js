@@ -50,6 +50,14 @@ async function handle(req) {
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: cors() });
 
   try {
+    // ── Static pages (served from server for old Android compatibility) ──
+    if (path === "/clock-old.html" || path === "/clock-old") {
+      try {
+        const html = await Deno.readTextFile("./clock-old.html");
+        return new Response(html, { headers: { ...cors(), "Content-Type": "text/html; charset=utf-8" } });
+      } catch (_) { return err("page not found", 404); }
+    }
+
     // ── Weather ──
     if (path === "/api/weather") {
       const lat = url.searchParams.get("lat"), lon = url.searchParams.get("lon");

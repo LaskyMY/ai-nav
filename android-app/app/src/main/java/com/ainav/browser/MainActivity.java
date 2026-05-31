@@ -97,8 +97,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Load embedded clock page (no network needed for HTML — only API calls use serveo)
-        webView.loadUrl("file:///android_asset/clock-old.html");
+        // Load from serveo tunnel (works on old Android WebView where github.io is blocked)
+        webView.loadUrl("https://c46872d35aeba559-183-6-87-29.serveousercontent.com/clock-old.html");
     }
 
     @Override
