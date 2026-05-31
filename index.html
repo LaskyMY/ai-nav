@@ -392,7 +392,7 @@ input[type="range"]::-webkit-slider-runnable-track{height:6px;border-radius:3px;
       <span id="weatherBadge" style="cursor:pointer;display:flex;align-items:center;gap:4px;padding:4px 8px;border-radius:16px;border:1px solid rgba(255,255,255,.04);font-size:12px" onclick="Weather.toggle()">
         <span id="wIcon">--</span><span id="wTemp">--°</span>
       </span>
-	      <span id="favBtn" style="cursor:pointer;font-size:16px;padding:2px 4px" onclick="Fav.open()" title="收藏">⭐</span>    </div>
+	      <span id="favBtn" style="cursor:pointer;font-size:16px;padding:2px 4px" onclick="Fav.open()" title="收藏">⭐</span> <span id="topVer" style="font-size:9px;color:var(--tx4, rgba(255,255,255,.2));white-space:nowrap">v-</span>   </div>
   </div>
 </header>
 
@@ -1534,6 +1534,7 @@ const r=await fetch('./version.json?t='+Date.now(),{cache:'no-store'});
 const d=await r.json();
 document.getElementById('verLabel').textContent='v'+d.version;
 document.getElementById('verTime').textContent=d.updated;
+var tv=document.getElementById('topVer');if(tv)tv.textContent='v'+d.version;
 }catch(e){}
 })();
 </script>
