@@ -9,178 +9,137 @@
 <title>毫秒时钟 · 天气 · 新闻</title>
 <link rel="icon" href="./icon.svg">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 :root{
 --sat:max(44px, env(safe-area-inset-top));
---bg:#050510;--card-bg:rgba(255,255,255,.03);--card-border:rgba(255,255,255,.06);
---cyan:#00e5ff;--cyan2:rgba(0,229,255,.5);--cyan3:rgba(0,229,255,.15);
---warm:#ff9100;--warm2:rgba(255,145,0,.5);--warm3:rgba(255,145,0,.15);
+--sab:max(0px, env(safe-area-inset-bottom));
+--bg:#050510;--card-bg:rgba(255,255,255,.04);--card-border:rgba(255,255,255,.07);
+--cyan:#00e5ff;--cyan2:rgba(0,229,255,.5);--cyan3:rgba(0,229,255,.12);
+--warm:#ff9100;--warm3:rgba(255,145,0,.12);
 --tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.28);--tx4:rgba(255,255,255,.1);
---r:18px;--r2:12px;--ease:cubic-bezier(.22,1,.36,1);
+--r:16px;--r2:10px;--ease:cubic-bezier(.22,1,.36,1);
 }
 
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
 body{
 font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
-background:var(--bg);color:var(--tx);font-size:14px;line-height:1.5;
-min-height:100vh;min-height:100dvh;
-padding:var(--sat) 16px 40px;
--webkit-font-smoothing:antialiased;overflow-x:hidden;
+background:var(--bg);color:var(--tx);font-size:13px;line-height:1.4;
+padding:var(--sat) 14px calc(14px + var(--sab));
+display:flex;flex-direction:column;
+-webkit-font-smoothing:antialiased;
 -webkit-user-select:none;user-select:none;
 -webkit-tap-highlight-color:transparent;
 }
 ::-webkit-scrollbar{display:none}
 
-/* ---- Background ---- */
+/* Background layers */
 .bg-grid{position:fixed;inset:0;pointer-events:none;z-index:0;
 background-image:
-radial-gradient(circle at 50% 30%,rgba(0,229,255,.04) 0%,transparent 70%),
-radial-gradient(circle at 20% 70%,rgba(0,229,255,.02) 0%,transparent 50%),
-radial-gradient(circle at 80% 60%,rgba(0,229,255,.025) 0%,transparent 50%);
+radial-gradient(circle at 50% 25%,rgba(0,229,255,.04) 0%,transparent 60%),
+radial-gradient(circle at 30% 60%,rgba(0,229,255,.02) 0%,transparent 50%),
+radial-gradient(circle at 70% 50%,rgba(0,229,255,.025) 0%,transparent 50%);
 }
 .bg-dots{position:fixed;inset:0;pointer-events:none;z-index:0;
-background-image:radial-gradient(rgba(255,255,255,.03) 1px,transparent 1px);
-background-size:32px 32px;
+background-image:radial-gradient(rgba(255,255,255,.025) 1px,transparent 1px);
+background-size:28px 28px;
 }
-.scanline{position:fixed;inset:0;pointer-events:none;z-index:100;opacity:.012;
+.scanline{position:fixed;inset:0;pointer-events:none;z-index:100;opacity:.01;
 background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.5) 2px,rgba(0,0,0,.5) 4px);
 }
 
-/* ---- Back button ---- */
-.back-bar{position:sticky;top:var(--sat);z-index:50;padding:12px 0 8px;
-backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-mask-image:linear-gradient(to bottom,black 60%,transparent);
--webkit-mask-image:linear-gradient(to bottom,black 60%,transparent);
+/* Back button */
+.back-bar{flex-shrink:0;padding:4px 0 6px;position:relative;z-index:50;}
+.back-btn{display:inline-flex;align-items:center;gap:3px;color:var(--cyan);
+text-decoration:none;font-size:12px;font-weight:500;padding:5px 10px;
+border-radius:16px;background:var(--cyan3);border:1px solid rgba(0,229,255,.08);
+transition:all .3s var(--ease);
 }
-.back-btn{display:inline-flex;align-items:center;gap:4px;color:var(--cyan);
-text-decoration:none;font-size:13px;font-weight:500;padding:6px 12px;
-border-radius:20px;background:var(--cyan3);border:1px solid rgba(0,229,255,.1);
-transition:all .3s var(--ease);letter-spacing:-.01em;
-}
-.back-btn:hover{background:var(--cyan3);border-color:var(--cyan2);}
-.back-btn svg{width:14px;height:14px;}
+.back-btn svg{width:13px;height:13px;}
 
-/* ---- Main content ---- */
-.main{position:relative;z-index:1;max-width:420px;margin:0 auto;}
+/* Main flex container */
+.main{flex:1;display:flex;flex-direction:column;position:relative;z-index:1;max-width:420px;margin:0 auto;width:100%;min-height:0;gap:6px;}
 
-/* ---- Clock ---- */
-.clock-section{text-align:center;padding:8px 0 6px;}
+/* Clock */
+.clock-section{flex-shrink:0;text-align:center;padding:0;}
 .time-row{display:flex;align-items:baseline;justify-content:center;gap:0;}
-.time-hms{font-family:'Inter','SF Pro Display',-apple-system,sans-serif;font-size:56px;font-weight:600;
-font-variant-numeric:tabular-nums;letter-spacing:.04em;color:var(--tx);
-background:linear-gradient(180deg,rgba(255,255,255,.98) 0%,rgba(255,255,255,.8) 100%);
+.time-hms{font-family:'Inter','SF Pro Display',-apple-system,sans-serif;font-size:52px;font-weight:700;
+font-variant-numeric:tabular-nums;letter-spacing:.03em;color:var(--tx);
+background:linear-gradient(180deg,rgba(255,255,255,.98) 0%,rgba(255,255,255,.78) 100%);
 -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-text-shadow:0 0 60px var(--cyan3),0 0 120px var(--cyan3);
+text-shadow:0 0 50px var(--cyan3),0 0 100px var(--cyan3);
 line-height:1;
 }
-.time-ms{font-family:'Inter','SF Pro Display',-apple-system,sans-serif;font-size:28px;font-weight:500;
+.time-ms{font-family:'Inter','SF Pro Display',-apple-system,sans-serif;font-size:24px;font-weight:600;
 font-variant-numeric:tabular-nums;
 color:var(--cyan);letter-spacing:.04em;line-height:1;
-text-shadow:0 0 20px var(--cyan3),0 0 40px var(--cyan3);
-min-width:70px;text-align:left;opacity:.85;
+text-shadow:0 0 16px var(--cyan3),0 0 32px var(--cyan3);
+min-width:62px;text-align:left;opacity:.85;
 }
 @media(max-width:360px){
-.time-hms{font-size:44px}.time-ms{font-size:22px;min-width:56px}
+.time-hms{font-size:44px}.time-ms{font-size:20px;min-width:52px}
 }
 
-.date-line{font-size:14px;color:var(--tx2);margin-top:4px;font-weight:500;letter-spacing:.02em;}
-.date-lunar{font-size:11px;color:var(--tx3);margin-top:2px;}
+.date-line{font-size:13px;color:var(--tx2);margin-top:2px;font-weight:500;letter-spacing:.02em;}
+.date-lunar{font-size:11px;color:var(--tx3);margin-top:1px;}
+.city-line{text-align:center;font-size:12px;font-weight:500;color:var(--tx2);margin-top:2px;display:flex;align-items:center;justify-content:center;gap:5px;}
+.city-dot{width:4px;height:4px;border-radius:50%;background:var(--cyan);animation:pulse-dot 2s ease-in-out infinite;}
+@keyframes pulse-dot{0%,100%{box-shadow:0 0 3px var(--cyan)}50%{box-shadow:0 0 10px var(--cyan),0 0 16px var(--cyan2)}}
 
-/* ---- City ---- */
-.city-line{text-align:center;font-size:13px;font-weight:500;color:var(--tx2);margin:8px 0 2px;
-display:flex;align-items:center;justify-content:center;gap:6px;
-}
-.city-dot{width:5px;height:5px;border-radius:50%;background:var(--cyan);
-animation:pulse-dot 2s ease-in-out infinite;
-}
-@keyframes pulse-dot{0%,100%{box-shadow:0 0 4px var(--cyan)}50%{box-shadow:0 0 12px var(--cyan),0 0 20px var(--cyan2)}}
-
-/* ---- Weather ---- */
-.weather-section{margin:10px 0;}
-.weather-now{display:flex;align-items:center;justify-content:center;gap:10px;padding:10px 0 4px;}
-.weather-icon{font-size:40px;line-height:1;}
-.weather-temp{font-size:42px;font-weight:500;letter-spacing:-.02em;color:var(--tx);}
-.weather-desc{font-size:14px;font-weight:500;color:var(--tx2);text-align:center;}
-
-.weather-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:8px 0;}
-.weather-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--r2);
-padding:12px 10px;text-align:center;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-transition:all .3s var(--ease);
-}
-.weather-card .wc-time{font-size:11px;color:var(--tx3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em;}
-.weather-card .wc-icon{font-size:24px;margin-bottom:2px;}
-.weather-card .wc-temp{font-size:20px;font-weight:500;color:var(--tx);}
-.weather-card .wc-rain{font-size:10px;color:var(--cyan);margin-top:2px;}
-
-.tomorrow-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--r);
-padding:14px 16px;display:flex;align-items:center;gap:12px;margin-top:4px;
+/* Shared card */
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--r);
 backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+position:relative;overflow:hidden;
 }
-.tomorrow-card .tm-icon{font-size:28px;}
-.tomorrow-card .tm-info{flex:1;}
-.tomorrow-card .tm-label{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;}
-.tomorrow-card .tm-temp{font-size:17px;font-weight:600;color:var(--tx);}
-.tomorrow-card .tm-desc{font-size:12px;color:var(--tx2);}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;
+background:linear-gradient(135deg,rgba(255,255,255,.02) 0%,transparent 40%,transparent 60%,rgba(255,255,255,.01) 100%);pointer-events:none;}
 
-/* ---- Holiday ---- */
-.holiday-section{margin:14px 0;}
-.holiday-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--r);
-padding:14px 16px;display:flex;align-items:center;justify-content:space-between;
-backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-transition:all .3s var(--ease);
-}
-.holiday-info{display:flex;align-items:center;gap:10px;}
-.holiday-emoji{font-size:28px;}
-.holiday-name{font-size:15px;font-weight:600;color:var(--tx);}
-.holiday-date{font-size:11px;color:var(--tx3);}
-.holiday-countdown{text-align:right;}
-.holiday-days{font-size:28px;font-weight:600;color:var(--warm);
-text-shadow:0 0 30px var(--warm3);
-}
-.holiday-days-label{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.04em;}
+/* Weather now - compact */
+.weather-now-row{flex-shrink:0;display:flex;align-items:center;gap:10px;padding:6px 14px;}
+.weather-icon-lg{font-size:36px;line-height:1;}
+.weather-temp{font-size:34px;font-weight:600;letter-spacing:-.02em;color:var(--tx);}
+.weather-meta{font-size:12px;font-weight:500;color:var(--tx2);line-height:1.5;}
+.weather-meta span{color:var(--tx3);font-size:11px;}
 
-/* ---- Section titles ---- */
-.section-title{font-size:11px;font-weight:500;color:var(--tx3);text-transform:uppercase;letter-spacing:.08em;
-padding:6px 0 4px;display:flex;align-items:center;gap:6px;
+/* Weather hourly row */
+.weather-hourly{flex-shrink:0;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;padding:0;}
+.wh-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--r2);
+padding:8px 6px;text-align:center;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
 }
-.section-title::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.04);}
+.wh-time{font-size:10px;color:var(--tx3);margin-bottom:2px;font-weight:500;letter-spacing:.03em;}
+.wh-icon{font-size:20px;}
+.wh-temp{font-size:17px;font-weight:600;color:var(--tx);}
+.wh-rain{font-size:10px;color:var(--cyan);margin-top:1px;}
 
-/* ---- News ---- */
-.news-section{margin:14px 0;}
-.news-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--r);
-padding:16px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-position:relative;overflow:hidden;min-height:80px;
-transition:all .3s var(--ease);
-}
-.news-card .news-source{font-size:10px;font-weight:500;color:var(--tx4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
-.news-card .news-text{font-size:14px;font-weight:600;color:var(--tx);line-height:1.5;
+/* Bottom 2-col: tomorrow + holiday */
+.info-row{flex-shrink:0;display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.info-card{padding:10px 12px;display:flex;align-items:center;gap:8px;}
+.info-card .ic-icon{font-size:22px;flex-shrink:0;}
+.info-card .ic-body{flex:1;min-width:0;}
+.info-card .ic-label{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:1px;}
+.info-card .ic-main{font-size:14px;font-weight:600;color:var(--tx);}
+.info-card .ic-sub{font-size:11px;color:var(--tx2);}
+.info-card .ic-num{font-size:22px;font-weight:700;color:var(--warm);text-shadow:0 0 20px var(--warm3);}
+.info-card .ic-num-label{font-size:10px;color:var(--tx3);}
+
+/* News */
+.news-card{flex-shrink:0;padding:10px 14px;min-height:0;}
+.news-card .ns-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.news-card .ns-source{font-size:9px;font-weight:500;color:var(--tx4);text-transform:uppercase;letter-spacing:.06em;}
+.news-card .ns-counter{font-size:10px;font-weight:500;color:var(--tx3);font-variant-numeric:tabular-nums;}
+.news-card .ns-text{font-size:13px;font-weight:600;color:var(--tx);line-height:1.45;
 display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
 }
-.news-card .news-bar{display:flex;align-items:center;gap:8px;margin-top:10px;}
-.news-card .news-dots{display:flex;gap:4px;}
-.news-card .news-dot{width:5px;height:5px;border-radius:50%;background:var(--tx4);transition:all .4s var(--ease);}
-.news-card .news-dot.on{background:var(--cyan);box-shadow:0 0 6px var(--cyan2);width:14px;border-radius:3px;}
-.news-card .news-counter{font-size:11px;font-weight:500;color:var(--tx3);font-family:'Inter',-apple-system,sans-serif;font-variant-numeric:tabular-nums;}
-.news-card .news-timer{width:100%;height:1px;background:rgba(255,255,255,.03);margin-top:10px;border-radius:1px;overflow:hidden;}
-.news-card .news-timer-fill{height:100%;background:var(--cyan);border-radius:1px;
-transition:width 1s linear;width:0%;
-}
+.news-card .ns-footer{display:flex;align-items:center;gap:6px;margin-top:6px;}
+.news-card .ns-dots{display:flex;gap:3px;flex:1;}
+.news-card .ns-dot{width:4px;height:4px;border-radius:50%;background:var(--tx4);transition:all .4s var(--ease);}
+.news-card .ns-dot.on{background:var(--cyan);box-shadow:0 0 5px var(--cyan2);width:14px;border-radius:3px;}
+.news-card .ns-timer{width:100%;height:1px;background:rgba(255,255,255,.03);border-radius:1px;overflow:hidden;}
+.news-card .ns-timer-fill{height:100%;background:var(--cyan);border-radius:1px;transition:width 1s linear;width:0%;}
 
-/* ---- Footer ---- */
-.footer{text-align:center;padding:20px 0 10px;}
-.footer-tag{font-size:10px;color:var(--tx4);letter-spacing:.04em;
-display:inline-flex;align-items:center;gap:4px;
-}
-.footer-dot{width:3px;height:3px;border-radius:50%;background:var(--cyan);animation:pulse-dot 2s ease-in-out infinite;}
-
-/* ---- Loading / Error states ---- */
-.loading{color:var(--tx3);font-size:12px;text-align:center;padding:8px;}
-.error-hidden{display:none;}
-
-/* ---- Transitions ---- */
-@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-.fade-in{animation:fadeIn .5s var(--ease) both;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .4s var(--ease) both;}
 </style>
 </head>
 <body>
@@ -188,7 +147,7 @@ display:inline-flex;align-items:center;gap:4px;
 <div class="bg-grid"></div>
 <div class="bg-dots"></div>
 <div class="scanline"></div>
-<canvas id="worldCanvas" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.18;"></canvas>
+<canvas id="worldCanvas" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.16;"></canvas>
 
 <div class="back-bar">
 <a class="back-btn" href="./index.html">
@@ -199,7 +158,6 @@ display:inline-flex;align-items:center;gap:4px;
 
 <div class="main">
 
-<!-- Clock -->
 <div class="clock-section">
 <div class="time-row">
 <span class="time-hms" id="timeHMS">--:--:--</span>
@@ -207,62 +165,45 @@ display:inline-flex;align-items:center;gap:4px;
 </div>
 <div class="date-line" id="dateLine">----年--月--日 星期-</div>
 <div class="date-lunar" id="dateLunar"></div>
+<div class="city-line"><span class="city-dot"></span><span id="cityName">获取位置中...</span></div>
 </div>
 
-<!-- City -->
-<div class="city-line">
-<span class="city-dot"></span>
-<span id="cityName">获取位置中...</span>
-</div>
-
-<!-- Weather Now -->
-<div class="weather-now">
-<span class="weather-icon" id="weatherIcon">--</span>
+<div class="card weather-now-row">
+<span class="weather-icon-lg" id="weatherIcon">--</span>
 <span class="weather-temp" id="weatherTemp">--°</span>
-</div>
-<div class="weather-desc" id="weatherDesc">加载中...</div>
-
-<!-- Weather next 2 hours -->
-<div class="weather-row" id="weatherHours"></div>
-
-<!-- Tomorrow -->
-<div class="tomorrow-card" id="tomorrowCard">
-<span class="tm-icon">--</span>
-<div class="tm-info"><div class="tm-label">明天</div><div class="tm-temp">加载中...</div></div>
-<span class="tm-desc">--</span>
+<div class="weather-meta"><div id="weatherDesc">加载中...</div><span id="weatherHumidity"></span></div>
 </div>
 
-<!-- Holiday -->
-<div class="section-title">节日倒计时</div>
-<div class="holiday-section" id="holidaySection"></div>
+<div class="weather-hourly" id="weatherHours"></div>
 
-<!-- News -->
-<div class="section-title">实时要闻 · 每分钟切换</div>
-<div class="news-section">
-<div class="news-card" id="newsCard">
-<div class="news-source">加载中</div>
-<div class="news-text">正在获取最新新闻...</div>
-<div class="news-bar">
-<div class="news-dots" id="newsDots"></div>
-<span class="news-counter" id="newsCounter">0 / 0</span>
+<div class="info-row">
+<div class="card info-card" id="tomorrowCard">
+<span class="ic-icon">--</span>
+<div class="ic-body"><div class="ic-label">明天</div><div class="ic-main">加载中...</div><div class="ic-sub">--</div></div>
 </div>
-<div class="news-timer"><div class="news-timer-fill" id="newsTimerFill"></div></div>
+<div class="card info-card" id="holidayCard">
+<span class="ic-icon">🎌</span>
+<div class="ic-body" id="holidayBody"><div class="ic-label">节日倒计时</div><div class="ic-main">加载中...</div></div>
 </div>
 </div>
 
-<div class="footer">
-<span class="footer-tag"><span class="footer-dot"></span> 实时数据引擎</span>
+<div class="card news-card" id="newsCard">
+<div class="ns-header"><span class="ns-source">新闻</span><span class="ns-counter" id="newsCounter">加载中</span></div>
+<div class="ns-text">正在获取最新新闻...</div>
+<div class="ns-footer">
+<div class="ns-dots" id="newsDots"></div>
+</div>
+<div class="ns-timer"><div class="ns-timer-fill" id="newsTimerFill"></div></div>
 </div>
 
 </div><!-- .main -->
 
 <script>
-// ===== WORLD MAP BACKGROUND =====
+// ===== WORLD MAP =====
 (function(){
 const c=document.getElementById('worldCanvas');
 const ctx=c.getContext('2d');
 
-// Simplified continent outlines [lon,lat] pairs (equirectangular)
 const continents={
 NA:[[168,69],[160,55],[150,64],[142,60],[128,54],[124,50],[117,33],[106,20],[97,16],[90,19],[84,28],[78,27],[72,41],[67,46],[56,48],[52,42],[66,35],[64,25],[74,24],[78,8],[82,5],[76,8],[90,22],[97,28],[108,22],[117,33],[128,40],[130,56],[142,58],[154,58],[162,65],[168,69]],
 SA:[[80,8],[76,3],[80,-5],[72,-15],[65,-22],[60,-35],[55,-40],[50,-35],[42,-23],[41,-14],[35,-6],[37,2],[34,5],[40,12],[51,12],[60,8],[65,5],[73,10],[80,8]],
@@ -278,408 +219,236 @@ MG:[[44,-12],[50,-14],[50,-20],[48,-26],[44,-25],[43,-20],[44,-12]],
 NZ:[[166,-35],[174,-36],[178,-40],[172,-44],[168,-43],[166,-38],[166,-35]],
 };
 
-// Major cities [lon,lat,name]
 const cities=[
-[-74,40.7,'纽约'],[139.7,35.7,'东京'],[-0.1,51.5,'伦敦'],[2.3,48.8,'巴黎'],
-[116.4,39.9,'北京'],[121.5,31.2,'上海'],[114.2,22.3,'香港'],[113.2,23.1,'广州'],
-[37.6,55.8,'莫斯科'],[55.3,25.3,'迪拜'],[77.2,28.6,'新德里'],[103.8,1.3,'新加坡'],
-[151.2,-33.9,'悉尼'],[18.4,-33.9,'开普敦'],[127,37.6,'首尔'],[100.5,13.7,'曼谷'],
-[-122.4,37.8,'旧金山'],[-118.2,34,'洛杉矶'],[-84.4,33.7,'亚特兰大'],
-[-43.2,-22.9,'里约'],[174.8,-41.3,'惠灵顿'],[36.8,-1.3,'内罗毕'],
-[3.4,6.5,'拉各斯'],[-79.5,9,'巴拿马城'],[31.2,30,'开罗'],
+[116.4,39.9,'北京'],[121.5,31.2,'上海'],[139.7,35.7,'东京'],[-74,40.7,'纽约'],
+[-0.1,51.5,'伦敦'],[2.3,48.8,'巴黎'],[37.6,55.8,'莫斯科'],[55.3,25.3,'迪拜'],
+[151.2,-33.9,'悉尼'],[127,37.6,'首尔'],[103.8,1.3,'新加坡'],[114.2,22.3,'香港'],
+[-122.4,37.8,'旧金山'],[77.2,28.6,'新德里'],[100.5,13.7,'曼谷'],
 ];
 
-function lonLatToXY(lon,lat,W,H){
-const padX=W*.04,padY=H*.06;
-const x=padX+(lon+180)/360*(W-padX*2);
-const y=padY+(90-lat)/180*(H-padY*2);
-return[x,y];
+function ll2xy(lon,lat,W,H){
+const px=W*.04,py=H*.06;
+return[px+(lon+180)/360*(W-px*2),py+(90-lat)/180*(H-py*2)];
 }
 
 function drawMap(t){
 const dpr=Math.min(window.devicePixelRatio||1,2);
-const W=c.clientWidth;
-const H=c.clientHeight;
-if(c.width!==W*dpr||c.height!==H*dpr){
-c.width=W*dpr;c.height=H*dpr;
-ctx.setTransform(1,0,0,1,0,0);
-ctx.scale(dpr,dpr);
-}
+const W=c.clientWidth,H=c.clientHeight;
+if(c.width!==W*dpr||c.height!==H*dpr){c.width=W*dpr;c.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
 ctx.clearRect(0,0,W,H);
-
-// Ocean bg
 ctx.fillStyle='rgba(2,8,20,.6)';ctx.fillRect(0,0,W,H);
 
-// Sun position calculation
 const now=new Date();
-const utcHours=now.getUTCHours()+now.getUTCMinutes()/60+now.getUTCSeconds()/3600;
-const dayOfYear=Math.floor((now-new Date(now.getFullYear(),0,0))/86400000);
-const declination=-23.44*Math.cos((360/365)*(dayOfYear+10)*Math.PI/180);
-const sunLon=(utcHours-12)*15; // subsolar longitude
+const utcH=now.getUTCHours()+now.getUTCMinutes()/60+now.getUTCSeconds()/3600;
+const doy=Math.floor((now-new Date(now.getFullYear(),0,0))/86400000);
+const decl=-23.44*Math.cos((360/365)*(doy+10)*Math.PI/180);
+const sunLon=(utcH-12)*15;
 
-// Draw latitude lines
-ctx.strokeStyle='rgba(255,255,255,.015)';ctx.lineWidth=.5;
-for(let lat=-60;lat<=60;lat+=30){
-const [,y]=lonLatToXY(0,lat,W,H);
-ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
-}
-for(let lon=-150;lon<=150;lon+=30){
-const [x]=lonLatToXY(lon,0,W,H);
-ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();
-}
+// Grid
+ctx.strokeStyle='rgba(255,255,255,.012)';ctx.lineWidth=.5;
+for(let lat=-60;lat<=60;lat+=30){const[,y]=ll2xy(0,lat,W,H);ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+for(let lon=-150;lon<=150;lon+=30){const[x]=ll2xy(lon,0,W,H);ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
 
-// Draw continents
-ctx.fillStyle='rgba(0,229,255,.08)';
-ctx.strokeStyle='rgba(0,229,255,.12)';ctx.lineWidth=.8;
-for(const [name,poly] of Object.entries(continents)){
+// Continents
+ctx.fillStyle='rgba(0,229,255,.06)';ctx.strokeStyle='rgba(0,229,255,.1)';ctx.lineWidth=.6;
+for(const poly of Object.values(continents)){
 ctx.beginPath();
-const points=Array.isArray(poly[0])?poly:poly.match(/\d+/g)||[];
-if(Array.isArray(poly[0])){
-for(let i=0;i<poly.length;i++){
-const [x,y]=lonLatToXY(poly[i][0],poly[i][1],W,H);
-i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
-}
-}
+if(poly[0]&&Array.isArray(poly[0])&&Array.isArray(poly[0][0])){poly=poly[0];}
+for(let i=0;i<poly.length;i++){const[x,y]=ll2xy(poly[i][0],poly[i][1],W,H);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}
 ctx.closePath();ctx.fill();ctx.stroke();
 }
 
-// Day/night gradient overlay
+// Day/night
 const sunX=((sunLon+180)/360)*W;
-for(let x=0;x<W;x+=2){
-const distFromSun=Math.abs(x-sunX);
-const normalized=Math.min(distFromSun/(W*.4),1);
-const nightAlpha=.12+normalized*.18;
-ctx.fillStyle=`rgba(5,5,30,${nightAlpha})`;
-ctx.fillRect(x,0,2,H);
-}
+for(let x=0;x<W;x+=3){const d=Math.min(Math.abs(x-sunX)/(W*.35),1);ctx.fillStyle=`rgba(5,5,30,${.08+d*.2})`;ctx.fillRect(x,0,3,H);}
 
-// Terminator glow line
-const termX=sunX;
-const grad=ctx.createLinearGradient(termX-W*.15,0,termX+W*.15,0);
-grad.addColorStop(0,'rgba(0,0,0,0)');
-grad.addColorStop(.45,'rgba(255,180,80,.04)');
-grad.addColorStop(.5,'rgba(255,150,50,.07)');
-grad.addColorStop(.55,'rgba(255,180,80,.04)');
-grad.addColorStop(1,'rgba(0,0,0,0)');
-ctx.fillStyle=grad;ctx.fillRect(termX-W*.15,0,W*.3,H);
+// Terminator glow
+const grad=ctx.createLinearGradient(sunX-W*.12,0,sunX+W*.12,0);
+grad.addColorStop(0,'rgba(0,0,0,0)');grad.addColorStop(.45,'rgba(255,180,80,.03)');
+grad.addColorStop(.5,'rgba(255,150,50,.05)');grad.addColorStop(.55,'rgba(255,180,80,.03)');
+grad.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=grad;ctx.fillRect(sunX-W*.12,0,W*.24,H);
 
-// City dots
-const nightThreshold=W*.35;
-for(const [lon,lat,name] of cities){
-const [cx,cy]=lonLatToXY(lon,lat,W,H);
-const distFromSun=Math.abs(cx-sunX);
-const isDay=distFromSun<nightThreshold;
-const pulse=1+Math.sin(t*.002+lon*.1)*.3;
-
-// Glow
-const grd=ctx.createRadialGradient(cx,cy,0,cx,cy,5*pulse);
-grd.addColorStop(0,isDay?'rgba(255,200,100,.7)':'rgba(0,229,255,.5)');
-grd.addColorStop(.5,isDay?'rgba(255,150,50,.15)':'rgba(0,200,240,.1)');
+// Cities
+for(const[lon,lat,name]of cities){
+const[cx,cy]=ll2xy(lon,lat,W,H);
+const isDay=Math.abs(cx-sunX)<W*.3;
+const pulse=1+Math.sin(t*.002+lon*.1)*.25;
+const grd=ctx.createRadialGradient(cx,cy,0,cx,cy,4*pulse);
+grd.addColorStop(0,isDay?'rgba(255,200,100,.6)':'rgba(0,229,255,.45)');
+grd.addColorStop(.6,isDay?'rgba(255,150,50,.1)':'rgba(0,200,240,.08)');
 grd.addColorStop(1,'rgba(0,0,0,0)');
-ctx.beginPath();ctx.arc(cx,cy,6*pulse,0,Math.PI*2);
-ctx.fillStyle=grd;ctx.fill();
-
-// Core dot
-ctx.beginPath();ctx.arc(cx,cy,1.2,0,Math.PI*2);
-ctx.fillStyle=isDay?'rgba(255,220,150,.8)':'rgba(0,240,255,.6)';
-ctx.fill();
-
-// Label (only some cities to avoid clutter)
-const showLabel=name==='北京'||name==='上海'||name==='东京'||name==='纽约'||name==='伦敦'||name==='巴黎'||name==='莫斯科'||name==='悉尼'||name==='迪拜'||name==='新加坡'||name==='首尔'||name==='香港';
-if(showLabel){
-ctx.fillStyle=isDay?'rgba(255,255,255,.35)':'rgba(255,255,255,.22)';
-ctx.font='8px Inter,-apple-system,sans-serif';
-ctx.fillText(name,cx+5,cy-4);
+ctx.beginPath();ctx.arc(cx,cy,5,0,Math.PI*2);ctx.fillStyle=grd;ctx.fill();
+ctx.beginPath();ctx.arc(cx,cy,1,0,Math.PI*2);ctx.fillStyle=isDay?'rgba(255,220,150,.7)':'rgba(0,240,255,.55)';ctx.fill();
+if(['北京','上海','东京','纽约','伦敦','悉尼','迪拜'].includes(name)){
+ctx.fillStyle='rgba(255,255,255,.25)';ctx.font='7px Inter,sans-serif';ctx.fillText(name,cx+4,cy-3);
 }
 }
-
-// Subtle sun indicator
-ctx.beginPath();ctx.arc(sunX,H*.15,14,0,Math.PI*2);
-const sunGrd=ctx.createRadialGradient(sunX,H*.15,0,sunX,H*.15,20);
-sunGrd.addColorStop(0,'rgba(255,200,100,.25)');
-sunGrd.addColorStop(.5,'rgba(255,150,50,.08)');
-sunGrd.addColorStop(1,'rgba(0,0,0,0)');
-ctx.fillStyle=sunGrd;ctx.fill();
-
 requestAnimationFrame(drawMap);
 }
 requestAnimationFrame(drawMap);
 })();
 
-// ======= CLOCK =======
-const elHMS=document.getElementById('timeHMS');
-const elMS=document.getElementById('timeMS');
-const elDate=document.getElementById('dateLine');
-const elLunar=document.getElementById('dateLunar');
-
-const weekNames=['日','一','二','三','四','五','六'];
-
+// ===== CLOCK =====
+const elHMS=document.getElementById('timeHMS'),elMS=document.getElementById('timeMS');
+const elDate=document.getElementById('dateLine'),elLunar=document.getElementById('dateLunar');
+const WK=['日','一','二','三','四','五','六'];
 function pad(n,w){return String(n).padStart(w,'0');}
-
-// Simple lunar calendar approximation for date display
-function getLunarDayName(month,day){
-const special={
-'1-1':'春节','1-15':'元宵节',
-'5-5':'端午节',
-'8-15':'中秋节',
-'9-9':'重阳节',
-'12-30':'除夕','12-29':'除夕'
-};
-// Approximate lunar dates for 2026 (very rough)
-const lunarApprox={'5-31':'四月十五','6-19':'五月初五','9-25':'八月十五','10-1':'国庆节'};
-return lunarApprox[`${month}-${day}`]||'';
-}
-
 function updateClock(){
 const now=new Date();
-const h=now.getHours(),m=now.getMinutes(),s=now.getSeconds(),ms=now.getMilliseconds();
-const y=now.getFullYear(),mo=now.getMonth()+1,d=now.getDate();
-const w=now.getDay();
-
-elHMS.textContent=pad(h,2)+':'+pad(m,2)+':'+pad(s,2);
-elMS.textContent='.'+pad(ms,3);
-elDate.textContent=y+'年'+mo+'月'+d+'日 星期'+weekNames[w];
-
-const lunarHint=getLunarDayName(mo,d);
-elLunar.textContent=lunarHint?'农历 '+lunarHint:'';
+elHMS.textContent=pad(now.getHours(),2)+':'+pad(now.getMinutes(),2)+':'+pad(now.getSeconds(),2);
+elMS.textContent='.'+pad(now.getMilliseconds(),3);
+elDate.textContent=now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日 星期'+WK[now.getDay()];
+const lunarHint={5:'四月十五',6:'五月初五',9:'八月十五',10:'国庆节'};
+const k=now.getMonth()+1+'-'+now.getDate();
+elLunar.textContent=lunarHint[now.getMonth()+1]?'农历 '+lunarHint[now.getMonth()+1]:'';
 }
-updateClock();
-setInterval(updateClock,17); // ~60fps for smooth ms
+updateClock();setInterval(updateClock,17);
 
-// ======= HOLIDAYS =======
-const holidays=[
-{name:'端午节',emoji:'🐲',date:'2026-06-19',color:'#4CAF50'},
-{name:'中秋节',emoji:'🌕',date:'2026-09-25',color:'#FF9800'},
-{name:'国庆节',emoji:'🇨🇳',date:'2026-10-01',color:'#F44336'},
-{name:'春节',emoji:'🧧',date:'2027-02-06',color:'#E91E63'},
-];
-
-function findNextHoliday(){
+// ===== HOLIDAY =====
+const holidays=[{n:'端午节',e:'🐲',d:'2026-06-19'},{n:'中秋节',e:'🌕',d:'2026-09-25'},{n:'国庆节',e:'🇨🇳',d:'2026-10-01'},{n:'春节',e:'🧧',d:'2027-02-06'}];
+function updateHoliday(){
 const now=new Date();now.setHours(0,0,0,0);
-let next=null,minDiff=Infinity;
-holidays.forEach(h=>{
-const d=new Date(h.date+'T00:00:00+08:00');
-const diff=d-now;
-if(diff>0&&diff<minDiff){minDiff=diff;next=h;}
-});
-return next?{...next,days:Math.ceil(minDiff/86400000)}:null;
+let next=null,min=Infinity;
+for(const h of holidays){const diff=new Date(h.d+'T00:00:00+08:00')-now;if(diff>0&&diff<min){min=diff;next=h;}}
+if(!next)return;
+const days=Math.ceil(min/86400000);
+document.getElementById('holidayBody').innerHTML=`<div class="ic-label">节日倒计时</div><div class="ic-main">${next.e} ${next.n}</div><div class="ic-sub">${next.d}</div>`;
+document.getElementById('holidayCard').querySelector('.ic-icon').textContent='';
+const numEl=document.createElement('span');numEl.className='ic-num';numEl.textContent=days;
+const lbl=document.createElement('span');lbl.className='ic-num-label';lbl.textContent='天后';
+const right=document.createElement('div');right.style.cssText='text-align:right;flex-shrink:0;';
+right.append(numEl);right.append(lbl);
+const card=document.getElementById('holidayCard');
+const old=card.querySelector('.ic-num');if(old)old.parentElement.remove();
+card.appendChild(right);
 }
+updateHoliday();
 
-function renderHoliday(){
-const h=findNextHoliday();
-const sec=document.getElementById('holidaySection');
-if(!h){sec.innerHTML='<div class="holiday-card"><span style="color:var(--tx3)">近期无节日</span></div>';return;}
-sec.innerHTML=`
-<div class="holiday-card fade-in">
-<div class="holiday-info">
-<span class="holiday-emoji">${h.emoji}</span>
-<div>
-<div class="holiday-name" style="color:${h.color}">${h.name}</div>
-<div class="holiday-date">${h.date}</div>
-</div>
-</div>
-<div class="holiday-countdown">
-<div class="holiday-days">${h.days}</div>
-<div class="holiday-days-label">天后</div>
-</div>
-</div>`;
-}
-renderHoliday();
-setInterval(renderHoliday,3600000); // refresh hourly
+// ===== WEATHER =====
+const WI={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'🌨️',73:'🌨️',75:'🌨️',80:'🌧️',81:'🌧️',82:'⛈️',95:'⛈️',96:'⛈️',99:'⛈️'};
+function wIcon(c){return WI[c]||'🌡️';}
+function wTxt(c){if(c<=1)return'晴朗';if(c<=3)return'多云';if(c<=48)return'有雾';if(c<=55)return'小雨';if(c<=65)return'有雨';if(c<=75)return'有雪';if(c<=82)return'阵雨';return'雷暴';}
 
-// ======= WEATHER =======
-const weatherIcons={
-0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',
-51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',
-71:'🌨️',73:'🌨️',75:'🌨️',80:'🌧️',81:'🌧️',82:'⛈️',
-95:'⛈️',96:'⛈️',99:'⛈️'
-};
-function wIcon(code){return weatherIcons[code]||'🌡️';}
-function wDesc(code){
-if(code<=1)return '晴朗';if(code<=3)return '多云';if(code<=48)return '有雾';
-if(code<=55)return '小雨';if(code<=65)return '有雨';if(code<=75)return '有雪';
-if(code<=82)return '阵雨';return '雷暴';
-}
-
-async function fetchWeather(lat,lon){
-const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,relative_humidity_2m&hourly=temperature_2m,weather_code,precipitation_probability&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&forecast_days=2`;
-const r=await fetch(url);
-if(!r.ok)throw new Error('Weather fetch failed');
-return r.json();
-}
-
-async function reverseGeocode(lat,lon){
+async function initWeather(){
+if(!navigator.geolocation)return;
+navigator.geolocation.getCurrentPosition(async pos=>{
+const{latitude:lat,longitude:lon}=pos.coords;
 try{
-const r=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=zh&zoom=12`);
-if(!r.ok)throw new Error('Geocode failed');
-const d=await r.json();
-const addr=d.address||{};
-return addr.city||addr.town||addr.county||addr.state||addr.country||'未知位置';
-}catch(e){return lat.toFixed(2)+'°, '+lon.toFixed(2)+'°';}
+// City name
+let city=lat.toFixed(1)+'°,'+lon.toFixed(1)+'°';
+try{const r=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=zh&zoom=12`);if(r.ok){const d=await r.json();const a=d.address||{};city=a.city||a.town||a.county||a.state||city;}}catch(e){}
+document.getElementById('cityName').textContent=city;
+
+// Weather
+const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,relative_humidity_2m&hourly=temperature_2m,weather_code,precipitation_probability&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&forecast_days=2`);
+if(!r.ok)throw new Error('bad');
+const w=await r.json();
+const cur=w.current;
+document.getElementById('weatherIcon').textContent=wIcon(cur.weather_code);
+document.getElementById('weatherTemp').textContent=Math.round(cur.temperature_2m)+'°';
+document.getElementById('weatherDesc').textContent=wTxt(cur.weather_code);
+document.getElementById('weatherHumidity').textContent='湿度 '+cur.relative_humidity_2m+'%';
+
+// Hourly
+const now=new Date();const curH=now.getHours();
+const start=w.hourly.time.findIndex(t=>new Date(t).getHours()===curH+1);
+const labels=['+1小时','+2小时','+3小时'];
+let h='';
+for(let i=0;i<3;i++){
+const idx=start+i;
+if(idx>=0&&idx<w.hourly.time.length){
+h+=`<div class="wh-card fade-in" style="animation-delay:${i*.08}s">
+<div class="wh-time">${labels[i]}</div>
+<div class="wh-icon">${wIcon(w.hourly.weather_code[idx])}</div>
+<div class="wh-temp">${Math.round(w.hourly.temperature_2m[idx])}°</div>
+<div class="wh-rain">💧${w.hourly.precipitation_probability[idx]}%</div></div>`;
 }
+}
+document.getElementById('weatherHours').innerHTML=h;
 
-// ======= NEWS =======
-let newsItems=[];
-let newsIdx=0;
-let newsTimerSec=0;
-const NEWS_INTERVAL=60;
+// Tomorrow
+const d=w.daily;
+const t=new Date(d.time[1]);
+document.getElementById('tomorrowCard').innerHTML=`
+<span class="ic-icon">${wIcon(d.weather_code[1])}</span>
+<div class="ic-body"><div class="ic-label">明天 ${t.getMonth()+1}/${t.getDate()}</div>
+<div class="ic-main">${Math.round(d.temperature_2m_min[1])}° ~ ${Math.round(d.temperature_2m_max[1])}°</div>
+<div class="ic-sub">${wTxt(d.weather_code[1])}</div></div>`;
+}catch(e){
+document.getElementById('weatherDesc').textContent='加载失败';
+}
+},{err=>{document.getElementById('cityName').textContent='无位置权限';document.getElementById('weatherDesc').textContent='需要位置';}},{enableHighAccuracy:false,timeout:3000,maximumAge:600000});
+}
+initWeather();
 
-async function fetchWithTimeout(url,ms=4000){
+// ===== NEWS (with localStorage cache) =====
+const NEWS_KEY='clock_news_cache',NEWS_TS='clock_news_ts',NEWS_TTL=300000; // 5 min cache
+let newsItems=[],newsIdx=0,newsTimerSec=0,NEWS_INT=60;
+
+async function fetchWithTimeout(url,ms=3000){
 const ctrl=new AbortController();
-const timer=setTimeout(()=>ctrl.abort(),ms);
-try{const r=await fetch(url,{signal:ctrl.signal});clearTimeout(timer);return r;}
-catch(e){clearTimeout(timer);throw e;}
+const t=setTimeout(()=>ctrl.abort(),ms);
+try{const r=await fetch(url,{signal:ctrl.signal});clearTimeout(t);return r;}catch(e){clearTimeout(t);throw e;}
 }
 
-async function fetchNews(){
+async function fetchNewsFresh(){
 const sources=[
 {url:'https://api.vvhan.com/api/hotlist/news',parse:d=>d.data?.map(i=>({title:i.title,source:i.source||'综合'}))},
 {url:'https://api.oioweb.cn/api/top/hot',parse:d=>d.result?.map(i=>({title:i.title||i.name,source:i.desc||'热榜'}))},
 ];
-// Race all sources in parallel, 5s max per source
-const promises=sources.map(async src=>{
-try{
-const r=await fetchWithTimeout(src.url,5000);
-if(!r.ok)throw new Error('bad status');
-const d=await r.json();
-const items=src.parse(d);
-if(items&&items.length>0)return items.slice(0,20);
-}catch(e){}
-return null;
+const tasks=sources.map(async s=>{
+try{const r=await fetchWithTimeout(s.url,4000);if(!r.ok)return null;const d=await r.json();const items=s.parse(d);return items?.length?items.slice(0,16):null;}catch(e){return null;}
 });
-// Return first non-null result with a 6s total timeout
-const timeout=new Promise(r=>setTimeout(()=>r(null),6000));
-const results=await Promise.race([Promise.all(promises).then(arr=>arr.find(x=>x!==null)||[]),timeout]);
-return (results&&results.length)?results:[];
+const timeout=new Promise(r=>setTimeout(()=>r(null),5000));
+const results=await Promise.race([Promise.all(tasks).then(a=>a.find(x=>x!==null)||[]),timeout]);
+return results||[];
 }
+
+function loadNewsCache(){
+try{const ts=localStorage.getItem(NEWS_TS);if(ts&&Date.now()-parseInt(ts)<NEWS_TTL){const data=localStorage.getItem(NEWS_KEY);if(data){const items=JSON.parse(data);if(items.length>0)return items;}}}catch(e){}
+return null;
+}
+function saveNewsCache(items){try{localStorage.setItem(NEWS_KEY,JSON.stringify(items));localStorage.setItem(NEWS_TS,Date.now().toString());}catch(e){}}
 
 function renderNews(){
-if(newsItems.length===0){
-document.querySelector('#newsCard .news-source').textContent='暂无新闻';
-document.querySelector('#newsCard .news-text').textContent='正在尝试获取新闻数据...';
-return;
-}
+if(!newsItems.length)return;
 const item=newsItems[newsIdx];
-document.querySelector('#newsCard .news-source').textContent=item.source||'新闻';
-document.querySelector('#newsCard .news-text').textContent=item.title;
-document.querySelector('#newsCounter').textContent=(newsIdx+1)+' / '+newsItems.length;
-
+document.querySelector('#newsCard .ns-source').textContent=item.source||'新闻';
+document.querySelector('#newsCard .ns-text').textContent=item.title;
+document.getElementById('newsCounter').textContent=(newsIdx+1)+'/'+newsItems.length;
 const dots=document.getElementById('newsDots');
-dots.innerHTML=newsItems.slice(0,10).map((_,i)=>`<div class="news-dot${i===newsIdx?' on':''}"></div>`).join('');
+dots.innerHTML=newsItems.slice(0,10).map((_,i)=>`<div class="ns-dot${i===newsIdx?' on':''}"></div>`).join('');
 }
 
-function nextNews(){
-newsIdx=(newsIdx+1)%newsItems.length;
-newsTimerSec=0;
-renderNews();
-}
-
-function updateNewsTimer(){
-if(newsItems.length===0)return;
+function nextNews(){newsIdx=(newsIdx+1)%newsItems.length;newsTimerSec=0;renderNews();}
+function tickNews(){
+if(!newsItems.length)return;
 newsTimerSec++;
-const pct=(newsTimerSec/NEWS_INTERVAL)*100;
+const pct=Math.min((newsTimerSec/NEWS_INT)*100,100);
 document.getElementById('newsTimerFill').style.width=pct+'%';
-if(newsTimerSec>=NEWS_INTERVAL)nextNews();
+if(newsTimerSec>=NEWS_INT)nextNews();
 }
 
 async function initNews(){
-newsItems=await fetchNews();
-if(newsItems.length>0){
-// Add more items by slightly shuffling to have ~10 items
-if(newsItems.length<10){
-newsItems=[...newsItems,...newsItems.map(i=>({...i}))].slice(0,10);
+// Show cached news immediately
+const cached=loadNewsCache();
+if(cached){newsItems=cached;renderNews();}
+
+// Fetch fresh in background
+const fresh=await fetchNewsFresh();
+if(fresh.length>0){
+if(!cached||fresh[0].title!==cached[0].title){
+newsItems=fresh;newsIdx=0;newsTimerSec=0;renderNews();
 }
-renderNews();
-}else{
-document.querySelector('#newsCard .news-source').textContent='新闻加载失败';
+saveNewsCache(fresh);
+}else if(!cached){
+document.querySelector('#newsCard .ns-text').textContent='新闻加载失败，请检查网络';
 }
 }
 
-setInterval(updateNewsTimer,1000);
-
-// ======= INIT =======
-async function init(){
-// Geolocation
-if('geolocation' in navigator){
-navigator.geolocation.getCurrentPosition(async pos=>{
-const {latitude,longitude}=pos.coords;
-// City + weather in parallel, don't block UI
-const [city,w]=await Promise.all([
-reverseGeocode(latitude,longitude).catch(()=>latitude.toFixed(2)+'°,'+longitude.toFixed(1)+'°'),
-fetchWeather(latitude,longitude).catch(()=>null)
-]);
-document.getElementById('cityName').textContent=city;
-
-if(w){
-try{
-const cur=w.current;
-document.getElementById('weatherTemp').textContent=Math.round(cur.temperature_2m)+'°';
-document.getElementById('weatherIcon').textContent=wIcon(cur.weather_code);
-document.getElementById('weatherDesc').textContent=wDesc(cur.weather_code)+' · 湿度'+cur.relative_humidity_2m+'%';
-
-// Next 2 hours
-const now=new Date();
-const curHour=now.getHours();
-const hourly=w.hourly;
-const startIdx=hourly.time.findIndex(t=>new Date(t).getHours()===curHour+1);
-const hoursEl=document.getElementById('weatherHours');
-let hHTML='';
-for(let i=0;i<3;i++){
-const idx=startIdx+i;
-if(idx>=0&&idx<hourly.time.length){
-const t=new Date(hourly.time[idx]);
-const label=i===0?'+1小时':i===1?'+2小时':'+3小时';
-hHTML+=`<div class="weather-card fade-in" style="animation-delay:${i*.1}s">
-<div class="wc-time">${label}</div>
-<div class="wc-icon">${wIcon(hourly.weather_code[idx])}</div>
-<div class="wc-temp">${Math.round(hourly.temperature_2m[idx])}°</div>
-<div class="wc-rain">💧 ${hourly.precipitation_probability[idx]}%</div>
-</div>`;
-}
-}
-hoursEl.innerHTML=hHTML;
-
-// Tomorrow
-const d=w.daily;
-const tomorrowCard=document.getElementById('tomorrowCard');
-tomorrowCard.innerHTML=`
-<span class="tm-icon">${wIcon(d.weather_code[1])}</span>
-<div class="tm-info"><div class="tm-label">明天 ${new Date(d.time[1]).getMonth()+1}/${new Date(d.time[1]).getDate()}</div>
-<div class="tm-temp">${Math.round(d.temperature_2m_min[1])}° ~ ${Math.round(d.temperature_2m_max[1])}°</div></div>
-<span class="tm-desc">${wDesc(d.weather_code[1])}</span>`;
-}catch(e){
-document.getElementById('weatherDesc').textContent='天气加载失败';
-}
-}
-
-},async err=>{
-document.getElementById('cityName').textContent='位置获取失败';
-document.getElementById('weatherDesc').textContent='需要位置权限';
-},{enableHighAccuracy:false,timeout:3000,maximumAge:600000});
-}else{
-document.getElementById('cityName').textContent='无定位功能';
-}
-
-// News
+setInterval(tickNews,1000);
 initNews();
-
-// Start news timer
-}
-
-init();
-
-// Refresh news every 30 minutes
-setInterval(()=>{
-fetchNews().then(items=>{if(items.length>0){newsItems=items;newsIdx=0;newsTimerSec=0;renderNews();}});
-},1800000);
-
-// Refresh holiday at midnight
-function msToMidnight(){
-const now=new Date();
-const mid=new Date(now);mid.setHours(24,0,0,0);
-return mid-now;
-}
-setTimeout(()=>{renderHoliday();setInterval(renderHoliday,86400000);},msToMidnight()+1000);
+setInterval(async()=>{const f=await fetchNewsFresh();if(f.length){newsItems=f;newsIdx=0;newsTimerSec=0;renderNews();saveNewsCache(f);}},1800000);
 </script>
 </body>
 </html>
