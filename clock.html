@@ -329,27 +329,20 @@ const WI={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51
 function wIcon(c){return WI[c]||'🌡️';}
 function wTxt(c){if(c<=1)return'晴朗';if(c<=3)return'多云';if(c<=48)return'有雾';if(c<=55)return'小雨';if(c<=65)return'有雨';if(c<=75)return'有雪';if(c<=82)return'阵雨';return'雷暴';}
 
-async function initWeather(){
-if(!navigator.geolocation)return;
-navigator.geolocation.getCurrentPosition(async pos=>{
-const{latitude:lat,longitude:lon}=pos.coords;
-try{
-// City name
-let city=lat.toFixed(1)+'°,'+lon.toFixed(1)+'°';
-try{const r=await fetch(`https://ai-nav-api.laskymy.workers.dev/api/geocode?lat=${lat}&lon=${lon}`);if(r.ok){const d=await r.json();city=d.city||city;}}catch(e){}
-document.getElementById('cityName').textContent=city;
+const WC_KEY='clock_weather',WC_TS='clock_weather_ts',WC_TTL=600000; // 10 min weather cache
+const CC_KEY='clock_city',CC_TS='clock_city_ts',CC_TTL=3600000; // 1 hour city cache
 
-// Weather
-const r=await fetch(`https://ai-nav-api.laskymy.workers.dev/api/weather?lat=${lat}&lon=${lon}`);
-if(!r.ok)throw new Error('bad');
-const w=await r.json();
+function loadWeatherCache(){try{const ts=localStorage.getItem(WC_TS);if(ts&&Date.now()-parseInt(ts)<WC_TTL){const d=localStorage.getItem(WC_KEY);if(d)return JSON.parse(d);}}catch(e){}return null}
+function saveWeatherCache(data){try{localStorage.setItem(WC_KEY,JSON.stringify(data));localStorage.setItem(WC_TS,Date.now().toString());}catch(e){}}
+function loadCityCache(){try{const ts=localStorage.getItem(CC_TS);if(ts&&Date.now()-parseInt(ts)<CC_TTL)return localStorage.getItem(CC_KEY);return null;}catch(e){return null}}
+function saveCityCache(city){try{localStorage.setItem(CC_KEY,city);localStorage.setItem(CC_TS,Date.now().toString());}catch(e){}}
+
+function renderWeather(w){
 const cur=w.current;
 document.getElementById('weatherIcon').textContent=wIcon(cur.weather_code);
 document.getElementById('weatherTemp').textContent=Math.round(cur.temperature_2m)+'°';
 document.getElementById('weatherDesc').textContent=wTxt(cur.weather_code);
 document.getElementById('weatherHumidity').textContent='湿度 '+cur.relative_humidity_2m+'%';
-
-// Hourly
 const now=new Date();const curH=now.getHours();
 const start=w.hourly.time.findIndex(t=>new Date(t).getHours()===curH+1);
 const labels=['+1小时','+2小时','+3小时'];
@@ -365,8 +358,6 @@ h+=`<div class="wh-card fade-in" style="animation-delay:${i*.08}s">
 }
 }
 document.getElementById('weatherHours').innerHTML=h;
-
-// Tomorrow
 const d=w.daily;
 const t=new Date(d.time[1]);
 document.getElementById('tomorrowCard').innerHTML=`
@@ -374,12 +365,33 @@ document.getElementById('tomorrowCard').innerHTML=`
 <div class="ic-body"><div class="ic-label">明天 ${t.getMonth()+1}/${t.getDate()}</div>
 <div class="ic-main">${Math.round(d.temperature_2m_min[1])}° ~ ${Math.round(d.temperature_2m_max[1])}°</div>
 <div class="ic-sub">${wTxt(d.weather_code[1])}</div></div>`;
-}catch(e){
-document.getElementById('weatherDesc').textContent='加载失败';
 }
-},{err=>{document.getElementById('cityName').textContent='无位置权限';document.getElementById('weatherDesc').textContent='需要位置';}},{enableHighAccuracy:false,timeout:3000,maximumAge:600000});
+
+async function fetchFreshWeather(lat,lon){
+let city=lat.toFixed(1)+'°,'+lon.toFixed(1)+'°';
+try{const r=await fetch(`https://ai-nav-api.laskymy.workers.dev/api/geocode?lat=${lat}&lon=${lon}`);if(r.ok){const d=await r.json();city=d.city||city;}}catch(e){}
+document.getElementById('cityName').textContent=city;
+saveCityCache(city);
+const r=await fetch(`https://ai-nav-api.laskymy.workers.dev/api/weather?lat=${lat}&lon=${lon}`);
+if(!r.ok)throw new Error('bad');
+const w=await r.json();
+saveWeatherCache(w);
+renderWeather(w);
+}
+
+async function initWeather(){
+if(!navigator.geolocation)return;
+const cachedCity=loadCityCache();
+if(cachedCity)document.getElementById('cityName').textContent=cachedCity;
+const cachedW=loadWeatherCache();
+if(cachedW)renderWeather(cachedW);
+navigator.geolocation.getCurrentPosition(async pos=>{
+const{latitude:lat,longitude:lon}=pos.coords;
+try{await fetchFreshWeather(lat,lon);}catch(e){if(!cachedW)document.getElementById('weatherDesc').textContent='加载失败';}
+},{err=>{if(!cachedW){document.getElementById('cityName').textContent='无位置权限';document.getElementById('weatherDesc').textContent='需要位置';}}},{enableHighAccuracy:false,timeout:5000,maximumAge:600000});
 }
 initWeather();
+
 
 // ===== NEWS (with localStorage cache) =====
 const NEWS_KEY='clock_news_cache',NEWS_TS='clock_news_ts',NEWS_TTL=300000; // 5 min cache
@@ -441,7 +453,7 @@ initNews();
 setInterval(async()=>{const f=await fetchNewsFresh();if(f.length){newsItems=f;newsIdx=0;newsTimerSec=0;renderNews();saveNewsCache(f);}},1800000);
 </script>
 <div style="text-align:center;padding:8px 0 4px;font-size:10px;color:var(--tx4);line-height:1.6">
-<a href="changelog.html" style="color:var(--tx4);text-decoration:none">v1.1</a> · 天气/新闻/地理编码迁移至 CF Worker 后端 · 2026.05.31
+<a href="changelog.html" style="color:var(--tx4);text-decoration:none">v1.2</a> · 天气+城市 localStorage 缓存，二次打开即时显示 · 2026.05.31
 </div>
 </body>
 </html>
