@@ -9,10 +9,10 @@
 html,body{height:100%;overflow:hidden}
 body{
 font-family:-apple-system,sans-serif;
-background:#050510;color:rgba(255,255,255,.92);font-size:13px;line-height:1.4;
+background:#050510;color:rgba(255,255,255,.92);font-size:12px;line-height:1.35;
 display:flex;flex-direction:column;
 -webkit-user-select:none;user-select:none;
-padding:8px 10px 10px 10px;
+padding:6px 8px 8px 8px;
 }
 
 /* Background */
@@ -36,22 +36,19 @@ text-shadow:0 0 12px rgba(0,229,255,.2);}
 padding:8px 12px;position:relative;z-index:1;overflow:hidden;margin-top:5px;}
 
 /* Weather */
-.wx-row{display:flex;align-items:center;gap:8px;}
+.wx-row{display:flex;align-items:center;}
+.wx-row>*+*{margin-left:8px;}
 .wx-icon{font-size:30px;line-height:1;}
 .wx-temp{font-size:30px;font-weight:600;}
 .wx-desc{font-size:11px;color:rgba(255,255,255,.5);}
 .wx-hum{font-size:11px;color:rgba(255,255,255,.3);}
-.wx-hourly{display:flex;margin-top:6px;gap:6px;}
+.wx-hourly{display:flex;margin-top:6px;}
+.wx-hourly>*+*{margin-left:6px;}
 .wx-h{flex:1;text-align:center;background:rgba(255,255,255,.03);border-radius:8px;padding:4px 2px;border:1px solid rgba(255,255,255,.05);}
 .wx-h .hdr{font-size:9px;color:rgba(255,255,255,.35);margin-bottom:2px;}
 .wx-h .icon{font-size:16px;}
 .wx-h .tmp{font-size:11px;font-weight:600;margin-top:1px;}
 .wx-h .rain{font-size:9px;color:rgba(0,229,255,.7);}
-
-/* News ticker */
-.news-ticker{overflow:hidden;white-space:nowrap;position:relative;background:rgba(255,255,255,.03);border-radius:8px;padding:6px 10px;
-border:1px solid rgba(255,255,255,.05);}
-.news-ticker .inner{display:inline-block;font-size:11px;color:rgba(255,255,255,.65);}
 
 /* AI Brief */
 .ai-brief h2{font-size:14px;font-weight:700;color:rgba(255,255,255,.9);margin:8px 0 4px;}
@@ -94,11 +91,7 @@ animation:spin .6s linear infinite;vertical-align:middle;margin:0 4px;}
 <div class="wx-hourly" id="wxHourly"></div>
 </div>
 
-<div class="card" style="margin-top:5px;">
-<div class="news-ticker"><span class="inner" id="newsTicker">新闻加载中<span class="spin"></span></span></div>
-</div>
-
-<div class="card scroll ai-brief" id="briefCard" style="flex:1;min-height:60px;max-height:200px;overflow-y:auto;">
+<div class="card ai-brief" id="briefCard" style="flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:80px;">
 <p style="color:rgba(255,255,255,.3);text-align:center;padding:8px;">AI 简报生成中<span class="spin"></span></p>
 </div>
 
@@ -254,35 +247,7 @@ function initWeather() {
   fetchWeather(23.13, 113.26);
 }
 
-// ===== News Ticker =====
-var newsIdx = 0;
-var newsData = [];
-
-function fetchNews() {
-  fetchWithTimeout(API + '/api/news', 8000)
-    .then(function(r) { return r.ok ? r.json() : []; })
-    .then(function(data) {
-      if (data && data.length) {
-        newsData = data;
-        newsIdx = 0;
-        tickNews();
-      }
-    })
-    .catch(function() {});
-}
-
-function tickNews() {
-  if (!newsData.length) {
-    document.getElementById('newsTicker').textContent = '暂无新闻';
-    return;
-  }
-  var item = newsData[newsIdx];
-  document.getElementById('newsTicker').textContent = '[' + (item.source || 'News') + '] ' + item.title;
-  newsIdx = (newsIdx + 1) % newsData.length;
-  setTimeout(tickNews, 4000);
-}
-
-// ===== AI Brief =====
+// ===== AI Brief (Chinese news summary) =====
 function fetchBrief() {
   fetchWithTimeout(API + '/api/news-summary', 8000)
     .then(function(r) { return r.ok ? r.json() : null; })
@@ -343,9 +308,7 @@ function renderMarkdown(md) {
 
 // ===== Init =====
 initWeather();
-fetchNews();
 fetchBrief();
-setInterval(fetchNews, 300000);
 setInterval(fetchBrief, 900000);
 </script>
 </body>
