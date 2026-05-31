@@ -432,7 +432,7 @@ if(cachedW)renderWeather(cachedW);
 navigator.geolocation.getCurrentPosition(async function(pos){
 const{latitude:lat,longitude:lon}=pos.coords;
 try{await fetchFreshWeather(lat,lon);}catch(e){if(!cachedW)document.getElementById('weatherDesc').textContent='加载失败';}
-},function(err){if(!cachedW){document.getElementById('cityName').textContent='无位置权限';document.getElementById('weatherDesc').textContent='需要位置';}},{enableHighAccuracy:false,timeout:5000,maximumAge:600000});
+},function(err){if(!cachedW){fetchFreshWeather(23.13,113.26);}},{enableHighAccuracy:false,timeout:5000,maximumAge:600000});
 }
 initWeather();
 
