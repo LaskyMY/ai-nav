@@ -65,6 +65,40 @@ h1{font-size:22px;font-weight:700;letter-spacing:-.01em;margin-bottom:4px}
 
 <div class="timeline">
 
+<!-- v23: 2026-06-01 -->
+<div class="entry ver-feat">
+<div class="entry-date">2026-06-01 23:30 · v23</div>
+<div class="entry-title">
+<span class="entry-tag tag-feat">新功能</span>
+三版时钟 + 导航重构 + 全站统一悬浮返回键
+</div>
+<div class="entry-desc">
+<b>三版时钟：</b>iOS现代版(clock.html)、老安卓ES5兼容版(clock-old.html)、投影仪1920×1080版(clock-proj.html)<br>
+<b>导航栏重构：</b>从20+按钮精简到8按钮，百科/普行用Hub聚合，待办需求合并<br>
+<b>统一悬浮返回键：</b>54个子页面注入floating-nav.js，右下角←返回上级+⌂主页，鼠标/触摸出现3秒淡出<br>
+<b>风格统一：</b>sitemap/usage/status页面CSS对齐主站液态玻璃主题<br>
+<b>网站大纲：</b>新增sitemap.html，57页完整分类索引<br>
+<b>API用量看板：</b>usage.html追踪DeepSeek每次调用token+花费，含对话量估算<br>
+<b>安卓APK优化：</b>原生刷新按钮(点击屏幕出现/3秒淡出/半透明圆形)
+</div>
+</div>
+
+<!-- v22: 2026-06-01 -->
+<div class="entry ver-feat">
+<div class="entry-date">2026-06-01 01:30 · v22</div>
+<div class="entry-title">
+<span class="entry-tag tag-feat">新功能</span>
+Android 6.0 WebView 完全兼容 + 服务端架构重构
+</div>
+<div class="entry-desc">
+<b>clock-old.html ES5重写：</b>去除async/await、AbortController、可选链?.、CSS变量、backdrop-filter、inset、flex gap等Chrome 44不支持特性<br>
+<b>github.io TLS阻断修复：</b>旧WebView无法访问GitHub Pages，页面改走serveo隧道<br>
+<b>原生APK：</b>Android 6.0+全屏WebView，包名com.ainav.browser<br>
+<b>API服务器完善：</b>7个端点+NPR RSS新闻源+DeepSeek 15分钟AI简报+用量跟踪<br>
+<b>定位锁定广州：</b>老设备GPS不可靠，默认23.13/113.26
+</div>
+</div>
+
 <!-- 2026-05-31 -->
 <div class="entry ver-fix">
 <div class="entry-date">2026-05-31 22:10</div>
