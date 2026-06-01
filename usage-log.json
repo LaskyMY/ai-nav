@@ -1,0 +1,317 @@
+[
+  {
+    "ts": "2026-06-01T04:38:45.239Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 394,
+    "completion_tokens": 520,
+    "total_tokens": 914,
+    "cost": 0.00067838
+  },
+  {
+    "ts": "2026-06-01T04:48:14.834Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 394,
+    "completion_tokens": 662,
+    "total_tokens": 1056,
+    "cost": 0.00083458
+  },
+  {
+    "ts": "2026-06-01T05:03:15.050Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 394,
+    "completion_tokens": 649,
+    "total_tokens": 1043,
+    "cost": 0.0008202800000000001
+  },
+  {
+    "ts": "2026-06-01T05:18:14.132Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 394,
+    "completion_tokens": 605,
+    "total_tokens": 999,
+    "cost": 0.0007718800000000001
+  },
+  {
+    "ts": "2026-06-01T05:33:14.343Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 394,
+    "completion_tokens": 650,
+    "total_tokens": 1044,
+    "cost": 0.00082138
+  },
+  {
+    "ts": "2026-06-01T05:48:15.164Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 394,
+    "completion_tokens": 605,
+    "total_tokens": 999,
+    "cost": 0.0007718800000000001
+  },
+  {
+    "ts": "2026-06-01T06:03:14.207Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 400,
+    "completion_tokens": 539,
+    "total_tokens": 939,
+    "cost": 0.0007009000000000001
+  },
+  {
+    "ts": "2026-06-01T06:18:16.811Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 400,
+    "completion_tokens": 640,
+    "total_tokens": 1040,
+    "cost": 0.000812
+  },
+  {
+    "ts": "2026-06-01T06:33:16.562Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 400,
+    "completion_tokens": 667,
+    "total_tokens": 1067,
+    "cost": 0.0008417
+  },
+  {
+    "ts": "2026-06-01T06:48:15.775Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 396,
+    "completion_tokens": 584,
+    "total_tokens": 980,
+    "cost": 0.00074932
+  },
+  {
+    "ts": "2026-06-01T07:03:15.046Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 396,
+    "completion_tokens": 553,
+    "total_tokens": 949,
+    "cost": 0.00071522
+  },
+  {
+    "ts": "2026-06-01T07:18:13.102Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 396,
+    "completion_tokens": 442,
+    "total_tokens": 838,
+    "cost": 0.00059312
+  },
+  {
+    "ts": "2026-06-01T07:33:15.847Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 396,
+    "completion_tokens": 520,
+    "total_tokens": 916,
+    "cost": 0.0006789200000000001
+  },
+  {
+    "ts": "2026-06-01T07:48:16.303Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 396,
+    "completion_tokens": 654,
+    "total_tokens": 1050,
+    "cost": 0.0008263200000000001
+  },
+  {
+    "ts": "2026-06-01T08:03:14.188Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 396,
+    "completion_tokens": 495,
+    "total_tokens": 891,
+    "cost": 0.0006514200000000001
+  },
+  {
+    "ts": "2026-06-01T08:18:15.848Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 396,
+    "completion_tokens": 640,
+    "total_tokens": 1036,
+    "cost": 0.00081092
+  },
+  {
+    "ts": "2026-06-01T08:33:16.523Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 396,
+    "completion_tokens": 596,
+    "total_tokens": 992,
+    "cost": 0.00076252
+  },
+  {
+    "ts": "2026-06-01T08:48:14.542Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 396,
+    "completion_tokens": 522,
+    "total_tokens": 918,
+    "cost": 0.0006811200000000001
+  },
+  {
+    "ts": "2026-06-01T09:03:15.944Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 390,
+    "completion_tokens": 620,
+    "total_tokens": 1010,
+    "cost": 0.0007873
+  },
+  {
+    "ts": "2026-06-01T09:18:16.450Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 390,
+    "completion_tokens": 596,
+    "total_tokens": 986,
+    "cost": 0.0007609
+  },
+  {
+    "ts": "2026-06-01T09:33:15.772Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 390,
+    "completion_tokens": 542,
+    "total_tokens": 932,
+    "cost": 0.0007015000000000001
+  },
+  {
+    "ts": "2026-06-01T09:48:14.312Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 390,
+    "completion_tokens": 476,
+    "total_tokens": 866,
+    "cost": 0.0006289
+  },
+  {
+    "ts": "2026-06-01T10:03:15.260Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 390,
+    "completion_tokens": 580,
+    "total_tokens": 970,
+    "cost": 0.0007433
+  },
+  {
+    "ts": "2026-06-01T10:18:14.351Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 390,
+    "completion_tokens": 529,
+    "total_tokens": 919,
+    "cost": 0.0006872
+  },
+  {
+    "ts": "2026-06-01T10:33:14.649Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 390,
+    "completion_tokens": 509,
+    "total_tokens": 899,
+    "cost": 0.0006652
+  },
+  {
+    "ts": "2026-06-01T10:48:14.727Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 390,
+    "completion_tokens": 515,
+    "total_tokens": 905,
+    "cost": 0.0006718000000000001
+  },
+  {
+    "ts": "2026-06-01T11:03:14.616Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 389,
+    "completion_tokens": 555,
+    "total_tokens": 944,
+    "cost": 0.00071553
+  },
+  {
+    "ts": "2026-06-01T11:18:14.568Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 394,
+    "completion_tokens": 547,
+    "total_tokens": 941,
+    "cost": 0.00070808
+  },
+  {
+    "ts": "2026-06-01T11:33:14.100Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 394,
+    "completion_tokens": 550,
+    "total_tokens": 944,
+    "cost": 0.0007113800000000001
+  },
+  {
+    "ts": "2026-06-01T11:48:15.621Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 394,
+    "completion_tokens": 603,
+    "total_tokens": 997,
+    "cost": 0.00076968
+  },
+  {
+    "ts": "2026-06-01T12:03:15.726Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 394,
+    "completion_tokens": 599,
+    "total_tokens": 993,
+    "cost": 0.00076528
+  },
+  {
+    "ts": "2026-06-01T12:18:14.822Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 397,
+    "completion_tokens": 572,
+    "total_tokens": 969,
+    "cost": 0.00073639
+  },
+  {
+    "ts": "2026-06-01T12:33:14.209Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 397,
+    "completion_tokens": 519,
+    "total_tokens": 916,
+    "cost": 0.0006780900000000001
+  },
+  {
+    "ts": "2026-06-01T12:48:14.571Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 397,
+    "completion_tokens": 530,
+    "total_tokens": 927,
+    "cost": 0.00069019
+  },
+  {
+    "ts": "2026-06-01T13:03:14.909Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 397,
+    "completion_tokens": 586,
+    "total_tokens": 983,
+    "cost": 0.00075179
+  }
+]

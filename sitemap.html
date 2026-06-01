@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>网站大纲 · AI Nav</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+font-family:-apple-system,sans-serif;
+background:#050510;color:rgba(255,255,255,.9);font-size:13px;line-height:1.6;
+padding:16px;max-width:520px;margin:0 auto;
+}
+h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:4px;}
+.sub{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:20px;}
+.section{margin-bottom:20px;}
+.sec-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid rgba(255,255,255,.08);}
+.sec-desc{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:8px;}
+.page-list{display:flex;flex-direction:column;}
+.page-item{display:flex;align-items:baseline;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.03);font-size:11px;}
+.page-item a{color:#00e5ff;text-decoration:none;min-width:140px;font-weight:500;}
+.page-item a:hover{text-decoration:underline;}
+.page-item .desc{color:rgba(255,255,255,.4);margin-left:8px;font-size:10px;}
+.tag{display:inline-block;padding:1px 5px;border-radius:3px;font-size:8px;margin-left:4px;font-weight:600;}
+.tag.tool{background:rgba(0,229,255,.12);color:#00e5ff;}
+.tag.page{background:rgba(168,85,247,.12);color:#a855f7;}
+.tag.hub{background:rgba(245,158,11,.12);color:#f59e0b;}
+.back{display:inline-flex;align-items:center;color:rgba(255,255,255,.4);text-decoration:none;font-size:11px;margin-bottom:16px;}
+.back:hover{color:#00e5ff;}
+</style>
+</head>
+<body>
+<a href="./index.html" class="back">← 返回主页</a>
+<h1>AI Nav 网站大纲</h1>
+<div class="sub">v22 · 57 个页面 · 最后更新 2026-06-01</div>
+
+<!-- 工具区 -->
+<div class="section">
+<div class="sec-title">工具 / 应用</div>
+<div class="sec-desc">独立功能应用，日常使用的核心工具</div>
+<div class="page-list">
+<div class="page-item"><a href="./clock.html">clock.html</a><span class="tag tool">工具</span><span class="desc">毫秒时钟 · 天气 · 新闻 · AI简报（iOS/现代浏览器）</span></div>
+<div class="page-item"><a href="./clock-old.html">clock-old.html</a><span class="tag tool">工具</span><span class="desc">老安卓兼容版时钟（400×640, Android 6.0）</span></div>
+<div class="page-item"><a href="./obd-dash.html">obd-dash.html</a><span class="tag tool">工具</span><span class="desc">OBD 赛车仪表盘 — 转速/油压/升档降档动态</span></div>
+<div class="page-item"><a href="./papers.html">papers.html</a><span class="tag tool">工具</span><span class="desc">arXiv 论文检索 + AI 总结（DeepSeek）</span></div>
+<div class="page-item"><a href="./status.html">status.html</a><span class="tag tool">工具</span><span class="desc">服务状态监控 — 所有 API 端点健康检查</span></div>
+<div class="page-item"><a href="./usage.html">usage.html</a><span class="tag tool">工具</span><span class="desc">DeepSeek API 用量看板 · 网站+对话 token 统计</span></div>
+<div class="page-item"><a href="./test.html">test.html</a><span class="tag tool">工具</span><span class="desc">WebView 诊断页（安卓 6.0 调试用）</span></div>
+</div>
+</div>
+
+<!-- 百科：数学与概率 -->
+<div class="section">
+<div class="sec-title">百科 · 数学与概率</div>
+<div class="sec-desc">数学科普，可视化教学 + 互动小游戏</div>
+<div class="page-list">
+<div class="page-item"><a href="./probability.html">probability.html</a><span class="tag page">百科</span><span class="desc">大数定律 — 伯努利试验/样本均值收敛动画</span></div>
+<div class="page-item"><a href="./bertrand-paradox.html">bertrand-paradox.html</a><span class="tag page">百科</span><span class="desc">伯特兰悖论 — 三种随机选弦法得出三种概率</span></div>
+<div class="page-item"><a href="./logic-puzzle.html">logic-puzzle.html</a><span class="tag page">百科</span><span class="desc">红蓝眼谜题 — 共同知识(Common Knowledge)推理</span></div>
+<div class="page-item"><a href="./game-theory.html">game-theory.html</a><span class="tag page">百科</span><span class="desc">游戏数学必胜策略 — Nim/博弈论/极小极大</span></div>
+<div class="page-item"><a href="./music-math.html">music-math.html</a><span class="tag page">百科</span><span class="desc">音乐数学密码 — 泛音列/十二平均律/和弦比例</span></div>
+<div class="page-item"><a href="./paradoxes.html">paradoxes.html</a><span class="tag page">百科</span><span class="desc">常见悖论 — 芝诺/理发师/说谎者等</span></div>
+<div class="page-item"><a href="./misconceptions2.html">misconceptions2.html</a><span class="tag page">百科</span><span class="desc">常见误解 — 科学/数学/心理学误解辨析</span></div>
+<div class="page-item"><a href="./fallacies.html">fallacies.html</a><span class="tag page">百科</span><span class="desc">常见谬误 — 逻辑谬误类型与判别</span></div>
+</div>
+</div>
+
+<!-- 百科：科学与自然 -->
+<div class="section">
+<div class="sec-title">百科 · 科学与自然</div>
+<div class="page-list">
+<div class="page-item"><a href="./causality.html">causality.html</a><span class="tag page">百科</span><span class="desc">因果关系 — 相关≠因果/辛普森悖论/DAG/do算子</span></div>
+<div class="page-item"><a href="./orbit.html">orbit.html</a><span class="tag page">百科</span><span class="desc">轨道模拟 — Barnes-Hut 算法 N体问题</span></div>
+<div class="page-item"><a href="./emergence.html">emergence.html</a><span class="tag page">百科</span><span class="desc">涌现复杂性 — 细胞自动机/蚁群/Boid 集群</span></div>
+<div class="page-item"><a href="./attention.html">attention.html</a><span class="tag page">百科</span><span class="desc">注意力机制 — Transformer 核心/QKV 可视化</span></div>
+<div class="page-item"><a href="./gemstones.html">gemstones.html</a><span class="tag page">百科</span><span class="desc">宝石耐久度 — 莫氏硬度/韧性/稳定性评级</span></div>
+<div class="page-item"><a href="./viscosity.html">viscosity.html</a><span class="tag page">百科</span><span class="desc">粘度 — 流体行为/牛顿/非牛顿流体</span></div>
+<div class="page-item"><a href="./blood-types.html">blood-types.html</a><span class="tag page">百科</span><span class="desc">血型知识 — ABO/Rh 血型系统与遗传</span></div>
+<div class="page-item"><a href="./sleep.html">sleep.html</a><span class="tag page">百科</span><span class="desc">睡眠时长 — 睡眠周期/REM/最佳睡眠方案</span></div>
+</div>
+</div>
+
+<!-- 百科：AI与技术 -->
+<div class="section">
+<div class="sec-title">百科 · AI 与技术</div>
+<div class="page-list">
+<div class="page-item"><a href="./llm-anatomy.html">llm-anatomy.html</a><span class="tag page">百科</span><span class="desc">LLM 关键词层级 — 从模型架构到 Token 的词云</span></div>
+<div class="page-item"><a href="./text-rendering.html">text-rendering.html</a><span class="tag page">百科</span><span class="desc">文本渲染管线 — 字体/光栅化/抗锯齿/CSS 渲染</span></div>
+<div class="page-item"><a href="./ai-concepts.html">ai-concepts.html</a><span class="tag page">百科</span><span class="desc">AI 底层逻辑概念链 — 梯度下降→反向传播→Transformer</span></div>
+<div class="page-item"><a href="./ai-vfx-guide.html">ai-vfx-guide.html</a><span class="tag page">百科</span><span class="desc">AI VFX 部署指南 — Claude Code + Unity/MCP 全流程</span></div>
+</div>
+</div>
+
+<!-- 心理与人际 -->
+<div class="section">
+<div class="sec-title">心理与人际关系</div>
+<div class="page-list">
+<div class="page-item"><a href="./psych-effects.html">psych-effects.html</a><span class="tag page">百科</span><span class="desc">心理效应合集 — 锚定/从众/旁观者等经典效应</span></div>
+<div class="page-item"><a href="./psych-tricks.html">psych-tricks.html</a><span class="tag page">百科</span><span class="desc">人际心理技巧 — 10个实用社交技巧</span></div>
+<div class="page-item"><a href="./lying-truth.html">lying-truth.html</a><span class="tag page">百科</span><span class="desc">说谎与真话 — 撒谎的所有方式详解</span></div>
+<div class="page-item"><a href="./complexes.html">complexes.html</a><span class="tag page">百科</span><span class="desc">心理情结 — 常见心理情结解析</span></div>
+<div class="page-item"><a href="./interrogation.html">interrogation.html</a><span class="tag page">百科</span><span class="desc">审讯技巧 — 4种经典审讯方法</span></div>
+</div>
+</div>
+
+<!-- 普行男养成计划 -->
+<div class="section">
+<div class="sec-title">普行男养成计划 <span class="tag hub">系列</span></div>
+<div class="sec-desc">共 22 页（1 序章 + 21 集），每页含可视化 + 小游戏</div>
+<div class="page-list">
+<div class="page-item"><a href="./puxing-man.html">puxing-man.html</a><span class="tag hub">Hub</span><span class="desc">序章 · 普信？普行！</span></div>
+<div class="page-item"><a href="./puxing-01.html">puxing-01.html</a><span class="tag page">1</span><span class="desc">第一印象管理</span></div>
+<div class="page-item"><a href="./puxing-02.html">puxing-02.html</a><span class="tag page">2</span><span class="desc">沟通技巧</span></div>
+<div class="page-item"><a href="./puxing-03.html">puxing-03.html</a><span class="tag page">3</span><span class="desc">情绪管理</span></div>
+<div class="page-item"><a href="./puxing-04.html">puxing-04.html</a><span class="tag page">4</span><span class="desc">个人形象</span></div>
+<div class="page-item"><a href="./puxing-05.html">puxing-05.html</a><span class="tag page">5</span><span class="desc">社交能力</span></div>
+<div class="page-item"><a href="./puxing-06.html">puxing-06.html</a><span class="tag page">6</span><span class="desc">理财入门</span></div>
+<div class="page-item"><a href="./puxing-07.html">puxing-07.html</a><span class="tag page">7</span><span class="desc">身体健康</span></div>
+<div class="page-item"><a href="./puxing-08.html">puxing-08.html</a><span class="tag page">8</span><span class="desc">时间管理</span></div>
+<div class="page-item"><a href="./puxing-09.html">puxing-09.html</a><span class="tag page">9</span><span class="desc">情商培养</span></div>
+<div class="page-item"><a href="./puxing-10.html">puxing-10.html</a><span class="tag page">10</span><span class="desc">自信建立</span></div>
+<div class="page-item"><a href="./puxing-11.html">puxing-11.html</a><span class="tag page">11</span><span class="desc">幽默感</span></div>
+<div class="page-item"><a href="./puxing-12.html">puxing-12.html</a><span class="tag page">12</span><span class="desc">同理心</span></div>
+<div class="page-item"><a href="./puxing-13.html">puxing-13.html</a><span class="tag page">13</span><span class="desc">目标设定</span></div>
+<div class="page-item"><a href="./puxing-14.html">puxing-14.html</a><span class="tag page">14</span><span class="desc">学习能力</span></div>
+<div class="page-item"><a href="./puxing-15.html">puxing-15.html</a><span class="tag page">15</span><span class="desc">抗压能力</span></div>
+<div class="page-item"><a href="./puxing-16.html">puxing-16.html</a><span class="tag page">16</span><span class="desc">人际边界</span></div>
+<div class="page-item"><a href="./puxing-17.html">puxing-17.html</a><span class="tag page">17</span><span class="desc">道歉艺术</span></div>
+<div class="page-item"><a href="./puxing-18.html">puxing-18.html</a><span class="tag page">18</span><span class="desc">拒绝技巧</span></div>
+<div class="page-item"><a href="./puxing-19.html">puxing-19.html</a><span class="tag page">19</span><span class="desc">亲密关系</span></div>
+<div class="page-item"><a href="./puxing-20.html">puxing-20.html</a><span class="tag page">20</span><span class="desc">终身成长</span></div>
+<div class="page-item"><a href="./puxing-21.html">puxing-21.html</a><span class="tag page">21</span><span class="desc">总结与展望</span></div>
+</div>
+</div>
+
+<!-- 其他 -->
+<div class="section">
+<div class="sec-title">其他页面</div>
+<div class="page-list">
+<div class="page-item"><a href="./index.html">index.html</a><span class="tag hub">入口</span><span class="desc">主页导航 · 已优化二级菜单 · 版本号显示</span></div>
+<div class="page-item"><a href="./knowledge.html">knowledge.html</a><span class="tag hub">Hub</span><span class="desc">百科总入口 — 所有科普页面的分类索引</span></div>
+<div class="page-item"><a href="./fitness.html">fitness.html</a><span class="tag tool">工具</span><span class="desc">健身计划 — 每日任务/上肢锻炼/游泳/起立提醒</span></div>
+<div class="page-item"><a href="./changelog.html">changelog.html</a><span class="tag tool">元</span><span class="desc">版本更新日志</span></div>
+<div class="page-item"><a href="./sitemap.html">sitemap.html</a><span class="tag tool">元</span><span class="desc">本页面 — 网站大纲与设计规范</span></div>
+</div>
+</div>
+
+</body>
+</html>

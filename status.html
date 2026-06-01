@@ -201,5 +201,6 @@ function esc(s){const d=document.createElement('div');d.textContent=s;return d.i
 runChecks();
 </script>
 <script>(async function(){try{const r=await fetch('./version.json?t='+Date.now(),{cache:'no-store',signal:AbortSignal.timeout(3000)});const d=await r.json();const cur=localStorage.getItem('site_version');if(cur&&cur!==d.version){location.reload(true)}localStorage.setItem('site_version',d.version)}catch(e){}})();</script>
+<script src="./floating-nav.js"></script>
 </body>
 </html>
