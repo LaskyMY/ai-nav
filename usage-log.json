@@ -313,5 +313,41 @@
     "completion_tokens": 586,
     "total_tokens": 983,
     "cost": 0.00075179
+  },
+  {
+    "ts": "2026-06-01T13:18:14.980Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 397,
+    "completion_tokens": 589,
+    "total_tokens": 986,
+    "cost": 0.0007550900000000001
+  },
+  {
+    "ts": "2026-06-01T13:33:15.174Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 397,
+    "completion_tokens": 589,
+    "total_tokens": 986,
+    "cost": 0.0007550900000000001
+  },
+  {
+    "ts": "2026-06-01T13:44:33.901Z",
+    "endpoint": "/api/summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 39,
+    "completion_tokens": 15,
+    "total_tokens": 54,
+    "cost": 0.000027030000000000004
+  },
+  {
+    "ts": "2026-06-01T13:48:29.784Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 298,
+    "completion_tokens": 514,
+    "total_tokens": 812,
+    "cost": 0.00064586
   }
 ]
