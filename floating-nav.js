@@ -3,7 +3,7 @@
   if (location.pathname.endsWith('/') || location.pathname.endsWith('index.html')) return;
 
   var style = document.createElement('style');
-  style.textContent = '.fn-ct{position:fixed;bottom:16px;right:14px;z-index:99999;display:flex;flex-direction:row;opacity:0;transition:opacity .35s ease;pointer-events:none;}.fn-ct.show{opacity:1;pointer-events:auto;}.fn-btn{width:34px;height:34px;border-radius:17px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.75);font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-left:6px;}.fn-btn:active{background:rgba(0,210,255,.25);color:#00e5ff;}.fn-btn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round;}';
+  style.textContent = '.fn-ct{position:fixed;bottom:80px;right:14px;z-index:99999;display:flex;flex-direction:row;opacity:0;transition:opacity .35s ease;pointer-events:none;}.fn-ct.show{opacity:1;pointer-events:auto;}.fn-btn{width:34px;height:34px;border-radius:17px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.75);font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-left:6px;}.fn-btn:active{background:rgba(0,210,255,.25);color:#00e5ff;}.fn-btn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round;}';
   document.head.appendChild(style);
 
   var ct = document.createElement('div');
