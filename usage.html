@@ -45,6 +45,13 @@ td:first-child,th:first-child{text-align:left;}
   <div class="row"><span class="lbl">Completion Tokens</span><span class="val" id="completionTokens">--</span></div>
 </div>
 
+<div class="card" style="border-color:rgba(168,85,247,.15);">
+  <div style="font-size:11px;color:#a855f7;margin-bottom:4px;font-weight:600;">对话用量 (估算)</div>
+  <div class="row"><span class="lbl">对话 Token</span><span class="val" id="convTokens">--</span></div>
+  <div class="row"><span class="lbl">对话花费 (估算)</span><span class="val cost" id="convCost">--</span></div>
+  <div class="row"><span class="lbl">总计 (网站+对话)</span><span class="val big" id="grandTotal">--</span></div>
+</div>
+
 <div class="card">
   <div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:6px;">每日用量</div>
   <div id="dailyList">--</div>
@@ -62,6 +69,13 @@ function load(){
     document.getElementById('totalCost').textContent='$'+d.total.cost.toFixed(5)+' (约 ¥'+(d.total.cost*7.2).toFixed(3)+')';
     document.getElementById('promptTokens').textContent=d.total.prompt.toLocaleString();
     document.getElementById('completionTokens').textContent=d.total.completion.toLocaleString();
+
+    // Conversation
+    if(d.conversation){
+      document.getElementById('convTokens').textContent=d.conversation.tokens.toLocaleString();
+      document.getElementById('convCost').textContent='$'+d.conversation.cost.toFixed(5)+' (约 ¥'+(d.conversation.cost*7.2).toFixed(3)+')';
+      document.getElementById('grandTotal').textContent='$'+(d.total.cost+d.conversation.cost).toFixed(4)+' (约 ¥'+((d.total.cost+d.conversation.cost)*7.2).toFixed(2)+')';
+    }
 
     // Count calls
     var calls=0;for(var i=0;i<d.entries.length;i++)calls+=1;

@@ -246,7 +246,22 @@ async function handle(req) {
         byDay[day].calls++;
       }
       const days = Object.values(byDay).sort((a, b) => b.day.localeCompare(a.day));
-      return ok({ total, days, entries: entries.slice(-50) });
+
+      // Estimate conversation tokens from transcript
+      let convTokens = 0, convChars = 0;
+      try {
+        const home = Deno.env.get("HOME") || "/Users/lasky_my";
+        const dir = home + "/.claude/projects/-Users-lasky-my/";
+        for await (const f of Deno.readDir(dir)) {
+          if (!f.name.endsWith(".jsonl")) continue;
+          const text = await Deno.readTextFile(dir + f.name);
+          convChars += text.length;
+        }
+        convTokens = Math.round(convChars / 2);
+      } catch (_) {}
+      const convCost = convTokens * (0.27 + 1.10) / 2 / 1_000_000;
+
+      return ok({ total, days, entries: entries.slice(-50), conversation: { chars: convChars, tokens: convTokens, cost: convCost } });
     }
 
     // ── News AI Summary (cached, refreshed every 15 min) ──
