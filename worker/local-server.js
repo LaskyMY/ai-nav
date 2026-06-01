@@ -76,7 +76,7 @@ async function handle(req) {
 
   try {
     // ── Static pages ──
-    const staticFiles = {"/clock-old.html":"./clock-old.html","/clock-old":"./clock-old.html","/usage.html":"./usage.html"};
+    const staticFiles = {"/clock-old.html":"./clock-old.html","/clock-old":"./clock-old.html","/clock-proj.html":"./clock-proj.html","/usage.html":"./usage.html"};
     if (staticFiles[path]) {
       try {
         const html = await Deno.readTextFile(staticFiles[path]);
