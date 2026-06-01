@@ -1,0 +1,44 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Clock Test</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}html,body{height:100%;overflow:hidden}
+body{font-family:sans-serif;background:#050510;color:#fff;display:flex;flex-direction:column;padding:8px;font-size:14px;}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:10px;margin-top:4px;}
+.sp{display:inline-block;width:8px;height:8px;border:2px solid rgba(255,255,255,.1);border-top-color:#0ff;border-radius:50%;animation:sp .6s linear infinite;vertical-align:middle;margin-right:3px;}
+@keyframes sp{to{transform:rotate(360deg)}}
+.dbg{position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,.9);color:#0f0;font-size:9px;font-family:monospace;padding:4px 8px;max-height:150px;overflow-y:auto;z-index:9999;}
+</style></head><body>
+<div class="card"><b>Clock:</b> <span id="t1">--</span></div>
+<div class="card"><b>Weather:</b> <span id="t2">loading<span class="sp"></span></span></div>
+<div class="card"><b>News:</b> <span id="t3">loading<span class="sp"></span></span></div>
+<div class="card"><b>Brief:</b> <span id="t4">loading<span class="sp"></span></span></div>
+<div class="dbg" id="dbg"></div>
+<script>
+var API='https://c46872d35aeba559-183-6-87-29.serveousercontent.com';
+function L(m,c){var e=document.getElementById('dbg');e.innerHTML+=new Date().toLocaleTimeString()+' '+m+'<br>';e.scrollTop=e.scrollHeight;}
+
+L('Start');
+
+// Clock
+setInterval(function(){var n=new Date();document.getElementById('t1').textContent=('0'+n.getHours()).slice(-2)+':'+('0'+n.getMinutes()).slice(-2)+':'+('0'+n.getSeconds()).slice(-2);},100);
+
+// Weather
+L('Fetch weather...');
+fetch(API+'/api/weather?lat=23.13&lon=113.26')
+.then(function(r){L('WX status: '+r.status);return r.json();})
+.then(function(d){document.getElementById('t2').textContent=Math.round(d.current.temperature_2m)+'C, '+d.current.weather_code;L('WX OK');})
+.catch(function(e){document.getElementById('t2').textContent='FAIL: '+e.message;L('WX FAIL: '+e.message);});
+
+// News
+L('Fetch news...');
+fetch(API+'/api/news')
+.then(function(r){L('NS status: '+r.status);return r.json();})
+.then(function(d){document.getElementById('t3').textContent=(d&&d.length?d.length+' articles':'empty');L('NS OK: '+(d?d.length:0));})
+.catch(function(e){document.getElementById('t3').textContent='FAIL: '+e.message;L('NS FAIL: '+e.message);});
+
+// Brief
+L('Fetch brief...');
+fetch(API+'/api/news-summary')
+.then(function(r){L('BF status: '+r.status);return r.json();})
+.then(function(d){document.getElementById('t4').textContent=(d&&d.summary?d.summary.length+' chars':'empty');L('BF OK');})
+.catch(function(e){document.getElementById('t4').textContent='FAIL: '+e.message;L('BF FAIL: '+e.message);});
+</script></body></html>

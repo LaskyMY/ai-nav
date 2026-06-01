@@ -263,5 +263,36 @@ function renderMd(md){
   setInterval(wxFetch,600000);setInterval(nsFetch,600000);setInterval(bfFetch,900000);
 })();
 </script>
+
+<div id="_dbg" style="position:fixed;bottom:0;left:0;right:0;z-index:99999;background:rgba(0,0,0,.85);color:#0f0;font-size:10px;font-family:monospace;padding:6px 10px;max-height:120px;overflow-y:auto;display:none;"></div>
+<script>
+var _d=document.getElementById('_dbg');
+function _log(m,c){_d.style.display='block';_d.innerHTML+='<div style="color:'+(c||'#0f0')+'">'+new Date().toLocaleTimeString()+' '+m+'</div>';_d.scrollTop=_d.scrollHeight;}
+_log('Page loaded');
+// Patch fetch to log
+var _origFetch=window.fetch;
+window.fetch=function(url,opts){
+  _log('fetch: '+url.toString().substring(0,80),'#ff0');
+  return _origFetch.apply(this,arguments).then(function(r){
+    _log('  -> '+r.status+' ('+url.toString().substring(0,60)+')',r.ok?'#0f0':'#f00');
+    return r;
+  }).catch(function(e){
+    _log('  -> ERROR: '+e.message,'#f00');
+    throw e;
+  });
+};
+// Patch showPage to log
+var _origInitFlip=initFlip;
+initFlip=function(id,pages,ms){
+  _log('initFlip: '+id+' pages='+pages.length+' delay='+ms,'#0ff');
+  _origInitFlip(id,pages,ms);
+};
+var _origShowPage=showPage;
+showPage=function(id,i,anim){
+  _log('showPage: '+id+' idx='+i+' anim='+anim,'#0ff');
+  _origShowPage(id,i,anim);
+};
+</script>
+
 </body>
 </html>
