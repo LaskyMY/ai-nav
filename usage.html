@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>DeepSeek 用量</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+font-family:sans-serif;
+background:#050510;color:#fff;font-size:13px;line-height:1.5;
+padding:16px;max-width:500px;margin:0 auto;
+}
+h1{font-size:18px;font-weight:700;margin-bottom:4px;color:#00e5ff;}
+.sub{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:16px;}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:12px;margin-bottom:8px;}
+.row{display:flex;justify-content:space-between;align-items:center;margin:3px 0;}
+.lbl{color:rgba(255,255,255,.4);}
+.val{font-weight:600;font-variant-numeric:tabular-nums;}
+.big{font-size:22px;color:#00e5ff;}
+.cost{color:#f59e0b;}
+table{width:100%;border-collapse:collapse;margin-top:8px;font-size:10px;}
+td,th{border-bottom:1px solid rgba(255,255,255,.06);padding:4px 2px;text-align:right;}
+th{color:rgba(255,255,255,.3);font-weight:500;}
+td:first-child,th:first-child{text-align:left;}
+.bar{height:4px;border-radius:2px;background:rgba(255,255,255,.06);margin-top:4px;overflow:hidden;}
+.bar-fill{height:100%;background:#00e5ff;border-radius:2px;}
+.err{color:#ef4444;text-align:center;padding:20px;}
+.spin{display:inline-block;width:10px;height:10px;border:2px solid rgba(255,255,255,.1);border-top-color:#00e5ff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:4px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<h1>DeepSeek API 用量</h1>
+<div class="sub" id="updated">加载中<span class="spin"></span></div>
+
+<div class="card">
+  <div class="row"><span class="lbl">总 Token</span><span class="val big" id="totalTokens">--</span></div>
+  <div class="row"><span class="lbl">总花费 (估算)</span><span class="val cost" id="totalCost">--</span></div>
+</div>
+
+<div class="card">
+  <div class="row"><span class="lbl">调用次数</span><span class="val" id="totalCalls">--</span></div>
+  <div class="row"><span class="lbl">Prompt Tokens</span><span class="val" id="promptTokens">--</span></div>
+  <div class="row"><span class="lbl">Completion Tokens</span><span class="val" id="completionTokens">--</span></div>
+</div>
+
+<div class="card">
+  <div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:6px;">每日用量</div>
+  <div id="dailyList">--</div>
+</div>
+
+<script>
+var API='https://c46872d35aeba559-183-6-87-29.serveousercontent.com';
+
+function load(){
+  fetch(API+'/api/usage')
+  .then(function(r){return r.json();})
+  .then(function(d){
+    document.getElementById('updated').textContent='更新: '+new Date().toLocaleTimeString('zh-CN');
+    document.getElementById('totalTokens').textContent=d.total.tokens.toLocaleString();
+    document.getElementById('totalCost').textContent='$'+d.total.cost.toFixed(5)+' (约 ¥'+(d.total.cost*7.2).toFixed(3)+')';
+    document.getElementById('promptTokens').textContent=d.total.prompt.toLocaleString();
+    document.getElementById('completionTokens').textContent=d.total.completion.toLocaleString();
+
+    // Count calls
+    var calls=0;for(var i=0;i<d.entries.length;i++)calls+=1;
+    document.getElementById('totalCalls').textContent=calls+' 次';
+
+    // Daily list
+    var maxT=1;for(var i=0;i<d.days.length;i++)if(d.days[i].tokens>maxT)maxT=d.days[i].tokens;
+    var html='';
+    for(var i=0;i<Math.min(d.days.length,14);i++){
+      var day=d.days[i];
+      var pct=(day.tokens/maxT*100).toFixed(0);
+      html+='<div class="row"><span>'+day.day+'</span><span>'+day.tokens.toLocaleString()+' tokens</span></div>';
+      html+='<div class="bar"><div class="bar-fill" style="width:'+pct+'%"></div></div>';
+    }
+    document.getElementById('dailyList').innerHTML=html||'暂无数据';
+  })
+  .catch(function(){
+    document.getElementById('updated').innerHTML='<span class="err">加载失败</span>';
+  });
+}
+
+load();
+setInterval(load,60000);
+</script>
+</body>
+</html>

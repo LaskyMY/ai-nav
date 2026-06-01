@@ -1,7 +1,32 @@
 // Local API server — same logic as deno-deploy.js, wrapped in Deno.serve
-// Run: deno run --allow-net --allow-env worker/local-server.js
+// Run: deno run --allow-net --allow-env --allow-read --allow-write worker/local-server.js
 
 const DEEPSEEK = "https://api.deepseek.com/v1/chat/completions";
+const USAGE_FILE = "./usage-log.json";
+const PRICING = { prompt: 0.27 / 1_000_000, completion: 1.10 / 1_000_000 }; // DeepSeek V3 pricing per token
+
+// ── Usage tracking ──
+async function loadUsage() { try { return JSON.parse(await Deno.readTextFile(USAGE_FILE)); } catch (_) { return []; } }
+async function saveUsage(entries) { await Deno.writeTextFile(USAGE_FILE, JSON.stringify(entries, null, 2)); }
+
+async function trackUsage(endpoint, usage, model) {
+  const entry = {
+    ts: new Date().toISOString(),
+    endpoint,
+    model: model || "deepseek-chat",
+    prompt_tokens: usage.prompt_tokens || 0,
+    completion_tokens: usage.completion_tokens || 0,
+    total_tokens: usage.total_tokens || 0,
+  };
+  entry.cost = entry.prompt_tokens * PRICING.prompt + entry.completion_tokens * PRICING.completion;
+  const entries = await loadUsage();
+  entries.push(entry);
+  // Keep last 90 days
+  const cutoff = Date.now() - 90 * 86400000;
+  const trimmed = entries.filter(e => new Date(e.ts).getTime() > cutoff);
+  await saveUsage(trimmed);
+  console.log(`[usage] ${entry.endpoint}: ${entry.total_tokens} tokens, $${entry.cost.toFixed(6)}`);
+}
 
 function cors() {
   return {
@@ -50,10 +75,11 @@ async function handle(req) {
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: cors() });
 
   try {
-    // ── Static pages (served from server for old Android compatibility) ──
-    if (path === "/clock-old.html" || path === "/clock-old") {
+    // ── Static pages ──
+    const staticFiles = {"/clock-old.html":"./clock-old.html","/clock-old":"./clock-old.html","/usage.html":"./usage.html"};
+    if (staticFiles[path]) {
       try {
-        const html = await Deno.readTextFile("./clock-old.html");
+        const html = await Deno.readTextFile(staticFiles[path]);
         return new Response(html, { headers: { ...cors(), "Content-Type": "text/html; charset=utf-8" } });
       } catch (_) { return err("page not found", 404); }
     }
@@ -166,6 +192,7 @@ async function handle(req) {
       });
       if (!r.ok) return err("AI 总结服务暂不可用", 502);
       const data = await r.json();
+      if (data.usage) trackUsage("/api/summary", data.usage, "deepseek-chat");
       return ok({ summary: data.choices?.[0]?.message?.content || "", usage: data.usage });
     }
 
@@ -201,7 +228,25 @@ async function handle(req) {
       });
       if (!aiResp.ok) return ok({ papers, summary: "AI 总结生成失败" });
       const aiData = await aiResp.json();
+      if (aiData.usage) trackUsage("/api/papers-summary", aiData.usage, "deepseek-chat");
       return ok({ papers, summary: aiData.choices?.[0]?.message?.content || "" });
+    }
+
+    // ── Usage stats ──
+    if (path === "/api/usage") {
+      const entries = await loadUsage();
+      const total = entries.reduce((s, e) => ({ prompt: s.prompt + e.prompt_tokens, completion: s.completion + e.completion_tokens, tokens: s.tokens + e.total_tokens, cost: s.cost + (e.cost || 0) }), { prompt: 0, completion: 0, tokens: 0, cost: 0 });
+      // Group by day
+      const byDay = {};
+      for (const e of entries) {
+        const day = e.ts.slice(0, 10);
+        if (!byDay[day]) byDay[day] = { day, tokens: 0, cost: 0, calls: 0 };
+        byDay[day].tokens += e.total_tokens;
+        byDay[day].cost += e.cost || 0;
+        byDay[day].calls++;
+      }
+      const days = Object.values(byDay).sort((a, b) => b.day.localeCompare(a.day));
+      return ok({ total, days, entries: entries.slice(-50) });
     }
 
     // ── News AI Summary (cached, refreshed every 15 min) ──
@@ -299,6 +344,7 @@ async function refreshNewsSummary() {
     const data = await r.json();
     const summary = data.choices?.[0]?.message?.content || "";
     if (!summary) { console.log("[news-summary] empty response"); return; }
+    if (data.usage) trackUsage("news-summary", data.usage, "deepseek-chat");
 
     cacheSet("news-summary", { summary, updated: new Date().toISOString(), newsCount: topNews.length });
     console.log(`[news-summary] updated (${summary.length} chars, ${topNews.length} news)`);
