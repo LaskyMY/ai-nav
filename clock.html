@@ -55,7 +55,7 @@ function kw(t,k){if(!k||!t)return t;var s=t,ks=k.split(',');for(var i=0;i<ks.len
 
 function build(){
   var h='';h+='<div class="c c3 lX"><div class="ckb" id="t">--:--:--<span class="ckms">.---</span></div><div class="ckd" id="td">----</div></div>';
-  h+='<div class="c c2 lX" id="wc"><div class="wd">⏱ 当前 · <span id="ci">广州</span></div><div class="wt">--°</div><div class="wxh">天气加载中</div></div>';
+  h+='<div class="c c2 lX" id="wc"><div style="text-align:center;padding:6px 0"><div style="font-size:34px;margin-bottom:2px" id="wxi">☀️</div><div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:2px"><span id="ci">广州</span> · <span id="wxl">当前</span></div><div style="font-size:18px;font-weight:600;color:#fff">--°</div><div class="wxh">天气加载中</div></div>';
   h+='<div class="c c2 lX"><div class="tt">📡 实时信息</div><div class="ts">数据: <span id="ot">加载中</span></div><div class="tm">下次刷新: <span id="nx">--</span></div></div>';
   for(var i=0;i<ns.length;i++){var n=ns[i],lv=n.level==='critical'?'1':n.level==='high'?'2':n.level==='low'?'4':'3';h+='<div class="c l'+lv+(i<2?' c2':'')+'" data-id="n'+i+'"><div class="tt">'+em(n.title)+' '+kw(n.title,n.keywords)+'</div>'+(n.summary?'<div class="ts">'+kw(n.summary,n.keywords)+'</div>':'')+(n.metric?'<div class="tm">'+n.metric+'</div>':'')+'</div>'}
   document.getElementById('g').innerHTML=h;tick();if(!wxT&&wxPages.length)startWx()
@@ -64,17 +64,27 @@ function build(){
 function tick(){var n=new Date(),el=document.getElementById('t');if(el)el.innerHTML=('0'+n.getHours()).slice(-2)+':'+('0'+n.getMinutes()).slice(-2)+':'+('0'+n.getSeconds()).slice(-2)+' <span class="ckms">.'+('00'+n.getMilliseconds()).slice(-3)+'</span>';el=document.getElementById('td');if(el)el.textContent=n.getFullYear()+'年'+(n.getMonth()+1)+'月'+n.getDate()+'日 周'+['日','一','二','三','四','五','六'][n.getDay()];requestAnimationFrame(tick)}requestAnimationFrame(tick);
 
 function startWx(){wxI=0;showWx(0);wxT=setInterval(function(){wxI=(wxI+1)%wxPages.length;showWx(wxI)},5000)}
-function showWx(i){var p=wxPages[i],el=document.getElementById('wc');if(!el)return;el.innerHTML='<div class="wd">'+WI[p.code]+' '+p.label+'</div><div class="wt">'+p.temp+'°C</div><div class="wxh">'+WN[p.code]+'</div>'}
+function showWx(i){var p=wxPages[i];document.getElementById('wxi').textContent=WI[p.code]||'☀️';document.getElementById('wxl').textContent=p.label;var el=document.getElementById('wc');if(!el)return;var h='<div style="text-align:center;padding:6px 0"><div style="font-size:34px;margin-bottom:2px">'+WI[p.code]+'</div><div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:2px"><span id="ci">'+p.city+'</span> · '+p.label+'</div><div style="font-size:18px;font-weight:600;color:#fff">'+p.temp+'°C</div><div class="wxh">'+WN[p.code]+'</div></div>';el.innerHTML=h}
 
 // Weather with 5s timeout
 var wxDone=false;
-setTimeout(function(){if(!wxDone){wxDone=true;wxPages=[{label:'当前',temp:'27',code:0},{label:'+1 小时',temp:'28',code:1},{label:'+3 小时',temp:'30',code:0},{label:'+6 小时',temp:'26',code:2}];if(!ns.length)build();startWx()}},5000);
-fetch(A+'/api/weather?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(w){if(wxDone)return;wxDone=true;var c=w.current,hh=w.hourly;wxPages=[{label:'当前',temp:Math.round(c.temperature_2m),code:c.weather_code}];if(hh&&hh.time){var cur=(new Date()).getHours();for(var i=0;i<3;i++){var idx=cur+[1,3,6][i];if(idx>=hh.time.length)idx=hh.time.length-1;wxPages.push({label:'+'+(i*2+1)+'小时',temp:Math.round(hh.temperature_2m[idx]),code:hh.weather_code[idx]})}}if(!ns.length)build();startWx();fetch(A+'/api/geocode?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(d){var a=(d&&d.address)||d||{},cc=a.city||a.town||a.county||'';if(cc)document.getElementById('ci').textContent=cc})}).catch(function(){if(!wxDone){wxDone=true;wxPages=[{label:'当前·广州',temp:'27',code:0},{label:'+1时',temp:'28',code:1},{label:'+3时',temp:'30',code:0},{label:'+6时',temp:'26',code:2}];if(!ns.length)build();startWx()}});
+setTimeout(function(){if(!wxDone){wxDone=true;wxPages=[{label:'当前',temp:'27',code:0,city:'广州'},{label:'+1 小时',temp:'28',code:1,city:'广州'},{label:'+3 小时',temp:'30',code:0,city:'广州'},{label:'+6 小时',temp:'26',code:2,city:'广州'}];if(!ns.length)build();startWx()}},5000);
+fetch(A+'/api/weather?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(w){if(wxDone)return;wxDone=true;var c=w.current,hh=w.hourly;wxPages=[{label:'当前',temp:Math.round(c.temperature_2m),code:c.weather_code,city:'广州'}];if(hh&&hh.time){var cur=(new Date()).getHours();for(var i=0;i<3;i++){var idx=cur+[1,3,6][i];if(idx>=hh.time.length)idx=hh.time.length-1;wxPages.push({label:'+'+(i*2+1)+'小时',temp:Math.round(hh.temperature_2m[idx]),code:hh.weather_code[idx],city:'广州'})}}if(!ns.length)build();startWx();fetch(A+'/api/geocode?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(d){var a=(d&&d.address)||d||{},cc=a.city||a.town||a.county||'';if(cc)document.getElementById('ci').textContent=cc})}).catch(function(){if(!wxDone){wxDone=true;wxPages=[{label:'当前',temp:'27',code:0,city:'广州'},{label:'+1时',temp:'28',code:1},{label:'+3时',temp:'30',code:0},{label:'+6时',temp:'26',code:2}];if(!ns.length)build();startWx()}});
 
 // News with 5s timeout
 var nsDone=false;
-setTimeout(function(){if(!nsDone){nsDone=true;ns=[{level:'high',title:'国际要闻',summary:'AI 正在整理今日新闻，请稍候',metric:'DeepSeek V3',keywords:''},{level:'normal',title:'实时快讯',summary:'新闻流即将就绪',metric:'NPR',keywords:''}];build()}},5000);
-fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(nsDone)return;nsDone=true;if(!d||!d.length)return;ns=d;document.getElementById('ot').textContent=new Date().toLocaleTimeString('zh-CN')+' 更新 · '+ns.length+'条';document.getElementById('nx').textContent=new Date(Date.now()+600000).toLocaleTimeString('zh-CN');build();fetch(A+'/api/news-summary').then(function(r){return r.json()}).then(function(s){if(s&&s.summary){var ls=s.summary.split('\n').filter(function(l){return l.trim()&&!/^##/.test(l)});document.getElementById('ot').textContent=ls.slice(0,3).join(' · ')}})})['catch'](function(e){if(!nsDone){nsDone=true;ns=[{level:'high',title:'网络连接异常',summary:'请检查网络后刷新',metric:'',keywords:''}];build()}});
+setTimeout(function(){if(!nsDone){nsDone=true;ns=[{level:'high',title:'国际要闻',summary:'AI 正在整理今日新闻，请稍候',metric:'DeepSeek V3',keywords:''},{level:'normal',title:'实时快讯',summary:'新闻流即将就绪',metric:'NPR',keywords:''}];
+  var otEl2=document.getElementById('ot');if(otEl2)otEl2.textContent='正在加载AI摘要...';
+  var nxEl2=document.getElementById('nx');if(nxEl2)nxEl2.textContent='等待首次同步';build()}},5000);
+fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(nsDone)return;nsDone=true;if(!d||!d.length)return;ns=d;
+  var now=new Date(),nx=new Date(now.getTime()+600000);
+  var otEl=document.getElementById('ot'),nxEl=document.getElementById('nx');
+  if(otEl)otEl.textContent=now.toLocaleTimeString('zh-CN')+' 更新 · '+ns.length+'条';
+  if(nxEl)nxEl.textContent='下次: '+nx.toLocaleTimeString('zh-CN');
+  build();
+  fetch(A+'/api/news-summary').then(function(r){return r.json()}).then(function(s){
+    if(s&&s.summary){var d2=s.summary;if(d2.indexOf('##')>=0){var ls2=d2.split(/\n(?=## )/);d2=ls2[0].replace(/^##\s*/,'')}document.getElementById('ot').textContent=d2.slice(0,60)}
+  }).then(function(r){return r.json()}).then(function(s){if(s&&s.summary){var ls=s.summary.split('\n').filter(function(l){return l.trim()&&!/^##/.test(l)});document.getElementById('ot').textContent=ls.slice(0,3).join(' · ')}})})['catch'](function(e){if(!nsDone){nsDone=true;ns=[{level:'high',title:'网络连接异常',summary:'请检查网络后刷新',metric:'',keywords:''}];build()}});
 
 // Typewriter flash — character-by-character within 3s
 function typeEl(el,html,done){
