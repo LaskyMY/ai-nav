@@ -53,7 +53,12 @@ function em(t){var s=(t||'').toLowerCase();if(/战争|冲突|空袭|军事|导�
 
 function kw(t,k){if(!k||!t)return t;var s=t,ks=k.split(',');for(var i=0;i<ks.length;i++){var w=ks[i].trim();if(!w)continue;var c='k1';if(w[0]==='!'){c='k3';w=w.slice(1)}else if(w[0]==='*'){c='k2';w=w.slice(1)}s=s.split(w).join('<span class="'+c+'">'+w+'</span>')}return s}
 
-function doRefresh(){fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(!d||!d.length)return;ns=d;build()})}
+function doRefresh(){fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(!d||!d.length)return;ns=d;build();
+  var now=new Date(),nx=new Date(now.getTime()+300000);
+  var otEl=document.getElementById('ot'),nxEl=document.getElementById('nx');
+  if(otEl)otEl.textContent=now.toLocaleTimeString('zh-CN')+' 更新 · '+ns.length+'条';
+  if(nxEl)nxEl.textContent='下次: '+nx.toLocaleTimeString('zh-CN');
+})}
 function build(){
   var h='';h+='<div class="c c3 lX"><div class="ckb" id="t">--:--:--<span class="ckms">.---</span></div><div class="ckd" id="td">----</div></div>';
   h+='<div class="c c2 lX" id="wc"><div style="text-align:center;padding:6px 0"><div style="font-size:34px;margin-bottom:2px" id="wxi">☀️</div><div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:2px"><span id="ci">广州</span> · <span id="wxl">当前</span></div><div style="font-size:18px;font-weight:600;color:#fff" id="wxt">--°</div><div class="wxh" id="wxh">天气加载中</div></div></div>';
