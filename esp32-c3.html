@@ -95,7 +95,58 @@ pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;fon
 
 
 <div class="card">
-  <div class="section-title">🔌 接线图</div>
+  <div class="section-title">📐 ESP32-C3 Super Mini 引脚图</div>
+  <pre style="font-size:9px;line-height:1.5;background:rgba(0,0,0,.5);padding:14px;border-radius:10px;color:#a0d0ff">
+      ESP32-C3 Super Mini (USB-C朝上, 正面)
+    ╔════════════════════════╗
+    ║  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  ║
+    ║  ▓▓▓▓▓ ESP32 ▓▓▓▓▓▓  ║
+    ║  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  ║
+    ╠════════════════════════╣
+  左│5V                 5V │右  ← 上方两个5V(左右各一)
+    │GND               GND │     GND接地
+    │3.3V              3.3V│     3.3V输出(不常用)
+    │GPIO0   ⚡下载⚡  GPIO5│     GPIO0=下载模式按键
+    │GPIO1   📟按键📟  GPIO6│     GPIO1-3=矩阵键盘
+    │GPIO2              GPIO7│ ←  GPIO7=继电器控制!
+    │GPIO3              GPIO8│
+    │GPIO4   💡LED💡  GPIO9│     GPIO4-6=RGB LED!
+    ╚════════════════════════╝
+
+  💡 已烧录固件分配到引脚:
+     RGB LED: R→GPIO4  G→GPIO5  B→GPIO6
+     继电器: IN→GPIO7  蜂鸣器通过继电器COM/NO接12V
+     按键:  K1→GPIO0  K2→GPIO1  K3→GPIO2  K4→GPIO3
+     电源:  5V→继电器VCC  GND→所有GND共用
+  </pre>
+</div>
+
+<div class="card">
+  <div class="section-title">🔌 接线指南</div>
+  <div style="font-size:12px;line-height:1.8">
+    <p><b>1. RGB LED模块(共阴)</b><br>
+    <span style="color:#f87171">R脚</span>→串220Ω电阻→<b>GPIO4</b>(左列第8脚)<br>
+    <span style="color:#10b981">G脚</span>→串220Ω电阻→<b>GPIO5</b>(右列第4脚)<br>
+    <span style="color:#60a5fa">B脚</span>→串220Ω电阻→<b>GPIO6</b>(右列第5脚)<br>
+    LED公共脚→<b>GND</b>(任意GND都可以)</p>
+
+    <p><b>2. 5V继电器模块</b><br>
+    VCC→板子<b>5V</b> | GND→板子<b>GND</b> | IN→<b>GPIO7</b>(右列第6脚)<br>
+    ⚠️ 继电器COM接12V+，NO接蜂鸣器+，蜂鸣器-接12V-</p>
+
+    <p><b>3. 4键薄膜键盘</b><br>
+    公共端→<b>GND</b><br>
+    K1→<b>GPIO0</b>(左4) K2→<b>GPIO1</b>(左5)<br>
+    K3→<b>GPIO2</b>(左6) K4→<b>GPIO3</b>(左7)</p>
+
+    <p><b>4. 12V有源蜂鸣器</b><br>
+    继电器<b>COM</b>→12V电源+<br>
+    继电器<b>NO</b>→蜂鸣器+<br>
+    蜂鸣器-→12V电源-</p>
+  </div>
+</div>
+
+<!-- Tutorial -->
   <pre style="font-size:10px;line-height:1.6;background:rgba(0,0,0,.4);padding:14px;border-radius:10px">
      ESP32-C3 Super Mini          RGB LED模块(共阴)
   ┌──────────────────┐          ┌──────────┐
