@@ -137,7 +137,7 @@ pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;fon
       <div style="text-align:center;font-size:8px;color:rgba(255,255,255,.1);padding:3px 0;letter-spacing:.08em">右侧 · USB-C朝上</div>
       <div class="pn hl"><span class="dt du"></span><span class="lb" style="color:#10b981">GPIO5</span><span class="fn" style="color:#10b981">A5/MISO → LED G</span></div>
       <div class="pn hl"><span class="dt du"></span><span class="lb" style="color:#60a5fa">GPIO6</span><span class="fn" style="color:#60a5fa">MOSI → LED B</span></div>
-      <div class="pn hl"><span class="dt du"></span><span class="lb" style="color:#f59e0b">GPIO7</span><span class="fn" style="color:#f59e0b">SS → 继电器IN</span></div>
+      <div class="pn hl"><span class="dt du"></span><span class="lb" style="color:#f59e0b">GPIO7</span><span class="fn" style="color:#f59e0b">SS → 蜂鸣器</span></div>
       <div class="pn"><span class="dt di"></span><span class="lb">GPIO8</span><span class="fn">SDA/板载蓝灯</span></div>
       <div class="pn"><span class="dt di"></span><span class="lb">GPIO9</span><span class="fn">SCL</span></div>
       <div class="pn"><span class="dt di"></span><span class="lb">GPIO10</span><span class="fn">GPIO</span></div>
@@ -171,21 +171,13 @@ pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;fon
       <div class="wire"><span class="wdot" style="background:#60a5fa"></span><span class="wlabel">B 脚 → 串220Ω → <b style="color:#60a5fa">GPIO6</b>（右第2脚）</span></div>
       <div class="wire"><span class="wdot" style="background:#6b7280"></span><span class="wlabel">GND 脚 → <b style="color:#6b7280">GND</b>（任意）</span></div>
     </div>
-    <!-- Relay -->
+    <!-- Buzzer (direct, no relay) -->
     <div class="mod">
-      <h4>🔌 继电器模块（3脚）</h4>
-      <div class="wire"><span class="wdot" style="background:#f59e0b"></span><span class="wlabel">VCC → <b style="color:#f59e0b">5V</b></span></div>
-      <div class="wire"><span class="wdot" style="background:#6b7280"></span><span class="wlabel">GND → <b style="color:#6b7280">GND</b></span></div>
-      <div class="wire"><span class="wdot" style="background:#f59e0b"></span><span class="wlabel">IN → <b style="color:#f59e0b">GPIO7</b>（右第3脚）</span></div>
-      <div style="font-size:9px;color:rgba(255,255,255,.25);margin-top:6px">继电器输出：COM→12V+, NO→蜂鸣器+, 蜂鸣器-→12V-</div>
-    </div>
-    <!-- Buzzer -->
-    <div class="mod">
-      <h4>🔔 有源蜂鸣器（3脚）</h4>
-      <div class="wire"><span class="wdot" style="background:#ef4444"></span><span class="wlabel">VCC → <b style="color:#ef4444">继电器 NO</b></span></div>
-      <div class="wire"><span class="wdot" style="background:#6b7280"></span><span class="wlabel">GND → <b style="color:#6b7280">12V电源 负极</b></span></div>
-      <div class="wire"><span class="wdot" style="background:#f59e0b"></span><span class="wlabel">继电器 COM → <b style="color:#f59e0b">12V电源 正极</b></span></div>
-      <div style="font-size:9px;color:#10b981;margin-top:4px">✅ 有源蜂鸣器：通电即响，无需PWM</div>
+      <h4>🔔 有源蜂鸣器（直接连接，不经过继电器）</h4>
+      <div class="wire"><span class="wdot" style="background:#f59e0b"></span><span class="wlabel">VCC(+) → <b style="color:#f59e0b">GPIO7</b>（右第3脚）</span></div>
+      <div class="wire"><span class="wdot" style="background:#6b7280"></span><span class="wlabel">GND(-) → <b style="color:#6b7280">GND</b>（任意）</span></div>
+      <div style="font-size:9px;color:#10b981;margin-top:4px">✅ 3.3V有源蜂鸣器直接驱动 · 固件已更新</div>
+      <div style="font-size:9px;color:#f59e0b;margin-top:2px">⚠ 如是5V蜂鸣器，声音会偏小但仍可用</div>
     </div>
     <!-- Keypad -->
     <div class="mod">
@@ -208,7 +200,7 @@ pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;fon
     LED公共脚→<b>GND</b>(任意GND都可以)</p>
 
     <p><b>2. 5V继电器模块</b><br>
-    VCC→板子<b>5V</b> | GND→板子<b>GND</b> | IN→<b>GPIO7</b> (板子标注: GPIO7)<br>
+    VCC→板子<b>5V</b> | GND→板子<b>GND</b> | 蜂鸣器VCC→<b>GPIO7</b>（右第3脚，直接连接，不经过继电器）<br>
     ⚠️ 继电器COM接12V+，NO接蜂鸣器+，蜂鸣器-接12V-</p>
 
     <p><b>3. 4键薄膜键盘</b><br>
