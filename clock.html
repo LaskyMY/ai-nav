@@ -2,9 +2,9 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
 <title>AI Nav 看板</title><style>*{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden}
-body{background:linear-gradient(180deg,#0a0a14 0%,#0d0d1a 40%,#090911 100%);color:rgba(255,255,255,.9);font-family:-apple-system,sans-serif;font-size:12px;line-height:1.4;padding:50px 6px 6px 6px;-webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased}
-.g{height:100%;display:grid;grid-template-columns:1fr 1fr 1fr;grid-auto-flow:dense;grid-auto-rows:minmax(42px,auto);gap:4px;align-content:start;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:10px}
-.c{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:10px 12px;backdrop-filter:saturate(180%)blur(40px);-webkit-backdrop-filter:saturate(180%)blur(40px);position:relative;overflow:visible;min-height:42px}
+body{background:linear-gradient(180deg,#0a0a14 0%,#0d0d1a 40%,#090911 100%);color:rgba(255,255,255,.9);font-family:-apple-system,sans-serif;font-size:12px;line-height:1.4;padding:48px 6px 6px 6px;-webkit-user-select:none;user-select:none}
+.g{height:100%;display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:auto auto auto auto 1fr;gap:4px;overflow-y:auto}
+.c{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:12px 14px;backdrop-filter:saturate(180%)blur(40px);-webkit-backdrop-filter:saturate(180%)blur(40px);overflow:visible}
 .c3{grid-column:span 3}.c2{grid-column:span 2}
 .tt{font-weight:600;color:rgba(255,255,255,.88);line-height:1.3;margin-bottom:3px}
 .ts{font-size:.9em;color:rgba(255,255,255,.5);line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
@@ -15,6 +15,8 @@ body{background:linear-gradient(180deg,#0a0a14 0%,#0d0d1a 40%,#090911 100%);colo
 .ckd{font-size:10px;text-align:center;color:rgba(255,255,255,.3);margin-top:2px}
 .c.l1{border-color:rgba(239,68,68,.06);background:rgba(239,68,68,.025)}
 .c.l2{border-color:rgba(245,158,11,.05);background:rgba(245,158,11,.02)}
+/* Weather card — fixed 100px height, never squished */
+.wx-card{min-height:100px!important;max-height:100px!important;height:100px!important}
 </style></head><body>
 <div class="g" id="g"></div>
 <script>
@@ -24,11 +26,11 @@ var WN={0:'晴',1:'少云',2:'多云',3:'阴',45:'雾',51:'雨',61:'雨',71:'雪
 var ns=[],wxPages=[],wxI=0,wxT=null;
 function em(t){var s=(t||'').toLowerCase();if(/战争|冲突|空袭|军事|导弹/.test(t))return'💥';if(/经济|市场|股票|金融|利率/.test(t))return'📈';if(/政治|选举|总统|政府|法律/.test(t))return'🏛️';if(/科技|AI|芯片|数据/.test(t))return'🧠';if(/医疗|疾病|药物|疫苗/.test(t))return'💊';return'📡'}
 function kw(t,k){if(!k||!t)return t;var s=t,ks=k.split(',');for(var i=0;i<ks.length;i++){var w=ks[i].trim();if(!w)continue;var c='k1';if(w[0]==='!'){c='k3';w=w.slice(1)}else if(w[0]==='*'){c='k2';w=w.slice(1)}s=s.split(w).join('<span class="'+c+'">'+w+'</span>')}return s}
-function wxH(p){return'<div style="text-align:center"><span style="font-size:30px">'+(WI[p.code]||'☀️')+'</span><div style="font-size:9px;color:rgba(255,255,255,.3);margin:1px 0">'+p.label+'</div><div style="font-size:20px;font-weight:700;color:#fff">'+p.temp+'°C</div><div style="font-size:8px;color:rgba(255,255,255,.2)">'+(WN[p.code]||'')+'</div></div>'}
+function wxH(p){return'<div style="text-align:center;padding:8px 0"><span style="font-size:34px">'+(WI[p.code]||'☀️')+'</span><div style="font-size:10px;color:rgba(255,255,255,.3);margin:3px 0">'+p.label+'</div><div style="font-size:22px;font-weight:700;color:#fff">'+p.temp+'°C</div><div style="font-size:9px;color:rgba(255,255,255,.2);margin-top:2px">'+(WN[p.code]||'')+'</div></div>'}
 function build(){
   var h='';
   h+='<div class="c c3"><div class="ckb" id="t">--:--:--<span class="ckms">.---</span></div><div class="ckd" id="td">----</div></div>';
-  h+='<div class="c c2" id="wc">'+wxH({code:0,label:'当前',temp:'--'})+'</div>';
+  h+='<div class="c c2 wx-card" id="wc">'+wxH({code:0,label:'当前',temp:'--'})+'</div>';
   h+='<div class="c c2" onclick="doR()" style="cursor:pointer"><div style="display:flex;justify-content:space-between;font-size:9px"><span>🔄 <span id="ot">-</span></span><span>⏱ <span id="nx">-</span></span></div></div>';
   h+='<div class="c c3" style="flex:1"><div class="tt">📋 AI 简报</div><div class="ts" id="sm" style="-webkit-line-clamp:10">加载中</div></div>';
   for(var i=0;i<ns.length;i++){var n=ns[i],lv=n.level==='critical'?'1':n.level==='high'?'2':'3';h+='<div class="c l'+lv+(i<2?' c2':'')+'" data-id="n'+i+'"><div class="tt">'+em(n.title)+' '+kw(n.title,n.keywords)+'</div>'+(n.summary?'<div class="ts">'+kw(n.summary,n.keywords)+'</div>':'')+(n.metric?'<div class="tm">'+n.metric+'</div>':'')+'</div>'}
@@ -40,11 +42,9 @@ function startWx(){wxI=0;showWx(0);wxT=setInterval(function(){wxI=(wxI+1)%wxPage
 function showWx(i){document.getElementById('wc').innerHTML=wxH(wxPages[i])}
 build();requestAnimationFrame(tick);
 document.getElementById('ot').textContent=new Date().toLocaleTimeString('zh-CN');document.getElementById('nx').textContent=new Date(Date.now()+600000).toLocaleTimeString('zh-CN');
-// Weather
 setTimeout(function(){wxPages=[{label:'广州·当前',temp:'27',code:0},{label:'+1时',temp:'28',code:1},{label:'+3时',temp:'30',code:0},{label:'+6时',temp:'26',code:2}];startWx()},5000);
 fetch(A+'/api/weather?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(w){var c=w.current,hh=w.hourly;wxPages=[{label:'广州·当前',temp:Math.round(c.temperature_2m),code:c.weather_code}];if(hh&&hh.time){var cur=(new Date()).getHours();for(var i=0;i<3;i++){var idx=cur+[1,3,6][i];if(idx>=hh.time.length)idx=hh.time.length-1;wxPages.push({label:'+'+(i*2+1)+'时',temp:Math.round(hh.temperature_2m[idx]),code:hh.weather_code[idx]})}}startWx()}).catch(function(){});
-// News
-setTimeout(function(){ns=[{level:'high',title:'AI整理中...',summary:'',keywords:''}];build()},5000);
+setTimeout(function(){ns=[{level:'high',title:'AI整理中...',keywords:''}];build()},5000);
 fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(!d||!d.length)return;ns=d;build()});
 setInterval(function(){fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(d&&d.length){ns=d;build()}})},600000);
 </script></body></html>
