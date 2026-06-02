@@ -124,7 +124,7 @@ var nsTimer=setTimeout(function(){if(!nsDone){nsDone=true;
 
 fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){
   if(nsDone)return;nsDone=true;clearTimeout(nsTimer);
-  if(!d)return;ns=d;ns=ns.filter(function(n,i,a){return a.findIndex(function(x){return x.title===n.title})===i});render();setTimeout(fl,2000);
+  if(!d)return;ns=d;ns=ns.filter(function(n,i,a){for(var j=0;j<i;j++){if(a[j].title===n.title)return false}return true});render();setTimeout(fl,2000);
 }).catch(function(){if(!nsDone){nsDone=true;clearTimeout(nsTimer)}});
 
 // Typewriter rhythmic update
@@ -146,5 +146,5 @@ var gs=document.querySelector('.glow-spot'),rf;
 document.addEventListener('mousemove',function(e){if(!rf){rf=requestAnimationFrame(function(){gs.style.background='radial-gradient(circle 400px at '+e.clientX+'px '+e.clientY+'px,rgba(99,102,241,.05),rgba(236,72,153,.03) 20%,transparent 70%)';rf=null})}},{passive:true});
 document.addEventListener('touchmove',function(e){var t=e.touches[0];gs.style.background='radial-gradient(circle 400px at '+t.clientX+'px '+t.clientY+'px,rgba(99,102,241,.05),rgba(236,72,153,.03) 20%,transparent 70%)'},{passive:true});
 
-setInterval(function(){fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(!d)return;ns=d;ns=ns.filter(function(n,i,a){return a.findIndex(function(x){return x.title===n.title})===i});render()})},600000);
+setInterval(function(){fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(!d)return;ns=d;ns=ns.filter(function(n,i,a){for(var j=0;j<i;j++){if(a[j].title===n.title)return false}return true});render()})},600000);
 </script></body></html>
