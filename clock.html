@@ -43,7 +43,7 @@ function build(){
   var h='';
   h+='<div class="c c3 l2"><div class="ckb" id="t">--:--:--<span class="ckms">.---</span></div><div class="ckd" id="td">----</div></div>';
   h+='<div class="c c2 l2" id="wc"><div id="wxi" style="text-align:center;padding:4px 0"><span style="font-size:34px">☀️</span><div id="wxl" style="font-size:10px;color:rgba(255,255,255,.4);margin:2px 0">当前 · <span id="ci">广州</span></div><div id="wxt" style="font-size:22px;font-weight:700">--°</div><div id="wxh" style="font-size:9px;color:rgba(255,255,255,.25)">天气加载中</div></div></div>';
-  h+='<div class="c c2 l2" onclick="doRefresh()" style="cursor:pointer"><div style="display:flex;justify-content:space-between;align-items:center;font-size:10px"><span>🔄 <span id="ot">加载中</span></span><span>⏱ <span id="nx">--</span></span></div></div>';
+  h+='<div class="c c2 l2" onclick="doRefresh()" style="cursor:pointer"><div style="display:flex;justify-content:space-between;align-items:center;font-size:10px"><span>🔄 <span id="ot">加载中</span></span><span>⏱ <span id="nx">--</span></span><span style="font-size:9px;color:rgba(255,255,255,.15)" id="cd"></span></div></div>';
   h+='<div class="c c3 l2" style="flex:1"><div class="tt">📋 AI 简报</div><div class="ts" id="sm" style="-webkit-line-clamp:10">加载中</div></div>';
   for(var i=0;i<ns.length;i++){var n=ns[i],lv=n.level==='critical'?'1':n.level==='high'?'2':'3';h+='<div class="c l'+lv+(i<2?' c2':'')+'" data-id="n'+i+'"><div class="tt">'+em(n.title)+' '+kw(n.title,n.keywords)+'</div>'+(n.summary?'<div class="ts">'+kw(n.summary,n.keywords)+'</div>':'')+(n.metric?'<div class="tm">'+n.metric+'</div>':'')+'</div>'}
   document.getElementById('g').innerHTML=h;tick()
@@ -72,5 +72,20 @@ setTimeout(function F(){var els=document.querySelectorAll('[data-id^="n"]');if(!
 // Auto refresh 10min
 setInterval(function(){fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(!d||!d.length)return;ns=d;build();var n4=new Date();document.getElementById('ot').textContent=n4.toLocaleTimeString('zh-CN')+' · '+ns.length+'条';document.getElementById('nx').textContent=new Date(n4.getTime()+600000).toLocaleTimeString('zh-CN');fetch(A+'/api/news-summary').then(function(r){return r.json()}).then(function(s){if(s&&s.summary)document.getElementById('sm').textContent=s.summary.slice(0,200)})})},600000);
 
-var gs=document.querySelector('.glow-spot'),rf;document.addEventListener('mousemove',function(e){if(!rf){rf=requestAnimationFrame(function(){gs.style.background='radial-gradient(circle 400px at '+e.clientX+'px '+e.clientY+'px,rgba(99,102,241,.05),rgba(236,72,153,.03)20%,transparent 70%)';rf=null})}},{passive:true});document.addEventListener('touchmove',function(e){var t=e.touches[0];gs.style.background='radial-gradient(circle 400px at '+t.clientX+'px '+t.clientY+'px,rgba(99,102,241,.05),rgba(236,72,153,.03)20%,transparent 70%)'},{passive:true});
+var gs=document.querySelector('.glow-spot'),rf;document.addEventListener('mousemove',function(e){if(!rf){rf=requestAnimationFrame(function(){gs.style.background='radial-gradient(circle 400px at '+e.clientX+'px '+e.clientY+'px,rgba(99,102,241,.05),rgba(236,72,153,.03)20%,transparent 70%)';rf=null})}},{passive:true});
+// Countdown timer
+setInterval(function(){
+  var nxEl=document.getElementById('nx');if(!nxEl)return;
+  var t=nxEl.textContent;if(!t||t==='--')return;
+  var parts=t.split(':');if(parts.length<3)return;
+  var target=new Date();target.setHours(parseInt(parts[0]),parseInt(parts[1]),parseInt(parts[2]),0);
+  var diff=Math.max(0,Math.floor((target-Date.now())/1000));
+  var m=Math.floor(diff/60),s=diff%60;
+  var cd=document.getElementById('cd');if(cd)cd.textContent='| '+m+'分'+s+'秒后刷新';
+},1000);
+
+// Mouse glow
+var gs=document.querySelector('.glow-spot'),rf;
+document.addEventListener('touchmove
+document.addEventListener('touchmove',function(e){var t=e.touches[0];gs.style.background='radial-gradient(circle 400px at '+t.clientX+'px '+t.clientY+'px,rgba(99,102,241,.05),rgba(236,72,153,.03)20%,transparent 70%)'},{passive:true});
 </script></body></html>

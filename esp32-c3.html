@@ -93,6 +93,34 @@ pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;fon
   <div style="font-size:10px;color:var(--tx3);margin-top:6px;text-align:center">按下物理按键时高亮</div>
 </div>
 
+
+<div class="card">
+  <div class="section-title">🔌 接线图</div>
+  <pre style="font-size:10px;line-height:1.6;background:rgba(0,0,0,.4);padding:14px;border-radius:10px">
+     ESP32-C3 Super Mini          RGB LED模块(共阴)
+  ┌──────────────────┐          ┌──────────┐
+  │ 5V  ─────────────┼──→ 继电器 VCC        │ R  ──[220Ω]── GPIO4
+  │ GND ─────────────┼──→ 继电器 GND        │ G  ──[220Ω]── GPIO5
+  │                  │  └─→ LED GND         │ B  ──[220Ω]── GPIO6
+  │ GPIO7 ───────────┼──→ 继电器 IN         │ GND ────────── GND
+  │                  │                      └──────────┘
+  │ GPIO0 ───────────┼──→ 按键 K1 ── GND
+  │ GPIO1 ───────────┼──→ 按键 K2 ── GND    继电器(5V低电平触发)
+  │ GPIO2 ───────────┼──→ 按键 K3 ── GND   ┌──────────┐
+  │ GPIO3 ───────────┼──→ 按键 K4 ── GND   │ VCC ── 5V
+  └──────────────────┘                      │ GND ── GND
+                                            │ IN  ── GPIO7
+     继电器输出(12V蜂鸣器)                  │ COM ── 12V+
+  ┌──────────────────────┐                  │ NO  ── 蜂鸣器+
+  │ 12V电源+ ── 蜂鸣器+  │                  └──────────┘
+  │ 蜂鸣器-  ── 12V电源- │
+  │ COM ── 12V+  NO ── 蜂鸣器+             ⚠ 先接LED测试，12V最后接！
+  └──────────────────────┘
+  </pre>
+  <div style="font-size:10px;color:rgba(255,255,255,.3);margin-top:6px">
+    💡 RGB LED串220Ω电阻 · 继电器选3.3V兼容型号 · 按键用INPUT_PULLUP · 12V蜂鸣器通过继电器控制
+  </div>
+</div>
 <!-- Tutorial -->
 <div class="card">
   <div class="section-title">📖 新手教程</div>
