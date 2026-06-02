@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="zh-CN"><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>AI Nav 看板</title><style>*{margin:0;padding:0;box-sizing:border-box}html,body{width:100%;height:100%;overflow:hidden}
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>AI Nav</title><style>*{margin:0;padding:0;box-sizing:border-box}html,body{width:100%;height:100%;overflow:hidden}
 body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:Roboto,sans-serif,sans-serif;font-size:11px;line-height:1.35;padding:4px}
 .g{height:100%;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;overflow-y:auto;align-content:start}
 .c{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04);border-radius:12px;padding:10px 12px;overflow:hidden}
@@ -20,24 +20,24 @@ body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:Roboto,sans-serif
 </style></head><body>
 <div class="g" id="g"></div><script>
 var A='https://c46872d35aeba559-183-6-87-29.serveousercontent.com';
-var WI={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',51:'🌧️',61:'🌧️',71:'❄️',80:'🌦️',95:'⛈️'};
+var WI={0:'*',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',51:'🌧️',61:'🌧️',71:'❄️',80:'🌦️',95:'⛈️'};
 var WN={0:'晴',1:'少云',2:'多云',3:'阴',45:'雾',51:'雨',61:'雨',71:'雪',80:'雨',95:'雷'};
 var ns=[],wxP=[],wxI=0,wxT=null;
-function em(t){var s=(t||'').toLowerCase();if(/战争|冲突|空袭|军事|导弹/.test(t))return'[!]';if(/经济|市场|股票|金融|利率/.test(t))return'[$]';if(/政治|选举|总统|政府|法律/.test(t))return'[政]';if(/科技|AI|芯片|数据/.test(t))return'[科]';if(/医疗|疾病|药物|疫苗/.test(t))return'[医]';return'[新]'}
+function em(t){var s=(t||'').toLowerCase();if(/战争|冲突|空袭|军事|导弹/.test(t))return'[!!]';if(/经济|市场|股票|金融|利率/.test(t))return'[$]';if(/政治|选举|总统|政府|法律/.test(t))return'[政]';if(/科技|AI|芯片|数据/.test(t))return'[科]';if(/医疗|疾病|药物|疫苗/.test(t))return'[医]';return'[新]'}
 function kw(t,k){if(!k||!t)return t;var s=t,ks=k.split(',');for(var i=0;i<ks.length;i++){var w=ks[i].trim();if(!w)continue;var c='k1';if(w[0]==='!'){c='k3';w=w.slice(1)}else if(w[0]==='*'){c='k2';w=w.slice(1)}s=s.split(w).join('<span class="'+c+'">'+w+'</span>')}return s}
 function build(){
   var h='';h+='<div class="c c3"><div class="ckb" id="t">--:--:--<span class="ckms">.---</span></div><div class="ckd" id="td">----</div></div>';
-  h+='<div class="c c2 wx-c" id="wc"><div style="text-align:center"><span style="font-size:32px">☀️</span><div style="font-size:10px;color:rgba(255,255,255,.3);margin:3px 0">广州·当前</div><div style="font-size:24px;font-weight:700;color:#fff">--°</div></div></div>';
-  h+='<div class="c c2 sts" onclick="R()"><span>🔄 <span id="ot">-</span></span><span>⏱ <span id="nx">-</span></span></div>';
-  h+='<div class="c c3 bf-c"><div class="tt">📋 AI简报</div><div class="ts" id="sm">加载中</div></div>';
+  h+='<div class="c c2 wx-c" id="wc"><div style="text-align:center"><span style="font-size:32px">*</span><div style="font-size:10px;color:rgba(255,255,255,.3);margin:3px 0">广州·当前</div><div style="font-size:24px;font-weight:700;color:#fff">--°</div></div></div>';
+  h+='<div class="c c2 sts" onclick="R()"><span>> <span id="ot">-</span></span><span>@ <span id="nx">-</span></span></div>';
+  h+='<div class="c c3 bf-c"><div class="tt"># AI简报</div><div class="ts" id="sm">加载中</div></div>';
   for(var i=0;i<ns.length;i++){var n=ns[i],lv=n.level==='critical'?'1':n.level==='high'?'2':'3';h+='<div class="c l'+lv+(i<2?' c2':'')+'"><div class="tt">'+em(n.title)+' '+kw(n.title,n.keywords)+'</div>'+(n.summary?'<div class="ts">'+kw(n.summary,n.keywords)+'</div>':'')+(n.metric?'<div class="tm">'+n.metric+'</div>':'')+'</div>'}
   document.getElementById('g').innerHTML=h;tick()
 }
+
 function R(){fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(d&&d.length){ns=d;build()}})}
 function tick(){var n=new Date();var e=document.getElementById('t');if(e)e.innerHTML=('0'+n.getHours()).slice(-2)+':'+('0'+n.getMinutes()).slice(-2)+':'+('0'+n.getSeconds()).slice(-2)+' <span class="ckms">.'+('00'+n.getMilliseconds()).slice(-3)+'</span>';e=document.getElementById('td');if(e)e.textContent=n.getFullYear()+'年'+(n.getMonth()+1)+'月'+n.getDate()+'日 周'+['日','一','二','三','四','五','六'][n.getDay()]}
-function sx(i){var p=wxP[i];var e=document.getElementById('wc');if(e)e.innerHTML='<div style="text-align:center"><span style="font-size:32px">'+(WI[p.code]||'☀️')+'</span><div style="font-size:10px;color:rgba(255,255,255,.3);margin:3px 0">'+p.label+'</div><div style="font-size:24px;font-weight:700;color:#fff">'+p.temp+'°C</div></div>'}
+function sx(i){var p=wxP[i];var e=document.getElementById('wc');if(e)e.innerHTML='<div style="text-align:center"><span style="font-size:32px">☀️</span><div style="font-size:10px;color:rgba(255,255,255,.3);margin:3px 0">'+p.label+'</div><div style="font-size:24px;font-weight:700;color:#fff">'+p.temp+'°C</div></div>'}
 function swx(){wxI=0;sx(0);wxT=setInterval(function(){wxI=(wxI+1)%wxP.length;sx(wxI)},5000)}
-
 build();requestAnimationFrame(tick);
 document.getElementById('ot').textContent=new Date().toLocaleTimeString('zh-CN');document.getElementById('nx').textContent=new Date(Date.now()+600000).toLocaleTimeString('zh-CN');
 wxP=[{label:'广州·当前',temp:'27',code:0},{label:'+1时',temp:'28',code:1},{label:'+3时',temp:'30',code:0},{label:'+6时',temp:'26',code:2}];swx();
