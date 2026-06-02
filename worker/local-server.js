@@ -311,7 +311,16 @@ async function handle(req) {
             const arr = JSON.parse(jsonMatch[0]);
             const result = arr.map((item, i) => ({ ...item, id: i, time: new Date().toISOString() }));
             result._ts = Date.now();
+            // Accumulate: merge with existing, keep last 100 unique
+            try {
+              const old = JSON.parse(await Deno.readTextFile("./news-cn-cache.json"));
+              const seen = new Set(old.map(e => e.title));
+              const fresh = result.filter(e => !seen.has(e.title));
+              const merged = [...fresh, ...old].slice(0, 100);
+              result = merged;
+            } catch(_) {}
             cacheSet("news-cn", result);
+            try { await Deno.writeTextFile("./news-cn-cache.json", JSON.stringify(result)); } catch(_) {}
             try { await Deno.writeTextFile("./news-cn-cache.json", JSON.stringify(result)); } catch(_) {}
             if (data.usage) trackUsage("news-cn", data.usage, "deepseek-chat");
             return ok(result);
@@ -367,7 +376,16 @@ async function refreshNewsCN() {
       const arr = JSON.parse(jsonMatch[0]);
       const result = arr.map((item, i) => ({ ...item, id: i, time: new Date().toISOString() }));
       result._ts = Date.now();
-      cacheSet("news-cn", result);
+      // Accumulate: merge with existing, keep last 100 unique
+            try {
+              const old = JSON.parse(await Deno.readTextFile("./news-cn-cache.json"));
+              const seen = new Set(old.map(e => e.title));
+              const fresh = result.filter(e => !seen.has(e.title));
+              const merged = [...fresh, ...old].slice(0, 100);
+              result = merged;
+            } catch(_) {}
+            cacheSet("news-cn", result);
+            try { await Deno.writeTextFile("./news-cn-cache.json", JSON.stringify(result)); } catch(_) {}
       try { await Deno.writeTextFile("./news-cn-cache.json", JSON.stringify(result)); } catch(_) {}
       if (data.usage) trackUsage("news-cn", data.usage, "deepseek-chat");
       console.log(`[news-cn] updated: ${result.length} items`);
@@ -458,7 +476,16 @@ async function refreshNewsSummary() {
     if (data.usage) trackUsage("news-summary", data.usage, "deepseek-chat");
 
     const result = { summary, updated: new Date().toISOString(), newsCount: topNews.length };
-    cacheSet("news-summary", result);
+    // Accumulate: keep last 10 summaries
+            try {
+              const old = JSON.parse(await Deno.readTextFile("./news-summaries.json"));
+              old.unshift(result);
+              const trimmed = old.slice(0, 10);
+              await Deno.writeTextFile("./news-summaries.json", JSON.stringify(trimmed));
+            } catch(_) {
+              try { await Deno.writeTextFile("./news-summaries.json", JSON.stringify([result])); } catch(_) {}
+            }
+            cacheSet("news-summary", result);
     // Persist to disk
     try { await Deno.writeTextFile("./news-cache.json", JSON.stringify(result)); } catch(_) {}
     console.log(`[news-summary] updated (${summary.length} chars, ${topNews.length} news)`);
