@@ -264,6 +264,57 @@ async function handle(req) {
       return ok({ total, days, entries: entries.slice(-50), conversation: { chars: convChars, tokens: convTokens, cost: convCost } });
     }
 
+    // ── News CN (AI translated + prioritized, cached 10min) ──
+    if (path === "/api/news-cn") {
+      const cached = cacheGet("news-cn", 600_000);
+      if (cached) return ok(cached);
+      // Fetch raw news
+      const resp = await fetch("https://feeds.npr.org/1001/rss.xml", { signal: AbortSignal.timeout(8000) });
+      if (!resp.ok) return ok([]);
+      const xml = await resp.text();
+      const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].slice(0, 8).map(m => {
+        const t = (m[1].match(/<title>([^<]+)<\/title>/) || [])[1] || "";
+        return { title: t.replace(/&#39;/g,"'").replace(/&apos;/g,"'").replace(/&amp;/g,"&").replace(/&quot;/g,'"'), source: "NPR" };
+      });
+      if (!items.length) return ok([]);
+      // Ask DeepSeek to translate + prioritize
+      const titles = items.map((n,i) => `${i+1}. ${n.title}`).join("\n");
+      try {
+        const r = await fetch(DEEPSEEK, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${DEEPSEEK_KEY}` },
+          body: JSON.stringify({
+            model: "deepseek-chat",
+            messages: [{
+              role: "system",
+              content: `你是中文新闻编辑。将每条英文新闻翻译成简洁中文(20字内)，提取关键数字/指标，分配优先级(critical/high/normal/low)。输出纯JSON数组，格式：[{"level":"high","title":"中文标题","summary":"一句话要点","metric":"关键数字","source":"NPR"}]`
+            }, {
+              role: "user",
+              content: `翻译并分析以下新闻：\n${titles}`
+            }],
+            temperature: 0.2, max_tokens: 1200
+          })
+        });
+        if (r.ok) {
+          const data = await r.json();
+          const text = data.choices?.[0]?.message?.content || "";
+          // Extract JSON array from response
+          const jsonMatch = text.match(/\[[\s\S]*\]/);
+          if (jsonMatch) {
+            const arr = JSON.parse(jsonMatch[0]);
+            const result = arr.map((item, i) => ({ ...item, id: i, time: new Date().toISOString() }));
+            cacheSet("news-cn", result);
+            if (data.usage) trackUsage("news-cn", data.usage, "deepseek-chat");
+            return ok(result);
+          }
+        }
+      } catch (e) { console.log("[news-cn] DeepSeek error:", e.message); }
+      // Fallback: raw titles
+      const fallback = items.map((item, i) => ({ level: "normal", title: item.title, summary: "", metric: "", source: item.source, id: i, time: new Date().toISOString() }));
+      cacheSet("news-cn", fallback);
+      return ok(fallback);
+    }
+
     // ── News AI Summary (cached, refreshed every 15 min) ──
 	    if (path === "/api/news-summary") {
 	      const cached = cacheGet("news-summary", 900_000);
