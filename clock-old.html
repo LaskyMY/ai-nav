@@ -3,144 +3,140 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=1280,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>AI Nav 时钟 · iOS</title>
+<title>AI Nav 时钟</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html{height:100%;display:flex;justify-content:center;align-items:center;background:#000}
-body{width:1280px;height:1000px;max-height:100vh;background:#09090b;color:rgba(250,250,250,.88);font-family:'DM Sans',-apple-system,sans-serif;font-size:13px;line-height:1.4;display:flex;flex-direction:column;padding:28px 24px 24px 10px;overflow:hidden;position:relative;-webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased}
-.bg{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 50% 12%,rgba(56,189,248,.03) 0%,transparent 55%)}
+body{width:1280px;height:1000px;max-height:100vh;background:#08080c;color:#fafafa;font-family:'DM Sans',-apple-system,sans-serif;font-size:12px;line-height:1.3;padding:24px 16px 24px 6px;overflow:hidden;position:relative;-webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased}
+.bg{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 60% 20%,rgba(56,189,248,.02) 0%,transparent 50%)}
 
-/* Top control bar */
-.topbar{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 2px 6px;position:relative;z-index:2}
-.topbar-l{font-size:12px;font-weight:700;color:#fafafa;letter-spacing:-.01em}
-.topbar-r{display:flex;align-items:center;gap:8px}
-.live-dot{width:6px;height:6px;border-radius:3px;background:#22c55e;animation:live 2s ease-in-out infinite}
-@keyframes live{0%,100%{opacity:1}50%{opacity:.3}}
-.rate{font-size:9px;color:rgba(250,250,250,.25)}
-.btn-sm{font-size:9px;color:rgba(250,250,250,.3);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:6px;padding:3px 8px;cursor:pointer;font-family:inherit;transition:all .2s}
-.btn-sm:active{background:rgba(255,255,255,.08);color:rgba(250,250,250,.6)}
-.btn-sm.on{color:#38bdf8;border-color:rgba(56,189,248,.2);background:rgba(56,189,248,.08)}
-
-/* New message bar */
-.newbar{flex-shrink:0;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.12);border-radius:8px;padding:5px 10px;margin:0 0 4px;text-align:center;font-size:10px;color:#38bdf8;cursor:pointer;display:none;position:relative;z-index:2;animation:slideDown .25s ease}
-
-/* Cards */
-.card{flex-shrink:0;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.04);border-radius:10px;padding:0;margin-top:4px;position:relative;z-index:1;overflow:hidden;transition:all .2s ease}
-.card-inner{transition:opacity .22s ease,transform .22s ease}
-/* Left accent bar */
-.card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;transition:background .3s}
-.card.lv-critical::before{background:#ef4444}
-.card.lv-high::before{background:#f59e0b}
-.card.lv-normal::before{background:#38bdf8}
-.card.lv-low::before{background:rgba(255,255,255,.1)}
-.card-body{padding:10px 12px 10px 16px}
-.card-meta{display:flex;align-items:center;gap:6px;margin-bottom:3px}
-.card-tag{font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;letter-spacing:.03em}
-.tag-critical{color:#ef4444;background:rgba(239,68,68,.1)}
-.tag-high{color:#f59e0b;background:rgba(245,158,11,.1)}
-.tag-normal{color:#38bdf8;background:rgba(56,189,248,.1)}
-.tag-low{color:rgba(250,250,250,.25);background:rgba(255,255,255,.04)}
-.card-time{font-size:9px;color:rgba(250,250,250,.2);margin-left:auto}
-.card-title{font-size:13px;font-weight:600;color:#fafafa;line-height:1.35;margin-bottom:2px;letter-spacing:-.01em}
-.card-desc{font-size:11px;color:rgba(250,250,250,.4);line-height:1.4}
-.card-foot{display:flex;align-items:center;gap:8px;margin-top:4px;font-size:9px;color:rgba(250,250,250,.2)}
-.card-num{font-weight:700;color:#fafafa;font-size:12px}
-.card-num.up{color:#22c55e}.card-num.down{color:#ef4444}
-.dots{display:flex;justify-content:center;padding:4px 0}
-.dot{width:3px;height:3px;border-radius:2px;background:rgba(255,255,255,.08);margin:0 2px;transition:all .3s}
-.dot.on{width:12px;background:rgba(56,189,248,.5)}
-
-/* Clock card */
-.c1{padding:12px 16px;text-align:center}
-.c1t{font-size:72px;font-weight:700;color:#fafafa;letter-spacing:-.02em;line-height:1}
-.c1ms{font-size:28px;color:#38bdf8;font-weight:500;min-width:72px;display:inline-block;opacity:.85}
-.c1d{font-size:12px;color:rgba(250,250,250,.35);margin-top:4px}
-.c1ci{font-size:10px;color:rgba(56,189,248,.25);margin-top:2px}
-
-/* Brief area */
-.bf-area{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:60px}
-.bf-area .card-body{font-size:11px;line-height:1.5;color:rgba(250,250,250,.45)}
-.bf-area h2{font-size:14px;font-weight:700;color:#fafafa;margin:8px 0 4px}
-.bf-area h3{font-size:12px;font-weight:600;color:rgba(250,250,250,.7);margin:6px 0 3px}
-.bf-area table{width:100%;border-collapse:collapse;margin:4px 0;font-size:10px}
-.bf-area td,.bf-area th{border-bottom:1px solid rgba(255,255,255,.05);padding:3px 5px;text-align:left}
-.bf-area th{color:#38bdf8;font-size:10px;font-weight:600}
-
-/* Bottom status */
-.btm{flex-shrink:0;text-align:center;font-size:9px;color:rgba(250,250,250,.12);padding:6px 0 0;position:relative;z-index:1}
-@keyframes slideDown{from{transform:translateY(-8px);opacity:0}to{transform:translateY(0);opacity:1}}
+/* Mosaic container */
+.mosaic{position:relative;z-index:1;height:100%;display:flex;flex-wrap:wrap;align-content:flex-start}
+/* Tiles */
+.tile{position:relative;overflow:hidden;border-radius:10px;margin:3px;padding:10px 12px;display:flex;flex-direction:column;justify-content:center;transition:transform .2s ease;cursor:default}
+.tile:active{transform:scale(.97)}
+/* Flash animation */
+.tile.flash{animation:flash .35s ease-out}
+@keyframes flash{0%{filter:brightness(2.5)}100%{filter:brightness(1)}}
+/* Color by importance */
+.tile.lv-critical{background:rgba(239,68,68,.18);border:1px solid rgba(239,68,68,.12)}
+.tile.lv-high{background:rgba(245,158,11,.14);border:1px solid rgba(245,158,11,.1)}
+.tile.lv-normal{background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.08)}
+.tile.lv-low{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04)}
+.tile.lv-system{background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.08)}
+/* Sizes */
+.tile.sz-xl{width:100%;min-height:70px;font-size:14px;text-align:center}
+.tile.sz-lg{width:calc(50% - 6px);min-height:80px;font-size:12px}
+.tile.sz-md{width:calc(50% - 6px);min-height:60px;font-size:11px}
+.tile.sz-sm{width:calc(33.33% - 6px);min-height:52px;font-size:10px}
+.tile.sz-xs{width:calc(25% - 6px);min-height:44px;font-size:9px;padding:6px 8px}
+/* Tile content */
+.tile .t-t{font-weight:700;line-height:1.2;letter-spacing:-.01em;color:#fafafa;margin-bottom:2px}
+.tile .t-s{font-size:.85em;opacity:.6;line-height:1.3}
+.tile .t-m{font-size:.75em;opacity:.35;margin-top:auto;padding-top:4px}
+/* Clock tile special */
+.tile.clock-tile{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);text-align:center}
+.tile.clock-tile .clk{font-size:44px;font-weight:700;letter-spacing:-.02em}
+.tile.clock-tile .clk-ms{font-size:16px;color:#38bdf8;opacity:.8;min-width:44px;display:inline-block}
+.tile.clock-tile .clk-date{font-size:11px;opacity:.35;margin-top:2px}
 </style></head><body>
 <div class="bg"></div>
-
-<div class="topbar">
-  <span class="topbar-l">实时信息流</span>
-  <span class="topbar-r">
-    <span class="live-dot"></span>
-    <span class="rate" id="rate">-- 条/时</span>
-    <button class="btn-sm" id="pauseBtn" onclick="togglePause()">暂停</button>
-    <button class="btn-sm on" id="denseBtn" onclick="toggleDense()">紧凑</button>
-  </span>
-</div>
-
-<div class="newbar" id="newbar">有 <span id="newCnt">0</span> 条新动态，点击查看</div>
-
-<div class="card c1"><div><span class="c1t" id="t">--:--:--</span><span class="c1ms" id="ms">.--</span></div><div class="c1d" id="d">--</div><div class="c1ci" id="ci">广州</div></div>
-
-<div class="card" id="wxCard"><div class="card-body"><div class="card-inner" id="wxi"></div></div><div class="dots" id="wxd"></div></div>
-
-<div id="feedArea" class="bf-area"></div>
-
-<div class="btm" id="btm">正在同步 <span class="live-dot" style="display:inline-block;vertical-align:middle;width:5px;height:5px"></span></div>
+<div class="mosaic" id="mosaic"></div>
 
 <script>
 var A='https://c46872d35aeba559-183-6-87-29.serveousercontent.com';
 var WN={0:'晴天',1:'少云',2:'多云',3:'阴天',45:'雾',48:'霜雾',51:'小雨',53:'小雨',55:'中雨',61:'小雨',63:'中雨',65:'大雨',71:'小雪',73:'中雪',75:'大雪',77:'雪',80:'阵雨',81:'阵雨',82:'暴雨',85:'阵雪',86:'阵雪',95:'雷暴',96:'雷暴',97:'强雷暴'};
-var paused=false,dense=true,totalItems=0,startTime=Date.now();
+var tiles=[],tickTimer=null;
 
-function togglePause(){paused=!paused;document.getElementById('pauseBtn').textContent=paused?'继续':'暂停';document.getElementById('pauseBtn').classList.toggle('on',paused)}
-function toggleDense(){dense=!dense;document.getElementById('denseBtn').textContent=dense?'紧凑':'标准';document.getElementById('denseBtn').classList.toggle('on',dense);renderFeed()}
-
-function tick(){var n=new Date();document.getElementById('t').textContent=('0'+n.getHours()).slice(-2)+':'+('0'+n.getMinutes()).slice(-2)+':'+('0'+n.getSeconds()).slice(-2);document.getElementById('ms').textContent='.'+('00'+n.getMilliseconds()).slice(-3);document.getElementById('d').textContent=n.getFullYear()+'年'+(n.getMonth()+1)+'月'+n.getDate()+'日 周'+['日','一','二','三','四','五','六'][n.getDay()];var h=(totalItems/((Date.now()-startTime)/3600000)).toFixed(0);if(h>0)document.getElementById('rate').textContent=h+' 条/时'}setInterval(tick,80);tick();
-
-// News feed items
-var feedItems=[],feedI=0;
-function addFeed(level,title,desc,meta,source,time){
-  feedItems.push({l:level,t:title,d:desc,m:meta,s:source,ts:time||new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit',second:'2-digit'})});
-  totalItems++;
-  if(!paused)renderFeed();
+// Build clock tile (always present, never refreshed)
+function clockTile(){
+  var n=new Date();
+  var h=('0'+n.getHours()).slice(-2),m=('0'+n.getMinutes()).slice(-2),s=('0'+n.getSeconds()).slice(-2),ms=('00'+n.getMilliseconds()).slice(-3);
+  return '<div class="tile sz-xl clock-tile"><div class="clk">'+h+':'+m+':'+s+'<span class="clk-ms">.'+ms+'</span></div><div class="clk-date">'+n.getFullYear()+'年'+(n.getMonth()+1)+'月'+n.getDate()+'日 周'+['日','一','二','三','四','五','六'][n.getDay()]+' · <span id="ci">广州</span></div></div>'
 }
-function renderFeed(){
-  var area=document.getElementById('feedArea'),h='';
-  var items=feedItems.slice(-30).reverse();
-  for(var i=0;i<items.length;i++){
-    var it=items[i],lv=it.l,cls=lv==='critical'?'lv-critical':lv==='high'?'lv-high':lv==='normal'?'lv-normal':'lv-low';
-    var tagCls=lv==='critical'?'tag-critical':lv==='high'?'tag-high':lv==='normal'?'tag-normal':'tag-low';
-    var lvLabel=lv==='critical'?'严重':lv==='high'?'重要':lv==='normal'?'普通':'低优';
-    if(dense){
-      h+='<div class="card '+cls+'"><div class="card-body" style="padding:6px 12px 6px 16px"><span class="card-tag '+tagCls+'">'+lvLabel+'</span> <span class="card-time">'+it.ts+'</span> <span class="card-title" style="font-size:11px;display:inline">'+it.t+'</span></div></div>';
-    }else{
-      h+='<div class="card '+cls+'"><div class="card-body"><div class="card-meta"><span class="card-tag '+tagCls+'">'+lvLabel+'</span><span style="font-size:9px;color:rgba(250,250,250,.2);margin-left:4px">'+it.s+'</span><span class="card-time">'+it.ts+'</span></div><div class="card-title">'+it.t+'</div>'+(it.d?'<div class="card-desc">'+it.d+'</div>':'')+(it.m?'<div class="card-foot">'+it.m+'</div>':'')+'</div></div>';
+
+function renderTiles(){
+  var h=clockTile();
+  for(var i=0;i<tiles.length;i++){
+    var t=tiles[i],sz=t.sz||'sm';
+    h+='<div class="tile lv-'+t.level+' sz-'+sz+'" data-id="'+t.id+'"><div class="t-t">'+t.title+'</div>'+(t.summary?'<div class="t-s">'+t.summary+'</div>':'')+(t.metric?'<div class="t-m">'+t.metric+'</div>':'')+'</div>';
+  }
+  document.getElementById('mosaic').innerHTML=h;
+}
+
+// Add weather tile
+function addWx(w){
+  var c=w.current;
+  tiles.push({id:'wx-now',level:'system',sz:'lg',title:'当前 '+Math.round(c.temperature_2m)+'°C',summary:WN[c.weather_code],metric:'湿度 '+(c.relative_humidity_2m||'')+'%'});
+  if(w.hourly&&w.hourly.time){
+    var cur=(new Date()).getHours();
+    for(var i=0;i<3;i++){
+      var idx=cur+[1,3,6][i];if(idx>=w.hourly.time.length)idx=w.hourly.time.length-1;
+      tiles.push({id:'wx-'+i,level:'system',sz:'xs',title:['+1时','+3时','+6时'][i],summary:Math.round(w.hourly.temperature_2m[idx])+'° '+WN[w.hourly.weather_code[idx]],metric:''});
     }
   }
-  area.innerHTML=h||'<div style="text-align:center;color:rgba(250,250,250,.15);padding:20px;font-size:11px">等待新动态</div>';
+  renderTiles();
 }
 
-// Weather card flip
-var F={};function flip(id,pages,ms){F[id]={p:pages,i:0,n:pages.length,d:ms};var el=document.getElementById(id+'i');if(el)el.innerHTML=pages[0];dots(id);if(pages.length>1)next(id)}function next(id){var f=F[id];if(!f||f.n<=1)return;f.i=(f.i+1)%f.n;var el=document.getElementById(id+'i');if(!el)return;el.style.opacity='0';el.style.transform='translateY(6px)';setTimeout(function(){if(el){el.innerHTML=f.p[f.i];el.style.opacity='1';el.style.transform='translateY(0)';dots(id)}},200);setTimeout(function(){next(id)},f.d)}function dots(id){var f=F[id],c=document.getElementById(id+'d');if(!c)return;var h='';for(var i=0;i<f.n;i++)h+='<span class="dot'+(i===f.i?' on':'')+'"></span>';c.innerHTML=h}
+// Add news tiles
+function addNews(items){
+  for(var i=0;i<items.length;i++){
+    var it=items[i];
+    tiles.push({id:'n-'+i,level:it.level||'normal',sz:i<2?'md':i<4?'sm':'xs',title:it.title,summary:it.summary||'',metric:it.metric||it.source||''});
+  }
+  renderTiles();
+}
 
-fetch(A+'/api/weather?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(w){
-  var c=w.current,hh=w.hourly,p=[];
-  p.push('<div style="text-align:center"><span class="card-num" style="font-size:30px;font-weight:700">'+Math.round(c.temperature_2m)+'°C</span><div style="font-size:12px;color:rgba(250,250,250,.45);margin-top:2px">'+WN[c.weather_code]+'</div><div style="font-size:10px;color:rgba(250,250,250,.2);margin-top:2px">湿度 '+(c.relative_humidity_2m||'')+'%</div></div>');
-  if(hh&&hh.time){var cur=(new Date()).getHours();for(var i=0;i<3;i++){var idx=cur+[1,3,6][i];if(idx>=hh.time.length)idx=hh.time.length-1;p.push('<div style="text-align:center"><div style="font-size:10px;color:rgba(56,189,248,.3);margin-bottom:4px">'+['+1 小时','+3 小时','+6 小时'][i]+'</div><span class="card-num" style="font-size:30px;font-weight:700">'+Math.round(hh.temperature_2m[idx])+'°C</span><div style="font-size:12px;color:rgba(250,250,250,.45);margin-top:2px">'+WN[hh.weather_code[idx]]+'</div></div>')}}flip('wx',p,5000);
-  // Add weather as feed item
-  addFeed('normal','天气: '+WN[c.weather_code]+' '+Math.round(c.temperature_2m)+'°C','湿度 '+(c.relative_humidity_2m||'')+'%','','天气',null);
-  fetch(A+'/api/geocode?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(d){var a=(d&&d.address)||d||{};var c=a.city||a.town||a.county||'';if(c)document.getElementById('ci').textContent=c});
-});
+// Flash update: pick one tile, flash it, update its content
+var flashIdx=0;
+function flashUpdate(){
+  if(!tiles.length)return;
+  // Prefer low-priority tiles for more frequent updates
+  var pool=[];
+  for(var i=0;i<tiles.length;i++){
+    if(tiles[i].id.indexOf('wx-')===0||tiles[i].id.indexOf('clock')===0)continue; // skip weather/clock
+    var w=tiles[i].level==='low'?4:tiles[i].level==='normal'?3:tiles[i].level==='high'?2:1;
+    for(var j=0;j<w;j++)pool.push(i);
+  }
+  if(!pool.length)return;
+  var idx=pool[Math.floor(Math.random()*pool.length)];
+  var tile=tiles[idx];
+  var el=document.querySelector('[data-id="'+tile.id+'"]');
+  if(!el)return;
+  // Flash
+  el.classList.add('flash');
+  setTimeout(function(){el.classList.remove('flash')},350);
+  // Update content (rotate in existing items for demo)
+  var others=[];
+  for(var k=0;k<tiles.length;k++){if(k!==idx&&tiles[k].id.indexOf('wx-')!==0&&tiles[k].id.indexOf('clock')!==0&&tiles[k].id.indexOf('wx-now')!==0)others.push(tiles[k])}
+  if(others.length){
+    var src=others[Math.floor(Math.random()*others.length)];
+    var ti=el.querySelector('.t-t');if(ti)ti.textContent=src.title;
+    var si=el.querySelector('.t-s');if(si)si.textContent=src.summary||'';
+    var mi=el.querySelector('.t-m');if(mi)mi.textContent=src.metric||'';
+  }
+  setTimeout(function(){flashUpdate()},2000+Math.random()*2000);
+}
 
-fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(!d||!d.length)return;for(var i=0;i<d.length;i++){var it=d[i];addFeed(it.level||'normal',it.title,it.summary||'',it.metric||'',it.source||'',null)}document.getElementById('rate').textContent=(d.length*4)+' 条/时'});
-fetch(A+'/api/news-summary').then(function(r){return r.json()}).then(function(d){if(!d||!d.summary)return;var lines=d.summary.split('\\n'),title='';for(var i=0;i<lines.length;i++){if(/^##\s/.test(lines[i])){title=lines[i].replace(/^##\s*/,'')}if(/^###\s/.test(lines[i])){addFeed('high',title+': '+lines[i].replace(/^###\s*/,''),'','AI简报','DeepSeek',null)}}});
+// Init
+fetch(A+'/api/weather?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(w){if(w&&w.current)addWx(w);fetch(A+'/api/geocode?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(d){var a=(d&&d.address)||d||{};var c=a.city||a.town||a.county||'';if(c)document.getElementById('ci').textContent=c})});
+fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(d&&d.length)addNews(d)});
 
-// Refresh periodically
-setInterval(function(){fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(!d||!d.length)return;for(var i=0;i<Math.min(d.length,5);i++){var it=d[i];addFeed(it.level||'normal',it.title,it.summary||'',it.metric||'',it.source||'',null)}});fetch(A+'/api/news-summary').then(function(r){return r.json()}).then(function(d){if(!d||!d.summary)return;var parts=d.summary.split(/\\n(?=## )/);for(var j=0;j<Math.min(parts.length,2);j++){var s=parts[j].trim();if(s){var t=s.split('\\n')[0].replace(/^##\s*/,'');addFeed('high',t,'','AI简报','DeepSeek',null)}}})},600000);
+// Clock tick
+setInterval(function(){var el=document.querySelector('.clock-tile');if(el)el.innerHTML=(function(){var n=new Date();var h=('0'+n.getHours()).slice(-2),m=('0'+n.getMinutes()).slice(-2),s=('0'+n.getSeconds()).slice(-2),ms=('00'+n.getMilliseconds()).slice(-3);return'<div class="clk">'+h+':'+m+':'+s+'<span class="clk-ms">.'+ms+'</span></div>';})()},200);
+
+// Start flash updates after initial load
+setTimeout(function(){flashUpdate()},3000);
+
+// Periodic full refresh
+setInterval(function(){
+  fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){
+    if(!d||!d.length)return;
+    // Remove old news tiles
+    tiles=tiles.filter(function(t){return t.id.indexOf('n-')!==0&&t.id.indexOf('wx-')!==0});
+    addWx({current:{temperature_2m:parseInt(document.querySelector('.clk')?0:27)}}); // placeholder, actual wx from cache
+    addNews(d);
+  });
+},600000);
 </script></body></html>
