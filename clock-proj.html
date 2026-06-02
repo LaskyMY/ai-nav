@@ -19,7 +19,7 @@ body{background:linear-gradient(180deg,#0d0d1a 0%,#0a0a18 50%,#0c0c1e 100%);colo
 
 .g{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:repeat(8,1fr);grid-auto-flow:dense;grid-auto-rows:minmax(52px,auto);gap:4px;align-content:start;overflow-y:auto;-webkit-overflow-scrolling:touch}
 
-.t{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:10px 12px;transition:all .35s var(--ease);box-shadow:0 0 60px rgba(99,102,241,.04),0 4px 24px rgba(0,0,0,.1);position:relative;overflow:hidden;animation:fu .5s var(--ease) both;min-height:50px}
+.t{background:linear-gradient(150deg,rgba(8,12,24,.97) 0%,rgba(10,18,38,.97) 100%);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid rgba(59,164,255,.15);border-radius:12px;padding:12px 14px;transition:all .35s var(--ease);box-shadow:rgba(59,164,255,.2) 0 0 0 1px,rgba(59,164,255,.12) 0 0 16px,rgba(59,164,255,.06) 0 0 40px,rgba(0,0,0,.5) 0 12px 32px;position:relative;overflow:hidden;animation:fu .5s var(--ease) both;min-height:50px}
 .t::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
 .t:active{transform:scale(.97)!important;transition:transform .12s ease!important}
 @keyframes fu{0%{opacity:0;transform:translateY(12px) scale(.96)}100%{opacity:1;transform:translateY(0) scale(1)}}
@@ -29,7 +29,7 @@ body{background:linear-gradient(180deg,#0d0d1a 0%,#0a0a18 50%,#0c0c1e 100%);colo
 .t.lv-critical{border-color:rgba(239,68,68,.2);box-shadow:0 0 50px rgba(239,68,68,.08),0 4px 24px rgba(0,0,0,.1);background:rgba(239,68,68,.07)}
 .t.lv-high{border-color:rgba(245,158,11,.16);box-shadow:0 0 40px rgba(245,158,11,.05),0 4px 24px rgba(0,0,0,.1);background:rgba(245,158,11,.05)}
 .t.lv-normal{border-color:rgba(99,102,241,.12);background:rgba(99,102,241,.03)}
-.t.lv-sys{border-color:var(--card-border)}
+.t.lv-sys{border-color:rgba(59,164,255,.15);box-shadow:rgba(59,164,255,.15) 0 0 0 1px,rgba(59,164,255,.08) 0 0 12px,rgba(0,0,0,.4) 0 8px 24px;background:linear-gradient(150deg,rgba(8,12,24,.97) 0%,rgba(10,18,38,.97) 100%)}
 .t.lv-low{border-color:rgba(255,255,255,.05);background:rgba(255,255,255,.015)}
 
 /* Typewriter glitch refresh — retro rhythm */
