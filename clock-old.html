@@ -53,10 +53,11 @@ function em(t){var s=(t||'').toLowerCase();if(/战争|冲突|空袭|军事|导�
 
 function kw(t,k){if(!k||!t)return t;var s=t,ks=k.split(',');for(var i=0;i<ks.length;i++){var w=ks[i].trim();if(!w)continue;var c='k1';if(w[0]==='!'){c='k3';w=w.slice(1)}else if(w[0]==='*'){c='k2';w=w.slice(1)}s=s.split(w).join('<span class="'+c+'">'+w+'</span>')}return s}
 
+function doRefresh(){fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(!d||!d.length)return;ns=d;build()})}
 function build(){
   var h='';h+='<div class="c c3 lX"><div class="ckb" id="t">--:--:--<span class="ckms">.---</span></div><div class="ckd" id="td">----</div></div>';
   h+='<div class="c c2 lX" id="wc"><div style="text-align:center;padding:6px 0"><div style="font-size:34px;margin-bottom:2px" id="wxi">☀️</div><div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:2px"><span id="ci">广州</span> · <span id="wxl">当前</span></div><div style="font-size:18px;font-weight:600;color:#fff" id="wxt">--°</div><div class="wxh" id="wxh">天气加载中</div></div></div>';
-  h+='<div class="c c2 lX" onclick="fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(!d||!d.length)return;ns=d;build()})" style="cursor:pointer"><div class="tt">📡 实时信息 · 点击刷新</div><div class="ts">数据: <span id="ot">加载中</span></div><div class="tm">下次自动刷新: <span id="nx">--</span></div></div>';
+  h+='<div class="c c2 lX" onclick="doRefresh()" style="cursor:pointer"><div class="tt">📡 实时信息 · 点击刷新</div><div class="ts">数据: <span id="ot">加载中</span></div><div class="tm">下次自动刷新: <span id="nx">--</span></div></div>';
   for(var i=0;i<ns.length;i++){var n=ns[i],lv=n.level==='critical'?'1':n.level==='high'?'2':n.level==='low'?'4':'3';h+='<div class="c l'+lv+(i<2?' c2':'')+'" data-id="n'+i+'"><div class="tt">'+em(n.title)+' '+kw(n.title,n.keywords)+'</div>'+(n.summary?'<div class="ts">'+kw(n.summary,n.keywords)+'</div>':'')+(n.metric?'<div class="tm">'+n.metric+'</div>':'')+'</div>'}
   document.getElementById('g').innerHTML=h;tick()
 }
