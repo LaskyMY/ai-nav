@@ -45,9 +45,23 @@ pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;fon
 
 <!-- Connection -->
 <div class="card">
-  <div class="row"><span class="section-title">📡 连接状态</span><span><span class="status wait" id="st"></span><span id="stTxt">未连接</span></span></div>
-  <button class="btn" onclick="connect()" id="btnConn">连接 AI-NAV-C3</button>
-  <button class="btn warn" onclick="disconnect()" id="btnDisc" style="display:none">断开</button>
+  <div class="section-title">📡 连接方式</div>
+  <div style="display:flex;gap:6px;margin-bottom:6px">
+    <button class="btn on" id="modeWiFi" onclick="setMode('wifi')" style="flex:1">📶 WiFi</button>
+    <button class="btn" id="modeBLE" onclick="setMode('ble')" style="flex:1">📡 蓝牙</button>
+  </div>
+  <div id="wifiPanel">
+    <div class="row"><span class="lbl">ESP32 IP地址</span><input type="text" id="espIP" placeholder="192.168.x.x" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:6px 10px;color:#fff;font-size:12px;width:160px"></div>
+    <div style="display:flex;gap:6px;margin-top:4px">
+      <button class="btn" onclick="connectWiFi()" style="flex:1">🔗 连接WiFi</button>
+      <button class="btn warn" onclick="window.open('http://'+document.getElementById('espIP').value+'/wifi','_blank')" style="flex:1">⚙ 配网</button>
+    </div>
+    <div style="font-size:9px;color:rgba(255,255,255,.2);margin-top:4px">首次使用：手机连ESP32热点→浏览器打开192.168.4.1/wifi→输入WiFi密码</div>
+  </div>
+  <div id="blePanel" style="display:none">
+    <div class="row"><span class="lbl">蓝牙状态</span><span><span class="status wait" id="st"></span><span id="stTxt">未连接</span></span></div>
+    <button class="btn" onclick="connectBLE()" id="btnBLE">连接 AI-NAV-C3</button>
+  </div>
 </div>
 
 <!-- RGB LED -->
@@ -280,12 +294,43 @@ var KEYS='beb5483e-36e1-4688-b7f5-ea07361b26ab';
 
 var dev=null,server=null,ledChar=null,cmdChar=null,keyChar=null;
 
+var connMode='wifi',wifiBase='';
+function setMode(m){
+  connMode=m;
+  document.getElementById('modeWiFi').classList.toggle('on',m==='wifi');
+  document.getElementById('modeBLE').classList.toggle('on',m==='ble');
+  document.getElementById('wifiPanel').style.display=m==='wifi'?'block':'none';
+  document.getElementById('blePanel').style.display=m==='ble'?'block':'none';
+}
+function connectWiFi(){
+  wifiBase='http://'+document.getElementById('espIP').value;
+  fetch(wifiBase+'/api/led?r=0&g=0&b=0').then(function(r){return r.text()}).then(function(){
+    setStatus('WiFi已连接','ok');document.getElementById('stTxt').textContent=wifiBase;
+  }).catch(function(){setStatus('WiFi连接失败','err')});
+}
+async function wcmd(m,p1,p2){
+  if(connMode==='wifi'){
+    if(m<=2)fetch(wifiBase+'/api/buzzer?cmd='+m);
+    else if(m===4)fetch(wifiBase+'/api/buzzer?cmd=4');
+    else if(m===5)fetch(wifiBase+'/api/buzzer?cmd=5');
+    else if(m===6)fetch(wifiBase+'/api/buzzer?cmd=6');
+  } else {
+    wcmd(m,p1,p2)
+  }
+}
+async function wled(r,g,b){
+  if(connMode==='wifi')fetch(wifiBase+'/api/led?r='+r+'&g='+g+'&b='+b);
+  else{wled(r,g,b)}
+}
+// Override old functions
+function cmd(m,p1,p2){wcmd(m,p1,p2)}
+var origUpdateLED=updateLED;
 function setStatus(t,c){
   var s=document.getElementById('st');s.className='status '+c;
   document.getElementById('stTxt').textContent=t;
 }
 
-async function connect(){
+async function connectBLE(){
   try{
     setStatus('扫描中...','wait');
     dev=await navigator.bluetooth.requestDevice({filters:[{name:'AI-NAV-C3'}],optionalServices:[S]});
@@ -309,7 +354,7 @@ async function updateLED(){
   var r=parseInt(document.getElementById('r').value),g=parseInt(document.getElementById('g').value),b=parseInt(document.getElementById('b').value);
   document.getElementById('rv').textContent=r;document.getElementById('gv').textContent=g;document.getElementById('bv').textContent=b;
   document.getElementById('preview').style.background='rgb('+r+','+g+','+b+')';
-  if(ledChar)try{await ledChar.writeValue(new Uint8Array([r,g,b]))}catch(e){}
+  wled(r,g,b)
 }
 
 function preset(r,g,b){
@@ -317,7 +362,7 @@ function preset(r,g,b){
 }
 
 async function cmd(m,p1,p2){
-  if(cmdChar)try{await cmdChar.writeValue(new Uint8Array([m,p1||0,p2||0]))}catch(e){}
+  wcmd(m,p1,p2)
 }
 function updateFS(){
   var v=parseInt(document.getElementById('fsl').value);
@@ -325,7 +370,7 @@ function updateFS(){
 }
 async function doPWM(){
   var v=parseInt(document.getElementById('fsl').value);
-  if(cmdChar)try{await cmdChar.writeValue(new Uint8Array([3,v,30]))}catch(e){}
+  wcmd(3,v,30)
 }
 // Old functions removed
 
