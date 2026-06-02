@@ -70,6 +70,14 @@ body{font-family:-apple-system,sans-serif;background:#050510;color:rgba(255,255,
 <div class="card bf" id="bfc"></div>
 
 <script>
+// Catch ALL errors and show them on screen
+window.onerror=function(msg,url,line){
+  var e=document.createElement('div');
+  e.style.cssText='position:fixed;top:0;left:0;right:0;background:red;color:#fff;padding:10px;z-index:99999;font-size:12px;white-space:pre-wrap';
+  e.textContent='JS ERROR: '+msg+' at line '+line;
+  document.body.appendChild(e);
+};
+
 var A='https://c46872d35aeba559-183-6-87-29.serveousercontent.com';
 var W={0:'晴',1:'多云',2:'阴',3:'阴',45:'雾',48:'雾',51:'雨',53:'雨',55:'雨',61:'雨',63:'雨',65:'雨',71:'雪',73:'雪',75:'雪',77:'雪',80:'雨',81:'雨',82:'雨',85:'雪',86:'雪',95:'雷',96:'雷',97:'雷'};
 var WN={0:'晴天',1:'少云',2:'多云',3:'阴天',45:'雾',48:'霜雾',51:'小雨',53:'小雨',55:'中雨',61:'小雨',63:'中雨',65:'大雨',71:'小雪',73:'中雪',75:'大雪',77:'雪',80:'阵雨',81:'阵雨',82:'暴雨',85:'阵雪',86:'阵雪',95:'雷暴',96:'雷暴',97:'强雷暴'};
