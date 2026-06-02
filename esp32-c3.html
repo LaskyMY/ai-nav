@@ -287,11 +287,11 @@ pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;fon
 <script>
 var S='4fafc201-1fb5-459e-8fcc-c5c9c331914b';
 var CMD='beb5483e-36e1-4688-b7f5-ea07361b26aa';
-var WIFI='beb5483e-36e1-4688-b7f5-ea07361b26ac';
+var WIFI='beb5483e-36e1-4688-b7f5-ea07361b26ac'; // matches firmware
 var IP='beb5483e-36e1-4688-b7f5-ea07361b26ad';
 
 var LED='beb5483e-36e1-4688-b7f5-ea07361b26a8';
-var KEYS='beb5483e-36e1-4688-b7f5-ea07361b26ab';
+var KEYS='beb5483e-36e1-4688-b7f5-ea07361b26ab'; // unused in current fw
 
 var dev=null,server=null,ledChar=null,cmdChar=null,keyChar=null;
 
@@ -362,7 +362,6 @@ async function connectBLE(){
     var svc=await server.getPrimaryService(S);
     ledChar=await svc.getCharacteristic(LED);
     cmdChar=await svc.getCharacteristic(CMD);
-    keyChar=await svc.getCharacteristic(KEYS);
     setStatus('已连接','ok');
     document.getElementById('btnConn').style.display='none';
     document.getElementById('btnDisc').style.display='inline-block';
