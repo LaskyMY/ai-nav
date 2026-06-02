@@ -1,134 +1,99 @@
-// ESP32-C3 Super Mini — BLE Peripheral for AI Nav Dashboard
-// Hardware:
-//   RGB LED: GPIO 4(R), 5(G), 6(B) — common cathode via 220Ω resistors
-//   4-key keypad: GPIO 0,1,2,3 — INPUT_PULLUP (LOW when pressed)
-//   Relay: GPIO 7 — HIGH=ON
-//   Buzzer: via Relay to 12V (GPIO 7 controls relay)
-// Web Bluetooth API connects to SERVICE_UUID, writes to characteristics
-
+// ESP32-C3 BLE — Passive Buzzer PWM tone control on GPIO7
 #include <BLEDevice.h>
 #include <BLEUtils.h>
 #include <BLEServer.h>
 
-#define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
-#define CHAR_LED_UUID       "beb5483e-36e1-4688-b7f5-ea07361b26a8"  // WRITE: 3 bytes R,G,B
-#define CHAR_RELAY_UUID     "beb5483e-36e1-4688-b7f5-ea07361b26a9"  // WRITE: 1 byte 0/1
-#define CHAR_BUZZER_UUID    "beb5483e-36e1-4688-b7f5-ea07361b26aa"  // WRITE: 1 byte 0/1
-#define CHAR_KEYPAD_UUID    "beb5483e-36e1-4688-b7f5-ea07361b26ab"  // READ/NOTIFY: 1 byte bitmask
+#define SVC_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+#define CH_LED "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+#define CH_FREQ "beb5483e-36e1-4688-b7f5-ea07361b26aa"
+#define CH_VOL "beb5483e-36e1-4688-b7f5-ea07361b26ab"
+#define CH_PLAY "beb5483e-36e1-4688-b7f5-ea07361b26ac"
+#define CH_STOP "beb5483e-36e1-4688-b7f5-ea07361b26ad"
+#define CH_KEYS "beb5483e-36e1-4688-b7f5-ea07361b26ae"
 
-// Pins
 #define PIN_R 4
 #define PIN_G 5
 #define PIN_B 6
-#define PIN_BUZZER 7
-#define PIN_K1 0
-#define PIN_K2 1
-#define PIN_K3 2
-#define PIN_K4 3
+#define PIN_BZ 7
+#define PIN_LED 8
 
-BLECharacteristic *pKeypadChar;
-bool deviceConnected = false;
+BLECharacteristic *pKeyChar;
+bool devConn = false;
 uint8_t lastKeys = 0xFF;
+int curFreq = 1000, curDuty = 30;
+bool bzOn = false;
 
-class ServerCallbacks: public BLEServerCallbacks {
-  void onConnect(BLEServer* pServer) { deviceConnected = true; Serial.println("BLE Connected"); }
-  void onDisconnect(BLEServer* pServer) { deviceConnected = false; Serial.println("BLE Disconnected"); pServer->startAdvertising(); }
+class SvrCB: public BLEServerCallbacks {
+  void onConnect(BLEServer* p) { devConn = true; }
+  void onDisconnect(BLEServer* p) { devConn = false; p->startAdvertising(); }
 };
 
-class LEDCallback: public BLECharacteristicCallbacks {
-  void onWrite(BLECharacteristic *pChar) {
-    String val = pChar->getValue();
-    if (val.length() >= 3) {
-      analogWrite(PIN_R, (uint8_t)val[0]);
-      analogWrite(PIN_G, (uint8_t)val[1]);
-      analogWrite(PIN_B, (uint8_t)val[2]);
-      Serial.printf("LED: R=%d G=%d B=%d\n", val[0], val[1], val[2]);
-    }
+class LEDCB: public BLECharacteristicCallbacks {
+  void onWrite(BLECharacteristic *p) {
+    String v = p->getValue();
+    if(v.length()>=3){analogWrite(PIN_R,(uint8_t)v[0]);analogWrite(PIN_G,(uint8_t)v[1]);analogWrite(PIN_B,(uint8_t)v[2]);}
   }
 };
 
-// Relay callback kept for future use
-class RelayCallback: public BLECharacteristicCallbacks {
-  void onWrite(BLECharacteristic *pChar) {
-    String val = pChar->getValue();
-    if (val.length() >= 1) {
-      digitalWrite(PIN_BUZZER, val[0] ? HIGH : LOW);
-      Serial.printf("Relay/Buzzer: %s\n", val[0] ? "ON" : "OFF");
-    }
+void toneSet(int f, int d) {
+  if(f<=0){ledcWriteTone(0,0);bzOn=false;return;}
+  ledcWriteTone(0,f);ledcWrite(0,d);bzOn=true;curFreq=f;curDuty=d;
+}
+
+class FreqCB: public BLECharacteristicCallbacks {
+  void onWrite(BLECharacteristic *p) {
+    String v = p->getValue();if(v.length()<2)return;
+    curFreq=(uint8_t)v[0]|((uint8_t)v[1]<<8);
+    if(bzOn)toneSet(curFreq,curDuty);
   }
 };
 
-class BuzzerCallback: public BLECharacteristicCallbacks {
-  void onWrite(BLECharacteristic *pChar) {
-    String val = pChar->getValue();
-    if (val.length() >= 1 && val[0]) {
-      // Active buzzer connected directly to GPIO7: HIGH=ON
-      digitalWrite(PIN_BUZZER, HIGH);
-      delay(300);
-      digitalWrite(PIN_BUZZER, LOW);
-      Serial.println("Buzzer: BEEP (direct GPIO)");
-    }
+class VolCB: public BLECharacteristicCallbacks {
+  void onWrite(BLECharacteristic *p) {
+    String v = p->getValue();if(v.length()<1)return;
+    curDuty=(uint8_t)v[0];
+    if(bzOn)toneSet(curFreq,curDuty);
   }
+};
+
+class PlayCB: public BLECharacteristicCallbacks {
+  void onWrite(BLECharacteristic *p) {
+    String v = p->getValue();if(v.length()<3)return;
+    int f=(uint8_t)v[0]|((uint8_t)v[1]<<8);
+    int d=(uint8_t)v[2]*100;
+    toneSet(f,curDuty);delay(d);toneSet(0,0);
+  }
+};
+
+class StopCB: public BLECharacteristicCallbacks {
+  void onWrite(BLECharacteristic *p) { toneSet(0,0); }
 };
 
 void setup() {
   Serial.begin(115200);
+  pinMode(PIN_R,OUTPUT);pinMode(PIN_G,OUTPUT);pinMode(PIN_B,OUTPUT);
+  analogWrite(PIN_R,0);analogWrite(PIN_G,0);analogWrite(PIN_B,0);
+  pinMode(PIN_LED,OUTPUT);digitalWrite(PIN_LED,HIGH);
+  pinMode(0,INPUT_PULLUP);pinMode(1,INPUT_PULLUP);pinMode(2,INPUT_PULLUP);pinMode(3,INPUT_PULLUP);
 
-  // Built-in blue LED on GPIO8 — blink on startup
-  pinMode(8, OUTPUT);
-  for(int i=0;i<3;i++){digitalWrite(8,HIGH);delay(100);digitalWrite(8,LOW);delay(100);}
-  digitalWrite(8, HIGH); // ON = connected
+  ledcAttach(PIN_BZ, 2000, 8);ledcWriteTone(0,0);
 
-  // RGB LED on GPIO4(R), GPIO5(G), GPIO6(B)
-  pinMode(PIN_R, OUTPUT); pinMode(PIN_G, OUTPUT); pinMode(PIN_B, OUTPUT);
-  analogWrite(PIN_R, 0); analogWrite(PIN_G, 0); analogWrite(PIN_B, 0);  // OFF
-
-  // Buzzer direct drive (active buzzer GPIO7→VCC, GND→GND)
-  pinMode(PIN_BUZZER, OUTPUT);
-  digitalWrite(PIN_BUZZER, LOW);
-
-  // Keypad — INPUT_PULLUP, LOW when pressed
-  pinMode(PIN_K1, INPUT_PULLUP); pinMode(PIN_K2, INPUT_PULLUP);
-  pinMode(PIN_K3, INPUT_PULLUP); pinMode(PIN_K4, INPUT_PULLUP);
-
-  // BLE
   BLEDevice::init("AI-NAV-C3");
-  BLEServer *pServer = BLEDevice::createServer();
-  pServer->setCallbacks(new ServerCallbacks());
-
-  BLEService *pService = pServer->createService(SERVICE_UUID);
-
-  BLECharacteristic *pLedChar = pService->createCharacteristic(CHAR_LED_UUID, BLECharacteristic::PROPERTY_WRITE);
-  pLedChar->setCallbacks(new LEDCallback());
-
-  BLECharacteristic *pRelayChar = pService->createCharacteristic(CHAR_RELAY_UUID, BLECharacteristic::PROPERTY_WRITE);
-  pRelayChar->setCallbacks(new RelayCallback());
-
-  BLECharacteristic *pBuzzerChar = pService->createCharacteristic(CHAR_BUZZER_UUID, BLECharacteristic::PROPERTY_WRITE);
-  pBuzzerChar->setCallbacks(new BuzzerCallback());
-
-  pKeypadChar = pService->createCharacteristic(CHAR_KEYPAD_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-
-  pService->start();
-  pServer->getAdvertising()->start();
-  Serial.println("AI Nav C3 BLE Ready — Waiting for connection...");
+  BLEServer *s=BLEDevice::createServer();s->setCallbacks(new SvrCB());
+  BLEService *svc=s->createService(SVC_UUID);
+  svc->createCharacteristic(CH_LED,BLECharacteristic::PROPERTY_WRITE)->setCallbacks(new LEDCB());
+  svc->createCharacteristic(CH_FREQ,BLECharacteristic::PROPERTY_WRITE)->setCallbacks(new FreqCB());
+  svc->createCharacteristic(CH_VOL,BLECharacteristic::PROPERTY_WRITE)->setCallbacks(new VolCB());
+  svc->createCharacteristic(CH_PLAY,BLECharacteristic::PROPERTY_WRITE)->setCallbacks(new PlayCB());
+  svc->createCharacteristic(CH_STOP,BLECharacteristic::PROPERTY_WRITE)->setCallbacks(new StopCB());
+  pKeyChar=svc->createCharacteristic(CH_KEYS,BLECharacteristic::PROPERTY_READ|BLECharacteristic::PROPERTY_NOTIFY);
+  svc->start();s->getAdvertising()->start();
 }
 
 void loop() {
-  // Read keypad
-  uint8_t keys = 0;
-  if (digitalRead(PIN_K1) == LOW) keys |= 0x01;
-  if (digitalRead(PIN_K2) == LOW) keys |= 0x02;
-  if (digitalRead(PIN_K3) == LOW) keys |= 0x04;
-  if (digitalRead(PIN_K4) == LOW) keys |= 0x08;
-
-  // Notify if changed
-  if (keys != lastKeys && deviceConnected) {
-    pKeypadChar->setValue(&keys, 1);
-    pKeypadChar->notify();
-    if (keys) Serial.printf("Keys: 0x%02X\n", keys);
-    lastKeys = keys;
-  }
-
-  delay(50);
+  uint8_t k=0;
+  if(digitalRead(0)==LOW)k|=1;if(digitalRead(1)==LOW)k|=2;
+  if(digitalRead(2)==LOW)k|=4;if(digitalRead(3)==LOW)k|=8;
+  if(k!=lastKeys&&devConn){pKeyChar->setValue(&k,1);pKeyChar->notify();lastKeys=k;}
+  delay(30);
 }

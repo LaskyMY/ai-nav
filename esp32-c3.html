@@ -69,16 +69,32 @@ pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;fon
   </div>
 </div>
 
-<!-- Relay -->
+<!-- Passive Buzzer Control -->
 <div class="card">
-  <div class="section-title">🔌 继电器 (12V 输出)</div>
-  <button class="btn" id="btnRelay" onclick="toggleRelay()">继电器 OFF</button>
-</div>
-
-<!-- Buzzer -->
-<div class="card">
-  <div class="section-title">🔔 蜂鸣器</div>
-  <button class="btn danger" onclick="beep()">触发响铃</button>
+  <div class="section-title">🔔 无源蜂鸣器</div>
+  <div class="row"><span class="lbl">频率</span><span class="val" id="fv">1000 Hz</span></div>
+  <input type="range" min="100" max="5000" value="1000" id="freq" oninput="updateFreq()">
+  <div style="display:flex;justify-content:space-between;font-size:9px;color:rgba(255,255,255,.2)">
+    <span>100Hz(低沉)</span><span>1kHz(中音)</span><span>5kHz(尖锐)</span>
+  </div>
+  <div class="row" style="margin-top:8px"><span class="lbl">音量</span><span class="val" id="vv">30%</span></div>
+  <input type="range" min="0" max="50" value="30" id="vol" oninput="updateVol()">
+  <div style="text-align:center;margin-top:10px">
+    <button class="btn" onclick="toneOn()">▶ 开始</button>
+    <button class="btn danger" onclick="toneOff()">⏹ 停止</button>
+    <button class="btn warn" onclick="playNote(262,300)">🎵 Do</button>
+    <button class="btn warn" onclick="playNote(294,300)">Re</button>
+    <button class="btn warn" onclick="playNote(330,300)">Mi</button>
+    <button class="btn warn" onclick="playNote(349,300)">Fa</button>
+    <button class="btn warn" onclick="playNote(392,300)">Sol</button>
+    <button class="btn warn" onclick="playNote(440,300)">La</button>
+    <button class="btn warn" onclick="playNote(494,300)">Si</button>
+  </div>
+  <div style="text-align:center;margin-top:6px">
+    <button class="btn" onclick="playMelody([262,294,330,349,392,440,494,523],[200,200,200,200,300,200,200,400])">🎶 音阶上行</button>
+    <button class="btn" onclick="playMelody([523,494,440,392,349,330,294,262],[200,200,200,200,300,200,200,400])">🎶 音阶下行</button>
+    <button class="btn" onclick="playMelody([262,330,392,523,392,330,262,0],[300,300,300,400,300,300,300,200])">🎵 简单旋律</button>
+  </div>
 </div>
 
 <!-- Keypad -->
@@ -171,13 +187,12 @@ pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;fon
       <div class="wire"><span class="wdot" style="background:#60a5fa"></span><span class="wlabel">B 脚 → 串220Ω → <b style="color:#60a5fa">GPIO6</b>（右第2脚）</span></div>
       <div class="wire"><span class="wdot" style="background:#6b7280"></span><span class="wlabel">GND 脚 → <b style="color:#6b7280">GND</b>（任意）</span></div>
     </div>
-    <!-- Buzzer (direct, no relay) -->
+    <!-- Buzzer -->
     <div class="mod">
-      <h4>🔔 有源蜂鸣器（直接连接，不经过继电器）</h4>
-      <div class="wire"><span class="wdot" style="background:#f59e0b"></span><span class="wlabel">VCC(+) → <b style="color:#f59e0b">GPIO7</b>（右第3脚）</span></div>
-      <div class="wire"><span class="wdot" style="background:#6b7280"></span><span class="wlabel">GND(-) → <b style="color:#6b7280">GND</b>（任意）</span></div>
-      <div style="font-size:9px;color:#10b981;margin-top:4px">✅ 3.3V有源蜂鸣器直接驱动 · 固件已更新</div>
-      <div style="font-size:9px;color:#f59e0b;margin-top:2px">⚠ 如是5V蜂鸣器，声音会偏小但仍可用</div>
+      <h4>🔔 无源蜂鸣器（直接GPIO7）</h4>
+      <div class="wire"><span class="wdot" style="background:#f59e0b"></span><span class="wlabel">VCC(+) → <b style="color:#f59e0b">GPIO7</b></span></div>
+      <div class="wire"><span class="wdot" style="background:#6b7280"></span><span class="wlabel">GND(-) → <b style="color:#6b7280">GND</b></span></div>
+      <div style="font-size:9px;color:#10b981;margin-top:4px">✅ 无源蜂鸣器 · PWM音调+音量控制</div>
     </div>
     <!-- Keypad -->
     <div class="mod">
@@ -259,12 +274,14 @@ pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;fon
 <script>
 var S='4fafc201-1fb5-459e-8fcc-c5c9c331914b';
 var LED='beb5483e-36e1-4688-b7f5-ea07361b26a8';
-var RELAY='beb5483e-36e1-4688-b7f5-ea07361b26a9';
-var BUZZ='beb5483e-36e1-4688-b7f5-ea07361b26aa';
-var KEYS='beb5483e-36e1-4688-b7f5-ea07361b26ab';
+var FREQ='beb5483e-36e1-4688-b7f5-ea07361b26aa';
+var VOL='beb5483e-36e1-4688-b7f5-ea07361b26ab';
+var PLAY='beb5483e-36e1-4688-b7f5-ea07361b26ac';
+var STOP='beb5483e-36e1-4688-b7f5-ea07361b26ad';
+var KEYS='beb5483e-36e1-4688-b7f5-ea07361b26ae';
 
-var dev=null,server=null,ledChar=null,relayChar=null,buzzChar=null,keyChar=null;
-var relayOn=false;
+var dev=null,server=null,ledChar=null,freqChar=null,volChar=null,playChar=null,stopChar=null,keyChar=null;
+var toneActive=false;
 
 function setStatus(t,c){
   var s=document.getElementById('st');s.className='status '+c;
@@ -278,8 +295,10 @@ async function connect(){
     server=await dev.gatt.connect();
     var svc=await server.getPrimaryService(S);
     ledChar=await svc.getCharacteristic(LED);
-    relayChar=await svc.getCharacteristic(RELAY);
-    buzzChar=await svc.getCharacteristic(BUZZ);
+    freqChar=await svc.getCharacteristic(FREQ);
+    volChar=await svc.getCharacteristic(VOL);
+    playChar=await svc.getCharacteristic(PLAY);
+    stopChar=await svc.getCharacteristic(STOP);
     keyChar=await svc.getCharacteristic(KEYS);
     setStatus('已连接','ok');
     document.getElementById('btnConn').style.display='none';
@@ -303,16 +322,35 @@ function preset(r,g,b){
   document.getElementById('r').value=r;document.getElementById('g').value=g;document.getElementById('b').value=b;updateLED()
 }
 
-async function toggleRelay(){
-  relayOn=!relayOn;
-  var btn=document.getElementById('btnRelay');btn.textContent='继电器 '+(relayOn?'ON':'OFF');btn.classList.toggle('on',relayOn);
-  if(relayChar)try{await relayChar.writeValue(new Uint8Array([relayOn?1:0]))}catch(e){}
+async function updateFreq(){
+  var f=parseInt(document.getElementById('freq').value);
+  document.getElementById('fv').textContent=f+' Hz';
+  if(freqChar)try{await freqChar.writeValue(new Uint8Array([f&0xFF,f>>8]))}catch(e){}
 }
-
-async function beep(){
-  var btn=document.querySelector('.btn.danger');btn.textContent='响铃中...';btn.disabled=true;
-  if(buzzChar)try{await buzzChar.writeValue(new Uint8Array([1]))}catch(e){}
-  setTimeout(function(){btn.textContent='触发响铃';btn.disabled=false},500)
+async function updateVol(){
+  var v=parseInt(document.getElementById('vol').value);
+  document.getElementById('vv').textContent=v+'%';
+  if(volChar)try{await volChar.writeValue(new Uint8Array([v]))}catch(e){}
+}
+async function toneOn(){
+  toneActive=true;
+  var f=parseInt(document.getElementById('freq').value);
+  var v=parseInt(document.getElementById('vol').value);
+  if(freqChar)try{await freqChar.writeValue(new Uint8Array([f&0xFF,f>>8]))}catch(e){}
+  if(volChar)try{await volChar.writeValue(new Uint8Array([v]))}catch(e){}
+}
+async function toneOff(){
+  toneActive=false;
+  if(stopChar)try{await stopChar.writeValue(new Uint8Array([0]))}catch(e){}
+}
+async function playNote(freq,dur){
+  if(playChar)try{await playChar.writeValue(new Uint8Array([freq&0xFF,freq>>8,Math.floor(dur/100)]))}catch(e){}
+}
+async function playMelody(notes,durs){
+  for(var i=0;i<notes.length;i++){
+    if(notes[i]>0)await playNote(notes[i],durs[i]);
+    await new Promise(function(r){setTimeout(r,durs[i])});
+  }
 }
 </script>
 </body>
