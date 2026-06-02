@@ -3,148 +3,56 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=1920,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>AI Nav 时钟</title>
+<title>AI Nav 看板 · iOS</title>
 <style>
-:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--cyan:#06B6D4;--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px)}
 *{margin:0;padding:0;box-sizing:border-box}html,body{height:100%;overflow:hidden}
-body{background:linear-gradient(180deg,#0d0d1a,#0a0a18,#0c0c1e);color:rgba(255,255,255,.92);font-family:-apple-system,sans-serif;font-size:12px;line-height:1.4;padding:20px 16px 20px;-webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased}
-
-.bg__orb{position:fixed;border-radius:50%;filter:blur(120px);opacity:.45;pointer-events:none;z-index:0}
-.bg__orb:nth-child(1){width:400px;height:400px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-20%;left:-15%;animation:fo 22s ease-in-out infinite}
-.bg__orb:nth-child(2){width:300px;height:300px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-15%;right:-10%;animation:fo 26s ease-in-out infinite reverse}
-@keyframes fo{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-40px)}}
-
-.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 400px at 50% 50%,rgba(99,102,241,.04),rgba(236,72,153,.03) 20%,transparent 70%)}
-
-.g{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:repeat(8,1fr);grid-auto-flow:dense;grid-auto-rows:minmax(48px,auto);gap:6px;align-content:start;overflow-y:auto;-webkit-overflow-scrolling:touch}
-
-/* Card — gradient color transition, no movement */
-.t{background:linear-gradient(150deg,rgba(255,255,255,.03) 0%,rgba(8,12,24,.97) 100%);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid rgba(255,255,255,.05);border-radius:12px;padding:12px 14px;transition:background .6s ease,border-color .6s ease,box-shadow .6s ease;box-shadow:rgba(255,255,255,.03) 0 0 0 1px,rgba(0,0,0,.3) 0 8px 24px;position:relative;overflow:hidden;min-height:48px}
-.t::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
-/* Color gradient transitions by level */
-.t.lv-critical{transition:background 1s ease;background:linear-gradient(150deg,rgba(239,68,68,.04) 0%,rgba(8,12,24,.97) 100%);border-color:rgba(239,68,68,.06);box-shadow:rgba(239,68,68,.04) 0 0 0 1px,rgba(0,0,0,.25) 0 8px 24px}
-.t.lv-high{transition:background 1s ease;background:linear-gradient(150deg,rgba(245,158,11,.04) 0%,rgba(8,12,24,.97) 100%);border-color:rgba(245,158,11,.06);box-shadow:rgba(245,158,11,.04) 0 0 0 1px,rgba(0,0,0,.25) 0 8px 24px}
-.t.lv-normal{background:linear-gradient(150deg,rgba(100,160,255,.03) 0%,rgba(8,12,24,.97) 100%);border-color:rgba(100,160,255,.05)}
-.t.lv-sys{border-color:rgba(255,255,255,.05)}
-.t.lv-low{border-color:rgba(255,255,255,.04);background:linear-gradient(150deg,rgba(255,255,255,.015) 0%,rgba(8,12,24,.97) 100%)}
-
-/* Typewriter update — color pulse only */
-.t.tw{animation:tw .6s ease}
-@keyframes tw{0%{filter:brightness(1.15) hue-rotate(3deg)}100%{filter:brightness(1) hue-rotate(0)}}
-
-.c2{grid-column:span 2}.c3{grid-column:span 3}
-
-.tt{font-weight:700;line-height:1.3;color:rgba(255,255,255,.92);letter-spacing:-.01em;margin-bottom:4px;font-size:1.05em}
-.ts{font-size:.92em;color:rgba(255,255,255,.65);line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
-.tm{font-size:.78em;color:rgba(255,255,255,.45);margin-top:auto;padding-top:4px}
-.kw{color:var(--a1);font-weight:700}.kw-hot{color:#f59e0b;font-weight:700}.kw-crit{color:var(--a3);font-weight:700}
-
-.ck{text-align:center}
-.ckb{font-size:42px;font-weight:700;background:linear-gradient(135deg,var(--a1),var(--pink));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;animation:gf 4s ease-in-out infinite}
-@keyframes gf{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-.ckms{font-size:15px;color:var(--a1);font-weight:500;min-width:42px;display:inline-block}
-.ckd{font-size:10px;color:rgba(255,255,255,.45);margin-top:2px}
-
-.wx-page{text-align:center;padding:4px 0;opacity:0;display:none}
-.wx-page.on{opacity:1;display:block;animation:wxIn .5s ease}
-@keyframes wxIn{0%{opacity:0;filter:blur(4px)}100%{opacity:1;filter:blur(0)}}
-.wx-t{font-size:24px;font-weight:700;color:#fff}
-.wx-d{font-size:11px;color:rgba(255,255,255,.55);margin-top:2px}
-.wx-h{font-size:9px;color:rgba(255,255,255,.3);margin-top:2px}
+body{background:#0a0a0f;color:#f0f0f5;font-family:-apple-system,sans-serif;font-size:12px;line-height:1.35;padding:50px 6px 26px 6px;-webkit-user-select:none;user-select:none}
+.g{display:grid;grid-template-columns:repeat(8,1fr);grid-auto-rows:minmax(48px,auto);gap:5px;height:100%;overflow-y:auto}
+.c{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:10px 12px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);overflow:hidden}
+.c3{grid-column:span 3}.c2{grid-column:span 2}
+.tt{font-size:12px;font-weight:600;color:#eee}
+.ts{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.tm{font-size:9px;color:rgba(255,255,255,.25);margin-top:4px}
+.clk{font-size:80px;font-weight:700;text-align:center;line-height:1}
+.clk span{font-size:28px;color:#60a5fa;font-weight:500}
+.cld{font-size:10px;text-align:center;color:rgba(255,255,255,.3);margin-top:2px}
+.wx{text-align:center;padding:6px 0}
+.wt{font-size:48px;font-weight:700}
+.wd{font-size:10px;color:rgba(255,255,255,.4);margin-top:2px}
+.wxh{font-size:9px;color:rgba(255,255,255,.2);margin-top:1px}
+.lvl1{border-color:rgba(239,68,68,.08);background:rgba(239,68,68,.03)}
+.lvl2{border-color:rgba(245,158,11,.06);background:rgba(245,158,11,.025)}
+.lvl3{border-color:rgba(100,160,255,.05);background:rgba(100,160,255,.02)}
+.lvl4{border-color:rgba(255,255,255,.04)}
+.lvX{border-color:rgba(255,255,255,.05)}
+.spin{display:inline-block;width:8px;height:8px;border:2px solid rgba(255,255,255,.1);border-top-color:#60a5fa;border-radius:50%;animation:s .6s linear infinite;margin-right:4px;vertical-align:middle}@keyframes s{to{transform:rotate(360deg)}}
 </style></head><body>
-<div class="bg__orb"></div><div class="bg__orb"></div>
-<div class="glow-spot"></div>
 <div class="g" id="g"></div>
-
 <script>
 var A='https://c46872d35aeba559-183-6-87-29.serveousercontent.com';
-var WN={0:'晴天',1:'少云',2:'多云',3:'阴天',45:'雾',48:'霜雾',51:'小雨',53:'小雨',55:'中雨',61:'小雨',63:'中雨',65:'大雨',71:'小雪',73:'中雪',75:'大雪',77:'雪',80:'阵雨',81:'阵雨',82:'暴雨',85:'阵雪',86:'阵雪',95:'雷暴',96:'雷暴',97:'强雷暴'};
-var WI={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌧️',53:'🌧️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',80:'🌦️',81:'🌦️',82:'🌦️',95:'⛈️',96:'⛈️',97:'⛈️'};
+function tick(){var n=new Date();document.getElementById('t').innerHTML=('0'+n.getHours()).slice(-2)+':'+('0'+n.getMinutes()).slice(-2)+':'+('0'+n.getSeconds()).slice(-2)+' <span>.'+('00'+n.getMilliseconds()).slice(-3)+'</span>';document.getElementById('td').textContent=n.getFullYear()+'年'+(n.getMonth()+1)+'月'+n.getDate()+'日 周'+['日','一','二','三','四','五','六'][n.getDay()]}
+
+function build(){var h='';h+='<div class="c c3"><div class="clk" id="t">--:--:--</div><div class="cld" id="td">----</div><div class="cld" id="ci">广州</div></div>';
+h+='<div class="c c2 lvX" id="wc"><div class="wx" id="wi"><div class="wt">--°</div><div class="wd">天气加载中<span class="spin"></span></div></div></div>';
+h+='<div class="c c2 lvX"><div class="tt">📋 要闻总览</div><div class="ts" id="ot">AI 简报加载中<span class="spin"></span></div></div>';
+for(var i=0;i<ns.length;i++){var n=ns[i],lv=n.level==='critical'?'1':n.level==='high'?'2':n.level==='low'?'4':'3';h+='<div class="c lvl'+lv+(i<2?' c2':'')+'"><div class="tt">'+em(n.title)+' '+n.title+'</div>'+(n.summary?'<div class="ts">'+n.summary+'</div>':'')+(n.metric?'<div class="tm">'+n.metric+'</div>':'')+'</div>'}
+document.getElementById('g').innerHTML=h;tick()}
+function em(t){var s=(t||'').toLowerCase();if(/战争|冲突|空袭|军事|导弹|军队/.test(t))return'⚔️';if(/经济|市场|股票|金融|利率|美元|货币/.test(t))return'💹';if(/政治|选举|总统|国会|政府|法律/.test(t))return'🏛️';if(/科技|AI|芯片|数据|网络/.test(t))return'🔬';if(/健康|医疗|疾病|药物|病毒/.test(t))return'🏥';if(/气候|环境|能源|自然|天气/.test(t))return'🌍';if(/体育|比赛|运动/.test(t))return'⚽';return'📌'}
 var ns=[];
+build();setInterval(tick,100);
 
-function emoji(t,lv){var s=(t||'').toLowerCase();if(/战争|冲突|空袭|军事|导弹|军队|武器/.test(t))return'⚔️';if(/经济|市场|股票|金融|利率|美元|货币|通胀/.test(t))return'💹';if(/政治|选举|总统|国会|政府|法律|法院/.test(t))return'🏛️';if(/科技|AI|芯片|数据|网络|智能/.test(t))return'🔬';if(/健康|医疗|疾病|药物|疫苗|病毒/.test(t))return'🏥';if(/气候|环境|能源|自然|灾害|地震|天气/.test(t))return'🌍';if(/体育|比赛|运动|足球|篮球/.test(t))return'⚽';if(lv==='critical')return'🚨';if(lv==='high')return'⚠️';return'📌'}
-
-function T(id,lv,sp,h){return'<div class="t lv-'+lv+' '+(sp||'')+'" data-id="'+id+'">'+h+'</div>'}
-
-function hl(t,kws){if(!kws||!t)return t||'';var s=t,k=kws.split(',');for(var i=0;i<k.length;i++){var kw=k[i].trim();if(!kw)continue;var cls='kw';if(kw[0]==='!'){cls='kw-crit';kw=kw.slice(1)}else if(kw[0]==='*'){cls='kw-hot';kw=kw.slice(1)}s=s.split(kw).join('<span class="'+cls+'">'+kw+'</span>')}return s}
-
-// Typewriter-style char flicker for text update
-function typeTo(el,newHTML){
-  if(!el)return;
-  var old=el.innerHTML;
-  if(old===newHTML)return;
-  el.style.opacity='.4';
-  var chars=newHTML.split(''),i=0,txt='';
-  function step(){
-    if(i>=chars.length){el.innerHTML=newHTML;el.style.opacity='1';return}
-    txt+=chars[i];el.innerHTML=txt;el.style.opacity='.7';i++;
-    setTimeout(step,15+Math.random()*20);
-  }
-  step();
-}
-
-function render(){
-  var h='';
-  // Auto-generate outline from first 3 critical/high items
-  var tops=ns.filter(function(n){return n.level==='critical'||n.level==='high'}).slice(0,3);
-  if(tops.length){h+=T('outline','sys','c3','<div class="tt">📋 今日要闻总览</div><div class="ts">'+tops.map(function(n){return '· '+n.title}).join('<br>')+'</div><div class="tm">'+ns.length+'条新闻 · 实时更新</div>')}
-  h+=T('clock',,'sys','c3','<div class="ck"><div class="ckb" id="ct">--:--:--<span class="ckms">.---</span></div><div class="ckd" id="cd">----</div><div class="ckd"><span id="cci">广州</span></div></div>');
-  h+=T('wx','sys','c2','<div id="wxc"><div class="wx-page on" id="wx0"><div class="wx-d">⏱ 当前</div><div class="wx-t">--°</div><div class="wx-h"></div></div><div class="wx-page" id="wx1"><div class="wx-d">⏱ +1 小时</div><div class="wx-t">--°</div></div><div class="wx-page" id="wx2"><div class="wx-d">⏱ +3 小时</div><div class="wx-t">--°</div></div><div class="wx-page" id="wx3"><div class="wx-d">⏱ +6 小时</div><div class="wx-t">--°</div></div></div>');
-  for(var i=0;i<ns.length;i++){var n=ns[i],lv=n.level||'normal',sp=i<2?'c2':'';h+=T('n'+i,lv,sp,'<div class="tt">'+emoji(n.title,n.level)+' '+hl(n.title,n.keywords)+'</div>'+(n.summary?'<div class="ts">'+hl(n.summary,n.keywords)+'</div>':'')+(n.metric?'<div class="tm">'+n.metric+'</div>':''))}
-  document.getElementById('g').innerHTML=h;
-}
-
-function tick(){var n=new Date(),el=document.getElementById('ct');if(el)el.innerHTML=('0'+n.getHours()).slice(-2)+':'+('0'+n.getMinutes()).slice(-2)+':'+('0'+n.getSeconds()).slice(-2)+'<span class="ckms">.'+('00'+n.getMilliseconds()).slice(-3)+'</span>';el=document.getElementById('cd');if(el)el.textContent=n.getFullYear()+'年'+(n.getMonth()+1)+'月'+n.getDate()+'日 周'+['日','一','二','三','四','五','六'][n.getDay()]}
-setInterval(tick,80);tick();
-
-// Weather with 5s timeout fallback to Guangzhou preset
-var wxDone=false;
-var wxTimer=setTimeout(function(){if(!wxDone){wxDone=true;
-  document.getElementById('wx0').innerHTML='<div class="wx-d">⏱ 当前 · 广州</div><div class="wx-t">27°C</div><div class="wx-h">晴天</div>';
-  document.getElementById('wx1').innerHTML='<div class="wx-d">⏱ +1 小时</div><div class="wx-t">28°C</div>';
-  document.getElementById('wx2').innerHTML='<div class="wx-d">⏱ +3 小时</div><div class="wx-t">30°C</div>';
-  document.getElementById('wx3').innerHTML='<div class="wx-d">⏱ +6 小时</div><div class="wx-t">26°C</div>';
-}},5000);
-
+// Weather
 fetch(A+'/api/weather?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(w){
-  if(wxDone)return;wxDone=true;clearTimeout(wxTimer);
-  var c=w.current,hh=w.hourly;
-  document.getElementById('wx0').innerHTML='<div class="wx-d">'+WI[c.weather_code]+' 当前</div><div class="wx-t">'+Math.round(c.temperature_2m)+'°C</div><div class="wx-h">'+WN[c.weather_code]+' · 湿度 '+(c.relative_humidity_2m||'')+'%</div>';
-  if(hh&&hh.time){var cur=(new Date()).getHours();for(var i=0;i<3;i++){var idx=cur+[1,3,6][i];if(idx>=hh.time.length)idx=hh.time.length-1;document.getElementById('wx'+(i+1)).innerHTML='<div class="wx-d">'+WI[hh.weather_code[idx]]+' +'+(i*2+1)+'小时</div><div class="wx-t">'+Math.round(hh.temperature_2m[idx])+'°C</div>'}}
-  fetch(A+'/api/geocode?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(d){var a=(d&&d.address)||d||{};var c=a.city||a.town||a.county||'';if(c)document.getElementById('cci').textContent=c});
-  // Start carousel
-  var wxI=0;setInterval(function(){var ps=document.querySelectorAll('.wx-page');for(var j=0;j<ps.length;j++)ps[j].className='wx-page';wxI=(wxI+1)%ps.length;ps[wxI].className='wx-page on'},5000);
-}).catch(function(){if(!wxDone){wxDone=true;clearTimeout(wxTimer)}});
+  var c=w.current;document.getElementById('wi').innerHTML='<div class="wt">'+Math.round(c.temperature_2m)+'°C</div><div class="wd">☀️ '+({0:'晴天',1:'少云',2:'多云',3:'阴天',45:'雾',51:'雨',61:'雨',71:'雪',80:'阵雨',95:'雷暴'}[c.weather_code]||'--')+'</div><div class="wxh">湿度 '+(c.relative_humidity_2m||'')+'%</div>';
+  fetch(A+'/api/geocode?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(d){var a=(d&&d.address)||d||{};var cc=a.city||a.town||a.county||'';if(cc)document.getElementById('ci').textContent=cc});
+});
 
-// News with 5s timeout fallback
-var nsDone=false;
-var nsTimer=setTimeout(function(){if(!nsDone){nsDone=true;
-  ns=[{level:'normal',title:'新闻加载中',summary:'请检查网络连接',metric:'NPR'}];nsOutline={title:'AI Nav 时钟',summary:'实时信息流 · 广州天气 · AI 新闻简报',metric:'DeepSeek V3'};render();setTimeout(fl,2000);
-}},5000);
-
+// News
 fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){
-  if(nsDone)return;nsDone=true;clearTimeout(nsTimer);
-  if(!d)return;ns=d;ns=ns.filter(function(n,i,a){for(var j=0;j<i;j++){if(a[j].title===n.title)return false}return true});render();setTimeout(fl,2000);
-}).catch(function(){if(!nsDone){nsDone=true;clearTimeout(nsTimer)}});
-
-// Typewriter rhythmic update
-function fl(){
-  var els=document.querySelectorAll('[data-id^="n"]');
-  if(!els.length){setTimeout(fl,2000);return}
-  var pool=[];
-  for(var i=0;i<els.length;i++){var lv=ns[i]?ns[i].level:'normal';var w=lv==='low'?4:lv==='normal'?3:lv==='high'?2:1;for(var j=0;j<w;j++)pool.push(i)}
-  var idx=pool[Math.floor(Math.random()*pool.length)],el=els[idx];if(!el){setTimeout(fl,800);return}
-  // Color pulse only — no movement
-  el.classList.add('tw');setTimeout(function(){el.classList.remove('tw')},600);
-  var others=ns.filter(function(x){return x.title!==ns[idx].title});var src=others.length?others[Math.floor(Math.random()*others.length)]:ns[Math.floor(Math.random()*ns.length)];
-  var ti=el.querySelector('.tt');if(ti&&src)typeTo(ti,emoji(src.title,src.level)+' '+hl(src.title,src.keywords));
-  setTimeout(fl,800+Math.random()*1800);
-}
-
-// Mouse glow
-var gs=document.querySelector('.glow-spot'),rf;
-document.addEventListener('mousemove',function(e){if(!rf){rf=requestAnimationFrame(function(){gs.style.background='radial-gradient(circle 400px at '+e.clientX+'px '+e.clientY+'px,rgba(99,102,241,.05),rgba(236,72,153,.03) 20%,transparent 70%)';rf=null})}},{passive:true});
-document.addEventListener('touchmove',function(e){var t=e.touches[0];gs.style.background='radial-gradient(circle 400px at '+t.clientX+'px '+t.clientY+'px,rgba(99,102,241,.05),rgba(236,72,153,.03) 20%,transparent 70%)'},{passive:true});
-
-setInterval(function(){fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(!d)return;ns=d;ns=ns.filter(function(n,i,a){for(var j=0;j<i;j++){if(a[j].title===n.title)return false}return true});render()})},600000);
+  if(!d||!d.length)return;ns=d;build();
+  // Brief summary to outline card
+  fetch(A+'/api/news-summary').then(function(r){return r.json()}).then(function(s){
+    if(s&&s.summary){var lines=s.summary.split('\n').filter(function(l){return l.trim()&&!l.match(/^##/)});document.getElementById('ot').textContent=lines.slice(0,3).join(' · ')}
+  });
+});
 </script></body></html>
