@@ -17,10 +17,10 @@ body{background:linear-gradient(180deg,#0d0d1a 0%,#0a0a18 50%,#0c0c1e 100%);colo
 
 
 .glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(99,102,241,.05),rgba(236,72,153,.04) 20%,rgba(168,85,247,.02) 45%,transparent 70%)}
-.g{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:minmax(54px,auto);gap:5px;align-content:start;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.g{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:minmax(54px,auto);gap:5px;grid-auto-flow:dense;align-content:start;overflow-y:auto;-webkit-overflow-scrolling:touch}
 
 /* Card = knowledge.html style */
-.t{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:12px 14px;transition:all .35s var(--ease);box-shadow:0 0 60px rgba(99,102,241,.04),0 4px 24px rgba(0,0,0,.1);position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;animation:fu .5s var(--ease) both}
+.t{background:var(--card-bg);min-height:60px;backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:12px 14px;transition:all .35s var(--ease);box-shadow:0 0 60px rgba(99,102,241,.04),0 4px 24px rgba(0,0,0,.1);position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;animation:fu .5s var(--ease) both}
 .t::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
 .t:active{transform:scale(.97)!important;transition:transform .12s ease!important}
 /* Staggered entrance */
