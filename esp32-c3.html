@@ -96,29 +96,60 @@ pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;fon
 
 <div class="card">
   <div class="section-title">📐 ESP32-C3 Super Mini 引脚图</div>
-  <pre style="font-size:9px;line-height:1.5;background:rgba(0,0,0,.5);padding:14px;border-radius:10px;color:#a0d0ff">
-      ESP32-C3 Super Mini (USB-C朝上, 正面)
-    ╔════════════════════════╗
-    ║  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  ║
-    ║  ▓▓▓▓▓ ESP32 ▓▓▓▓▓▓  ║
-    ║  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  ║
-    ╠════════════════════════╣
-  左│5V                 5V │右  ← 上方两个5V(左右各一)
-    │GND               GND │     GND接地
-    │3.3V              3.3V│     3.3V输出(不常用)
-    │GPIO0   ⚡下载⚡  GPIO5│     GPIO0=下载模式按键
-    │GPIO1   📟按键📟  GPIO6│     GPIO1-3=矩阵键盘
-    │GPIO2              GPIO7│ ←  GPIO7=继电器控制!
-    │GPIO3              GPIO8│
-    │GPIO4   💡LED💡  GPIO9│     GPIO4-6=RGB LED!
-    ╚════════════════════════╝
-
-  💡 已烧录固件分配到引脚:
-     RGB LED: R→GPIO4  G→GPIO5  B→GPIO6
-     继电器: IN→GPIO7  蜂鸣器通过继电器COM/NO接12V
-     按键:  K1→GPIO0  K2→GPIO1  K3→GPIO2  K4→GPIO3
-     电源:  5V→继电器VCC  GND→所有GND共用
-  </pre>
+  <style>
+    .board{display:flex;gap:10px;align-items:stretch;margin:6px 0}
+    .pins{display:flex;flex-direction:column;gap:1px;min-width:115px}
+    .pin{display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:6px;font-size:10px}
+    .pin:hover{background:rgba(255,255,255,.03)}
+    .pin .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+    .pin .l{flex:1;font-weight:500}
+    .pin .f{font-size:8px;color:rgba(255,255,255,.25);text-align:right}
+    .d-pwr{background:#f59e0b;box-shadow:0 0 5px rgba(245,158,11,.3)}
+    .d-gnd{background:#6b7280}
+    .d-gpio{background:#6366f1;box-shadow:0 0 4px rgba(99,102,241,.25)}
+    .d-use{background:#10b981;box-shadow:0 0 6px rgba(16,185,129,.4)}
+    .pin.hl{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.08)}
+    .chip{flex:1;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center}
+    .chip-inner{background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.1);border-radius:10px;padding:16px 10px;font-size:11px;color:rgba(255,255,255,.25)}
+    .legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;font-size:8px;color:rgba(255,255,255,.2)}
+    .legend span{display:flex;align-items:center;gap:3px}
+    .legend .dot{width:7px;height:7px;border-radius:4px}
+  </style>
+  <div class="board">
+    <div class="pins">
+      <div style="text-align:center;font-size:8px;color:rgba(255,255,255,.15);padding:3px 0;letter-spacing:.08em">左 侧 8 脚</div>
+      <div class="pin"><span class="dot d-pwr"></span><span class="l">5V</span><span class="f">电源</span></div>
+      <div class="pin"><span class="dot d-gnd"></span><span class="l">GND</span><span class="f">接地</span></div>
+      <div class="pin"><span class="dot d-pwr" style="background:#fbbf24"></span><span class="l">3.3V</span><span class="f">3.3V输出</span></div>
+      <div class="pin hl"><span class="dot d-use"></span><span class="l" style="color:#10b981">GPIO0</span><span class="f" style="color:#10b981">→ 按键K1</span></div>
+      <div class="pin hl"><span class="dot d-use"></span><span class="l" style="color:#10b981">GPIO1</span><span class="f" style="color:#10b981">→ 按键K2</span></div>
+      <div class="pin hl"><span class="dot d-use"></span><span class="l" style="color:#10b981">GPIO2</span><span class="f" style="color:#10b981">→ 按键K3</span></div>
+      <div class="pin hl"><span class="dot d-use"></span><span class="l" style="color:#10b981">GPIO3</span><span class="f" style="color:#10b981">→ 按键K4</span></div>
+      <div class="pin hl"><span class="dot d-use"></span><span class="l" style="color:#f87171">GPIO4</span><span class="f" style="color:#f87171">→ LED R</span></div>
+    </div>
+    <div class="chip">
+      <div style="font-size:8px;color:rgba(255,255,255,.15);margin-bottom:8px;letter-spacing:.1em">USB-C ↑</div>
+      <div class="chip-inner">ESP32<br>C3<br>Super<br>Mini</div>
+      <div style="font-size:8px;color:rgba(255,255,255,.1);margin-top:6px">正面</div>
+    </div>
+    <div class="pins">
+      <div style="text-align:center;font-size:8px;color:rgba(255,255,255,.15);padding:3px 0;letter-spacing:.08em">右 侧 8 脚</div>
+      <div class="pin"><span class="dot d-pwr"></span><span class="l">5V</span><span class="f">电源</span></div>
+      <div class="pin"><span class="dot d-gnd"></span><span class="l">GND</span><span class="f">接地</span></div>
+      <div class="pin"><span class="dot d-pwr" style="background:#fbbf24"></span><span class="l">3.3V</span><span class="f">3.3V输出</span></div>
+      <div class="pin hl"><span class="dot d-use"></span><span class="l" style="color:#10b981">GPIO5</span><span class="f" style="color:#10b981">→ LED G</span></div>
+      <div class="pin hl"><span class="dot d-use"></span><span class="l" style="color:#60a5fa">GPIO6</span><span class="f" style="color:#60a5fa">→ LED B</span></div>
+      <div class="pin hl"><span class="dot d-use"></span><span class="l" style="color:#f59e0b">GPIO7</span><span class="f" style="color:#f59e0b">→ 继电器</span></div>
+      <div class="pin"><span class="dot d-gpio"></span><span class="l">GPIO8</span><span class="f">空闲</span></div>
+      <div class="pin"><span class="dot d-gpio"></span><span class="l">GPIO9</span><span class="f">空闲</span></div>
+    </div>
+  </div>
+  <div class="legend">
+    <span><span class="dot d-pwr"></span>电源</span>
+    <span><span class="dot d-gnd"></span>接地</span>
+    <span><span class="dot d-gpio"></span>GPIO</span>
+    <span><span class="dot d-use"></span>已接线</span>
+  </div>
 </div>
 
 <div class="card">
