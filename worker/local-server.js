@@ -287,12 +287,12 @@ async function handle(req) {
             model: "deepseek-chat",
             messages: [{
               role: "system",
-              content: `你是中文新闻编辑。将每条英文新闻翻译成简洁中文(20字内)，提取关键数字/指标，分配优先级(critical/high/normal/low)。输出纯JSON数组，格式：[{"level":"high","title":"中文标题","summary":"一句话要点(15字内)","metric":"关键数字或指标","source":"NPR","keywords":"关键术语1,关键术语2,关键术语3"}] 其中keywords是从新闻中提取的2-4个最重要的中文关键词(人名/地名/事件名/核心概念)，用逗号分隔。若为负面/危机事件，关键词前加!前缀。若为经济/金融数据，关键词前加*前缀。`
+              content: `你是中文新闻编辑。将每条英文新闻翻译成简洁中文(20字内)，提取关键数字/指标，分配优先级(critical/high/normal/low)。输出纯JSON对象，格式：{"outline":{"title":"今日要闻总览","summary":"2-3句话总结今日全球最重要趋势(30字内)","metric":"覆盖N条新闻","keywords":"关键词1,关键词2"},"items":[{"level":"high","title":"中文标题(20字内)","summary":"一句话要点","metric":"关键数字","source":"NPR","keywords":"术语1,术语2"}]} 生成20条items覆盖所有新闻要点。keywords:负面/危机事件前加!，经济数据前加*。每个标题和摘要必须不同且涵盖独特信息点。`
             }, {
               role: "user",
               content: `翻译并分析以下新闻：\n${titles}`
             }],
-            temperature: 0.2, max_tokens: 1200
+            temperature: 0.2, max_tokens: 2500
           })
         });
         if (r.ok) {
@@ -310,7 +310,7 @@ async function handle(req) {
         }
       } catch (e) { console.log("[news-cn] DeepSeek error:", e.message); }
       // Fallback: raw titles
-      const fallback = items.map((item, i) => ({ level: "normal", title: item.title, summary: "", metric: "", source: item.source, id: i, time: new Date().toISOString() }));
+      const fallback = { outline: { title: "今日要闻", summary: "正在加载AI摘要...", metric: items.length+"条", keywords: "" }, items: items.map((item, i) => ({ level: "normal", title: item.title, summary: "", metric: "", source: item.source, id: i, time: new Date().toISOString() })) };
       cacheSet("news-cn", fallback);
       return ok(fallback);
     }
