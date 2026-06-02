@@ -4,36 +4,38 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=1920,initial-scale=1.0">
 <title>AI Nav 时钟 · 投影</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}html,body{height:100%;overflow:hidden}
 html{display:flex;justify-content:center;align-items:center;background:#000}
-body{width:1920px;max-width:100vw;height:1080px;max-height:100vh;background:#050510;color:rgba(255,255,255,.9);font-family:sans-serif;display:flex;position:relative;-webkit-user-select:none;user-select:none}
-.bg{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 50% 30%,rgba(0,210,255,.035) 0%,transparent 60%)}
-.grid{position:relative;z-index:1;display:grid;grid-template-columns:450px 680px 700px;grid-template-rows:200px 1fr;gap:14px;width:1860px;height:1040px;margin:20px}
-.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:18px;padding:24px 32px;overflow:hidden;position:relative}
+body{width:1920px;max-width:100vw;height:1080px;max-height:100vh;background:#0a0a0f;color:rgba(255,255,255,.88);font-family:'DM Sans',sans-serif;position:relative;-webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased}
+.bg{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 50% 30%,rgba(56,189,248,.03) 0%,transparent 60%)}
+.grid{position:relative;z-index:1;display:grid;grid-template-columns:450px 680px 700px;grid-template-rows:200px 1fr;gap:16px;width:1860px;height:1040px;margin:20px}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:16px;padding:24px 32px;overflow:hidden;position:relative;transition:border-color .3s ease}
+.card:hover{border-color:rgba(56,189,248,.08)}
 .card-inner{transition:opacity .45s ease,transform .45s ease}
 .dots{display:flex;position:absolute;bottom:12px;right:24px;z-index:2}
-.dot{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.12);margin-left:6px;transition:all .3s ease}
-.dot.on{width:20px;background:rgba(0,210,255,.55)}
+.dot{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.1);margin-left:6px;transition:all .3s ease}
+.dot.on{width:20px;background:rgba(56,189,248,.5)}
 
 .c1{grid-column:1/3;grid-row:1;display:flex;align-items:center}
-.c1t{font-size:88px;font-weight:700;color:#fff;text-shadow:0 0 40px rgba(0,210,255,.2);line-height:1}
-.c1ms{font-size:34px;color:#00d2ff;opacity:.78;min-width:82px;display:inline-block}
+.c1t{font-size:88px;font-weight:700;color:#f8fafc;line-height:1;letter-spacing:-.02em}
+.c1ms{font-size:34px;color:#38bdf8;font-weight:500;min-width:82px;display:inline-block;opacity:.85}
 .c1r{margin-left:28px}
-.c1d{font-size:24px;color:rgba(255,255,255,.5);font-weight:500}
-.c1ci{font-size:16px;color:rgba(0,210,255,.32);margin-top:6px}
-.lbl{font-size:13px;color:rgba(0,210,255,.35);font-weight:600;letter-spacing:.06em;margin-bottom:8px}
+.c1d{font-size:24px;color:rgba(248,250,252,.45);font-weight:500}
+.c1ci{font-size:16px;color:rgba(56,189,248,.25);margin-top:6px;letter-spacing:.04em}
+.lbl{font-size:13px;color:rgba(56,189,248,.3);font-weight:600;letter-spacing:.08em;margin-bottom:10px}
 
 .c2{grid-column:3;grid-row:1;text-align:center;display:flex;flex-direction:column;justify-content:center}
 .c3{grid-column:1;grid-row:2;display:flex;flex-direction:column;justify-content:center}
 .c4{grid-column:2/4;grid-row:2;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.c4 h2{font-size:24px;font-weight:700;color:#fff;margin:10px 0 6px}
-.c4 h3{font-size:18px;font-weight:600;color:rgba(255,255,255,.75);margin:8px 0 4px}
-.c4 p{font-size:14px;color:rgba(255,255,255,.48);margin:5px 0}
-.c4 strong{color:#f59e0b}
+.c4 h2{font-size:24px;font-weight:700;color:#f8fafc;margin:10px 0 6px}
+.c4 h3{font-size:18px;font-weight:600;color:rgba(248,250,252,.7);margin:8px 0 4px}
+.c4 p{font-size:14px;color:rgba(248,250,252,.45);margin:5px 0;line-height:1.5}
+.c4 strong{color:#fbbf24}
 .c4 table{width:100%;border-collapse:collapse;margin:8px 0;font-size:13px}
-.c4 td,.c4 th{border:1px solid rgba(255,255,255,.08);padding:5px 8px;text-align:left}
-.c4 th{background:rgba(0,210,255,.05);color:#00d2ff;font-size:13px}
+.c4 td,.c4 th{border-bottom:1px solid rgba(255,255,255,.06);padding:5px 8px;text-align:left}
+.c4 th{color:#38bdf8;font-size:13px;font-weight:600}
 </style></head><body>
 <div class="bg"></div>
 <div class="grid">
@@ -43,9 +45,8 @@ body{width:1920px;max-width:100vw;height:1080px;max-height:100vh;background:#050
 <div class="card c4"><div class="card-inner" id="bfi"></div><div class="dots" id="bfd"></div></div>
 </div>
 <script>
-var A='https://c46872d35aeba559-183-6-87-29.serveousercontent.com';
-var WN={0:'晴天',1:'少云',2:'多云',3:'阴天',45:'雾',48:'霜雾',51:'小雨',53:'小雨',55:'中雨',61:'小雨',63:'中雨',65:'大雨',71:'小雪',73:'中雪',75:'大雪',77:'雪',80:'阵雨',81:'阵雨',82:'暴雨',85:'阵雪',86:'阵雪',95:'雷暴',96:'雷暴',97:'强雷暴'};
+var A='https://c46872d35aeba559-183-6-87-29.serveousercontent.com';var WN={0:'晴天',1:'少云',2:'多云',3:'阴天',45:'雾',48:'霜雾',51:'小雨',53:'小雨',55:'中雨',61:'小雨',63:'中雨',65:'大雨',71:'小雪',73:'中雪',75:'大雪',77:'雪',80:'阵雨',81:'阵雨',82:'暴雨',85:'阵雪',86:'阵雪',95:'雷暴',96:'雷暴',97:'强雷暴'};
 function tick(){var n=new Date();document.getElementById('t').textContent=('0'+n.getHours()).slice(-2)+':'+('0'+n.getMinutes()).slice(-2)+':'+('0'+n.getSeconds()).slice(-2);document.getElementById('ms').textContent='.'+('00'+n.getMilliseconds()).slice(-3);document.getElementById('d').textContent=n.getFullYear()+'年'+(n.getMonth()+1)+'月'+n.getDate()+'日 周'+['日','一','二','三','四','五','六'][n.getDay()]}setInterval(tick,80);tick();
 var F={};function flip(id,pages,ms){F[id]={p:pages,i:0,n:pages.length,d:ms};document.getElementById(id+'i').innerHTML=pages[0];dots(id);if(pages.length>1)next(id)}function next(id){var f=F[id];if(!f||f.n<=1)return;f.i=(f.i+1)%f.n;var el=document.getElementById(id+'i');el.style.opacity='0';el.style.transform='translateY(8px)';setTimeout(function(){el.innerHTML=f.p[f.i];el.style.opacity='1';el.style.transform='translateY(0)';dots(id)},250);setTimeout(function(){next(id)},f.d)}function dots(id){var f=F[id],c=document.getElementById(id+'d');if(!c)return;var h='';for(var i=0;i<f.n;i++)h+='<span class="dot'+(i===f.i?' on':'')+'"></span>';c.innerHTML=h}
-fetch(A+'/api/weather?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(w){var c=w.current,hh=w.hourly,p=[];p.push('<div style="text-align:center"><div style="font-size:52px;font-weight:600;color:#fff">'+Math.round(c.temperature_2m)+'°C</div><div style="font-size:16px;color:rgba(255,255,255,.5);margin-top:4px">'+WN[c.weather_code]+'</div><div style="font-size:14px;color:rgba(255,255,255,.25);margin-top:4px">湿度 '+(c.relative_humidity_2m||'')+'%</div></div>');if(hh&&hh.time){var cur=(new Date()).getHours();for(var i=0;i<3;i++){var idx=cur+[1,3,6][i];if(idx>=hh.time.length)idx=hh.time.length-1;p.push('<div style="text-align:center"><div style="font-size:14px;color:rgba(0,210,255,.35);margin-bottom:8px">'+['+1 小时','+3 小时','+6 小时'][i]+'</div><div style="font-size:52px;font-weight:600;color:#fff">'+Math.round(hh.temperature_2m[idx])+'°C</div><div style="font-size:16px;color:rgba(255,255,255,.5);margin-top:4px">'+WN[hh.weather_code[idx]]+'</div></div>')}}flip('wx',p,5000);fetch(A+'/api/geocode?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(d){var a=(d&&d.address)||d||{};var c=a.city||a.town||a.county||'';if(c)document.getElementById('ci').textContent=c})});fetch(A+'/api/news').then(function(r){return r.json()}).then(function(d){if(!d||!d.length)return;var p=[];for(var i=0;i<d.length;i++)p.push('<div style="font-size:13px;color:#00e5ff;font-weight:700;margin-bottom:8px">'+d[i].source+'</div><div style="font-size:20px;color:rgba(255,255,255,.6);line-height:1.4">'+d[i].title+'</div><div style="font-size:12px;color:rgba(255,255,255,.18);margin-top:8px">'+(i+1)+'/'+d.length+'</div>');flip('ns',p,20000)});fetch(A+'/api/news-summary').then(function(r){return r.json()}).then(function(d){if(!d||!d.summary)return;var parts=d.summary.split(/\n(?=## )/),p=[];for(var i=0;i<parts.length;i++){var s=parts[i].trim();if(s)p.push('<div>'+md(s)+'</div>')}if(!p.length)p.push('<div>'+md(d.summary)+'</div>');flip('bf',p,12000)});function md(t){var ls=t.split('\n'),h='',it=false;for(var i=0;i<ls.length;i++){var l=ls[i];if(/^##\s/.test(l)){if(it){h+='</table>';it=false}h+='<h2>'+l.replace(/^##\s*/,'')+'</h2>';continue}if(/^###\s/.test(l)){if(it){h+='</table>';it=false}h+='<h3>'+l.replace(/^###\s*/,'')+'</h3>';continue}if(/^\|[-|\s]+\|$/.test(l))continue;if(/^\|/.test(l)&&/\|$/.test(l)){if(!it){h+='<table>';it=true}var cs=l.split('|').filter(function(c){return c.length>0});h+='<tr>';for(var j=0;j<cs.length;j++)h+='<td>'+cs[j].trim()+'</td>';h+='</tr>';continue}if(it){h+='</table>';it=false}if(l.trim()==''){h+='<br>';continue}h+='<p>'+l.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')+'</p>'}if(it)h+='</table>';return h}
+fetch(A+'/api/weather?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(w){var c=w.current,hh=w.hourly,p=[];p.push('<div style="text-align:center"><div style="font-size:52px;font-weight:700;color:#f8fafc">'+Math.round(c.temperature_2m)+'°C</div><div style="font-size:16px;color:rgba(248,250,252,.45);margin-top:6px">'+WN[c.weather_code]+'</div><div style="font-size:13px;color:rgba(248,250,252,.2);margin-top:6px">湿度 '+(c.relative_humidity_2m||'')+'%</div></div>');if(hh&&hh.time){var cur=(new Date()).getHours();for(var i=0;i<3;i++){var idx=cur+[1,3,6][i];if(idx>=hh.time.length)idx=hh.time.length-1;p.push('<div style="text-align:center"><div style="font-size:13px;color:rgba(56,189,248,.3);margin-bottom:8px;letter-spacing:.06em">'+['+1 小时','+3 小时','+6 小时'][i]+'</div><div style="font-size:52px;font-weight:700;color:#f8fafc">'+Math.round(hh.temperature_2m[idx])+'°C</div><div style="font-size:16px;color:rgba(248,250,252,.45);margin-top:6px">'+WN[hh.weather_code[idx]]+'</div></div>')}}flip('wx',p,5000);fetch(A+'/api/geocode?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(d){var a=(d&&d.address)||d||{};var c=a.city||a.town||a.county||'';if(c)document.getElementById('ci').textContent=c})});fetch(A+'/api/news').then(function(r){return r.json()}).then(function(d){if(!d||!d.length)return;var p=[];for(var i=0;i<d.length;i++)p.push('<div style="font-size:13px;color:#38bdf8;font-weight:600;margin-bottom:8px;letter-spacing:.04em">'+d[i].source+'</div><div style="font-size:20px;color:rgba(248,250,252,.55);line-height:1.4">'+d[i].title+'</div><div style="font-size:11px;color:rgba(248,250,252,.15);margin-top:8px">'+(i+1)+'/'+d.length+'</div>');flip('ns',p,20000)});fetch(A+'/api/news-summary').then(function(r){return r.json()}).then(function(d){if(!d||!d.summary)return;var parts=d.summary.split(/\n(?=## )/),p=[];for(var i=0;i<parts.length;i++){var s=parts[i].trim();if(s)p.push('<div>'+md(s)+'</div>')}if(!p.length)p.push('<div>'+md(d.summary)+'</div>');flip('bf',p,12000)});function md(t){var ls=t.split('\n'),h='',it=false;for(var i=0;i<ls.length;i++){var l=ls[i];if(/^##\s/.test(l)){if(it){h+='</table>';it=false}h+='<h2>'+l.replace(/^##\s*/,'')+'</h2>';continue}if(/^###\s/.test(l)){if(it){h+='</table>';it=false}h+='<h3>'+l.replace(/^###\s*/,'')+'</h3>';continue}if(/^\|[-|\s]+\|$/.test(l))continue;if(/^\|/.test(l)&&/\|$/.test(l)){if(!it){h+='<table>';it=true}var cs=l.split('|').filter(function(c){return c.length>0});h+='<tr>';for(var j=0;j<cs.length;j++)h+='<td>'+cs[j].trim()+'</td>';h+='</tr>';continue}if(it){h+='</table>';it=false}if(l.trim()==''){h+='<br>';continue}h+='<p>'+l.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')+'</p>'}if(it)h+='</table>';return h}
 </script></body></html>
