@@ -51,12 +51,11 @@ pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;fon
     <button class="btn" id="modeBLE" onclick="setMode('ble')" style="flex:1">📡 蓝牙</button>
   </div>
   <div id="wifiPanel">
-    <div class="row"><span class="lbl">ESP32 IP地址</span><input type="text" id="espIP" placeholder="192.168.x.x" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:6px 10px;color:#fff;font-size:12px;width:160px"></div>
-    <div style="display:flex;gap:6px;margin-top:4px">
-      <button class="btn" onclick="connectWiFi()" style="flex:1">🔗 连接WiFi</button>
-      <button class="btn warn" onclick="window.open('http://'+document.getElementById('espIP').value+'/wifi','_blank')" style="flex:1">⚙ 配网</button>
-    </div>
-    <div style="font-size:9px;color:rgba(255,255,255,.2);margin-top:4px">首次使用：手机连ESP32热点→浏览器打开192.168.4.1/wifi→输入WiFi密码</div>
+    <div style="font-size:10px;color:rgba(255,255,255,.3);margin-bottom:6px">先连接蓝牙 → 填入WiFi密码 → 点"发送配网" → ESP32自动连你家WiFi</div>
+    <div class="row"><span class="lbl">WiFi名称</span><input type="text" id="wifiSSID" placeholder="我家WiFi" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:6px 10px;color:#fff;font-size:12px;width:160px"></div>
+    <div class="row"><span class="lbl">WiFi密码</span><input type="password" id="wifiPass" placeholder="密码" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:6px 10px;color:#fff;font-size:12px;width:160px"></div>
+    <button class="btn" onclick="sendWiFi()" style="width:100%;margin-top:6px;background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.2);color:#10b981">📶 通过蓝牙发送配网</button>
+    <div class="row" style="margin-top:4px"><span class="lbl">ESP32 IP</span><span class="val" id="espIP" style="color:#10b981">等待配网...</span></div>
   </div>
   <div id="blePanel" style="display:none">
     <div class="row"><span class="lbl">蓝牙状态</span><span><span class="status wait" id="st"></span><span id="stTxt">未连接</span></span></div>
@@ -288,6 +287,8 @@ pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;fon
 <script>
 var S='4fafc201-1fb5-459e-8fcc-c5c9c331914b';
 var CMD='beb5483e-36e1-4688-b7f5-ea07361b26aa';
+var WIFI='beb5483e-36e1-4688-b7f5-ea07361b26ac';
+var IP='beb5483e-36e1-4688-b7f5-ea07361b26ad';
 
 var LED='beb5483e-36e1-4688-b7f5-ea07361b26a8';
 var KEYS='beb5483e-36e1-4688-b7f5-ea07361b26ab';
@@ -302,10 +303,33 @@ function setMode(m){
   document.getElementById('wifiPanel').style.display=m==='wifi'?'block':'none';
   document.getElementById('blePanel').style.display=m==='ble'?'block':'none';
 }
-function connectWiFi(){
-  wifiBase='http://'+document.getElementById('espIP').value;
-  fetch(wifiBase+'/api/led?r=0&g=0&b=0').then(function(r){return r.text()}).then(function(){
-    setStatus('WiFi已连接','ok');document.getElementById('stTxt').textContent=wifiBase;
+async function sendWiFi(){
+  var ssid=document.getElementById('wifiSSID').value,pass=document.getElementById('wifiPass').value;
+  if(!ssid){alert('请输入WiFi名称');return}
+  // Send via BLE
+  if(!server){alert('请先连接蓝牙');return}
+  try{
+    var svc=await server.getPrimaryService(S);
+    var wifiChar=await svc.getCharacteristic(WIFI);
+    await wifiChar.writeValue(new TextEncoder().encode(ssid+'|'+pass));
+    document.getElementById('espIP').textContent='已发送，等待连接...';
+    // Try to read IP after a few seconds
+    setTimeout(async function(){
+      try{
+        var ipChar=await svc.getCharacteristic(IP);
+        var ipVal=await ipChar.readValue();
+        var ip=new TextDecoder().decode(ipVal);
+        if(ip&&ip.length>5){document.getElementById('espIP').textContent=ip;wifiBase='http://'+ip;setStatus('WiFi已连接','ok')}
+        else{document.getElementById('espIP').textContent='连接中...'}
+      }catch(e){document.getElementById('espIP').textContent='请稍后再试'}
+    },8000);
+  }catch(e){alert('发送失败: '+e.message)}
+}
+async function connectWiFi(){
+  wifiBase='http://'+document.getElementById('espIP').textContent;
+  if(!wifiBase.startsWith('http'))return;
+  fetch(wifiBase+'/api/ip').then(function(r){return r.text()}).then(function(){
+    setStatus('WiFi已连接','ok');
   }).catch(function(){setStatus('WiFi连接失败','err')});
 }
 async function wcmd(m,p1,p2){
