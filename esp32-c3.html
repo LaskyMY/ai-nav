@@ -95,74 +95,71 @@ pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;fon
 
 
 <div class="card">
-  <div class="section-title">📐 ESP32-C3 Super Mini 引脚图</div>
+  <div class="section-title">📐 ESP32-C3 Super Mini 引脚图（标准版）</div>
   <style>
-    .board{display:flex;gap:10px;align-items:stretch;margin:6px 0}
-    .pins{display:flex;flex-direction:column;gap:1px;min-width:115px}
-    .pin{display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:6px;font-size:10px}
-    .pin:hover{background:rgba(255,255,255,.03)}
-    .pin .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-    .pin .l{flex:1;font-weight:500}
-    .pin .f{font-size:8px;color:rgba(255,255,255,.25);text-align:right}
-    .d-pwr{background:#f59e0b;box-shadow:0 0 5px rgba(245,158,11,.3)}
-    .d-gnd{background:#6b7280}
-    .d-gpio{background:#6366f1;box-shadow:0 0 4px rgba(99,102,241,.25)}
-    .d-use{background:#10b981;box-shadow:0 0 6px rgba(16,185,129,.4)}
-    .pin.hl{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.08)}
-    .chip{flex:1;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center}
-    .chip-inner{background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.1);border-radius:10px;padding:16px 10px;font-size:11px;color:rgba(255,255,255,.25)}
-    .legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;font-size:8px;color:rgba(255,255,255,.2)}
-    .legend span{display:flex;align-items:center;gap:3px}
-    .legend .dot{width:7px;height:7px;border-radius:4px}
+    .bd{display:flex;gap:10px;align-items:stretch;margin:6px 0}
+    .ps{display:flex;flex-direction:column;gap:1px;min-width:130px}
+    .pn{display:flex;align-items:center;gap:5px;padding:5px 8px;border-radius:6px;font-size:10px}
+    .pn:hover{background:rgba(255,255,255,.03)}
+    .pn .dt{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+    .pn .lb{flex:1;font-weight:500}
+    .pn .fn{font-size:8px;color:rgba(255,255,255,.2);text-align:right}
+    .dp{background:#f59e0b;box-shadow:0 0 5px rgba(245,158,11,.3)}
+    .dg{background:#6b7280}
+    .di{background:#6366f1;box-shadow:0 0 4px rgba(99,102,241,.25)}
+    .du{background:#10b981;box-shadow:0 0 6px rgba(16,185,129,.4)}
+    .pn.hl{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.08)}
+    .chi{flex:1;text-align:center;display:flex;flex-direction:column;justify-content:center}
+    .chb{background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.1);border-radius:10px;padding:16px 10px;font-size:11px;color:rgba(255,255,255,.2)}
+    .lg{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;font-size:8px;color:rgba(255,255,255,.15)}
+    .lg span{display:flex;align-items:center;gap:3px}
+    .lg .dt{width:7px;height:7px;border-radius:4px}
+    .warn{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.12);border-radius:8px;padding:10px 14px;margin-top:10px;font-size:10px;color:#f87171}
   </style>
-  <div class="board">
-    <div class="pins">
-      <div style="text-align:center;font-size:8px;color:rgba(255,255,255,.15);padding:3px 0;letter-spacing:.08em">左 侧 8 脚</div>
-      <div class="pin"><span class="dot d-pwr"></span><span class="l">5V</span><span class="f">电源</span></div>
-      <div class="pin"><span class="dot d-gnd"></span><span class="l">GND</span><span class="f">接地</span></div>
-      <div class="pin"><span class="dot d-pwr" style="background:#fbbf24"></span><span class="l">3.3V</span><span class="f">3.3V输出</span></div>
-      <div class="pin hl"><span class="dot d-use"></span><span class="l" style="color:#10b981">GPIO0</span><span class="f" style="color:#10b981">→ 按键K1</span></div>
-      <div class="pin hl"><span class="dot d-use"></span><span class="l" style="color:#10b981">GPIO1</span><span class="f" style="color:#10b981">→ 按键K2</span></div>
-      <div class="pin hl"><span class="dot d-use"></span><span class="l" style="color:#10b981">GPIO2</span><span class="f" style="color:#10b981">→ 按键K3</span></div>
-      <div class="pin hl"><span class="dot d-use"></span><span class="l" style="color:#10b981">GPIO3</span><span class="f" style="color:#10b981">→ 按键K4</span></div>
-      <div class="pin hl"><span class="dot d-use"></span><span class="l" style="color:#f87171">GPIO4</span><span class="f" style="color:#f87171">→ LED R</span></div>
+  <div class="bd">
+    <div class="ps">
+      <div style="text-align:center;font-size:8px;color:rgba(255,255,255,.1);padding:3px 0;letter-spacing:.08em">左侧 · USB-C朝上</div>
+      <div class="pn"><span class="dt dp"></span><span class="lb">5V</span><span class="fn">电源输入</span></div>
+      <div class="pn"><span class="dt dg"></span><span class="lb">GND</span><span class="fn">接地</span></div>
+      <div class="pn"><span class="dt dp" style="background:#fbbf24"></span><span class="lb">3V3</span><span class="fn">3.3V输出</span></div>
+      <div class="pn hl"><span class="dt du"></span><span class="lb" style="color:#f87171">GPIO4</span><span class="fn" style="color:#f87171">SCK/A4 → LED R</span></div>
+      <div class="pn hl"><span class="dt du"></span><span class="lb" style="color:#10b981">GPIO3</span><span class="fn" style="color:#10b981">A3 → 按键K4</span></div>
+      <div class="pn hl"><span class="dt du"></span><span class="lb" style="color:#10b981">GPIO2</span><span class="fn" style="color:#10b981">A2 → 按键K3</span></div>
+      <div class="pn hl"><span class="dt du"></span><span class="lb" style="color:#10b981">GPIO1</span><span class="fn" style="color:#10b981">A1 → 按键K2</span></div>
+      <div class="pn hl"><span class="dt du"></span><span class="lb" style="color:#10b981">GPIO0</span><span class="fn" style="color:#10b981">A0 → 按键K1</span></div>
     </div>
-    <div class="chip">
-      <div style="font-size:8px;color:rgba(255,255,255,.15);margin-bottom:8px;letter-spacing:.1em">USB-C ↑</div>
-      <div class="chip-inner">ESP32<br>C3<br>Super<br>Mini</div>
-      <div style="font-size:8px;color:rgba(255,255,255,.1);margin-top:6px">正面</div>
+    <div class="chi">
+      <div style="font-size:8px;color:rgba(255,255,255,.1);margin-bottom:6px;letter-spacing:.1em">USB-C↑</div>
+      <div class="chb">ESP32<br>C3<br>Super<br>Mini</div>
+      <div style="font-size:8px;color:rgba(255,255,255,.06);margin-top:4px">标准版 黑/蓝PCB</div>
     </div>
-    <div class="pins">
-      <div style="text-align:center;font-size:8px;color:rgba(255,255,255,.15);padding:3px 0;letter-spacing:.08em">右 侧 8 脚</div>
-      <div class="pin"><span class="dot d-pwr"></span><span class="l">5V</span><span class="f">电源</span></div>
-      <div class="pin"><span class="dot d-gnd"></span><span class="l">GND</span><span class="f">接地</span></div>
-      <div class="pin"><span class="dot d-pwr" style="background:#fbbf24"></span><span class="l">3.3V</span><span class="f">3.3V输出</span></div>
-      <div class="pin hl"><span class="dot d-use"></span><span class="l" style="color:#10b981">GPIO5</span><span class="f" style="color:#10b981">→ LED G</span></div>
-      <div class="pin hl"><span class="dot d-use"></span><span class="l" style="color:#60a5fa">GPIO6</span><span class="f" style="color:#60a5fa">→ LED B</span></div>
-      <div class="pin hl"><span class="dot d-use"></span><span class="l" style="color:#f59e0b">GPIO7</span><span class="f" style="color:#f59e0b">→ 继电器</span></div>
-      <div class="pin"><span class="dot d-gpio"></span><span class="l">GPIO8</span><span class="f">空闲</span></div>
-      <div class="pin"><span class="dot d-gpio"></span><span class="l">GPIO9</span><span class="f">空闲</span></div>
+    <div class="ps">
+      <div style="text-align:center;font-size:8px;color:rgba(255,255,255,.1);padding:3px 0;letter-spacing:.08em">右侧 · USB-C朝上</div>
+      <div class="pn hl"><span class="dt du"></span><span class="lb" style="color:#10b981">GPIO5</span><span class="fn" style="color:#10b981">A5/MISO → LED G</span></div>
+      <div class="pn hl"><span class="dt du"></span><span class="lb" style="color:#60a5fa">GPIO6</span><span class="fn" style="color:#60a5fa">MOSI → LED B</span></div>
+      <div class="pn hl"><span class="dt du"></span><span class="lb" style="color:#f59e0b">GPIO7</span><span class="fn" style="color:#f59e0b">SS → 继电器IN</span></div>
+      <div class="pn"><span class="dt di"></span><span class="lb">GPIO8</span><span class="fn">SDA/板载蓝灯</span></div>
+      <div class="pn"><span class="dt di"></span><span class="lb">GPIO9</span><span class="fn">SCL</span></div>
+      <div class="pn"><span class="dt di"></span><span class="lb">GPIO10</span><span class="fn">GPIO</span></div>
+      <div class="pn"><span class="dt di"></span><span class="lb">GPIO20</span><span class="fn">RX</span></div>
+      <div class="pn"><span class="dt di"></span><span class="lb">GPIO21</span><span class="fn">TX</span></div>
     </div>
   </div>
-  <div class="legend">
-    <span><span class="dot d-pwr"></span>电源</span>
-    <span><span class="dot d-gnd"></span>接地</span>
-    <span><span class="dot d-gpio"></span>GPIO</span>
-    <span><span class="dot d-use"></span>已接线</span>
+  <div class="lg">
+    <span><span class="dt dp"></span>电源</span><span><span class="dt dg"></span>接地</span>
+    <span><span class="dt di"></span>空闲</span><span><span class="dt du"></span>已接线</span>
   </div>
-</div>
-
-<div class="card">
-  <div class="section-title">🔌 接线指南</div>
+  <div class="warn">⚠ GPIO耐压3.3V · 5V/3V3在左右各有一组 · GPIO8板载蓝灯(固件已启用)</div>
+</div><div class="section-title">🔌 接线指南</div>
   <div style="font-size:12px;line-height:1.8">
     <p><b>1. RGB LED模块(共阴)</b><br>
     <span style="color:#f87171">R脚</span>→串220Ω电阻→<b>GPIO4</b>(左列第8脚)<br>
-    <span style="color:#10b981">G脚</span>→串220Ω电阻→<b>GPIO5</b>(右列第4脚)<br>
-    <span style="color:#60a5fa">B脚</span>→串220Ω电阻→<b>GPIO6</b>(右列第5脚)<br>
+    <span style="color:#10b981">G脚</span>→<b>GPIO5</b> (板子标注: GPIO5)<br>
+    <span style="color:#60a5fa">B脚</span>→<b>GPIO6</b> (板子标注: GPIO6)<br>
     LED公共脚→<b>GND</b>(任意GND都可以)</p>
 
     <p><b>2. 5V继电器模块</b><br>
-    VCC→板子<b>5V</b> | GND→板子<b>GND</b> | IN→<b>GPIO7</b>(右列第6脚)<br>
+    VCC→板子<b>5V</b> | GND→板子<b>GND</b> | IN→<b>GPIO7</b> (板子标注: GPIO7)<br>
     ⚠️ 继电器COM接12V+，NO接蜂鸣器+，蜂鸣器-接12V-</p>
 
     <p><b>3. 4键薄膜键盘</b><br>
