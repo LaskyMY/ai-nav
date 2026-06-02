@@ -5,57 +5,59 @@
 <meta name="viewport" content="width=1920,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
 <title>AI Nav 时钟</title>
 <style>
-:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1);--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px)}
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.6);--tx3:rgba(255,255,255,.45);--tx4:rgba(255,255,255,.25);--r:20px;--ease:cubic-bezier(.22,1,.36,1);--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px)}
 *{margin:0;padding:0;box-sizing:border-box}html,body{height:100%;overflow:hidden}
 body{background:linear-gradient(180deg,#0d0d1a 0%,#0a0a18 50%,#0c0c1e 100%);color:var(--tx);font-family:-apple-system,sans-serif;font-size:12px;line-height:1.4;padding:20px 16px 20px;-webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased}
-/* Floating orbs */
-.bg__orb{position:fixed;border-radius:50%;filter:blur(120px);opacity:.55;will-change:transform;pointer-events:none;z-index:0}
+
+.bg__orb{position:fixed;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform;pointer-events:none;z-index:0}
 .bg__orb:nth-child(1){width:400px;height:400px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-20%;left:-15%;animation:fo 20s ease-in-out infinite}
 .bg__orb:nth-child(2){width:300px;height:300px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-15%;right:-10%;animation:fo 24s ease-in-out infinite reverse}
 .bg__orb:nth-child(3){width:280px;height:280px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:fo 20s ease-in-out infinite;animation-delay:-7s}
 @keyframes fo{0%,100%{transform:translate(0,0)}33%{transform:translate(30px,-30px)}66%{transform:translate(-20px,20px)}}
 
-
 .glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(99,102,241,.05),rgba(236,72,153,.04) 20%,rgba(168,85,247,.02) 45%,transparent 70%)}
-.g{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:repeat(8,1fr);grid-auto-rows:minmax(54px,auto);gap:5px;grid-auto-flow:dense;align-content:start;overflow-y:auto;-webkit-overflow-scrolling:touch}
 
-/* Card = knowledge.html style */
-.t{background:var(--card-bg);min-height:60px;backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:12px 14px;transition:all .35s var(--ease);box-shadow:0 0 60px rgba(99,102,241,.04),0 4px 24px rgba(0,0,0,.1);position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;animation:fu .5s var(--ease) both}
+.g{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:repeat(8,1fr);grid-auto-flow:dense;grid-auto-rows:minmax(52px,auto);gap:4px;align-content:start;overflow-y:auto;-webkit-overflow-scrolling:touch}
+
+.t{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:10px 12px;transition:all .35s var(--ease);box-shadow:0 0 60px rgba(99,102,241,.04),0 4px 24px rgba(0,0,0,.1);position:relative;overflow:hidden;animation:fu .5s var(--ease) both;min-height:50px}
 .t::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
 .t:active{transform:scale(.97)!important;transition:transform .12s ease!important}
-/* Staggered entrance */
-@keyframes fu{0%{opacity:0;transform:translateY(16px) scale(.94)}100%{opacity:1;transform:translateY(0) scale(1)}}
-.t:nth-child(1){animation-delay:0s}.t:nth-child(2){animation-delay:.04s}.t:nth-child(3){animation-delay:.08s}.t:nth-child(4){animation-delay:.12s}.t:nth-child(5){animation-delay:.16s}.t:nth-child(6){animation-delay:.2s}.t:nth-child(7){animation-delay:.24s}.t:nth-child(8){animation-delay:.28s}.t:nth-child(9){animation-delay:.32s}.t:nth-child(10){animation-delay:.36s}.t:nth-child(11){animation-delay:.4s}.t:nth-child(12){animation-delay:.44s}.t:nth-child(13){animation-delay:.48s}.t:nth-child(14){animation-delay:.52s}
+@keyframes fu{0%{opacity:0;transform:translateY(12px) scale(.96)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.t:nth-child(1){animation-delay:0s}.t:nth-child(2){animation-delay:.05s}.t:nth-child(3){animation-delay:.1s}.t:nth-child(4){animation-delay:.15s}.t:nth-child(5){animation-delay:.2s}.t:nth-child(6){animation-delay:.25s}.t:nth-child(7){animation-delay:.3s}.t:nth-child(8){animation-delay:.35s}.t:nth-child(9){animation-delay:.4s}.t:nth-child(10){animation-delay:.45s}.t:nth-child(11){animation-delay:.5s}.t:nth-child(12){animation-delay:.55s}
 
-/* Level glow */
-.t.lv-critical{border-color:rgba(239,68,68,.18);box-shadow:0 0 40px rgba(239,68,68,.06),0 4px 24px rgba(0,0,0,.1)}
-.t.lv-high{border-color:rgba(245,158,11,.15);box-shadow:0 0 40px rgba(245,158,11,.04),0 4px 24px rgba(0,0,0,.1)}
-.t.lv-normal{border-color:rgba(99,102,241,.12)}
+/* Level colors */
+.t.lv-critical{border-color:rgba(239,68,68,.2);box-shadow:0 0 50px rgba(239,68,68,.08),0 4px 24px rgba(0,0,0,.1);background:rgba(239,68,68,.07)}
+.t.lv-high{border-color:rgba(245,158,11,.16);box-shadow:0 0 40px rgba(245,158,11,.05),0 4px 24px rgba(0,0,0,.1);background:rgba(245,158,11,.05)}
+.t.lv-normal{border-color:rgba(99,102,241,.12);background:rgba(99,102,241,.03)}
 .t.lv-sys{border-color:var(--card-border)}
+.t.lv-low{border-color:rgba(255,255,255,.05);background:rgba(255,255,255,.015)}
 
-/* Flash */
-.flash{animation:fl .4s var(--ease)}
-@keyframes fl{0%{filter:brightness(2.5) saturate(.3)}60%{filter:brightness(1.2)}100%{filter:brightness(1)}}
+/* Typewriter glitch refresh — retro rhythm */
+.t.update{animation:up .25s steps(1) 3}
+@keyframes up{0%,100%{opacity:1;transform:translateY(0)}50%{opacity:.7;transform:translateY(-1px)}}
 
-.c2{grid-column:span 2}.c3{grid-column:span 3}.r2{grid-row:span 2}.r3{grid-row:span 3}
+.c2{grid-column:span 2}.c3{grid-column:span 3}
 
-.tt{font-weight:700;line-height:1.2;color:var(--tx);letter-spacing:-.01em;margin-bottom:2px}
-.ts{font-size:.82em;color:var(--tx2);line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.tm{font-size:.72em;color:var(--tx4);margin-top:auto;padding-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tt{font-weight:700;line-height:1.25;color:var(--tx);letter-spacing:-.01em;margin-bottom:3px;font-size:1em}
+.ts{font-size:.9em;color:var(--tx2);line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+.tm{font-size:.78em;color:var(--tx3);margin-top:auto;padding-top:4px}
 
-.kw{color:var(--a1);font-weight:700}
-.kw-hot{color:var(--amber);font-weight:700}
-.kw-crit{color:var(--a3);font-weight:700}
+.kw{color:var(--a1);font-weight:700}.kw-hot{color:var(--amber);font-weight:700}.kw-crit{color:var(--a3);font-weight:700}
 
-.ck{text-align:center;justify-content:center}
-.ckb{font-size:80px;font-weight:700;background:linear-gradient(135deg,var(--a1),var(--pink));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;animation:gf 4s ease-in-out infinite}
+/* Clock */
+.ck{text-align:center}
+.ckb{font-size:42px;font-weight:700;background:linear-gradient(135deg,var(--a1),var(--pink));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;animation:gf 4s ease-in-out infinite}
 @keyframes gf{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-.ckms{font-size:28px;color:var(--a1);font-weight:500;min-width:44px;display:inline-block;opacity:.82;-webkit-text-fill-color:var(--a1)}
-.ckd{font-size:10px;color:var(--tx3);margin-top:3px}
+.ckms{font-size:15px;color:var(--a1);font-weight:500;min-width:42px;display:inline-block}
+.ckd{font-size:10px;color:var(--tx3);margin-top:2px}
 
-.wt{font-size:26px;font-weight:700;color:var(--tx)}
-.wd{font-size:11px;color:var(--tx2);margin-top:1px}
-.wh{font-size:9px;color:var(--tx4);margin-top:2px}
+/* Weather carousel */
+.wx-carousel{position:relative;overflow:hidden;min-height:56px}
+.wx-page{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;text-align:center;opacity:0;transform:translateX(20px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
+.wx-page.on{opacity:1;transform:translateX(0)}
+.wx-t{font-size:24px;font-weight:700;color:var(--tx)}
+.wx-d{font-size:11px;color:var(--tx2);margin-top:2px}
+.wx-h{font-size:9px;color:var(--tx4);margin-top:2px}
 </style></head><body>
 <div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div>
 <div class="glow-spot"></div>
@@ -64,9 +66,25 @@ body{background:linear-gradient(180deg,#0d0d1a 0%,#0a0a18 50%,#0c0c1e 100%);colo
 <script>
 var A='https://c46872d35aeba559-183-6-87-29.serveousercontent.com';
 var WN={0:'晴天',1:'少云',2:'多云',3:'阴天',45:'雾',48:'霜雾',51:'小雨',53:'小雨',55:'中雨',61:'小雨',63:'中雨',65:'大雨',71:'小雪',73:'中雪',75:'大雪',77:'雪',80:'阵雨',81:'阵雨',82:'暴雨',85:'阵雪',86:'阵雪',95:'雷暴',96:'雷暴',97:'强雷暴'};
+var WXE={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',51:'🌧️',61:'🌧️',71:'❄️',80:'🌦️',95:'⛈️'};
 var ns=[];
 
-function T(id,lv,sp,rs,h){return'<div class="t lv-'+lv+' '+(sp||'')+' '+(rs||'')+'" data-id="'+id+'">'+h+'</div>'}
+function emoji(t,lv){
+  if(!t)return'📰';
+  var s=t.toLowerCase();
+  if(/战争|冲突|空袭|军事|导弹|军队|武器/.test(t))return'⚔️';
+  if(/经济|市场|股票|金融|利率|美元|货币|通胀/.test(t))return'💹';
+  if(/政治|选举|总统|国会|政府|法律|法院/.test(t))return'🏛️';
+  if(/科技|AI|人工智能|芯片|数据|网络/.test(t))return'🔬';
+  if(/健康|医疗|疾病|药物|疫苗|病毒/.test(t))return'🏥';
+  if(/气候|环境|能源|自然|灾害|地震/.test(t))return'🌍';
+  if(/体育|比赛|运动|足球|篮球/.test(t))return'⚽';
+  if(lv==='critical')return'🚨';
+  if(lv==='high')return'⚠️';
+  return'📌';
+}
+
+function T(id,lv,sp,h){return'<div class="t lv-'+lv+' '+(sp||'')+'" data-id="'+id+'">'+h+'</div>'}
 
 function hl(t,kws){
   if(!kws||!t)return t||'';
@@ -77,36 +95,48 @@ function hl(t,kws){
 
 function render(){
   var h='';
-  h+=T('clock','sys','c3','','<div class="ck"><div class="ckb" id="ct">--:--:--<span class="ckms">.---</span></div><div class="ckd" id="cd">----</div><div class="ckd"><span id="cci">广州</span></div></div>');
-  h+=T('wx','sys','c2','','<div class="wt" id="wt">--°</div><div class="wd" id="wd">加载中</div><div class="wh" id="wh"></div>');
-  h+=T('w1','sys','','','<div class="tt">+1时</div><div class="ts" id="w1s">--</div>');
-  h+=T('w2','sys','','','<div class="tt">+3时</div><div class="ts" id="w2s">--</div>');
-  h+=T('w3','sys','','','<div class="tt">+6时</div><div class="ts" id="w3s">--</div>');
-  for(var i=0;i<ns.length;i++){var n=ns[i],lv=n.level||'normal',sp=i<2?'c2':'',rs='';h+=T('n'+i,lv,sp,rs,'<div class="tt">'+hl(n.title,n.keywords)+'</div>'+(n.summary?'<div class="ts">'+hl(n.summary,n.keywords)+'</div>':'')+(n.metric?'<div class="tm">'+n.metric+'</div>':''))}
+  h+=T('clock','sys','c3','<div class="ck"><div class="ckb" id="ct">--:--:--<span class="ckms">.---</span></div><div class="ckd" id="cd">----</div><div class="ckd"><span id="cci">广州</span></div></div>');
+  h+=T('wx','sys','c2','<div class="wx-carousel" id="wxc"><div class="wx-page on" id="wx0"><div class="wx-t">--°</div><div class="wx-d">加载中</div><div class="wx-h"></div></div><div class="wx-page" id="wx1"><div class="wx-t">--°</div><div class="wx-d">+1时</div></div><div class="wx-page" id="wx2"><div class="wx-t">--°</div><div class="wx-d">+3时</div></div><div class="wx-page" id="wx3"><div class="wx-t">--°</div><div class="wx-d">+6时</div></div></div>');
+  for(var i=0;i<ns.length;i++){var n=ns[i],lv=n.level||'normal',sp=i<2?'c2':'';h+=T('n'+i,lv,sp,'<div class="tt">'+emoji(n.title,n.level)+' '+hl(n.title,n.keywords)+'</div>'+(n.summary?'<div class="ts">'+hl(n.summary,n.keywords)+'</div>':'')+(n.metric?'<div class="tm">'+n.metric+'</div>':''))}
   document.getElementById('g').innerHTML=h;
 }
 
 function tick(){var n=new Date(),el=document.getElementById('ct');if(el)el.innerHTML=('0'+n.getHours()).slice(-2)+':'+('0'+n.getMinutes()).slice(-2)+':'+('0'+n.getSeconds()).slice(-2)+'<span class="ckms">.'+('00'+n.getMilliseconds()).slice(-3)+'</span>';el=document.getElementById('cd');if(el)el.textContent=n.getFullYear()+'年'+(n.getMonth()+1)+'月'+n.getDate()+'日 周'+['日','一','二','三','四','五','六'][n.getDay()]}
 setInterval(tick,80);tick();
 
+// Weather fetch + carousel
 fetch(A+'/api/weather?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(w){
-  var c=w.current,hh=w.hourly;var e;
-  e=document.getElementById('wt');if(e)e.textContent=Math.round(c.temperature_2m)+'°C';
-  e=document.getElementById('wd');if(e)e.textContent=WN[c.weather_code]||'--';
-  e=document.getElementById('wh');if(e)e.textContent='湿度 '+(c.relative_humidity_2m||'')+'%';
-  if(hh&&hh.time){var cur=(new Date()).getHours();for(var i=0;i<3;i++){var idx=cur+[1,3,6][i];if(idx>=hh.time.length)idx=hh.time.length-1;e=document.getElementById('w'+(i+1)+'s');if(e)e.textContent=Math.round(hh.temperature_2m[idx])+'° '+WN[hh.weather_code[idx]]}}
-  fetch(A+'/api/geocode?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(d){var a=(d&&d.address)||d||{};var c=a.city||a.town||a.county||'';if(c){e=document.getElementById('cci');if(e)e.textContent=c}});
+  var c=w.current,hh=w.hourly;
+  // Page 0: now
+  document.getElementById('wx0').innerHTML='<div class="wx-t">'+Math.round(c.temperature_2m)+'°C</div><div class="wx-d">'+WN[c.weather_code]+'</div><div class="wx-h">湿度 '+(c.relative_humidity_2m||'')+'%</div>';
+  if(hh&&hh.time){var cur=(new Date()).getHours();for(var i=0;i<3;i++){var idx=cur+[1,3,6][i];if(idx>=hh.time.length)idx=hh.time.length-1;document.getElementById('wx'+(i+1)).innerHTML='<div class="wx-t">'+Math.round(hh.temperature_2m[idx])+'°C</div><div class="wx-d">'+WN[hh.weather_code[idx]]+'</div>'}}
+  fetch(A+'/api/geocode?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(d){var a=(d&&d.address)||d||{};var c=a.city||a.town||a.county||'';if(c)document.getElementById('cci').textContent=c});
+  // Start carousel
+  wxI=0;setInterval(function(){var ps=document.querySelectorAll('.wx-page');for(var j=0;j<ps.length;j++)ps[j].className='wx-page';wxI=(wxI+1)%ps.length;ps[wxI].className='wx-page on'},5000);
 });
 
-fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(!d||!d.length)return;ns=d;render();setTimeout(fl,3000)});
+var wxI=0;
 
-function fl(){var els=document.querySelectorAll('[data-id^="n"]');if(!els.length){setTimeout(fl,3000);return}var pool=[];for(var i=0;i<els.length;i++){var lv=ns[i]?ns[i].level:'normal';var w=lv==='low'?5:lv==='normal'?3:lv==='high'?2:1;for(var j=0;j<w;j++)pool.push(i)}var idx=pool[Math.floor(Math.random()*pool.length)],el=els[idx];if(!el){setTimeout(fl,1000);return}el.classList.add('flash');setTimeout(function(){el.classList.remove('flash')},400);var src=ns[Math.floor(Math.random()*ns.length)];var ti=el.querySelector('.tt');if(ti&&src)ti.innerHTML=hl(src.title,src.keywords);setTimeout(fl,1000+Math.random()*2000)}
+fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(!d||!d.length)return;ns=d;render();setTimeout(fl,2000)});
 
-setInterval(function(){fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(d&&d.length){ns=d;render()}})},600000);
+// Typewriter rhythm update
+function fl(){
+  var els=document.querySelectorAll('[data-id^="n"]');
+  if(!els.length){setTimeout(fl,2000);return}
+  var pool=[];
+  for(var i=0;i<els.length;i++){var lv=ns[i]?ns[i].level:'normal';var w=lv==='low'?4:lv==='normal'?3:lv==='high'?2:1;for(var j=0;j<w;j++)pool.push(i)}
+  var idx=pool[Math.floor(Math.random()*pool.length)],el=els[idx];if(!el){setTimeout(fl,800);return}
+  // Retro glitch pulse
+  el.classList.add('update');setTimeout(function(){el.classList.remove('update')},300);
+  var src=ns[Math.floor(Math.random()*ns.length)];
+  var ti=el.querySelector('.tt');if(ti&&src)ti.innerHTML=emoji(src.title,src.level)+' '+hl(src.title,src.keywords);
+  setTimeout(fl,700+Math.random()*1800);
+}
 
-// Mouse-follow glow
+// Mouse glow
 var gs=document.querySelector('.glow-spot'),rf;
 document.addEventListener('mousemove',function(e){if(!rf){rf=requestAnimationFrame(function(){gs.style.background='radial-gradient(circle 420px at '+e.clientX+'px '+e.clientY+'px,rgba(99,102,241,.06),rgba(236,72,153,.04) 20%,rgba(168,85,247,.03) 45%,transparent 70%)';rf=null})}},{passive:true});
 document.addEventListener('touchmove',function(e){var t=e.touches[0];gs.style.background='radial-gradient(circle 420px at '+t.clientX+'px '+t.clientY+'px,rgba(99,102,241,.06),rgba(236,72,153,.04) 20%,rgba(168,85,247,.03) 45%,transparent 70%)'},{passive:true});
 
+setInterval(function(){fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(d&&d.length){ns=d;render()}})},600000);
 </script></body></html>
