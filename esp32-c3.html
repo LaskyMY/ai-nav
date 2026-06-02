@@ -12,55 +12,79 @@ h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:4px}
 .card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px}
 .row{display:flex;align-items:center;justify-content:space-between;margin:6px 0}
 .lbl{color:rgba(255,255,255,.5)}.val{font-weight:600;color:#00e5ff}
-.btn{display:inline-block;padding:10px 20px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:13px;cursor:pointer;font-family:inherit;margin:3px;transition:all .2s}
-.btn:active{transform:scale(.96)}.btn.on{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:#00e5ff}
+.btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:12px;cursor:pointer;font-family:inherit;margin:2px}
+.btn:active{transform:scale(.96)}.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:#00e5ff}
 .btn.danger{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.2);color:#f87171}
-input[type=range]{width:100%;margin:6px 0;-webkit-appearance:none;height:6px;border-radius:3px;background:rgba(255,255,255,.1);outline:none}
+.btn.green{background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.2);color:#10b981}
+input[type=range]{width:100%;margin:4px 0;-webkit-appearance:none;height:6px;border-radius:3px;background:rgba(255,255,255,.1);outline:none}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:11px;background:#00e5ff;cursor:pointer}
+input[type=text],input[type=password]{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:6px 10px;color:#fff;font-size:12px;width:160px}
 .preview{width:60px;height:60px;border-radius:50%;border:3px solid rgba(255,255,255,.1);margin:8px auto;background:#000}
 .status{display:inline-block;width:8px;height:8px;border-radius:4px;margin-right:6px}.status.ok{background:#10b981}.status.err{background:#ef4444}.status.wait{background:#f59e0b;animation:pulse 1s infinite}@keyframes pulse{50%{opacity:.3}}
+.section-title{font-size:14px;font-weight:700;margin-bottom:8px}
+pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.6;margin:8px 0}
 </style>
 </head>
 <body>
 <h1>ESP32-C3 控制台</h1>
-<div class="sub">Web Bluetooth · AI Nav</div>
+<div class="sub" id="infoBar">未连接</div>
 
+<!-- Connection + Status -->
 <div class="card">
-  <div style="font-size:14px;font-weight:700;margin-bottom:8px">📡 连接</div>
-  <div class="row"><span class="lbl">状态</span><span><span class="status wait" id="st"></span><span id="stt">未连接</span></span></div>
-  <button class="btn" onclick="connect()" id="btnC">连接 AI-NAV-C3</button>
+  <div class="section-title">📡 连接</div>
+  <div class="row"><span class="lbl">BLE</span><span><span class="status wait" id="st"></span><span id="stt">未连接</span></span></div>
+  <div class="row"><span class="lbl">系统信息</span><span class="val" id="sysInfo" style="font-size:10px">等待连接...</span></div>
+  <button class="btn green" onclick="connect()" id="btnC" style="width:100%">连接 AI-NAV-C3</button>
 </div>
 
+<!-- WiFi Config -->
 <div class="card">
-  <div style="font-size:14px;font-weight:700;margin-bottom:8px">💡 RGB LED</div>
+  <div class="section-title">📶 WiFi 配网 (蓝牙发送)</div>
+  <div class="row"><span class="lbl">WiFi名称</span><input type="text" id="wifiSSID" placeholder="我家WiFi"></div>
+  <div class="row"><span class="lbl">WiFi密码</span><input type="password" id="wifiPass" placeholder="密码"></div>
+  <button class="btn primary" onclick="sendWiFi()" style="width:100%;margin-top:4px">📶 通过蓝牙发送配网</button>
+  <div class="row" style="margin-top:4px"><span class="lbl">IP地址</span><span class="val" id="espip" style="font-size:10px">等待配网...</span></div>
+</div>
+
+<!-- RGB LED -->
+<div class="card">
+  <div class="section-title">💡 RGB LED</div>
   <div class="preview" id="pv"></div>
   <div class="row"><span class="lbl">R</span><span class="val" id="rv">0</span></div><input type="range" min="0" max="255" value="0" id="rs" oninput="uled()">
   <div class="row"><span class="lbl">G</span><span class="val" id="gv">0</span></div><input type="range" min="0" max="255" value="0" id="gs" oninput="uled()">
   <div class="row"><span class="lbl">B</span><span class="val" id="bv">0</span></div><input type="range" min="0" max="255" value="0" id="bs" oninput="uled()">
-  <div style="text-align:center;margin-top:8px">
+  <div style="text-align:center;margin-top:6px">
     <button class="btn" onclick="ps(255,0,0)">🔴</button><button class="btn" onclick="ps(0,255,0)">🟢</button>
-    <button class="btn" onclick="ps(0,0,255)">🔵</button><button class="btn" onclick="ps(255,255,255)">⚪</button><button class="btn" onclick="ps(0,0,0)">⚫</button>
+    <button class="btn" onclick="ps(0,0,255)">🔵</button><button class="btn" onclick="ps(255,255,255)">⚪</button>
+    <button class="btn" onclick="ps(0,0,0)">⚫</button>
+    <button class="btn primary" onclick="breath()">🌬 呼吸灯</button>
   </div>
 </div>
 
+<!-- Buzzer -->
 <div class="card">
-  <div style="font-size:14px;font-weight:700;margin-bottom:8px">🔔 蜂鸣器</div>
-  <button class="btn" onclick="buzz(1)">ON</button>
-  <button class="btn" onclick="buzz(2)">OFF</button>
-  <button class="btn danger" onclick="buzz(3)">短哔</button>
-  <button class="btn" onclick="buzz(4)">LED闪</button>
+  <div class="section-title">🔔 蜂鸣器 (GPIO7)</div>
+  <button class="btn green" onclick="buzz(1)" style="width:48%">ON</button>
+  <button class="btn danger" onclick="buzz(2)" style="width:48%">OFF</button>
+  <button class="btn" onclick="buzz(3)" style="width:48%;margin-top:4px">短哔 300ms</button>
+  <button class="btn primary" onclick="buzz(4)" style="width:48%;margin-top:4px">LED 闪烁确认</button>
 </div>
+
+
 
 <script>
 var S='12345678-1234-1234-1234-123456789abc';
 var L='12345678-1234-1234-1234-123456789001';
 var B='12345678-1234-1234-1234-123456789002';
-var dev=null,svr=null,led=null,bz=null;
+var W='12345678-1234-1234-1234-123456789003';
+var I='12345678-1234-1234-1234-123456789004';
+var dev=null,svr=null,led=null,bz=null,wf=null,info=null;
 
 function st(t,c){
   document.getElementById('st').className='status '+(c||'wait');
   document.getElementById('stt').textContent=t;
 }
+
 async function connect(){
   try{
     st('扫描中...','wait');
@@ -69,11 +93,15 @@ async function connect(){
     var s=await svr.getPrimaryService(S);
     led=await s.getCharacteristic(L);
     bz=await s.getCharacteristic(B);
+    wf=await s.getCharacteristic(W);
+    try{info=await s.getCharacteristic(I);var iv=await info.readValue();document.getElementById('sysInfo').textContent=new TextDecoder().decode(iv)}catch(e){}
     st('已连接','ok');
     document.getElementById('btnC').style.display='none';
+    document.getElementById('infoBar').textContent='已连接 AI-NAV-C3';
     dev.addEventListener('gattserverdisconnected',function(){st('已断开','err');document.getElementById('btnC').style.display='inline-block'});
   }catch(e){st('失败: '+e.message,'err')}
 }
+
 function uled(){
   var r=+document.getElementById('rs').value,g=+document.getElementById('gs').value,b=+document.getElementById('bs').value;
   document.getElementById('rv').textContent=r;document.getElementById('gv').textContent=g;document.getElementById('bv').textContent=b;
@@ -82,6 +110,14 @@ function uled(){
 }
 function ps(r,g,b){document.getElementById('rs').value=r;document.getElementById('gs').value=g;document.getElementById('bs').value=b;uled()}
 function buzz(m){if(bz)bz.writeValue(new Uint8Array([m])).catch(function(){})}
+function breath(){if(led)led.writeValue(new Uint8Array([5])).catch(function(){})}
+async function sendWiFi(){
+  if(!wf){alert('请先连接蓝牙');return}
+  var ss=document.getElementById('wifiSSID').value,ps=document.getElementById('wifiPass').value;
+  if(!ss){alert('请输入WiFi名称');return}
+  try{await wf.writeValue(new TextEncoder().encode(ss+'|'+ps));document.getElementById('espip').textContent='已发送，等待连接...';
+    setTimeout(async function(){if(info)try{var iv=await info.readValue();var ip=new TextDecoder().decode(iv);document.getElementById('espip').textContent=ip.split('IP:')[1]||ip}catch(e){}},8000)}catch(e){alert('发送失败: '+e.message)}
+}
 </script>
 </body>
 </html>
