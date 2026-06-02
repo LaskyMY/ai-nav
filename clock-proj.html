@@ -135,7 +135,7 @@ setInterval(function(){
     if(!d||!d.length)return;
     // Remove old news tiles
     tiles=tiles.filter(function(t){return t.id.indexOf('n-')!==0&&t.id.indexOf('wx-')!==0});
-    addWx({current:{temperature_2m:parseInt(document.querySelector('.clk')?0:27)}}); // placeholder, actual wx from cache
+    
     addNews(d);
   });
 },600000);
