@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ESP32-C3 控制台</title>
+<style>
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.04);--card-border:rgba(255,255,255,.07);--cyan:#00e5ff;--tx:rgba(255,255,255,.9);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.28)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--tx);font-family:-apple-system,sans-serif;font-size:13px;line-height:1.5;padding:16px;max-width:520px;margin:0 auto}
+h1{font-size:20px;font-weight:700;color:var(--cyan);margin-bottom:4px}
+.sub{font-size:10px;color:var(--tx3);margin-bottom:16px}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:14px 16px;margin-bottom:10px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.row{display:flex;align-items:center;justify-content:space-between;margin:6px 0}
+.lbl{color:var(--tx2);font-size:12px}
+.val{font-weight:600;color:var(--cyan)}
+
+.btn{display:inline-block;padding:8px 20px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:13px;cursor:pointer;font-family:inherit;margin:4px;transition:all .2s}
+.btn:active{transform:scale(.96);background:rgba(0,229,255,.15)}.btn.on{background:rgba(0,229,255,.15);border-color:rgba(0,229,255,.25);color:var(--cyan)}
+.btn.danger{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.2);color:#ef4444}.btn.danger:active{background:rgba(239,68,68,.2)}
+.btn.warn{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.2);color:#f59e0b}
+
+input[type=range]{width:100%;margin:6px 0;-webkit-appearance:none;height:6px;border-radius:3px;background:rgba(255,255,255,.1);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:11px;background:var(--cyan);cursor:pointer}
+
+.preview{width:60px;height:60px;border-radius:50%;border:3px solid rgba(255,255,255,.1);margin:8px auto;transition:background .3s}
+
+.status{display:inline-block;width:8px;height:8px;border-radius:4px;margin-right:6px}.status.ok{background:#10b981}.status.err{background:#ef4444}.status.wait{background:#f59e0b;animation:pulse 1s infinite}@keyframes pulse{50%{opacity:.4}}
+
+.key-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.key{text-align:center;padding:10px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);font-size:11px;color:var(--tx2);transition:all .15s}
+.key.pressed{background:rgba(0,229,255,.1);border-color:var(--cyan);color:var(--cyan)}
+
+.section-title{font-size:14px;font-weight:700;margin-bottom:8px;color:var(--tx)}
+.step{background:rgba(255,255,255,.02);border-radius:8px;padding:10px 14px;margin:6px 0;font-size:12px}
+.step .num{display:inline-block;width:20px;height:20px;border-radius:10px;background:var(--cyan);color:#000;text-align:center;line-height:20px;font-size:11px;font-weight:700;margin-right:8px}
+code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:11px}
+pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.4;margin:6px 0}
+</style>
+</head>
+<body>
+
+<h1>ESP32-C3 控制台</h1>
+<div class="sub">Web Bluetooth 控制 · AI Nav Dashboard</div>
+
+<!-- Connection -->
+<div class="card">
+  <div class="row"><span class="section-title">📡 连接状态</span><span><span class="status wait" id="st"></span><span id="stTxt">未连接</span></span></div>
+  <button class="btn" onclick="connect()" id="btnConn">连接 AI-NAV-C3</button>
+  <button class="btn warn" onclick="disconnect()" id="btnDisc" style="display:none">断开</button>
+</div>
+
+<!-- RGB LED -->
+<div class="card">
+  <div class="section-title">💡 RGB LED 控制</div>
+  <div class="preview" id="preview" style="background:rgb(0,0,0)"></div>
+  <div class="row"><span class="lbl">红 R</span><span class="val" id="rv">0</span></div>
+  <input type="range" min="0" max="255" value="0" id="r" oninput="updateLED()">
+  <div class="row"><span class="lbl">绿 G</span><span class="val" id="gv">0</span></div>
+  <input type="range" min="0" max="255" value="0" id="g" oninput="updateLED()">
+  <div class="row"><span class="lbl">蓝 B</span><span class="val" id="bv">0</span></div>
+  <input type="range" min="0" max="255" value="0" id="b" oninput="updateLED()">
+  <div style="text-align:center;margin-top:8px">
+    <button class="btn" onclick="preset(255,0,0)">🔴 红</button>
+    <button class="btn" onclick="preset(0,255,0)">🟢 绿</button>
+    <button class="btn" onclick="preset(0,0,255)">🔵 蓝</button>
+    <button class="btn" onclick="preset(255,255,255)">⚪ 白</button>
+    <button class="btn" onclick="preset(0,0,0)">⚫ 关</button>
+  </div>
+</div>
+
+<!-- Relay -->
+<div class="card">
+  <div class="section-title">🔌 继电器 (12V 输出)</div>
+  <button class="btn" id="btnRelay" onclick="toggleRelay()">继电器 OFF</button>
+</div>
+
+<!-- Buzzer -->
+<div class="card">
+  <div class="section-title">🔔 蜂鸣器</div>
+  <button class="btn danger" onclick="beep()">触发响铃</button>
+</div>
+
+<!-- Keypad -->
+<div class="card">
+  <div class="section-title">⌨️ 矩阵键盘</div>
+  <div class="key-grid">
+    <div class="key" id="k1">按键 1</div>
+    <div class="key" id="k2">按键 2</div>
+    <div class="key" id="k3">按键 3</div>
+    <div class="key" id="k4">按键 4</div>
+  </div>
+  <div style="font-size:10px;color:var(--tx3);margin-top:6px;text-align:center">按下物理按键时高亮</div>
+</div>
+
+<!-- Tutorial -->
+<div class="card">
+  <div class="section-title">📖 新手教程</div>
+  <div class="step"><span class="num">1</span> 用 Arduino IDE 打开 <code>esp32/esp32-c3.ino</code>，选 <b>ESP32C3 Dev Module</b></div>
+  <div class="step"><span class="num">2</span> 安装库：<b>ESP32 BLE Arduino</b>（工具→开发板→开发板管理器搜 ESP32）</div>
+  <div class="step"><span class="num">3</span> 接线：
+    <pre>RGB LED: R→GPIO4 G→GPIO5 B→GPIO6 (串220Ω电阻)
+继电器: IN→GPIO7 VCC→5V GND→GND
+按键: K1→GPIO0 K2→GPIO1 K3→GPIO2 K4→GPIO3 (内置上拉)
+12V蜂鸣器→继电器常开触点→12V电源</pre>
+  </div>
+  <div class="step"><span class="num">4</span> 烧录后打开本页面，点击<b>"连接 AI-NAV-C3"</b></div>
+  <div class="step"><span class="num">5</span> Chrome/Edge 浏览器 → 选择弹出的 BLE 设备 → 开始控制</div>
+</div>
+
+<script>
+var S='4fafc201-1fb5-459e-8fcc-c5c9c331914b';
+var LED='beb5483e-36e1-4688-b7f5-ea07361b26a8';
+var RELAY='beb5483e-36e1-4688-b7f5-ea07361b26a9';
+var BUZZ='beb5483e-36e1-4688-b7f5-ea07361b26aa';
+var KEYS='beb5483e-36e1-4688-b7f5-ea07361b26ab';
+
+var dev=null,server=null,ledChar=null,relayChar=null,buzzChar=null,keyChar=null;
+var relayOn=false;
+
+function setStatus(t,c){
+  var s=document.getElementById('st');s.className='status '+c;
+  document.getElementById('stTxt').textContent=t;
+}
+
+async function connect(){
+  try{
+    setStatus('扫描中...','wait');
+    dev=await navigator.bluetooth.requestDevice({filters:[{name:'AI-NAV-C3'}],optionalServices:[S]});
+    server=await dev.gatt.connect();
+    var svc=await server.getPrimaryService(S);
+    ledChar=await svc.getCharacteristic(LED);
+    relayChar=await svc.getCharacteristic(RELAY);
+    buzzChar=await svc.getCharacteristic(BUZZ);
+    keyChar=await svc.getCharacteristic(KEYS);
+    setStatus('已连接','ok');
+    document.getElementById('btnConn').style.display='none';
+    document.getElementById('btnDisc').style.display='inline-block';
+    // Start keypad notify
+    try{await keyChar.startNotifications();keyChar.addEventListener('characteristicvaluechanged',function(e){var v=e.target.value.getUint8(0);['k1','k2','k3','k4'].forEach(function(id,i){var el=document.getElementById(id);if(el)el.classList.toggle('pressed',!!(v&(1<<i)))})})}catch(e){}
+    dev.addEventListener('gattserverdisconnected',function(){setStatus('已断开','err');document.getElementById('btnConn').style.display='inline-block';document.getElementById('btnDisc').style.display='none'});
+  }catch(e){setStatus('连接失败: '+e.message,'err')}
+}
+
+function disconnect(){if(dev&&dev.gatt.connected){dev.gatt.disconnect()}}
+
+async function updateLED(){
+  var r=parseInt(document.getElementById('r').value),g=parseInt(document.getElementById('g').value),b=parseInt(document.getElementById('b').value);
+  document.getElementById('rv').textContent=r;document.getElementById('gv').textContent=g;document.getElementById('bv').textContent=b;
+  document.getElementById('preview').style.background='rgb('+r+','+g+','+b+')';
+  if(ledChar)try{await ledChar.writeValue(new Uint8Array([r,g,b]))}catch(e){}
+}
+
+function preset(r,g,b){
+  document.getElementById('r').value=r;document.getElementById('g').value=g;document.getElementById('b').value=b;updateLED()
+}
+
+async function toggleRelay(){
+  relayOn=!relayOn;
+  var btn=document.getElementById('btnRelay');btn.textContent='继电器 '+(relayOn?'ON':'OFF');btn.classList.toggle('on',relayOn);
+  if(relayChar)try{await relayChar.writeValue(new Uint8Array([relayOn?1:0]))}catch(e){}
+}
+
+async function beep(){
+  var btn=document.querySelector('.btn.danger');btn.textContent='响铃中...';btn.disabled=true;
+  if(buzzChar)try{await buzzChar.writeValue(new Uint8Array([1]))}catch(e){}
+  setTimeout(function(){btn.textContent='触发响铃';btn.disabled=false},500)
+}
+</script>
+</body>
+</html>
