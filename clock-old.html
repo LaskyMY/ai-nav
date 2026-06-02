@@ -20,27 +20,38 @@ body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:Roboto,sans-serif
 </style></head><body><div class="g" id="g"></div><script>
 var A='https://c46872d35aeba559-183-6-87-29.serveousercontent.com';
 var WN={0:'晴',1:'少云',2:'多云',3:'阴',45:'雾',51:'雨',61:'雨',71:'雪',80:'雨',95:'雷'};
-var ns=[],wxP=[],wxI=0,wxT=null;
-function em(t){var s=(t||'').toLowerCase();if(/战争|冲突|空袭|军事|导弹/.test(t))return'[!]';if(/经济|市场|股票|金融|利率/.test(t))return'[$]';if(/政治|选举|总统|政府|法律/.test(t))return'[政]';if(/科技|AI|芯片|数据/.test(t))return'[科]';if(/医疗|疾病|药物|疫苗/.test(t))return'[医]';return'[新]'}
-function kw(t,k){if(!k||!t)return t;var s=t,ks=k.split(',');for(var i=0;i<ks.length;i++){var w=ks[i].trim();if(!w)continue;var c='k1';if(w[0]==='!'){c='k3';w=w.slice(1)}else if(w[0]==='*'){c='k2';w=w.slice(1)}s=s.split(w).join('<span class="'+c+'">'+w+'</span>')}return s}
-var MAX_NEWS=8;
+var ns=[],allNews=[],wxP=[],wxI=0,wxT=null;
+function em(t){var s=(t||'');if(/战争|冲突|空袭|军事|导弹/.test(s))return'[!]';if(/经济|市场|股票|金融|利率/.test(s))return'[$]';if(/政治|选举|总统|政府|法律/.test(s))return'[政]';if(/科技|AI|芯片|数据/.test(s))return'[科]';if(/医疗|疾病|药物|疫苗/.test(s))return'[医]';return'[新]'}
+function kw(t,k){if(!k||!t)return t;var s=t,ks=k.split(',');for(var i=0;i<ks.length;i++){var w=ks[i].trim();if(!w)continue;var c='k1';if(w[0]=='!'){c='k3';w=w.slice(1)}else if(w[0]=='*'){c='k2';w=w.slice(1)}s=s.split(w).join('<span class="'+c+'">'+w+'</span>')}return s}
 function build(){
   var h='';var now=new Date(),nx=new Date(now.getTime()+600000);
-  h+='<div class="c c3"><div class="ckb" id="t">--:--:--<span class="ckms">.---</span></div><div class="ckd" id="td">----</div></div>';
+  h+='<div class="c c3"><div class="ckb" id="t"></div><div class="ckd" id="td"></div></div>';
   h+='<div class="c c3 wx-c" id="wc"><div style="text-align:center"><span style="font-size:34px" id="wxi">☀️</span><div style="font-size:10px;color:rgba(255,255,255,.3);margin:3px 0"><span id="wxl">广州·当前</span></div><div style="font-size:24px;font-weight:700;color:#fff" id="wxt">--°</div></div></div>';
-  h+='<div class="c c3 sts" onclick="R()"><span>🔄 '+now.toLocaleTimeString('zh-CN')+(ns.length?' · '+ns.length+'条':'')+'</span><span>⏱ '+nx.toLocaleTimeString('zh-CN')+'</span></div>';
-  h+='<div class="c c3 bf-c"><div class="tt">📋 AI简报</div><div class="ts" id="sm">加载中</div></div>';
-  for(var i=0;i<Math.min(ns.length,MAX_NEWS);i++){var n=ns[i],lv=n.level==='critical'?'1':n.level==='high'?'2':'3';h+='<div class="c l'+lv+(i<2?' c2':'')+'"><div class="tt">'+em(n.title)+' '+kw(n.title,n.keywords)+'</div>'+(n.summary?'<div class="ts">'+kw(n.summary,n.keywords)+'</div>':'')+(n.metric?'<div class="tm">'+n.metric+'</div>':'')+'</div>'}
-  document.getElementById('g').innerHTML=h;tick()
+  h+='<div class="c c3 sts"><span>🔄 '+now.toLocaleTimeString('zh-CN')+' · '+(allNews.length||ns.length||0)+'条</span><span>⏱ '+nx.toLocaleTimeString('zh-CN')+'</span></div>';
+  h+='<div class="c c3 bf-c"><div class="tt">📋 AI简报</div><div class="ts" id="sm"></div></div>';
+  var items=allNews.length?allNews:ns;
+  for(var i=0;i<Math.min(items.length,16);i++){var n=items[i],lv=n.level==='critical'?'1':n.level==='high'?'2':'3';h+='<div class="c l'+lv+(i<2?' c2':'')+'"><div class="tt">'+em(n.title)+' '+kw(n.title,n.keywords)+'</div>'+(n.summary?'<div class="ts">'+kw(n.summary,n.keywords)+'</div>':'')+(n.metric?'<div class="tm">'+n.metric+'</div>':'')+'</div>'}
+  document.getElementById('g').innerHTML=h;tick();
+  // Set summary after DOM ready
+  var smEl=document.getElementById('sm');if(smEl&&!smEl.textContent)smEl.textContent='加载中...';
 }
-function R(){fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(d&&d.length){ns=d;build()}})}
-function tick(){var n=new Date();var e=document.getElementById('t');if(e)e.innerHTML=('0'+n.getHours()).slice(-2)+':'+('0'+n.getMinutes()).slice(-2)+':'+('0'+n.getSeconds()).slice(-2)+' <span class="ckms">.'+('00'+n.getMilliseconds()).slice(-3)+'</span>';e=document.getElementById('td');if(e)e.textContent=n.getFullYear()+'年'+(n.getMonth()+1)+'月'+n.getDate()+'日 周'+['日','一','二','三','四','五','六'][n.getDay()]}
+function tick(){var n=new Date(),el=document.getElementById('t');if(el)el.innerHTML=('0'+n.getHours()).slice(-2)+':'+('0'+n.getMinutes()).slice(-2)+':'+('0'+n.getSeconds()).slice(-2)+' <span class="ckms"></span>';el=document.getElementById('td');if(el)el.textContent=n.getFullYear()+'年'+(n.getMonth()+1)+'月'+n.getDate()+'日 周'+['日','一','二','三','四','五','六'][n.getDay()]}
 function sx(i){var p=wxP[i];var a=document.getElementById('wxi'),b=document.getElementById('wxl'),c=document.getElementById('wxt');if(a)a.textContent=['☀️','🌤️','⛅','☁️','🌫️','🌧️','🌧️','❄️','🌦️','⛈️'][p.code%10]||'☀️';if(b)b.textContent=p.label;if(c)c.textContent=p.temp+'°C'}
 function swx(){wxI=0;sx(0);wxT=setInterval(function(){wxI=(wxI+1)%wxP.length;sx(wxI)},5000)}
-build();requestAnimationFrame(tick);
+
+build();tick();setInterval(tick,1000);
 wxP=[{label:'广州·当前',temp:'27',code:0},{label:'+1时',temp:'28',code:1},{label:'+3时',temp:'30',code:0},{label:'+6时',temp:'26',code:2}];swx();
 fetch(A+'/api/weather?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(w){var c=w.current,hh=w.hourly;wxP=[{label:'广州·当前',temp:Math.round(c.temperature_2m),code:c.weather_code}];if(hh&&hh.time){var cur=(new Date()).getHours();for(var i=0;i<3;i++){var idx=cur+[1,3,6][i];if(idx>=hh.time.length)idx=hh.time.length-1;wxP.push({label:'+'+(i*2+1)+'时',temp:Math.round(hh.temperature_2m[idx]),code:hh.weather_code[idx]})}}swx()}).catch(function(){});
-fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(d&&d.length){ns=d;build()}});
-fetch(A+'/api/news-summary').then(function(r){return r.json()}).then(function(s){if(s&&s.summary){var el=document.getElementById('sm');if(el)el.textContent=s.summary.slice(0,300)}});
-setInterval(function(){fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(d&&d.length){ns=d;build();fetch(A+'/api/news-summary').then(function(r){return r.json()}).then(function(s){if(s&&s.summary){var el=document.getElementById('sm');if(el)el.textContent=s.summary.slice(0,300)}})}})},600000);
+
+// Load cached news from localStorage
+try{var cached=JSON.parse(localStorage.getItem('ainav_news'));if(cached&&cached.length){allNews=cached;build()}}catch(e){}
+// Fetch fresh news
+fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(d&&d.length){ns=d;allNews=d;try{localStorage.setItem('ainav_news',JSON.stringify(d))}catch(e){};build()}});
+// Fetch summary
+fetch(A+'/api/news-summary').then(function(r){return r.json()}).then(function(s){if(s&&s.summary){var el=document.getElementById('sm');if(el)el.textContent=s.summary.slice(0,400)}});
+// Periodic refresh
+setInterval(function(){
+  fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(d&&d.length){ns=d;allNews=d;try{localStorage.setItem('ainav_news',JSON.stringify(d))}catch(e){};build()}});
+  fetch(A+'/api/news-summary').then(function(r){return r.json()}).then(function(s){if(s&&s.summary){var el=document.getElementById('sm');if(el)el.textContent=s.summary.slice(0,400)}});
+},600000);
 </script></body></html>
