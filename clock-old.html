@@ -54,7 +54,7 @@ function em(t){var s=(t||'').toLowerCase();if(/战争|冲突|空袭|军事|导�
 function kw(t,k){if(!k||!t)return t;var s=t,ks=k.split(',');for(var i=0;i<ks.length;i++){var w=ks[i].trim();if(!w)continue;var c='k1';if(w[0]==='!'){c='k3';w=w.slice(1)}else if(w[0]==='*'){c='k2';w=w.slice(1)}s=s.split(w).join('<span class="'+c+'">'+w+'</span>')}return s}
 
 function doRefresh(){fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(!d||!d.length)return;ns=d;build();
-  var now=new Date(),nx=new Date(now.getTime()+300000);
+  var now=new Date(),nx=new Date(now.getTime()+600000);
   var otEl=document.getElementById('ot'),nxEl=document.getElementById('nx');
   if(otEl)otEl.textContent=now.toLocaleTimeString('zh-CN')+' 更新 · '+ns.length+'条';
   if(nxEl)nxEl.textContent='下次: '+nx.toLocaleTimeString('zh-CN');
@@ -106,6 +106,22 @@ function typeEl(el,html,done){
   }
   step();
 }
+// Auto-refresh every 10 minutes
+setInterval(function(){
+  fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){
+    if(!d||!d.length)return;ns=d;build();
+    var rn=new Date(),rnx=new Date(rn.getTime()+600000);
+    var otE=document.getElementById('ot'),nxE=document.getElementById('nx');
+    if(otE)otE.textContent=rn.toLocaleTimeString('zh-CN')+' 更新 · '+ns.length+'条';
+    if(nxE)nxE.textContent=rnx.toLocaleTimeString('zh-CN');
+    // Also refresh summary
+    fetch(A+'/api/news-summary').then(function(r){return r.json()}).then(function(s){
+      if(s&&s.summary)document.getElementById('sm').textContent=s.summary.slice(0,100);
+    });
+  });
+},600000);
+
+// Flash timer
 setTimeout(function twFlash(){
   var els=document.querySelectorAll('[data-id^="n"]');if(!els.length){setTimeout(twFlash,2000);return}
   var pool=[];for(var i=0;i<els.length;i++){var lv=ns[i]?ns[i].level:'normal';var w=lv==='low'?5:lv==='normal'?3:lv==='high'?2:1;for(var j=0;j<w;j++)pool.push(i)}
@@ -120,7 +136,7 @@ setTimeout(function twFlash(){
 var gs=document.querySelector('.glow-spot'),rf;document.addEventListener('mousemove',function(e){if(!rf){rf=requestAnimationFrame(function(){gs.style.background='radial-gradient(circle 450px at '+e.clientX+'px '+e.clientY+'px,rgba(99,102,241,.06),rgba(236,72,153,.04)25%,transparent 65%)';rf=null})}},{passive:true});document.addEventListener('touchmove',function(e){var t=e.touches[0];gs.style.background='radial-gradient(circle 450px at '+t.clientX+'px '+t.clientY+'px,rgba(99,102,241,.06),rgba(236,72,153,.04)25%,transparent 65%)'},{passive:true});
 build();requestAnimationFrame(tick);
 // Show times immediately
-var initNow=new Date(),initNx=new Date(initNow.getTime()+300000);
+var initNow=new Date(),initNx=new Date(initNow.getTime()+600000);
 var otEl2=document.getElementById('ot');if(otEl2)otEl2.textContent=initNow.toLocaleTimeString('zh-CN')+' 更新';
 var nxEl2=document.getElementById('nx');if(nxEl2)nxEl2.textContent=initNx.toLocaleTimeString('zh-CN');
 </script>
