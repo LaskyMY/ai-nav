@@ -124,7 +124,7 @@ var nsTimer=setTimeout(function(){if(!nsDone){nsDone=true;
 
 fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){
   if(nsDone)return;nsDone=true;clearTimeout(nsTimer);
-  if(!d)return;ns=d;render();setTimeout(fl,2000);
+  if(!d)return;ns=d;ns=ns.filter(function(n,i,a){return a.findIndex(function(x){return x.title===n.title})===i});render();setTimeout(fl,2000);
 }).catch(function(){if(!nsDone){nsDone=true;clearTimeout(nsTimer)}});
 
 // Typewriter rhythmic update
@@ -136,7 +136,7 @@ function fl(){
   var idx=pool[Math.floor(Math.random()*pool.length)],el=els[idx];if(!el){setTimeout(fl,800);return}
   // Color pulse only — no movement
   el.classList.add('tw');setTimeout(function(){el.classList.remove('tw')},600);
-  var src=ns[Math.floor(Math.random()*ns.length)];
+  var others=ns.filter(function(x){return x.title!==ns[idx].title});var src=others.length?others[Math.floor(Math.random()*others.length)]:ns[Math.floor(Math.random()*ns.length)];
   var ti=el.querySelector('.tt');if(ti&&src)typeTo(ti,emoji(src.title,src.level)+' '+hl(src.title,src.keywords));
   setTimeout(fl,800+Math.random()*1800);
 }
@@ -146,5 +146,5 @@ var gs=document.querySelector('.glow-spot'),rf;
 document.addEventListener('mousemove',function(e){if(!rf){rf=requestAnimationFrame(function(){gs.style.background='radial-gradient(circle 400px at '+e.clientX+'px '+e.clientY+'px,rgba(99,102,241,.05),rgba(236,72,153,.03) 20%,transparent 70%)';rf=null})}},{passive:true});
 document.addEventListener('touchmove',function(e){var t=e.touches[0];gs.style.background='radial-gradient(circle 400px at '+t.clientX+'px '+t.clientY+'px,rgba(99,102,241,.05),rgba(236,72,153,.03) 20%,transparent 70%)'},{passive:true});
 
-setInterval(function(){fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(!d)return;ns=d;render()})},600000);
+setInterval(function(){fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(!d)return;ns=d;ns=ns.filter(function(n,i,a){return a.findIndex(function(x){return x.title===n.title})===i});render()})},600000);
 </script></body></html>
