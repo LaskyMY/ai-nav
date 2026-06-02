@@ -55,7 +55,7 @@ function kw(t,k){if(!k||!t)return t;var s=t,ks=k.split(',');for(var i=0;i<ks.len
 
 function build(){
   var h='';h+='<div class="c c3 lX"><div class="ckb" id="t">--:--:--<span class="ckms">.---</span></div><div class="ckd" id="td">----</div></div>';
-  h+='<div class="c c2 lX" id="wc"><div style="text-align:center;padding:6px 0"><div style="font-size:34px;margin-bottom:2px" id="wxi">☀️</div><div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:2px"><span id="ci">广州</span> · <span id="wxl">当前</span></div><div style="font-size:18px;font-weight:600;color:#fff">--°</div><div class="wxh">天气加载中</div></div>';
+  h+='<div class="c c2 lX" id="wc"><div style="text-align:center;padding:6px 0"><div style="font-size:34px;margin-bottom:2px" id="wxi">☀️</div><div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:2px"><span id="ci">广州</span> · <span id="wxl">当前</span></div><div style="font-size:18px;font-weight:600;color:#fff" id="wxt">--°</div><div class="wxh" id="wxh">天气加载中</div></div>';
   h+='<div class="c c2 lX"><div class="tt">📡 实时信息</div><div class="ts">数据: <span id="ot">加载中</span></div><div class="tm">下次刷新: <span id="nx">--</span></div></div>';
   for(var i=0;i<ns.length;i++){var n=ns[i],lv=n.level==='critical'?'1':n.level==='high'?'2':n.level==='low'?'4':'3';h+='<div class="c l'+lv+(i<2?' c2':'')+'" data-id="n'+i+'"><div class="tt">'+em(n.title)+' '+kw(n.title,n.keywords)+'</div>'+(n.summary?'<div class="ts">'+kw(n.summary,n.keywords)+'</div>':'')+(n.metric?'<div class="tm">'+n.metric+'</div>':'')+'</div>'}
   document.getElementById('g').innerHTML=h;tick();if(!wxT&&wxPages.length)startWx()
@@ -64,7 +64,7 @@ function build(){
 function tick(){var n=new Date(),el=document.getElementById('t');if(el)el.innerHTML=('0'+n.getHours()).slice(-2)+':'+('0'+n.getMinutes()).slice(-2)+':'+('0'+n.getSeconds()).slice(-2)+' <span class="ckms">.'+('00'+n.getMilliseconds()).slice(-3)+'</span>';el=document.getElementById('td');if(el)el.textContent=n.getFullYear()+'年'+(n.getMonth()+1)+'月'+n.getDate()+'日 周'+['日','一','二','三','四','五','六'][n.getDay()];requestAnimationFrame(tick)}requestAnimationFrame(tick);
 
 function startWx(){wxI=0;showWx(0);wxT=setInterval(function(){wxI=(wxI+1)%wxPages.length;showWx(wxI)},5000)}
-function showWx(i){var p=wxPages[i];document.getElementById('wxi').textContent=WI[p.code]||'☀️';document.getElementById('wxl').textContent=p.label;var el=document.getElementById('wc');if(!el)return;var h='<div style="text-align:center;padding:6px 0"><div style="font-size:34px;margin-bottom:2px">'+WI[p.code]+'</div><div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:2px"><span id="ci">'+p.city+'</span> · '+p.label+'</div><div style="font-size:18px;font-weight:600;color:#fff">'+p.temp+'°C</div><div class="wxh">'+WN[p.code]+'</div></div>';el.innerHTML=h}
+function showWx(i){var p=wxPages[i];var wxi=document.getElementById('wxi');if(wxi)wxi.textContent=WI[p.code]||'☀️';var wxl=document.getElementById('wxl');if(wxl)wxl.textContent=p.label;var wxt=document.getElementById('wxt');if(wxt)wxt.textContent=p.temp+'°C';var wxh=document.getElementById('wxh');if(wxh)wxh.textContent=WN[p.code]||'';var ci=document.getElementById('ci');if(ci&&p.city)ci.textContent=p.city}
 
 // Weather with 5s timeout
 var wxDone=false;
