@@ -68,8 +68,14 @@ fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(n
 // Typewriter flash
 setTimeout(function F(){var els=document.querySelectorAll('[data-id^="n"]');if(!els.length){setTimeout(F,2000);return}var pool=[];for(var i=0;i<els.length;i++){var lv=ns[i]?ns[i].level:'normal';var w=lv==='low'?5:lv==='normal'?3:lv==='high'?2:1;for(var j=0;j<w;j++)pool.push(i)}var idx=pool[Math.floor(Math.random()*pool.length)],el=els[idx];if(!el){setTimeout(F,800);return}el.classList.add('tw');setTimeout(function(){el.classList.remove('tw')},350);var o=ns.filter(function(x,i){return i!==idx});var src=o.length?o[Math.floor(Math.random()*o.length)]:ns[idx];var ti=el.querySelector('.tt');if(ti&&src)ti.innerHTML=em(src.title)+' '+kw(src.title,src.keywords);setTimeout(F,800+Math.random()*2000)},3000);
 
-// Countdown
-setInterval(function(){var nxEl=document.getElementById('nx');if(!nxEl)return;var t=nxEl.textContent;if(!t||t==='--')return;var p=t.split(':');if(p.length<3)return;var tg=new Date();tg.setHours(parseInt(p[0]),parseInt(p[1]),parseInt(p[2]),0);var diff=Math.max(0,Math.floor((tg-Date.now())/1000));var m=Math.floor(diff/60),s=diff%60;var cd=document.getElementById('cd');if(cd)cd.textContent='| '+m+'分'+s+'秒后刷新'},1000);
+// Countdown based on lastFetch+10min
+setInterval(function(){
+  var cd=document.getElementById('cd');if(!cd)return;
+  var target=lastFetch+600000;
+  var diff=Math.max(0,Math.floor((target-Date.now())/1000));
+  var m=Math.floor(diff/60),s=diff%60;
+  cd.textContent='| '+m+'分'+s+'秒后刷新';
+},1000);
 
 // Auto-refresh 10min
 setInterval(function(){fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(!d||!d.length)return;ns=d;build();var n4=new Date();document.getElementById('ot').textContent=n4.toLocaleTimeString('zh-CN')+' · '+ns.length+'条';document.getElementById('nx').textContent=new Date(n4.getTime()+600000).toLocaleTimeString('zh-CN');fetch(A+'/api/news-summary').then(function(r){return r.json()}).then(function(s){if(s&&s.summary){var sm2=s.summary.replace(/##\\s*/g,'');document.getElementById('sm').textContent=sm2.slice(0,250)}})})},600000);
