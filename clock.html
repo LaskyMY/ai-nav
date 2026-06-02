@@ -36,7 +36,7 @@ body{background:linear-gradient(180deg,#0d0d1a 0%,#090911 50%,#0c0c1e 100%);colo
 .wd{font-size:10px;color:rgba(255,255,255,.4);text-align:center;margin-top:2px}
 .wxh{font-size:9px;color:rgba(255,255,255,.2);text-align:center;margin-top:1px}
 /* Typewriter pulse */
-.tw{animation:tw .35s steps(2)}
+.tw{animation:tw .35s steps(2)}.tw-r{opacity:.4}
 @keyframes tw{0%,100%{filter:brightness(1)}50%{filter:brightness(1.12)hue-rotate(2deg)}}
 </style>
 </head><body>
@@ -76,17 +76,25 @@ var nsDone=false;
 setTimeout(function(){if(!nsDone){nsDone=true;ns=[{level:'high',title:'国际要闻',summary:'AI 正在整理今日新闻，请稍候',metric:'DeepSeek V3',keywords:''},{level:'normal',title:'实时快讯',summary:'新闻流即将就绪',metric:'NPR',keywords:''}];build()}},5000);
 fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(nsDone)return;nsDone=true;if(!d||!d.length)return;ns=d;build();fetch(A+'/api/news-summary').then(function(r){return r.json()}).then(function(s){if(s&&s.summary){var ls=s.summary.split('\n').filter(function(l){return l.trim()&&!/^##/.test(l)});document.getElementById('ot').textContent=ls.slice(0,3).join(' · ')}})})['catch'](function(e){if(!nsDone){nsDone=true;ns=[{level:'high',title:'网络连接异常',summary:'请检查网络后刷新',metric:'',keywords:''}];build()}});
 
-// Typewriter flash — low priority refreshes more
+// Typewriter flash — character-by-character within 3s
+function typeEl(el,newHTML,done){
+  if(!el)return;var old=el.innerHTML;if(old===newHTML){if(done)done();return}
+  var chars=newHTML.split(''),i=0,total=chars.length,msPerChar=Math.min(2800/total,40);
+  el.classList.add('tw-r');el.innerHTML='';
+  function step(){
+    if(i>=total){el.innerHTML=newHTML;el.classList.remove('tw-r');el.classList.add('tw');setTimeout(function(){el.classList.remove('tw')},300);if(done)done();return}
+    el.innerHTML+=chars[i];i++;setTimeout(step,msPerChar*(.7+Math.random()*.6));
+  }
+  step();
+}
 setTimeout(function twFlash(){
   var els=document.querySelectorAll('[data-id^="n"]');if(!els.length){setTimeout(twFlash,2000);return}
   var pool=[];for(var i=0;i<els.length;i++){var lv=ns[i]?ns[i].level:'normal';var w=lv==='low'?5:lv==='normal'?3:lv==='high'?2:1;for(var j=0;j<w;j++)pool.push(i)}
   var idx=pool[Math.floor(Math.random()*pool.length)],el=els[idx];if(!el){setTimeout(twFlash,800);return}
-  el.classList.add('tw');setTimeout(function(){el.classList.remove('tw')},350);
-  // Pick different source
   var others=ns.filter(function(x,i){return i!==idx});var src=others.length?others[Math.floor(Math.random()*others.length)]:ns[idx];
-  var ti=el.querySelector('.tt');if(ti&&src)ti.innerHTML=em(src.title)+' '+kw(src.title,src.keywords);
-  var si=el.querySelector('.ts');if(si&&src.summary)si.textContent=src.summary;
-  setTimeout(twFlash,700+Math.random()*2000);
+  var ti=el.querySelector('.tt');if(ti&&src)typeEl(ti,em(src.title)+' '+kw(src.title,src.keywords));
+  var si=el.querySelector('.ts');if(si&&src&&src.summary)typeEl(si,src.summary);
+  setTimeout(twFlash,1500+Math.random()*2500);
 },3000);
 
 // Mouse glow
