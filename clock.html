@@ -1,24 +1,20 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=390,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>AI Nav 看板 · iOS</title>
-<style>*{margin:0;padding:0;box-sizing:border-box}html,body{height:100%;overflow:hidden}
-html{display:flex;justify-content:center;align-items:center;background:#000}
-body{width:390px;height:100%;background:linear-gradient(180deg,#0d0d1a,#090911,#0c0c1e);color:rgba(255,255,255,.9);font-family:-apple-system,sans-serif;font-size:12px;line-height:1.4;padding:54px 6px 34px 6px;-webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased}
-.bg__orb{position:fixed;border-radius:50%;filter:blur(140px);opacity:.35;pointer-events:none;z-index:0}
+<!DOCTYPE html><html lang="zh-CN"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=390,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<title>AI Nav 看板 · iOS</title><style>*{margin:0;padding:0;box-sizing:border-box}html,body{height:100%;overflow:hidden}
+html{background:#000;display:flex;justify-content:center}
+body{width:390px;height:100%;background:linear-gradient(180deg,#0a0a14 0%,#0d0d1a 40%,#090911 100%);color:rgba(255,255,255,.9);font-family:-apple-system,sans-serif;font-size:12px;line-height:1.4;padding:50px 6px 4px 6px;-webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased}
+.bg__orb{position:fixed;border-radius:50%;filter:blur(140px);opacity:.3;pointer-events:none;z-index:0}
 .bg__orb:nth-child(1){width:400px;height:400px;background:radial-gradient(circle,#6366f1 0%,transparent 70%);top:-25%;left:-20%;animation:fo 24s ease-in-out infinite}
 .bg__orb:nth-child(2){width:300px;height:300px;background:radial-gradient(circle,#ec4899 0%,transparent 70%);bottom:-20%;right:-15%;animation:fo 28s ease-in-out infinite reverse}
 @keyframes fo{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-40px)}}
 .glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 400px at 50% 50%,rgba(99,102,241,.04),rgba(236,72,153,.03)20%,transparent 70%)}
-.g{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:1fr 1fr 1fr;grid-auto-flow:dense;grid-auto-rows:minmax(40px,auto);gap:5px;align-content:start;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.c{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:10px 12px;backdrop-filter:saturate(180%)blur(40px);-webkit-backdrop-filter:saturate(180%)blur(40px);box-shadow:rgba(255,255,255,.02)0 0 0 1px,rgba(0,0,0,.25)0 6px 20px;position:relative;overflow:hidden;min-height:40px}
+.g{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:1fr 1fr 1fr;grid-auto-flow:dense;grid-auto-rows:minmax(44px,auto);gap:5px;align-content:start;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:20px}
+.c{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:10px 12px;backdrop-filter:saturate(180%)blur(40px);-webkit-backdrop-filter:saturate(180%)blur(40px);box-shadow:rgba(255,255,255,.02)0 0 0 1px,rgba(0,0,0,.25)0 6px 20px;position:relative;overflow:visible;min-height:44px}
 .c::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.03)0%,transparent 35%,transparent 65%,rgba(255,255,255,.01)100%);pointer-events:none}
 .c.l1{border-color:rgba(239,68,68,.06);background:rgba(239,68,68,.025)}
 .c.l2{border-color:rgba(245,158,11,.05);background:rgba(245,158,11,.02)}
 .c3{grid-column:span 3}.c2{grid-column:span 2}
-.tt{font-weight:600;color:rgba(255,255,255,.88);line-height:1.3;margin-bottom:3px;font-size:1em}
+.tt{font-weight:600;color:rgba(255,255,255,.88);line-height:1.3;margin-bottom:3px}
 .ts{font-size:.9em;color:rgba(255,255,255,.5);line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
 .tm{font-size:.75em;color:rgba(255,255,255,.3);margin-top:auto;padding-top:4px}
 .k1{color:#818cf8;font-weight:700}.k2{color:#fbbf24;font-weight:700}.k3{color:#f87171;font-weight:700}
@@ -26,9 +22,9 @@ body{width:390px;height:100%;background:linear-gradient(180deg,#0d0d1a,#090911,#
 @keyframes gf{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
 .ckms{font-size:15px;color:#818cf8;-webkit-text-fill-color:#818cf8;font-weight:500;display:inline-block}
 .ckd{font-size:10px;text-align:center;color:rgba(255,255,255,.3);margin-top:2px}
-.tw{animation:tw .35s steps(2)}@keyframes tw{0%,100%{filter:brightness(1)}50%{filter:brightness(1.12)hue-rotate(2deg)}}</style></head><body>
-<div class="bg__orb"></div><div class="bg__orb"></div><div class="glow-spot"></div>
-<div class="g" id="g"></div>
+.tw{animation:tw .35s steps(2)}@keyframes tw{0%,100%{filter:brightness(1)}50%{filter:brightness(1.12)hue-rotate(2deg)}}
+</style></head><body>
+<div class="bg__orb"></div><div class="bg__orb"></div><div class="glow-spot"></div><div class="g" id="g"></div>
 <script>
 var A='https://c46872d35aeba559-183-6-87-29.serveousercontent.com';
 var WI={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',51:'🌧️',61:'🌧️',71:'❄️',80:'🌦️',95:'⛈️'};
@@ -36,29 +32,33 @@ var WN={0:'晴天',1:'少云',2:'多云',3:'阴天',45:'雾',51:'小雨',61:'小
 var ns=[],wxPages=[],wxI=0,wxT=null,lastFetch=0,fetching=false;
 function em(t){var s=(t||'').toLowerCase();if(/战争|冲突|空袭|军事|导弹|军队|袭击/.test(t))return'💥';if(/经济|市场|股票|金融|利率|美元|货币|通胀|贸易/.test(t))return'📈';if(/政治|选举|总统|国会|政府|法律|法院|谈判/.test(t))return'🏛️';if(/科技|AI|芯片|数据|网络|智能/.test(t))return'🧠';if(/医疗|疾病|药物|疫苗|病毒|癌症/.test(t))return'💊';if(/气候|环境|能源|自然|天气/.test(t))return'🌀';if(/体育|比赛|运动|足球|篮球|NBA|冠军/.test(t))return'🏆';if(/死亡|遇难|丧生/.test(t))return'🕯️';if(/抗议|示威|游行/.test(t))return'✊';return'📡'}
 function kw(t,k){if(!k||!t)return t;var s=t,ks=k.split(',');for(var i=0;i<ks.length;i++){var w=ks[i].trim();if(!w)continue;var c='k1';if(w[0]==='!'){c='k3';w=w.slice(1)}else if(w[0]==='*'){c='k2';w=w.slice(1)}s=s.split(w).join('<span class="'+c+'">'+w+'</span>')}return s}
+// Simplified weather card — fixed height, avoid text clipping
+function wxHTML(p){
+  return '<div style="text-align:center"><span style="font-size:30px">'+(WI[p.code]||'☀️')+'</span><div style="font-size:9px;color:rgba(255,255,255,.35);margin:1px 0">'+p.label+'</div><div style="font-size:20px;font-weight:700;color:#fff">'+p.temp+'°C</div><div style="font-size:9px;color:rgba(255,255,255,.2)">'+(WN[p.code]||'')+'</div></div>'
+}
 function build(){
   var h='';
   h+='<div class="c c3"><div class="ckb" id="t">--:--:--<span class="ckms">.---</span></div><div class="ckd" id="td">----</div></div>';
-  h+='<div class="c c2" id="wc"><div style="text-align:center;padding:4px 0"><span style="font-size:34px" id="wxi">☀️</span><div id="wxl" style="font-size:10px;color:rgba(255,255,255,.4);margin:2px 0">当前 · <span id="ci">广州</span></div><div id="wxt" style="font-size:24px;font-weight:700;color:#fff">--°</div><div id="wxh" style="font-size:9px;color:rgba(255,255,255,.25)">天气加载中</div></div></div>';
+  h+='<div class="c c2" id="wc">'+wxHTML({code:0,label:'当前',temp:'--'})+'</div>';
   h+='<div class="c c2" onclick="doRefresh()" style="cursor:pointer"><div style="display:flex;justify-content:space-between;align-items:center;font-size:10px"><span>🔄 <span id="ot">加载中</span></span><span>⏱ <span id="nx">--</span></span><span style="font-size:9px;color:rgba(255,255,255,.15)" id="cd"></span></div></div>';
-  h+='<div class="c c3" style="flex:1"><div class="tt">📋 AI 简报</div><div class="ts" id="sm" style="-webkit-line-clamp:12">加载中</div></div>';
+  h+='<div class="c c3" style="flex:1"><div class="tt">📋 AI 简报</div><div class="ts" id="sm" style="-webkit-line-clamp:10">加载中</div></div>';
   for(var i=0;i<ns.length;i++){var n=ns[i],lv=n.level==='critical'?'1':n.level==='high'?'2':'3';h+='<div class="c l'+lv+(i<2?' c2':'')+'" data-id="n'+i+'"><div class="tt">'+em(n.title)+' '+kw(n.title,n.keywords)+'</div>'+(n.summary?'<div class="ts">'+kw(n.summary,n.keywords)+'</div>':'')+(n.metric?'<div class="tm">'+n.metric+'</div>':'')+'</div>'}
   document.getElementById('g').innerHTML=h;tick()
 }
-function doRefresh(){if(fetching)return;fetching=true;fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(!d||!d.length){fetching=false;return};ns=d;build();lastFetch=Date.now();var n2=new Date();document.getElementById('ot').textContent=n2.toLocaleTimeString('zh-CN')+' · '+ns.length+'条';document.getElementById('nx').textContent=new Date(n2.getTime()+600000).toLocaleTimeString('zh-CN');fetch(A+'/api/news-summary').then(function(r){return r.json()}).then(function(s){if(s&&s.summary){var sm2=s.summary.replace(/##\s*/g,'');document.getElementById('sm').textContent=sm2.slice(0,250)};fetching=false}).catch(function(){fetching=false})}).catch(function(){fetching=false})}
+function doRefresh(){if(fetching)return;fetching=true;fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(!d||!d.length){fetching=false;return}ns=d;build();lastFetch=Date.now();var n2=new Date();document.getElementById('ot').textContent=n2.toLocaleTimeString('zh-CN')+' · '+ns.length+'条';document.getElementById('nx').textContent=new Date(n2.getTime()+600000).toLocaleTimeString('zh-CN');fetching=false}).catch(function(){fetching=false})}
 function tick(){var n=new Date(),el=document.getElementById('t');if(el)el.innerHTML=('0'+n.getHours()).slice(-2)+':'+('0'+n.getMinutes()).slice(-2)+':'+('0'+n.getSeconds()).slice(-2)+' <span class="ckms">.'+('00'+n.getMilliseconds()).slice(-3)+'</span>';el=document.getElementById('td');if(el)el.textContent=n.getFullYear()+'年'+(n.getMonth()+1)+'月'+n.getDate()+'日 周'+['日','一','二','三','四','五','六'][n.getDay()]}
 function startWx(){wxI=0;showWx(0);wxT=setInterval(function(){wxI=(wxI+1)%wxPages.length;showWx(wxI)},5000)}
-function showWx(i){var p=wxPages[i];var a=document.getElementById('wxi'),b=document.getElementById('wxl'),c=document.getElementById('wxt'),d=document.getElementById('wxh');if(a)a.textContent=WI[p.code]||'☀️';if(b)b.innerHTML=p.label+' · <span id="ci">'+(p.city||'广州')+'</span>';if(c)c.textContent=p.temp+'°C';if(d)d.textContent=WN[p.code]||''}
+function showWx(i){var p=wxPages[i];document.getElementById('wc').innerHTML=wxHTML(p)}
 
 build();requestAnimationFrame(tick);
 var initNow=new Date();lastFetch=Date.now();document.getElementById('ot').textContent=initNow.toLocaleTimeString('zh-CN');document.getElementById('nx').textContent=new Date(initNow.getTime()+600000).toLocaleTimeString('zh-CN');
 
-// Weather 5s timeout
+// Weather
 var wxDone=false;
-setTimeout(function(){if(!wxDone){wxDone=true;wxPages=[{label:'当前',temp:'27',code:0,city:'广州'},{label:'+1时',temp:'28',code:1,city:'广州'},{label:'+3时',temp:'30',code:0,city:'广州'},{label:'+6时',temp:'26',code:2,city:'广州'}];startWx()}},5000);
-fetch(A+'/api/weather?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(w){if(wxDone)return;wxDone=true;var c=w.current,hh=w.hourly;wxPages=[{label:'当前',temp:Math.round(c.temperature_2m),code:c.weather_code,city:'广州'}];if(hh&&hh.time){var cur=(new Date()).getHours();for(var i=0;i<3;i++){var idx=cur+[1,3,6][i];if(idx>=hh.time.length)idx=hh.time.length-1;wxPages.push({label:'+'+(i*2+1)+'时',temp:Math.round(hh.temperature_2m[idx]),code:hh.weather_code[idx],city:'广州'})}}startWx();fetch(A+'/api/geocode?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(d){var a=(d&&d.address)||d||{},cc=a.city||a.town||a.county||'';if(cc){var ci=document.getElementById('ci');if(ci)ci.textContent=cc}})}).catch(function(){if(!wxDone){wxDone=true;wxPages=[{label:'当前·广州',temp:'27',code:0,city:'广州'},{label:'+1时',temp:'28',code:1,city:'广州'},{label:'+3时',temp:'30',code:0,city:'广州'},{label:'+6时',temp:'26',code:2,city:'广州'}];startWx()}});
+setTimeout(function(){if(!wxDone){wxDone=true;wxPages=[{label:'广州·当前',temp:'27',code:0},{label:'+1时',temp:'28',code:1},{label:'+3时',temp:'30',code:0},{label:'+6时',temp:'26',code:2}];startWx()}},5000);
+fetch(A+'/api/weather?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(w){if(wxDone)return;wxDone=true;var c=w.current,hh=w.hourly;var city='广州';fetch(A+'/api/geocode?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(d){var a=(d&&d.address)||d||{};var cc=a.city||a.town||a.county||'';if(cc)city=cc;var p0={label:city+'·当前',temp:Math.round(c.temperature_2m),code:c.weather_code};wxPages=[p0];if(hh&&hh.time){var cur=(new Date()).getHours();for(var i=0;i<3;i++){var idx=cur+[1,3,6][i];if(idx>=hh.time.length)idx=hh.time.length-1;wxPages.push({label:'+'+(i*2+1)+'时',temp:Math.round(hh.temperature_2m[idx]),code:hh.weather_code[idx]})}}startWx()})}).catch(function(){if(!wxDone){wxDone=true;wxPages=[{label:'广州·当前',temp:'27',code:0},{label:'+1时',temp:'28',code:1},{label:'+3时',temp:'30',code:0},{label:'+6时',temp:'26',code:2}];startWx()}});
 
-// News 5s timeout
+// News
 var nsDone=false;
 setTimeout(function(){if(!nsDone){nsDone=true;ns=[{level:'high',title:'国际要闻',summary:'AI正在整理新闻',metric:'DeepSeek',keywords:''}];build()}},5000);
 fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(nsDone)return;nsDone=true;if(!d||!d.length)return;ns=d;build();lastFetch=Date.now();var n3=new Date();document.getElementById('ot').textContent=n3.toLocaleTimeString('zh-CN')+' · '+ns.length+'条';document.getElementById('nx').textContent=new Date(n3.getTime()+600000).toLocaleTimeString('zh-CN');fetch(A+'/api/news-summary').then(function(r){return r.json()}).then(function(s){if(s&&s.summary){var sm=s.summary.replace(/##\s*/g,'');document.getElementById('sm').textContent=sm.slice(0,250)}})}).catch(function(){if(!nsDone){nsDone=true;ns=[{level:'high',title:'网络异常',summary:'请检查连接',metric:'',keywords:''}];build()}});
@@ -66,14 +66,10 @@ fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(n
 // Typewriter
 setTimeout(function F(){var els=document.querySelectorAll('[data-id^="n"]');if(!els.length){setTimeout(F,2000);return}var pool=[];for(var i=0;i<els.length;i++){var lv=ns[i]?ns[i].level:'normal';var w=lv==='low'?5:lv==='normal'?3:lv==='high'?2:1;for(var j=0;j<w;j++)pool.push(i)}var idx=pool[Math.floor(Math.random()*pool.length)],el=els[idx];if(!el){setTimeout(F,800);return}el.classList.add('tw');setTimeout(function(){el.classList.remove('tw')},350);var o=ns.filter(function(x,i){return i!==idx});var src=o.length?o[Math.floor(Math.random()*o.length)]:ns[idx];var ti=el.querySelector('.tt');if(ti&&src)ti.innerHTML=em(src.title)+' '+kw(src.title,src.keywords);setTimeout(F,800+Math.random()*2000)},3000);
 
-// Refresh: setTimeout chain + visibility change
+// Refresh
 function scheduleRefresh(){setTimeout(function(){if(Date.now()-lastFetch>300000)doRefresh();scheduleRefresh()},300000)}
 scheduleRefresh();
 document.addEventListener('visibilitychange',function(){if(!document.hidden&&Date.now()-lastFetch>300000)doRefresh()});
-
-// Countdown
 setInterval(function(){var cd=document.getElementById('cd');if(!cd)return;var diff=Math.max(0,Math.floor((lastFetch+600000-Date.now())/1000));var m=Math.floor(diff/60),s=diff%60;cd.textContent='| '+m+'分'+s+'秒后刷新'},1000);
-
 var gs=document.querySelector('.glow-spot'),rf;document.addEventListener('mousemove',function(e){if(!rf){rf=requestAnimationFrame(function(){gs.style.background='radial-gradient(circle 400px at '+e.clientX+'px '+e.clientY+'px,rgba(99,102,241,.05),rgba(236,72,153,.03)20%,transparent 70%)';rf=null})}},{passive:true});document.addEventListener('touchmove',function(e){var t=e.touches[0];gs.style.background='radial-gradient(circle 400px at '+t.clientX+'px '+t.clientY+'px,rgba(99,102,241,.05),rgba(236,72,153,.03)20%,transparent 70%)'},{passive:true});
-</script>
-</body></html>
+</script></body></html>
