@@ -7,7 +7,7 @@
 <style>
 :root{--bg:#0a0a0f;--a1:#6366f1;--pink:#ec4899;--vio:#a855f7;--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px)}
 *{margin:0;padding:0;box-sizing:border-box}html,body{height:100%;overflow:hidden}
-body{background:linear-gradient(180deg,#0d0d1a 0%,#090911 50%,#0c0c1e 100%);color:rgba(255,255,255,.9);font-family:-apple-system,sans-serif;font-size:12px;line-height:1.4;padding:calc(48px + var(--sat)) 6px calc(24px + var(--sab)) 6px;-webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased}
+body{background:linear-gradient(180deg,#0d0d1a 0%,#090911 50%,#0c0c1e 100%);color:rgba(255,255,255,.9);font-family:-apple-system,sans-serif;font-size:12px;line-height:1.4;padding:calc(20px + var(--sat)) 16px calc(20px + var(--sab)) 16px;-webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased}
 .bg__orb{position:fixed;border-radius:50%;filter:blur(140px);opacity:.4;pointer-events:none;z-index:0}
 .bg__orb:nth-child(1){width:420px;height:420px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-25%;left:-20%;animation:fo 24s ease-in-out infinite}
 .bg__orb:nth-child(2){width:320px;height:320px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-20%;right:-15%;animation:fo 28s ease-in-out infinite reverse}
@@ -32,7 +32,7 @@ body{background:linear-gradient(180deg,#0d0d1a 0%,#090911 50%,#0c0c1e 100%);colo
 .ckms{font-size:28px;color:#818cf8;-webkit-text-fill-color:#818cf8;font-weight:500;display:inline-block}
 .ckd{font-size:10px;text-align:center;color:rgba(255,255,255,.3);margin-top:3px}
 /* Weather */
-.wt{font-size:48px;font-weight:700;text-align:center}
+.wt{font-size:26px;font-weight:700;text-align:center}
 .wd{font-size:10px;color:rgba(255,255,255,.4);text-align:center;margin-top:2px}
 .wxh{font-size:9px;color:rgba(255,255,255,.2);text-align:center;margin-top:1px}
 /* Typewriter pulse */
@@ -75,8 +75,8 @@ function showWx(i){var p=wxPages[i];var wxi=document.getElementById('wxi');if(wx
 
 // Weather with 5s timeout
 var wxDone=false;
-setTimeout(function(){if(!wxDone){wxDone=true;wxPages=[{label:'当前',temp:'27',code:0},{label:'+1 小时',temp:'28',code:1},{label:'+3 小时',temp:'30',code:0},{label:'+6 小时',temp:'26',code:2}];if(!ns.length)build();startWx()}},5000);
-fetch(A+'/api/weather?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(w){if(wxDone)return;wxDone=true;var c=w.current,hh=w.hourly;wxPages=[{label:'当前',temp:Math.round(c.temperature_2m),code:c.weather_code}];if(hh&&hh.time){var cur=(new Date()).getHours();for(var i=0;i<3;i++){var idx=cur+[1,3,6][i];if(idx>=hh.time.length)idx=hh.time.length-1;wxPages.push({label:'+'+(i*2+1)+'小时',temp:Math.round(hh.temperature_2m[idx]),code:hh.weather_code[idx]})}}if(!ns.length)build();startWx();fetch(A+'/api/geocode?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(d){var a=(d&&d.address)||d||{},cc=a.city||a.town||a.county||'';if(cc)document.getElementById('ci').textContent=cc})}).catch(function(){if(!wxDone){wxDone=true;wxPages=[{label:'当前·广州',temp:'27',code:0},{label:'+1时',temp:'28',code:1},{label:'+3时',temp:'30',code:0},{label:'+6时',temp:'26',code:2}];if(!ns.length)build();startWx()}});
+setTimeout(function(){if(!wxDone){wxDone=true;wxPages=[{label:'当前',temp:'27',code:0,city:'广州'},{label:'+1 小时',temp:'28',code:1,city:'广州'},{label:'+3 小时',temp:'30',code:0,city:'广州'},{label:'+6 小时',temp:'26',code:2,city:'广州'}];if(!ns.length)build();startWx()}},5000);
+fetch(A+'/api/weather?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(w){if(wxDone)return;wxDone=true;var c=w.current,hh=w.hourly;wxPages=[{label:'当前',temp:Math.round(c.temperature_2m),code:c.weather_code,city:'广州'}];if(hh&&hh.time){var cur=(new Date()).getHours();for(var i=0;i<3;i++){var idx=cur+[1,3,6][i];if(idx>=hh.time.length)idx=hh.time.length-1;wxPages.push({label:'+'+(i*2+1)+'小时',temp:Math.round(hh.temperature_2m[idx]),code:hh.weather_code[idx],city:'广州'})}}if(!ns.length)build();startWx();fetch(A+'/api/geocode?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(d){var a=(d&&d.address)||d||{},cc=a.city||a.town||a.county||'';if(cc)document.getElementById('ci').textContent=cc})}).catch(function(){if(!wxDone){wxDone=true;wxPages=[{label:'当前',temp:'27',code:0,city:'广州'},{label:'+1时',temp:'28',code:1},{label:'+3时',temp:'30',code:0},{label:'+6时',temp:'26',code:2}];if(!ns.length)build();startWx()}});
 
 // News with 5s timeout
 var nsDone=false;
