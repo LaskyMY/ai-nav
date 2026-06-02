@@ -4,125 +4,97 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=1920,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
 <title>AI Nav 时钟</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-html{height:100%;display:flex;justify-content:center;align-items:center;background:#000}
-body{width:1920px;height:1080px;max-height:100vh;background:#08080c;color:#fafafa;font-family:'DM Sans',-apple-system,sans-serif;font-size:12px;line-height:1.3;padding:20px 16px 20px 4px;overflow:hidden;position:relative;-webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased}
+*{margin:0;padding:0;box-sizing:border-box}html{height:100%;display:flex;justify-content:center;align-items:center;background:#000}
+body{width:1920px;height:1080px;max-height:100vh;background:#08080c;color:#fafafa;font-family:-apple-system,sans-serif;font-size:12px;line-height:1.3;padding:20px 16px 20px 5px;overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased}
 .bg{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 60% 20%,rgba(56,189,248,.02) 0%,transparent 50%)}
-/* Mosaic grid */
-.mosaic{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:minmax(50px,auto);gap:3px;align-content:start}
-/* Tiles */
-.tile{position:relative;overflow:hidden;border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;justify-content:center;transition:transform .15s ease;cursor:default}
+.grid{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:repeat(8,1fr);grid-auto-rows:minmax(48px,auto);gap:3px;align-content:start}
+.tile{border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;justify-content:center;overflow:hidden;transition:transform .15s}
 .tile:active{transform:scale(.96)}
-.tile.flash{animation:flash .4s ease-out}
-@keyframes flash{0%{filter:brightness(2.8)}100%{filter:brightness(1)}}
-/* Span helpers */
-.tile.c2{grid-column:span 2}.tile.c3{grid-column:span 3}
-.tile.r2{grid-row:span 2}.tile.r3{grid-row:span 3}
-/* Colors = importance */
-.tile.lv-critical{background:rgba(239,68,68,.16);border:1px solid rgba(239,68,68,.1)}
-.tile.lv-high{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.08)}
-.tile.lv-normal{background:rgba(56,189,248,.09);border:1px solid rgba(56,189,248,.06)}
-.tile.lv-low{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.03)}
-.tile.lv-system{background:rgba(139,92,246,.09);border:1px solid rgba(139,92,246,.06)}
-/* Clock tile */
-.tile.clock-tile{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);text-align:center;justify-content:center}
-.tile .clk{font-size:42px;font-weight:700;letter-spacing:-.02em;line-height:1}
-.tile .clk-ms{font-size:15px;color:#38bdf8;opacity:.8;min-width:42px;display:inline-block}
-.tile .clk-date{font-size:10px;opacity:.3;margin-top:2px}
-/* Content */
-.tile .t-t{font-weight:700;line-height:1.2;letter-spacing:-.01em;color:#fafafa;margin-bottom:2px}
-.tile .t-s{font-size:.85em;opacity:.5;line-height:1.3;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.tile .t-m{font-size:.75em;opacity:.3;margin-top:auto;padding-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.flash{animation:f .35s ease-out}
+@keyframes f{0%{filter:brightness(3)}100%{filter:brightness(1)}}
+.c2{grid-column:span 2}.c3{grid-column:span 3}.r2{grid-row:span 2}
+
+.lv-critical{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.1)}
+.lv-high{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.08)}
+.lv-normal{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.05)}
+.lv-low{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.03)}
+.lv-sys{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05)}
+
+.t-t{font-weight:700;line-height:1.2;color:#fafafa}
+.t-s{font-size:.85em;opacity:.5;line-height:1.25;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.t-m{font-size:.75em;opacity:.3;margin-top:auto;padding-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.clk-t{text-align:center;justify-content:center}
+.clk-b{font-size:80px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.clk-ms{font-size:28px;color:#38bdf8;opacity:.8;min-width:80px;display:inline-block}
+.clk-d{font-size:10px;opacity:.3;margin-top:2px}
 </style></head><body>
 <div class="bg"></div>
-<div class="mosaic" id="mosaic"></div>
-
+<div class="grid" id="g"></div>
 <script>
 var A='https://c46872d35aeba559-183-6-87-29.serveousercontent.com';
 var WN={0:'晴天',1:'少云',2:'多云',3:'阴天',45:'雾',48:'霜雾',51:'小雨',53:'小雨',55:'中雨',61:'小雨',63:'中雨',65:'大雨',71:'小雪',73:'中雪',75:'大雪',77:'雪',80:'阵雨',81:'阵雨',82:'暴雨',85:'阵雪',86:'阵雪',95:'雷暴',96:'雷暴',97:'强雷暴'};
-var tiles=[],flashTimer=null,flashRunning=false;
 
-function hclock(){
-  var n=new Date();
-  return'<div class="clk">'+('0'+n.getHours()).slice(-2)+':'+('0'+n.getMinutes()).slice(-2)+':'+('0'+n.getSeconds()).slice(-2)+'<span class="clk-ms">.'+('00'+n.getMilliseconds()).slice(-3)+'</span></div><div class="clk-date">'+n.getFullYear()+'年'+(n.getMonth()+1)+'月'+n.getDate()+'日 周'+['日','一','二','三','四','五','六'][n.getDay()]+' · <span id="ci">广州</span></div>'
-}
+// Generate tile HTML
+function tile(id,lv,span,rs,html){return'<div class="tile lv-'+lv+' '+(span||'')+' '+(rs||'')+'" data-id="'+id+'">'+html+'</div>'}
 
 function render(){
   var h='';
-  for(var i=0;i<tiles.length;i++){
-    var t=tiles[i],lv=t.level||'low',sp=t.span||'',rs=t.rspan||'';
-    h+='<div class="tile lv-'+lv+' '+sp+' '+rs+'" data-id="'+t.id+'">'+(t.id==='clock'?hclock():'<div class="t-t">'+t.title+'</div>'+(t.summary?'<div class="t-s">'+t.summary+'</div>':'')+(t.metric?'<div class="t-m">'+t.metric+'</div>':'')+'</div>';
+  h+=tile('clock','sys','c3 r2','','<div class="clk-t"><div class="clk-b" id="ct">--:--:--<span class="clk-ms" id="cms">.---</span></div><div class="clk-d" id="cd">----</div><div class="clk-d" id="cci">广州</div></div>');
+  h+=tile('wx','sys','c2 r2','','<div class="t-t" id="wt">--°</div><div class="t-s" id="wd">天气加载中</div><div class="t-m" id="wh"></div>');
+  h+=tile('w1','sys','','','<div class="t-t" id="w1t">+1时</div><div class="t-s" id="w1s">--</div>');
+  h+=tile('w2','sys','','','<div class="t-t" id="w2t">+3时</div><div class="t-s" id="w2s">--</div>');
+  h+=tile('w3','sys','','','<div class="t-t" id="w3t">+6时</div><div class="t-s" id="w3s">--</div>');
+  for(var i=0;i<newsData.length;i++){
+    var n=newsData[i],lv=n.level||'normal';
+    h+=tile('n'+i,lv,(i===0?'c2':''),(i===0?'r2':''),'<div class="t-t">'+n.title+'</div>'+(n.summary?'<div class="t-s">'+n.summary+'</div>':'')+(n.metric?'<div class="t-m">'+n.metric+'</div>':''));
   }
-  document.getElementById('mosaic').innerHTML=h;
+  document.getElementById('g').innerHTML=h;
 }
 
-function flashOne(){
-  if(!tiles.length)return;
-  // Collect flashable tiles (news items, not clock/wx)
-  var pool=[];
-  for(var i=0;i<tiles.length;i++){
-    if(tiles[i].id.indexOf('n-')===0){
-      var w=tiles[i].level==='low'?5:tiles[i].level==='normal'?3:tiles[i].level==='high'?2:1;
-      for(var j=0;j<w;j++)pool.push(i);
-    }
-  }
-  if(!pool.length){flashTimer=setTimeout(flashOne,3000);return;}
-  var idx=pool[Math.floor(Math.random()*pool.length)];
-  var el=document.querySelector('[data-id="'+tiles[idx].id+'"]');
-  if(!el){flashTimer=setTimeout(flashOne,1000+Math.random()*2000);return;}
-  el.classList.add('flash');
-  setTimeout(function(){el.classList.remove('flash')},400);
-  // Cycle through other news titles
-  var newsTiles=tiles.filter(function(t){return t.id.indexOf('n-')===0});
-  if(newsTiles.length>1){
-    var src=newsTiles[Math.floor(Math.random()*newsTiles.length)];
-    if(src.id!==tiles[idx].id){
-      var ti=el.querySelector('.t-t');if(ti)ti.textContent=src.title;
-      var si=el.querySelector('.t-s');if(si)si.textContent=src.summary||'';
-    }
-  }
-  flashTimer=setTimeout(flashOne,800+Math.random()*2500);
+var newsData=[];
+
+// Clock
+function tick(){
+  var n=new Date();
+  var el=document.getElementById('ct');if(el)el.innerHTML=('0'+n.getHours()).slice(-2)+':'+('0'+n.getMinutes()).slice(-2)+':'+('0'+n.getSeconds()).slice(-2)+'<span class="clk-ms">.'+('00'+n.getMilliseconds()).slice(-3)+'</span>';
+  el=document.getElementById('cd');if(el)el.textContent=n.getFullYear()+'年'+(n.getMonth()+1)+'月'+n.getDate()+'日 周'+['日','一','二','三','四','五','六'][n.getDay()];
 }
+setInterval(tick,150);tick();
 
-// Build initial layout
-tiles.push({id:'clock',level:'system',span:'c3',rspan:'r2'});
-tiles.push({id:'wx-now',level:'system',span:'c2',rspan:'r2',title:'天气加载中',summary:'',metric:''});
-
-function addWx(w){
+// Weather
+fetch(A+'/api/weather?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(w){
   var c=w.current,hh=w.hourly;
-  // Update existing wx tile
-  for(var i=0;i<tiles.length;i++){
-    if(tiles[i].id==='wx-now'){tiles[i].title=Math.round(c.temperature_2m)+'°C';tiles[i].summary=WN[c.weather_code];tiles[i].metric='湿度 '+(c.relative_humidity_2m||'')+'% 体感 '+Math.round(c.temperature_2m-2)+'°C';break}
-  }
-  if(hh&&hh.time){
-    var cur=(new Date()).getHours();
-    for(var j=0;j<3;j++){
-      var idx=cur+[1,3,6][j];if(idx>=hh.time.length)idx=hh.time.length-1;
-      tiles.push({id:'wx-'+j,level:'system',title:['+1时','+3时','+6时'][j],summary:Math.round(hh.temperature_2m[idx])+'° '+WN[hh.weather_code[idx]],metric:''});
-    }
-  }
-  render();
+  document.getElementById('wt').textContent=Math.round(c.temperature_2m)+'°C';
+  document.getElementById('wd').textContent=WN[c.weather_code]||'--';
+  document.getElementById('wh').textContent='湿度 '+(c.relative_humidity_2m||'')+'%';
+  if(hh&&hh.time){var cur=(new Date()).getHours();for(var i=0;i<3;i++){var idx=cur+[1,3,6][i];if(idx>=hh.time.length)idx=hh.time.length-1;document.getElementById('w'+(i+1)+'s').textContent=Math.round(hh.temperature_2m[idx])+'° '+WN[hh.weather_code[idx]]}}
+  fetch(A+'/api/geocode?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(d){var a=(d&&d.address)||d||{};var c=a.city||a.town||a.county||'';if(c)document.getElementById('cci').textContent=c});
+});
+
+// News + render
+fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){
+  if(!d||!d.length)return;newsData=d;render();
+  // Start flash after render
+  setTimeout(flashOne,3000);
+});
+
+// Flash one random tile
+function flashOne(){
+  var els=document.querySelectorAll('[data-id^="n"]');
+  if(!els.length){setTimeout(flashOne,3000);return}
+  var pool=[];
+  for(var i=0;i<els.length;i++){var lv=newsData[i]?newsData[i].level:'normal';var w=lv==='low'?4:lv==='normal'?3:lv==='high'?2:1;for(var j=0;j<w;j++)pool.push(i)}
+  var idx=pool[Math.floor(Math.random()*pool.length)];
+  var el=els[idx];if(!el){setTimeout(flashOne,1000);return}
+  el.classList.add('flash');setTimeout(function(){el.classList.remove('flash')},350);
+  // Cycle title
+  var src=newsData[Math.floor(Math.random()*newsData.length)];
+  var ti=el.querySelector('.t-t');if(ti&&src)ti.textContent=src.title;
+  setTimeout(flashOne,1000+Math.random()*2500);
 }
 
-function addNews(items){
-  for(var i=0;i<Math.min(items.length,12);i++){
-    var it=items[i],sz=i===0?'c2 r2':'',lv=it.level||'normal';
-    tiles.push({id:'n-'+i,level:lv,span:i===0?'c2':'',rspan:i===0?'r2':'',title:it.title,summary:it.summary||'',metric:(it.metric||it.source||'')});
-  }
-  render();
-  // Start flashing
-  if(!flashRunning){flashRunning=true;flashTimer=setTimeout(flashOne,2000)}
-}
-
-// Fetch data
-fetch(A+'/api/weather?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(w){if(w&&w.current)addWx(w);fetch(A+'/api/geocode?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(d){var a=(d&&d.address)||d||{};var c=a.city||a.town||a.county||'';if(c){var el=document.getElementById('ci');if(el)el.textContent=c}})});
-fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(d&&d.length)addNews(d)});
-
-// Clock tick
-setInterval(function(){var el=document.querySelector('.clk');if(!el)return;var n=new Date();var h=('0'+n.getHours()).slice(-2),m=('0'+n.getMinutes()).slice(-2),s=('0'+n.getSeconds()).slice(-2),ms=('00'+n.getMilliseconds()).slice(-3);el.parentNode.innerHTML='<div class="clk">'+h+':'+m+':'+s+'<span class="clk-ms">.'+ms+'</span></div><div class="clk-date">'+n.getFullYear()+'年'+(n.getMonth()+1)+'月'+n.getDate()+'日 周'+['日','一','二','三','四','五','六'][n.getDay()]+' · <span id="ci">'+(document.getElementById('ci')?document.getElementById('ci').textContent:'广州')+'</span></div>'},200);
-
-// Full refresh every 10 min
-setInterval(function(){fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(!d||!d.length)return;var nt=[{id:'clock',level:'system',span:'c3',rspan:'r2'}];for(var i=0;i<tiles.length;i++){if(tiles[i].id.indexOf('wx-')===0||tiles[i].id==='wx-now')nt.push(tiles[i])}tiles=nt;addNews(d)})},600000);
+// Refresh data every 10min
+setInterval(function(){fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(d&&d.length){newsData=d;render()}})},600000);
 </script></body></html>
