@@ -5,314 +5,83 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>ESP32-C3 控制台</title>
 <style>
-:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.04);--card-border:rgba(255,255,255,.07);--cyan:#00e5ff;--tx:rgba(255,255,255,.9);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.28)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--tx);font-family:-apple-system,sans-serif;font-size:13px;line-height:1.5;padding:16px;max-width:520px;margin:0 auto}
-h1{font-size:20px;font-weight:700;color:var(--cyan);margin-bottom:4px}
-.sub{font-size:10px;color:var(--tx3);margin-bottom:16px}
-.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:14px 16px;margin-bottom:10px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.5;padding:16px;max-width:500px;margin:0 auto}
+h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:4px}
+.sub{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:16px}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px}
 .row{display:flex;align-items:center;justify-content:space-between;margin:6px 0}
-.lbl{color:var(--tx2);font-size:12px}
-.val{font-weight:600;color:var(--cyan)}
-
-.btn{display:inline-block;padding:8px 20px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:13px;cursor:pointer;font-family:inherit;margin:4px;transition:all .2s}
-.btn:active{transform:scale(.96);background:rgba(0,229,255,.15)}.btn.on{background:rgba(0,229,255,.15);border-color:rgba(0,229,255,.25);color:var(--cyan)}
-.btn.danger{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.2);color:#ef4444}.btn.danger:active{background:rgba(239,68,68,.2)}
-.btn.warn{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.2);color:#f59e0b}
-
+.lbl{color:rgba(255,255,255,.5)}.val{font-weight:600;color:#00e5ff}
+.btn{display:inline-block;padding:10px 20px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:13px;cursor:pointer;font-family:inherit;margin:3px;transition:all .2s}
+.btn:active{transform:scale(.96)}.btn.on{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:#00e5ff}
+.btn.danger{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.2);color:#f87171}
 input[type=range]{width:100%;margin:6px 0;-webkit-appearance:none;height:6px;border-radius:3px;background:rgba(255,255,255,.1);outline:none}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:11px;background:var(--cyan);cursor:pointer}
-
-.preview{width:60px;height:60px;border-radius:50%;border:3px solid rgba(255,255,255,.1);margin:8px auto;transition:background .3s}
-
-.status{display:inline-block;width:8px;height:8px;border-radius:4px;margin-right:6px}.status.ok{background:#10b981}.status.err{background:#ef4444}.status.wait{background:#f59e0b;animation:pulse 1s infinite}@keyframes pulse{50%{opacity:.4}}
-
-.key-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
-.key{text-align:center;padding:10px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);font-size:11px;color:var(--tx2);transition:all .15s}
-.key.pressed{background:rgba(0,229,255,.1);border-color:var(--cyan);color:var(--cyan)}
-
-.section-title{font-size:14px;font-weight:700;margin-bottom:8px;color:var(--tx)}
-.step{background:rgba(255,255,255,.02);border-radius:8px;padding:10px 14px;margin:6px 0;font-size:12px}
-.step .num{display:inline-block;width:20px;height:20px;border-radius:10px;background:var(--cyan);color:#000;text-align:center;line-height:20px;font-size:11px;font-weight:700;margin-right:8px}
-code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:11px}
-pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.4;margin:6px 0}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:11px;background:#00e5ff;cursor:pointer}
+.preview{width:60px;height:60px;border-radius:50%;border:3px solid rgba(255,255,255,.1);margin:8px auto;background:#000}
+.status{display:inline-block;width:8px;height:8px;border-radius:4px;margin-right:6px}.status.ok{background:#10b981}.status.err{background:#ef4444}.status.wait{background:#f59e0b;animation:pulse 1s infinite}@keyframes pulse{50%{opacity:.3}}
 </style>
 </head>
 <body>
-
 <h1>ESP32-C3 控制台</h1>
-<div class="sub">Web Bluetooth 控制 · AI Nav Dashboard</div>
+<div class="sub">Web Bluetooth · AI Nav</div>
 
-<!-- Connection -->
 <div class="card">
-  <div class="section-title">📡 连接方式</div>
-  <div style="display:flex;gap:6px;margin-bottom:6px">
-    <button class="btn on" id="modeWiFi" onclick="setMode('wifi')" style="flex:1">📶 WiFi</button>
-    <button class="btn" id="modeBLE" onclick="setMode('ble')" style="flex:1">📡 蓝牙</button>
-  </div>
-  <div id="wifiPanel">
-    <div style="font-size:10px;color:rgba(255,255,255,.3);margin-bottom:6px">先连接蓝牙 → 填入WiFi密码 → 点"发送配网" → ESP32自动连你家WiFi</div>
-    <div class="row"><span class="lbl">WiFi名称</span><input type="text" id="wifiSSID" placeholder="我家WiFi" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:6px 10px;color:#fff;font-size:12px;width:160px"></div>
-    <div class="row"><span class="lbl">WiFi密码</span><input type="password" id="wifiPass" placeholder="密码" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:6px 10px;color:#fff;font-size:12px;width:160px"></div>
-    <button class="btn" onclick="sendWiFi()" style="width:100%;margin-top:6px;background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.2);color:#10b981">📶 通过蓝牙发送配网</button>
-    <div class="row" style="margin-top:4px"><span class="lbl">ESP32 IP</span><span class="val" id="espIP" style="color:#10b981">等待配网...</span></div>
-  </div>
-  <div id="blePanel" style="display:none">
-    <div class="row"><span class="lbl">蓝牙状态</span><span><span class="status wait" id="st"></span><span id="stTxt">未连接</span></span></div>
-    <button class="btn" onclick="connectBLE()" id="btnBLE">连接 AI-NAV-C3</button>
-  </div>
+  <div style="font-size:14px;font-weight:700;margin-bottom:8px">📡 连接</div>
+  <div class="row"><span class="lbl">状态</span><span><span class="status wait" id="st"></span><span id="stt">未连接</span></span></div>
+  <button class="btn" onclick="connect()" id="btnC">连接 AI-NAV-C3</button>
 </div>
 
-<!-- RGB LED -->
 <div class="card">
-  <div class="section-title">💡 RGB LED 控制</div>
-  <div class="preview" id="preview" style="background:rgb(0,0,0)"></div>
-  <div class="row"><span class="lbl">红 R</span><span class="val" id="rv">0</span></div>
-  <input type="range" min="0" max="255" value="0" id="r" oninput="updateLED()">
-  <div class="row"><span class="lbl">绿 G</span><span class="val" id="gv">0</span></div>
-  <input type="range" min="0" max="255" value="0" id="g" oninput="updateLED()">
-  <div class="row"><span class="lbl">蓝 B</span><span class="val" id="bv">0</span></div>
-  <input type="range" min="0" max="255" value="0" id="b" oninput="updateLED()">
+  <div style="font-size:14px;font-weight:700;margin-bottom:8px">💡 RGB LED</div>
+  <div class="preview" id="pv"></div>
+  <div class="row"><span class="lbl">R</span><span class="val" id="rv">0</span></div><input type="range" min="0" max="255" value="0" id="rs" oninput="uled()">
+  <div class="row"><span class="lbl">G</span><span class="val" id="gv">0</span></div><input type="range" min="0" max="255" value="0" id="gs" oninput="uled()">
+  <div class="row"><span class="lbl">B</span><span class="val" id="bv">0</span></div><input type="range" min="0" max="255" value="0" id="bs" oninput="uled()">
   <div style="text-align:center;margin-top:8px">
-    <button class="btn" onclick="preset(255,0,0)">🔴 红</button>
-    <button class="btn" onclick="preset(0,255,0)">🟢 绿</button>
-    <button class="btn" onclick="preset(0,0,255)">🔵 蓝</button>
-    <button class="btn" onclick="preset(255,255,255)">⚪ 白</button>
-    <button class="btn" onclick="preset(0,0,0)">⚫ 关</button>
+    <button class="btn" onclick="ps(255,0,0)">🔴</button><button class="btn" onclick="ps(0,255,0)">🟢</button>
+    <button class="btn" onclick="ps(0,0,255)">🔵</button><button class="btn" onclick="ps(255,255,255)">⚪</button><button class="btn" onclick="ps(0,0,0)">⚫</button>
   </div>
 </div>
-
-<!-- Buzzer Test Panel -->
-<div class="card">
-  <div class="section-title">🔔 蜂鸣器测试面板</div>
-  <div style="font-size:10px;color:rgba(255,255,255,.3);margin-bottom:10px">先点"LED闪烁"确认蓝牙连接正常 → 再逐个测试蜂鸣器</div>
-  
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
-    <button class="btn" onclick="cmd(4)" style="background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.2);color:#818cf8">💡 LED闪3下</button>
-    <button class="btn" onclick="cmd(1)" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.2);color:#10b981">🔊 蜂鸣器 ON (cmd=1)</button>
-    <button class="btn" onclick="cmd(2)" style="background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.2);color:#f87171">🔇 停止</button>
-    <button class="btn" onclick="cmd(3)" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.2);color:#f59e0b">🔔 短哔(250ms)</button>
-    <button class="btn" onclick="cmd(3)" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.2);color:#f59e0b">🔔 长哔(750ms)</button>
-    <button class="btn" onclick="cmd(4)" style="background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.2);color:#a855f7">🎵 扫频(无源)</button>
-  </div>
-  
-  <div class="section-title" style="font-size:12px">频率控制 (无源蜂鸣器用)</div>
-  <div class="row"><span class="lbl">频率</span><span class="val" id="fv">2000 Hz</span></div>
-  <input type="range" min="2" max="500" value="200" id="fsl" oninput="updateFS()">
-  <div style="display:flex;justify-content:space-between;font-size:9px;color:rgba(255,255,255,.2)">
-    <span>20Hz</span><span>2kHz</span><span>5kHz</span>
-  </div>
-  <div style="margin-top:6px">
-    <button class="btn" onclick="doPWM()" style="background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.2);color:#818cf8">▶ PWM输出</button>
-    <button class="btn" onclick="cmd(2)" style="background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.2);color:#f87171">⏹ 停止</button>
-  </div>
-  <div style="font-size:9px;color:rgba(255,255,255,.2);margin-top:6px">
-    有源蜂鸣器：持续ON会响=正常。无源蜂鸣器：PWM输出会响=正常。都不响=接线或蜂鸣器问题。
-  </div>
-</div><!-- Keypad -->
-<div class="card">
-  <div class="section-title">⌨️ 矩阵键盘</div>
-  <div class="key-grid">
-    <div class="key" id="k1">按键 1</div>
-    <div class="key" id="k2">按键 2</div>
-    <div class="key" id="k3">按键 3</div>
-    <div class="key" id="k4">按键 4</div>
-  </div>
-  <div style="font-size:10px;color:var(--tx3);margin-top:6px;text-align:center">按下物理按键时高亮</div>
-</div>
-
 
 <div class="card">
-  <div class="section-title">📐 ESP32-C3 Super Mini 引脚图（标准版）</div>
-  <style>
-    .bd{display:flex;gap:10px;align-items:stretch;margin:6px 0}
-    .ps{display:flex;flex-direction:column;gap:1px;min-width:130px}
-    .pn{display:flex;align-items:center;gap:5px;padding:5px 8px;border-radius:6px;font-size:10px}
-    .pn:hover{background:rgba(255,255,255,.03)}
-    .pn .dt{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-    .pn .lb{flex:1;font-weight:500}
-    .pn .fn{font-size:8px;color:rgba(255,255,255,.2);text-align:right}
-    .dp{background:#f59e0b;box-shadow:0 0 5px rgba(245,158,11,.3)}
-    .dg{background:#6b7280}
-    .di{background:#6366f1;box-shadow:0 0 4px rgba(99,102,241,.25)}
-    .du{background:#10b981;box-shadow:0 0 6px rgba(16,185,129,.4)}
-    .pn.hl{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.08)}
-    .chi{flex:1;text-align:center;display:flex;flex-direction:column;justify-content:center}
-    .chb{background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.1);border-radius:10px;padding:16px 10px;font-size:11px;color:rgba(255,255,255,.2)}
-    .lg{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;font-size:8px;color:rgba(255,255,255,.15)}
-    .lg span{display:flex;align-items:center;gap:3px}
-    .lg .dt{width:7px;height:7px;border-radius:4px}
-    .warn{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.12);border-radius:8px;padding:10px 14px;margin-top:10px;font-size:10px;color:#f87171}
-  </style>
-  <div class="bd">
-    <div class="ps">
-      <div style="text-align:center;font-size:8px;color:rgba(255,255,255,.1);padding:3px 0;letter-spacing:.08em">左侧 · USB-C朝上</div>
-      <div class="pn"><span class="dt dp"></span><span class="lb">5V</span><span class="fn">电源输入</span></div>
-      <div class="pn"><span class="dt dg"></span><span class="lb">GND</span><span class="fn">接地</span></div>
-      <div class="pn"><span class="dt dp" style="background:#fbbf24"></span><span class="lb">3V3</span><span class="fn">3.3V输出</span></div>
-      <div class="pn hl"><span class="dt du"></span><span class="lb" style="color:#f87171">GPIO4</span><span class="fn" style="color:#f87171">SCK/A4 → LED R</span></div>
-      <div class="pn hl"><span class="dt du"></span><span class="lb" style="color:#10b981">GPIO3</span><span class="fn" style="color:#10b981">A3 → 按键K4</span></div>
-      <div class="pn hl"><span class="dt du"></span><span class="lb" style="color:#10b981">GPIO2</span><span class="fn" style="color:#10b981">A2 → 按键K3</span></div>
-      <div class="pn hl"><span class="dt du"></span><span class="lb" style="color:#10b981">GPIO1</span><span class="fn" style="color:#10b981">A1 → 按键K2</span></div>
-      <div class="pn hl"><span class="dt du"></span><span class="lb" style="color:#10b981">GPIO0</span><span class="fn" style="color:#10b981">A0 → 按键K1</span></div>
-    </div>
-    <div class="chi">
-      <div style="font-size:8px;color:rgba(255,255,255,.1);margin-bottom:6px;letter-spacing:.1em">USB-C↑</div>
-      <div class="chb">ESP32<br>C3<br>Super<br>Mini</div>
-      <div style="font-size:8px;color:rgba(255,255,255,.06);margin-top:4px">标准版 黑/蓝PCB</div>
-    </div>
-    <div class="ps">
-      <div style="text-align:center;font-size:8px;color:rgba(255,255,255,.1);padding:3px 0;letter-spacing:.08em">右侧 · USB-C朝上</div>
-      <div class="pn hl"><span class="dt du"></span><span class="lb" style="color:#10b981">GPIO5</span><span class="fn" style="color:#10b981">A5/MISO → LED G</span></div>
-      <div class="pn hl"><span class="dt du"></span><span class="lb" style="color:#60a5fa">GPIO6</span><span class="fn" style="color:#60a5fa">MOSI → LED B</span></div>
-      <div class="pn hl"><span class="dt du"></span><span class="lb" style="color:#f59e0b">GPIO7</span><span class="fn" style="color:#f59e0b">SS → 蜂鸣器</span></div>
-      <div class="pn"><span class="dt di"></span><span class="lb">GPIO8</span><span class="fn">SDA/板载蓝灯</span></div>
-      <div class="pn"><span class="dt di"></span><span class="lb">GPIO9</span><span class="fn">SCL</span></div>
-      <div class="pn"><span class="dt di"></span><span class="lb">GPIO10</span><span class="fn">GPIO</span></div>
-      <div class="pn"><span class="dt di"></span><span class="lb">GPIO20</span><span class="fn">RX</span></div>
-      <div class="pn"><span class="dt di"></span><span class="lb">GPIO21</span><span class="fn">TX</span></div>
-    </div>
-  </div>
-  <div class="lg">
-    <span><span class="dt dp"></span>电源</span><span><span class="dt dg"></span>接地</span>
-    <span><span class="dt di"></span>空闲</span><span><span class="dt du"></span>已接线</span>
-  </div>
-  <div class="warn">⚠ GPIO耐压3.3V · 5V/3V3在左右各有一组 · GPIO8板载蓝灯(固件已启用)</div>
+  <div style="font-size:14px;font-weight:700;margin-bottom:8px">🔔 蜂鸣器</div>
+  <button class="btn" onclick="buzz(1)">ON</button>
+  <button class="btn" onclick="buzz(2)">OFF</button>
+  <button class="btn danger" onclick="buzz(3)">短哔</button>
+  <button class="btn" onclick="buzz(4)">LED闪</button>
 </div>
 
-<div class="card" style="border-color:rgba(16,185,129,.15)">
-  <div class="section-title" style="color:#10b981">🔌 接线一览（直接照图连线）</div>
-  <style>
-    .conn{display:flex;gap:8px;align-items:stretch;margin:8px 0;flex-wrap:wrap}
-    .mod{flex:1;min-width:140px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:12px}
-    .mod h4{font-size:12px;margin-bottom:8px}
-    .mod .wire{font-size:10px;display:flex;align-items:center;gap:6px;padding:3px 0}
-    .mod .wire .wdot{width:8px;height:8px;border-radius:4px;flex-shrink:0}
-    .mod .wire .wlabel{color:rgba(255,255,255,.6)}
-  </style>
-  <div class="conn">
-    <!-- RGB LED -->
-    <div class="mod">
-      <h4>💡 RGB LED 模块（共阴,4脚）</h4>
-      <div class="wire"><span class="wdot" style="background:#f87171"></span><span class="wlabel">R 脚 → 串220Ω → <b style="color:#f87171">GPIO4</b>（左第4脚）</span></div>
-      <div class="wire"><span class="wdot" style="background:#10b981"></span><span class="wlabel">G 脚 → 串220Ω → <b style="color:#10b981">GPIO5</b>（右第1脚）</span></div>
-      <div class="wire"><span class="wdot" style="background:#60a5fa"></span><span class="wlabel">B 脚 → 串220Ω → <b style="color:#60a5fa">GPIO6</b>（右第2脚）</span></div>
-      <div class="wire"><span class="wdot" style="background:#6b7280"></span><span class="wlabel">GND 脚 → <b style="color:#6b7280">GND</b>（任意）</span></div>
-    </div>
-    <!-- Buzzer -->
-    <div class="mod">
-      <h4>🔔 无源蜂鸣器（3根线，直接接板）</h4>
-      <div class="wire"><span class="wdot" style="background:#f59e0b"></span><span class="wlabel">S(信号/I/O) → <b style="color:#f59e0b">GPIO7</b>（PWM音调）</span></div>
-      <div class="wire"><span class="wdot" style="background:#f59e0b"></span><span class="wlabel">V(VCC/+) → <b style="color:#f59e0b">3.3V</b>（供电）</span></div>
-      <div class="wire"><span class="wdot" style="background:#6b7280"></span><span class="wlabel">G(GND/-) → <b style="color:#6b7280">GND</b>（回路）</span></div>
-      <div style="font-size:9px;color:#10b981;margin-top:4px">✅ 三根全接 · S=信号 V=供电 G=地</div>
-    </div>
-    <!-- Keypad -->
-    <div class="mod">
-      <h4>⌨️ HX-543 按键（5脚→4键）</h4>
-      <div class="wire"><span class="wdot" style="background:#6b7280"></span><span class="wlabel">公共脚 → <b style="color:#6b7280">GND</b></span></div>
-      <div class="wire"><span class="wdot" style="background:#10b981"></span><span class="wlabel">K1 → <b style="color:#10b981">GPIO0</b>（左第8脚）</span></div>
-      <div class="wire"><span class="wdot" style="background:#10b981"></span><span class="wlabel">K2 → <b style="color:#10b981">GPIO1</b>（左第7脚）</span></div>
-      <div class="wire"><span class="wdot" style="background:#10b981"></span><span class="wlabel">K3 → <b style="color:#10b981">GPIO2</b>（左第6脚）</span></div>
-      <div class="wire"><span class="wdot" style="background:#10b981"></span><span class="wlabel">K4 → <b style="color:#10b981">GPIO3</b>（左第5脚）</span></div>
-      <div style="font-size:9px;color:rgba(255,255,255,.2);margin-top:4px">5脚中1个公共+4个按键线，用万用表蜂鸣档找出公共脚</div>
-    </div>
-  </div>
-</div>
-<div class="section-title">🔌 接线指南</div>
-  <div style="font-size:12px;line-height:1.8">
-    <p><b>1. RGB LED模块(共阴)</b><br>
-    <span style="color:#f87171">R脚</span>→串220Ω电阻→<b>GPIO4</b>(左列第8脚)<br>
-    <span style="color:#10b981">G脚</span>→<b>GPIO5</b> (板子标注: GPIO5)<br>
-    <span style="color:#60a5fa">B脚</span>→<b>GPIO6</b> (板子标注: GPIO6)<br>
-    LED公共脚→<b>GND</b>(任意GND都可以)</p>
+<script>
+var S='12345678-1234-1234-1234-123456789abc';
+var L='12345678-1234-1234-1234-123456789001';
+var B='12345678-1234-1234-1234-123456789002';
+var dev=null,svr=null,led=null,bz=null;
 
-    <p><b>2. 5V继电器模块</b><br>
-    VCC→板子<b>5V</b> | GND→板子<b>GND</b> | 蜂鸣器VCC→<b>GPIO7</b>（右第3脚，直接连接，不经过继电器）<br>
-    ⚠️ 继电器COM接12V+，NO接蜂鸣器+，蜂鸣器-接12V-</p>
-
-    <p><b>3. 4键薄膜键盘</b><br>
-    公共端→<b>GND</b><br>
-    K1→<b>GPIO0</b>(左4) K2→<b>GPIO1</b>(左5)<br>
-    K3→<b>GPIO2</b>(左6) K4→<b>GPIO3</b>(左7)</p>
-
-    <p><b>4. 12V有源蜂鸣器</b><br>
-    继电器<b>COM</b>→12V电源+<br>
-    继电器<b>NO</b>→蜂鸣器+<br>
-    蜂鸣器-→12V电源-</p>
-  </div>
-</div>
-
-<!-- Tutorial -->
-  <pre style="font-size:10px;line-height:1.6;background:rgba(0,0,0,.4);padding:14px;border-radius:10px">
-     ESP32-C3 Super Mini          RGB LED模块(共阴)
-  ┌──────────────────┐          ┌──────────┐
-  │ 5V  ─────────────┼──→ 继电器 VCC        │ R  ──[220Ω]── GPIO4
-  │ GND ─────────────┼──→ 继电器 GND        │ G  ──[220Ω]── GPIO5
-  │                  │  └─→ LED GND         │ B  ──[220Ω]── GPIO6
-  │ GPIO7 ───────────┼──→ 继电器 IN         │ GND ────────── GND
-  │                  │                      └──────────┘
-  │ GPIO0 ───────────┼──→ 按键 K1 ── GND
-  │ GPIO1 ───────────┼──→ 按键 K2 ── GND    继电器(5V低电平触发)
-  │ GPIO2 ───────────┼──→ 按键 K3 ── GND   ┌──────────┐
-  │ GPIO3 ───────────┼──→ 按键 K4 ── GND   │ VCC ── 5V
-  └──────────────────┘                      │ GND ── GND
-                                            │ IN  ── GPIO7
-     继电器输出(12V蜂鸣器)                  │ COM ── 12V+
-  ┌──────────────────────┐                  │ NO  ── 蜂鸣器+
-  │ 12V电源+ ── 蜂鸣器+  │                  └──────────┘
-  │ 蜂鸣器-  ── 12V电源- │
-  │ COM ── 12V+  NO ── 蜂鸣器+             ⚠ 先接LED测试，12V最后接！
-  └──────────────────────┘
-  </pre>
-  <div style="font-size:10px;color:rgba(255,255,255,.3);margin-top:6px">
-    💡 RGB LED串220Ω电阻 · 继电器选3.3V兼容型号 · 按键用INPUT_PULLUP · 12V蜂鸣器通过继电器控制
-  </div>
-</div>
-<!-- Tutorial -->
-<div class="card">
-  <div class="section-title">📖 新手教程</div>
-  <div class="step"><span class="num">1</span> 用 Arduino IDE 打开 <code>esp32/esp32-c3.ino</code>，选 <b>ESP32C3 Dev Module</b></div>
-  <div class="step"><span class="num">2</span> 安装库：<b>ESP32 BLE Arduino</b>（工具→开发板→开发板管理器搜 ESP32）</div>
-  <div class="step"><span class="num">3</span> 接线：
-    <pre>RGB LED: R→GPIO4 G→GPIO5 B→GPIO6 (串220Ω电阻)
-继电器: IN→GPIO7 VCC→5V GND→GND
-按键: K1→GPIO0 K2→GPIO1 K3→GPIO2 K4→GPIO3 (内置上拉)
-12V蜂鸣器→继电器常开触点→12V电源</pre>
-  </div>
-  <div class="step"><span class="num">4</span> 烧录后打开本页面，点击<b>"连接 AI-NAV-C3"</b></div>
-  <div class="step"><span class="num">5</span> Chrome/Edge 浏览器 → 选择弹出的 BLE 设备 → 开始控制</div>
-</div>
-
-<script>var S='12345678-1234-1234-1234-123456789abc';
-var LED='12345678-1234-1234-1234-123456789001';
-var BUZZ='12345678-1234-1234-1234-123456789002';
-var dev=null,server=null,ledChar=null,buzzChar=null;
-
-function setStatus(t,c){var s=document.getElementById('st');s.className='status '+c;document.getElementById('stTxt').textContent=t}
-
-async function connectBLE(){
+function st(t,c){
+  document.getElementById('st').className='status '+(c||'wait');
+  document.getElementById('stt').textContent=t;
+}
+async function connect(){
   try{
-    setStatus('扫描中...','wait');
+    st('扫描中...','wait');
     dev=await navigator.bluetooth.requestDevice({filters:[{name:'AI-NAV-C3'}],optionalServices:[S]});
-    server=await dev.gatt.connect();
-    var svc=await server.getPrimaryService(S);
-    ledChar=await svc.getCharacteristic(LED);
-    buzzChar=await svc.getCharacteristic(BUZZ);
-    setStatus('已连接','ok');
-    document.getElementById('btnBLE').style.display='none';
-    dev.addEventListener('gattserverdisconnected',function(){setStatus('已断开','err');document.getElementById('btnBLE').style.display='inline-block'});
-  }catch(e){setStatus('失败: '+e.message,'err')}
+    svr=await dev.gatt.connect();
+    var s=await svr.getPrimaryService(S);
+    led=await s.getCharacteristic(L);
+    bz=await s.getCharacteristic(B);
+    st('已连接','ok');
+    document.getElementById('btnC').style.display='none';
+    dev.addEventListener('gattserverdisconnected',function(){st('已断开','err');document.getElementById('btnC').style.display='inline-block'});
+  }catch(e){st('失败: '+e.message,'err')}
 }
-
-async function cmd(m){if(buzzChar)try{await buzzChar.writeValue(new Uint8Array([m]))}catch(e){}}
-async function setLED(r,g,b){if(ledChar)try{await ledChar.writeValue(new Uint8Array([r,g,b]))}catch(e){}}
-
-function updateLED(){
-  var r=parseInt(document.getElementById('r').value),g=parseInt(document.getElementById('g').value),b=parseInt(document.getElementById('b').value);
+function uled(){
+  var r=+document.getElementById('rs').value,g=+document.getElementById('gs').value,b=+document.getElementById('bs').value;
   document.getElementById('rv').textContent=r;document.getElementById('gv').textContent=g;document.getElementById('bv').textContent=b;
-  document.getElementById('preview').style.background='rgb('+r+','+g+','+b+')';setLED(r,g,b);
+  document.getElementById('pv').style.background='rgb('+r+','+g+','+b+')';
+  if(led)led.writeValue(new Uint8Array([r,g,b])).catch(function(){});
 }
-function preset(r,g,b){document.getElementById('r').value=r;document.getElementById('g').value=g;document.getElementById('b').value=b;updateLED()}</script>
+function ps(r,g,b){document.getElementById('rs').value=r;document.getElementById('gs').value=g;document.getElementById('bs').value=b;uled()}
+function buzz(m){if(bz)bz.writeValue(new Uint8Array([m])).catch(function(){})}
+</script>
 </body>
 </html>
