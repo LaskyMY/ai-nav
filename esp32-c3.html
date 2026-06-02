@@ -189,10 +189,11 @@ pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;fon
     </div>
     <!-- Buzzer -->
     <div class="mod">
-      <h4>🔔 无源蜂鸣器（直接GPIO7）</h4>
-      <div class="wire"><span class="wdot" style="background:#f59e0b"></span><span class="wlabel">VCC(+) → <b style="color:#f59e0b">GPIO7</b></span></div>
-      <div class="wire"><span class="wdot" style="background:#6b7280"></span><span class="wlabel">GND(-) → <b style="color:#6b7280">GND</b></span></div>
-      <div style="font-size:9px;color:#10b981;margin-top:4px">✅ 无源蜂鸣器 · PWM音调+音量控制</div>
+      <h4>🔔 无源蜂鸣器（3根线，直接接板）</h4>
+      <div class="wire"><span class="wdot" style="background:#f59e0b"></span><span class="wlabel">S(信号/I/O) → <b style="color:#f59e0b">GPIO7</b>（PWM音调）</span></div>
+      <div class="wire"><span class="wdot" style="background:#f59e0b"></span><span class="wlabel">V(VCC/+) → <b style="color:#f59e0b">3.3V</b>（供电）</span></div>
+      <div class="wire"><span class="wdot" style="background:#6b7280"></span><span class="wlabel">G(GND/-) → <b style="color:#6b7280">GND</b>（回路）</span></div>
+      <div style="font-size:9px;color:#10b981;margin-top:4px">✅ 三根全接 · S=信号 V=供电 G=地</div>
     </div>
     <!-- Keypad -->
     <div class="mod">
