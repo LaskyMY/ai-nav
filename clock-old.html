@@ -1,50 +1,48 @@
 <!DOCTYPE html><html lang="zh-CN"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>AI Nav 看板 · Pad</title><style>*{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;overflow:hidden}
-body{background:linear-gradient(180deg,#0a0a14 0%,#0d0d1a 40%,#090911 100%);color:rgba(255,255,255,.9);font-family:Roboto,sans-serif,sans-serif;font-size:18px;line-height:1.4;padding:6px;-webkit-user-select:none;user-select:none}
-.g{height:100%;display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:auto auto auto 1fr;gap:4px;overflow-y:auto}
-.c{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:12px 14px;overflow:visible}
-.c3{grid-column:span 3}.c2{grid-column:span 2}
-.tt{font-weight:600;color:rgba(255,255,255,.88);line-height:1.3;margin-bottom:3px}
-.ts{font-size:.9em;color:rgba(255,255,255,.5);line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
-.tm{font-size:.75em;color:rgba(255,255,255,.3);margin-top:auto;padding-top:4px}
+<title>AI Nav 看板</title><style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#0a0a14}
+body{color:rgba(255,255,255,.9);font-family:Roboto,sans-serif;font-size:13px;line-height:1.35;padding:4px;-webkit-user-select:none;user-select:none}
+.g{height:100%;display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:minmax(44px,auto);gap:4px;align-content:start;overflow-y:auto}
+.c{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:8px 10px;overflow:hidden}
+.c4{grid-column:span 4}.c2{grid-column:span 2}
+.tt{font-weight:700;color:rgba(255,255,255,.85);line-height:1.25;margin-bottom:2px;font-size:.95em}
+.ts{font-size:.82em;color:rgba(255,255,255,.45);line-height:1.3;overflow:hidden}
+.tm{font-size:.7em;color:rgba(255,255,255,.25);margin-top:auto;padding-top:2px}
+.ckb{font-size:38px;font-weight:700;color:#818cf8;line-height:1;text-align:center}
+.ckms{font-size:13px;color:#818cf8;opacity:.7;display:inline-block}
+.ckd{font-size:10px;text-align:center;color:rgba(255,255,255,.25);margin-top:2px}
 .k1{color:#818cf8;font-weight:700}.k2{color:#fbbf24;font-weight:700}.k3{color:#f87171;font-weight:700}
-.ckb{font-size:52px;font-weight:700;background:linear-gradient(135deg,#6366f1,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;text-align:center}
-.ckms{font-size:18px;color:#818cf8;-webkit-text-fill-color:#818cf8;font-weight:500;display:inline-block}
-.ckd{font-size:10px;text-align:center;color:rgba(255,255,255,.3);margin-top:2px}
-.c.l1{border-color:rgba(239,68,68,.06);background:rgba(239,68,68,.025)}
-.c.l2{border-color:rgba(245,158,11,.05);background:rgba(245,158,11,.02)}
-/* Weather card — fixed 100px height, never squished */
-.wx-card{min-height:100px!important;max-height:100px!important;height:100px!important}
 </style></head><body>
 <div class="g" id="g"></div>
 <script>
 var A='https://c46872d35aeba559-183-6-87-29.serveousercontent.com';
-var WI={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',51:'🌧️',61:'🌧️',71:'❄️',80:'🌦️',95:'⛈️'};
-var WN={0:'晴',1:'少云',2:'多云',3:'阴',45:'雾',51:'雨',61:'雨',71:'雪',80:'雨',95:'雷'};
+var WI={0:'晴',1:'多云',2:'阴',3:'阴',45:'雾',51:'雨',61:'雨',71:'雪',80:'雨',95:'雷'};
+var WN={0:'晴天',1:'少云',2:'多云',3:'阴天',45:'雾',51:'小雨',61:'小雨',71:'小雪',80:'阵雨',95:'雷暴'};
 var ns=[],wxPages=[],wxI=0,wxT=null;
-function em(t){var s=(t||'').toLowerCase();if(/战争|冲突|空袭|军事|导弹/.test(t))return'💥';if(/经济|市场|股票|金融|利率/.test(t))return'📈';if(/政治|选举|总统|政府|法律/.test(t))return'🏛️';if(/科技|AI|芯片|数据/.test(t))return'🧠';if(/医疗|疾病|药物|疫苗/.test(t))return'💊';return'📡'}
+// Simple text tags for Android 6.0 (no emoji — they render as tofu)
+function tag(t){var s=(t||'').toLowerCase();if(/战争|冲突|空袭|军事|导弹|军队/.test(t))return'[冲突]';if(/经济|市场|股票|金融|利率|美元/.test(t))return'[财经]';if(/政治|选举|总统|国会|政府|法律/.test(t))return'[政治]';if(/科技|AI|芯片|数据|网络/.test(t))return'[科技]';if(/医疗|疾病|药物|疫苗|病毒|癌症/.test(t))return'[健康]';if(/体育|比赛|运动|足球|篮球|NBA/.test(t))return'[体育]';if(/气候|环境|能源|自然|天气/.test(t))return'[环境]';return'[新闻]'}
 function kw(t,k){if(!k||!t)return t;var s=t,ks=k.split(',');for(var i=0;i<ks.length;i++){var w=ks[i].trim();if(!w)continue;var c='k1';if(w[0]==='!'){c='k3';w=w.slice(1)}else if(w[0]==='*'){c='k2';w=w.slice(1)}s=s.split(w).join('<span class="'+c+'">'+w+'</span>')}return s}
-function wxH(p){return'<div style="text-align:center;padding:8px 0"><span style="font-size:34px">'+(WI[p.code]||'☀️')+'</span><div style="font-size:10px;color:rgba(255,255,255,.3);margin:3px 0">'+p.label+'</div><div style="font-size:22px;font-weight:700;color:#fff">'+p.temp+'°C</div><div style="font-size:9px;color:rgba(255,255,255,.2);margin-top:2px">'+(WN[p.code]||'')+'</div></div>'}
 function build(){
   var h='';
-  h+='<div class="c c3"><div class="ckb" id="t">--:--:--<span class="ckms">.---</span></div><div class="ckd" id="td">----</div></div>';
-  h+='<div class="c c2 wx-card" id="wc">'+wxH({code:0,label:'当前',temp:'--'})+'</div>';
-  h+='<div class="c c2" onclick="doR()" style="cursor:pointer"><div style="display:flex;justify-content:space-between;font-size:9px"><span>🔄 <span id="ot">-</span></span><span>⏱ <span id="nx">-</span></span></div></div>';
-  h+='<div class="c c3" style="flex:1"><div class="tt">📋 AI 简报</div><div class="ts" id="sm" style="-webkit-line-clamp:6">加载中</div></div>';
-  for(var i=0;i<ns.length;i++){var n=ns[i],lv=n.level==='critical'?'1':n.level==='high'?'2':'3';h+='<div class="c l'+lv+(i<2?' c2':'')+'" data-id="n'+i+'"><div class="tt">'+em(n.title)+' '+kw(n.title,n.keywords)+'</div>'+(n.summary?'<div class="ts">'+kw(n.summary,n.keywords)+'</div>':'')+(n.metric?'<div class="tm">'+n.metric+'</div>':'')+'</div>'}
+  h+='<div class="c c4"><div class="ckb" id="t">--:--:--<span class="ckms">.---</span></div><div class="ckd" id="td">----</div></div>';
+  h+='<div class="c c2" id="wc"><div style="text-align:center"><div style="font-size:26px;font-weight:700;color:#fff" id="_t">--°</div><div style="font-size:10px;color:rgba(255,255,255,.3)" id="_l">当前</div><div style="font-size:8px;color:rgba(255,255,255,.15)" id="_d"></div></div></div>';
+  h+='<div class="c c4" style="padding:6px 10px"><div style="display:flex;justify-content:space-between;font-size:10px"><span id="ot">-</span><span id="nx">-</span></div></div>';
+  h+='<div class="c c4" style="flex:1"><div class="tt">AI简报</div><div class="ts" id="sm" style="max-height:120px;overflow-y:auto">加载中</div></div>';
+  for(var i=0;i<Math.min(ns.length,6);i++){var n=ns[i];h+='<div class="c'+(i<2?' c2':'')+'"><div class="tt">'+tag(n.title)+' '+kw(n.title,n.keywords)+'</div>'+(n.summary?'<div class="ts">'+kw(n.summary,n.keywords)+'</div>':'')+'</div>'}
   document.getElementById('g').innerHTML=h;tick()
 }
-function doR(){fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(!d||!d.length)return;ns=d;build()})}
-function tick(){var n=new Date();document.getElementById('t').innerHTML=('0'+n.getHours()).slice(-2)+':'+('0'+n.getMinutes()).slice(-2)+':'+('0'+n.getSeconds()).slice(-2)+' <span class="ckms">.'+('00'+n.getMilliseconds()).slice(-3)+'</span>';document.getElementById('td').textContent=n.getFullYear()+'年'+(n.getMonth()+1)+'月'+n.getDate()+'日 周'+['日','一','二','三','四','五','六'][n.getDay()]}
+function tick(){var n=new Date();document.getElementById('t').innerHTML=('0'+n.getHours()).slice(-2)+':'+('0'+n.getMinutes()).slice(-2)+':'+('0'+n.getSeconds()).slice(-2)+' <span class="ckms">.'+('00'+n.getMilliseconds()).slice(-3)+'</span>';document.getElementById('td').textContent=(n.getMonth()+1)+'/'+n.getDate()+' 周'+['日','一','二','三','四','五','六'][n.getDay()]}
+function showWx(i){var p=wxPages[i];var t=document.getElementById('_t'),l=document.getElementById('_l'),d=document.getElementById('_d');if(t)t.textContent=p.temp+'°C';if(l)l.textContent=p.label;if(d)d.textContent=WN[p.code]||''}
 function startWx(){wxI=0;showWx(0);wxT=setInterval(function(){wxI=(wxI+1)%wxPages.length;showWx(wxI)},5000)}
-function showWx(i){document.getElementById('wc').innerHTML=wxH(wxPages[i])}
+
 build();setInterval(tick,1000);
-document.getElementById('ot').textContent=new Date().toLocaleTimeString('zh-CN');document.getElementById('nx').textContent=new Date(Date.now()+600000).toLocaleTimeString('zh-CN');
-setTimeout(function(){wxPages=[{label:'广州·当前',temp:'27',code:0},{label:'+1时',temp:'28',code:1},{label:'+3时',temp:'30',code:0},{label:'+6时',temp:'26',code:2}];startWx()},5000);
+document.getElementById('ot').textContent=new Date().toLocaleTimeString('zh-CN');document.getElementById('nx').textContent='下次:'+new Date(Date.now()+600000).toLocaleTimeString('zh-CN');
+
+setTimeout(function(){wxPages=[{label:'广州·当前',temp:'27',code:0},{label:'+1时',temp:'28',code:1},{label:'+3时',temp:'30',code:0},{label:'+6时',temp:'26',code:2}];startWx()},8000);
 fetch(A+'/api/weather?lat=23.13&lon=113.26').then(function(r){return r.json()}).then(function(w){var c=w.current,hh=w.hourly;wxPages=[{label:'广州·当前',temp:Math.round(c.temperature_2m),code:c.weather_code}];if(hh&&hh.time){var cur=(new Date()).getHours();for(var i=0;i<3;i++){var idx=cur+[1,3,6][i];if(idx>=hh.time.length)idx=hh.time.length-1;wxPages.push({label:'+'+(i*2+1)+'时',temp:Math.round(hh.temperature_2m[idx]),code:hh.weather_code[idx]})}}startWx()}).catch(function(){});
-setTimeout(function(){ns=[{level:'high',title:'AI整理中...',keywords:''}];build()},5000);
+
+setTimeout(function(){ns=[{level:'high',title:'AI整理中...',keywords:''}];build()},8000);
 fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(!d||!d.length)return;ns=d;build()});
 setInterval(function(){fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(d&&d.length){ns=d;build()}})},600000);
 </script></body></html>
