@@ -266,7 +266,7 @@ async function handle(req) {
 
     // ── News CN (AI translated + prioritized, cached 10min) ──
     if (path === "/api/news-cn") {
-      const cached = cacheGet("news-cn", 0); // always use cache if exists
+      const cached = cacheGet("news-cn", 3600000);
       if (cached) {
         // Background refresh if older than 5 min
         if (Date.now() - (cached._ts || 0) > 300000) {
