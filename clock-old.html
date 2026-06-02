@@ -62,7 +62,8 @@ function doRefresh(){fetch(A+'/api/news-cn').then(function(r){return r.json()}).
 function build(){
   var h='';h+='<div class="c c3 lX"><div class="ckb" id="t">--:--:--<span class="ckms">.---</span></div><div class="ckd" id="td">----</div></div>';
   h+='<div class="c c2 lX" id="wc"><div style="text-align:center;padding:6px 0"><div style="font-size:34px;margin-bottom:2px" id="wxi">☀️</div><div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:2px"><span id="ci">广州</span> · <span id="wxl">当前</span></div><div style="font-size:18px;font-weight:600;color:#fff" id="wxt">--°</div><div class="wxh" id="wxh">天气加载中</div></div></div>';
-  h+='<div class="c c2 lX" onclick="doRefresh()" style="cursor:pointer"><div class="tt">📡 实时信息 · 点击刷新</div><div class="ts">数据: <span id="ot">加载中</span></div><div class="tm">下次自动刷新: <span id="nx">--</span></div></div>';
+  h+='<div class="c c3 lX" onclick="doRefresh()" style="cursor:pointer;padding:6px 12px"><div style="display:flex;justify-content:space-between;align-items:center;font-size:10px"><span>🔄 数据: <span id="ot">加载中</span></span><span>⏱ 下次刷新: <span id="nx">--</span></span><span style="color:rgba(255,255,255,.25)">点击刷新</span></div></div>';
+  h+='<div class="c c3 lX"><div class="tt">📋 AI 简报</div><div class="ts" id="sm">加载中</div></div>';
   for(var i=0;i<ns.length;i++){var n=ns[i],lv=n.level==='critical'?'1':n.level==='high'?'2':n.level==='low'?'4':'3';h+='<div class="c l'+lv+(i<2?' c2':'')+'" data-id="n'+i+'"><div class="tt">'+em(n.title)+' '+kw(n.title,n.keywords)+'</div>'+(n.summary?'<div class="ts">'+kw(n.summary,n.keywords)+'</div>':'')+(n.metric?'<div class="tm">'+n.metric+'</div>':'')+'</div>'}
   document.getElementById('g').innerHTML=h;tick()
 }
@@ -89,7 +90,7 @@ fetch(A+'/api/news-cn').then(function(r){return r.json()}).then(function(d){if(n
   if(nxEl)nxEl.textContent='下次: '+nx.toLocaleTimeString('zh-CN');
   build();
   fetch(A+'/api/news-summary').then(function(r){return r.json()}).then(function(s){
-    if(s&&s.summary){var d2=s.summary;if(d2.indexOf('##')>=0){var ls2=d2.split(/\n(?=## )/);d2=ls2[0].replace(/^##\s*/,'')}document.getElementById('ot').textContent=d2.slice(0,60)}
+    if(s&&s.summary){var d2=s.summary;document.getElementById('sm').textContent=d2.slice(0,100)}
   }).then(function(r){return r.json()}).then(function(s){if(s&&s.summary){var ls=s.summary.split('\n').filter(function(l){return l.trim()&&!/^##/.test(l)});document.getElementById('ot').textContent=ls.slice(0,3).join(' · ')}})})['catch'](function(e){if(!nsDone){nsDone=true;ns=[{level:'high',title:'网络连接异常',summary:'请检查网络后刷新',metric:'',keywords:''}];build()}});
 
 // Typewriter flash — character-by-character within 3s
