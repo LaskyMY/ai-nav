@@ -88,12 +88,12 @@ pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;fon
   <div style="font-size:10px;color:rgba(255,255,255,.3);margin-bottom:10px">先点"LED闪烁"确认蓝牙连接正常 → 再逐个测试蜂鸣器</div>
   
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
-    <button class="btn" onclick="cmd(6,3,0)" style="background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.2);color:#818cf8">💡 LED闪3下</button>
-    <button class="btn" onclick="cmd(1,0,0)" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.2);color:#10b981">🔊 有源:持续ON</button>
-    <button class="btn" onclick="cmd(2,0,0)" style="background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.2);color:#f87171">🔇 停止</button>
-    <button class="btn" onclick="cmd(4,5,0)" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.2);color:#f59e0b">🔔 短哔(250ms)</button>
-    <button class="btn" onclick="cmd(4,15,0)" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.2);color:#f59e0b">🔔 长哔(750ms)</button>
-    <button class="btn" onclick="cmd(5,0,0)" style="background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.2);color:#a855f7">🎵 扫频(无源)</button>
+    <button class="btn" onclick="cmd(4)" style="background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.2);color:#818cf8">💡 LED闪3下</button>
+    <button class="btn" onclick="cmd(1)" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.2);color:#10b981">🔊 蜂鸣器 ON (cmd=1)</button>
+    <button class="btn" onclick="cmd(2)" style="background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.2);color:#f87171">🔇 停止</button>
+    <button class="btn" onclick="cmd(3)" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.2);color:#f59e0b">🔔 短哔(250ms)</button>
+    <button class="btn" onclick="cmd(3)" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.2);color:#f59e0b">🔔 长哔(750ms)</button>
+    <button class="btn" onclick="cmd(4)" style="background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.2);color:#a855f7">🎵 扫频(无源)</button>
   </div>
   
   <div class="section-title" style="font-size:12px">频率控制 (无源蜂鸣器用)</div>
@@ -104,7 +104,7 @@ pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;fon
   </div>
   <div style="margin-top:6px">
     <button class="btn" onclick="doPWM()" style="background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.2);color:#818cf8">▶ PWM输出</button>
-    <button class="btn" onclick="cmd(0,0,0)" style="background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.2);color:#f87171">⏹ 停止</button>
+    <button class="btn" onclick="cmd(2)" style="background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.2);color:#f87171">⏹ 停止</button>
   </div>
   <div style="font-size:9px;color:rgba(255,255,255,.2);margin-top:6px">
     有源蜂鸣器：持续ON会响=正常。无源蜂鸣器：PWM输出会响=正常。都不响=接线或蜂鸣器问题。
@@ -284,75 +284,12 @@ pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;fon
   <div class="step"><span class="num">5</span> Chrome/Edge 浏览器 → 选择弹出的 BLE 设备 → 开始控制</div>
 </div>
 
-<script>
-var S='4fafc201-1fb5-459e-8fcc-c5c9c331914b';
-var CMD='beb5483e-36e1-4688-b7f5-ea07361b26aa';
-var WIFI='beb5483e-36e1-4688-b7f5-ea07361b26ac'; // matches firmware
-var IP='beb5483e-36e1-4688-b7f5-ea07361b26ad';
+<script>var S='12345678-1234-1234-1234-123456789abc';
+var LED='12345678-1234-1234-1234-123456789001';
+var BUZZ='12345678-1234-1234-1234-123456789002';
+var dev=null,server=null,ledChar=null,buzzChar=null;
 
-var LED='beb5483e-36e1-4688-b7f5-ea07361b26a8';
-var KEYS='beb5483e-36e1-4688-b7f5-ea07361b26ab'; // unused in current fw
-
-var dev=null,server=null,ledChar=null,cmdChar=null,keyChar=null;
-
-var connMode='wifi',wifiBase='';
-function setMode(m){
-  connMode=m;
-  document.getElementById('modeWiFi').classList.toggle('on',m==='wifi');
-  document.getElementById('modeBLE').classList.toggle('on',m==='ble');
-  document.getElementById('wifiPanel').style.display=m==='wifi'?'block':'none';
-  document.getElementById('blePanel').style.display=m==='ble'?'block':'none';
-}
-async function sendWiFi(){
-  var ssid=document.getElementById('wifiSSID').value,pass=document.getElementById('wifiPass').value;
-  if(!ssid){alert('请输入WiFi名称');return}
-  // Send via BLE
-  if(!server){alert('请先连接蓝牙');return}
-  try{
-    var svc=await server.getPrimaryService(S);
-    var wifiChar=await svc.getCharacteristic(WIFI);
-    await wifiChar.writeValue(new TextEncoder().encode(ssid+'|'+pass));
-    document.getElementById('espIP').textContent='已发送，等待连接...';
-    // Try to read IP after a few seconds
-    setTimeout(async function(){
-      try{
-        var ipChar=await svc.getCharacteristic(IP);
-        var ipVal=await ipChar.readValue();
-        var ip=new TextDecoder().decode(ipVal);
-        if(ip&&ip.length>5){document.getElementById('espIP').textContent=ip;wifiBase='http://'+ip;setStatus('WiFi已连接','ok')}
-        else{document.getElementById('espIP').textContent='连接中...'}
-      }catch(e){document.getElementById('espIP').textContent='请稍后再试'}
-    },8000);
-  }catch(e){alert('发送失败: '+e.message)}
-}
-async function connectWiFi(){
-  wifiBase='http://'+document.getElementById('espIP').textContent;
-  if(!wifiBase.startsWith('http'))return;
-  fetch(wifiBase+'/api/ip').then(function(r){return r.text()}).then(function(){
-    setStatus('WiFi已连接','ok');
-  }).catch(function(){setStatus('WiFi连接失败','err')});
-}
-async function wcmd(m,p1,p2){
-  if(connMode==='wifi'){
-    if(m<=2)fetch(wifiBase+'/api/buzzer?cmd='+m);
-    else if(m===4)fetch(wifiBase+'/api/buzzer?cmd=4');
-    else if(m===5)fetch(wifiBase+'/api/buzzer?cmd=5');
-    else if(m===6)fetch(wifiBase+'/api/buzzer?cmd=6');
-  } else {
-    wcmd(m,p1,p2)
-  }
-}
-async function wled(r,g,b){
-  if(connMode==='wifi')fetch(wifiBase+'/api/led?r='+r+'&g='+g+'&b='+b);
-  else{wled(r,g,b)}
-}
-// Override old functions
-function cmd(m,p1,p2){wcmd(m,p1,p2)}
-var origUpdateLED=updateLED;
-function setStatus(t,c){
-  var s=document.getElementById('st');s.className='status '+c;
-  document.getElementById('stTxt').textContent=t;
-}
+function setStatus(t,c){var s=document.getElementById('st');s.className='status '+c;document.getElementById('stTxt').textContent=t}
 
 async function connectBLE(){
   try{
@@ -361,42 +298,21 @@ async function connectBLE(){
     server=await dev.gatt.connect();
     var svc=await server.getPrimaryService(S);
     ledChar=await svc.getCharacteristic(LED);
-    cmdChar=await svc.getCharacteristic(CMD);
+    buzzChar=await svc.getCharacteristic(BUZZ);
     setStatus('已连接','ok');
-    document.getElementById('btnConn').style.display='none';
-    document.getElementById('btnDisc').style.display='inline-block';
-    // Start keypad notify
-    try{await keyChar.startNotifications();keyChar.addEventListener('characteristicvaluechanged',function(e){var v=e.target.value.getUint8(0);['k1','k2','k3','k4'].forEach(function(id,i){var el=document.getElementById(id);if(el)el.classList.toggle('pressed',!!(v&(1<<i)))})})}catch(e){}
-    dev.addEventListener('gattserverdisconnected',function(){setStatus('已断开','err');document.getElementById('btnConn').style.display='inline-block';document.getElementById('btnDisc').style.display='none'});
-  }catch(e){setStatus('连接失败: '+e.message,'err')}
+    document.getElementById('btnBLE').style.display='none';
+    dev.addEventListener('gattserverdisconnected',function(){setStatus('已断开','err');document.getElementById('btnBLE').style.display='inline-block'});
+  }catch(e){setStatus('失败: '+e.message,'err')}
 }
 
-function disconnect(){if(dev&&dev.gatt.connected){dev.gatt.disconnect()}}
+async function cmd(m){if(buzzChar)try{await buzzChar.writeValue(new Uint8Array([m]))}catch(e){}}
+async function setLED(r,g,b){if(ledChar)try{await ledChar.writeValue(new Uint8Array([r,g,b]))}catch(e){}}
 
-async function updateLED(){
+function updateLED(){
   var r=parseInt(document.getElementById('r').value),g=parseInt(document.getElementById('g').value),b=parseInt(document.getElementById('b').value);
   document.getElementById('rv').textContent=r;document.getElementById('gv').textContent=g;document.getElementById('bv').textContent=b;
-  document.getElementById('preview').style.background='rgb('+r+','+g+','+b+')';
-  wled(r,g,b)
+  document.getElementById('preview').style.background='rgb('+r+','+g+','+b+')';setLED(r,g,b);
 }
-
-function preset(r,g,b){
-  document.getElementById('r').value=r;document.getElementById('g').value=g;document.getElementById('b').value=b;updateLED()
-}
-
-async function cmd(m,p1,p2){
-  wcmd(m,p1,p2)
-}
-function updateFS(){
-  var v=parseInt(document.getElementById('fsl').value);
-  document.getElementById('fv').textContent=(v*10)+' Hz';
-}
-async function doPWM(){
-  var v=parseInt(document.getElementById('fsl').value);
-  wcmd(3,v,30)
-}
-// Old functions removed
-
-</script>
+function preset(r,g,b){document.getElementById('r').value=r;document.getElementById('g').value=g;document.getElementById('b').value=b;updateLED()}</script>
 </body>
 </html>
