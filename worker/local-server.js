@@ -344,25 +344,25 @@ async function refreshNewsCN() {
     const resp = await fetch("https://feeds.npr.org/1001/rss.xml", { signal: AbortSignal.timeout(10000) });
     if (!resp.ok) return;
     const xml = await resp.text();
-    const items = [...xml.matchAll(/<item>([\\s\\S]*?)<\\/item>/g)].slice(0, 20).map(m => {
-      const t = (m[1].match(/<title>([^<]+)<\\/title>/) || [])[1] || "";
+    const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].slice(0, 20).map(m => {
+      const t = (m[1].match(/<title>([^<]+)<\/title>/) || [])[1] || "";
       return { title: t.replace(/&#39;/g,"'").replace(/&apos;/g,"'").replace(/&amp;/g,"&").replace(/&quot;/g,'"'), source: "NPR" };
     });
     if (!items.length) return;
-    const titles = items.map((n,i) => `${i+1}. ${n.title}`).join("\\n");
+    const titles = items.map((n,i) => `${i+1}. ${n.title}`).join("\n");
     const r = await fetch(DEEPSEEK, {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${DEEPSEEK_KEY}` },
       body: JSON.stringify({
         model: "deepseek-chat",
-        messages: [{ role: "system", content: "你是中文新闻编辑。将每条英文新闻翻译成简洁中文(20字内)，提取关键数字/指标，分配优先级(critical/high/normal/low)。输出纯JSON数组：[{\"level\":\"high\",\"title\":\"中文标题\",\"summary\":\"一句话要点\",\"metric\":\"关键数字\",\"source\":\"NPR\",\"keywords\":\"术语1,术语2\"}] keywords:负面前加!，经济数据前加*。" }, { role: "user", content: `翻译并分析以下新闻：\\n${titles}` }],
+        messages: [{ role: "system", content: "你是中文新闻编辑。将每条英文新闻翻译成简洁中文(20字内)，提取关键数字/指标，分配优先级(critical/high/normal/low)。输出纯JSON数组：[{\"level\":\"high\",\"title\":\"中文标题\",\"summary\":\"一句话要点\",\"metric\":\"关键数字\",\"source\":\"NPR\",\"keywords\":\"术语1,术语2\"}] keywords:负面前加!，经济数据前加*。" }, { role: "user", content: `翻译并分析以下新闻：\n${titles}` }],
         temperature: 0.2, max_tokens: 2500
       })
     });
     if (!r.ok) return;
     const data = await r.json();
     const text = data.choices?.[0]?.message?.content || "";
-    const jsonMatch = text.match(/\\[[\\s\\S]*\\]/);
+    const jsonMatch = text.match(/\\[[\s\S]*\\]/);
     if (jsonMatch) {
       const arr = JSON.parse(jsonMatch[0]);
       const result = arr.map((item, i) => ({ ...item, id: i, time: new Date().toISOString() }));
