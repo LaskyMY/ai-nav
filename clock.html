@@ -119,5 +119,9 @@ setTimeout(function twFlash(){
 // Mouse glow
 var gs=document.querySelector('.glow-spot'),rf;document.addEventListener('mousemove',function(e){if(!rf){rf=requestAnimationFrame(function(){gs.style.background='radial-gradient(circle 450px at '+e.clientX+'px '+e.clientY+'px,rgba(99,102,241,.06),rgba(236,72,153,.04)25%,transparent 65%)';rf=null})}},{passive:true});document.addEventListener('touchmove',function(e){var t=e.touches[0];gs.style.background='radial-gradient(circle 450px at '+t.clientX+'px '+t.clientY+'px,rgba(99,102,241,.06),rgba(236,72,153,.04)25%,transparent 65%)'},{passive:true});
 build();requestAnimationFrame(tick);
+// Show times immediately
+var initNow=new Date(),initNx=new Date(initNow.getTime()+300000);
+var otEl2=document.getElementById('ot');if(otEl2)otEl2.textContent=initNow.toLocaleTimeString('zh-CN')+' 更新';
+var nxEl2=document.getElementById('nx');if(nxEl2)nxEl2.textContent=initNx.toLocaleTimeString('zh-CN');
 </script>
 </body></html>

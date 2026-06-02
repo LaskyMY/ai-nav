@@ -266,8 +266,15 @@ async function handle(req) {
 
     // ── News CN (AI translated + prioritized, cached 10min) ──
     if (path === "/api/news-cn") {
-      const cached = cacheGet("news-cn", 600_000);
-      if (cached) return ok(cached);
+      const cached = cacheGet("news-cn", 0); // always use cache if exists
+      if (cached) {
+        // Background refresh if older than 5 min
+        if (Date.now() - (cached._ts || 0) > 300000) {
+          refreshNewsCN();
+        }
+        return ok(cached);
+      }
+      // No cache yet — fetch synchronously first time
       // Fetch raw news
       const resp = await fetch("https://feeds.npr.org/1001/rss.xml", { signal: AbortSignal.timeout(8000) });
       if (!resp.ok) return ok([]);
@@ -303,7 +310,9 @@ async function handle(req) {
           if (jsonMatch) {
             const arr = JSON.parse(jsonMatch[0]);
             const result = arr.map((item, i) => ({ ...item, id: i, time: new Date().toISOString() }));
+            result._ts = Date.now();
             cacheSet("news-cn", result);
+            try { await Deno.writeTextFile("./news-cn-cache.json", JSON.stringify(result)); } catch(_) {}
             if (data.usage) trackUsage("news-cn", data.usage, "deepseek-chat");
             return ok(result);
           }
@@ -311,7 +320,7 @@ async function handle(req) {
       } catch (e) { console.log("[news-cn] DeepSeek error:", e.message); }
       // Fallback: raw titles
       const fallback = { outline: { title: "今日要闻", summary: "正在加载AI摘要...", metric: items.length+"条", keywords: "" }, items: items.map((item, i) => ({ level: "normal", title: item.title, summary: "", metric: "", source: item.source, id: i, time: new Date().toISOString() })) };
-      cacheSet("news-cn", fallback);
+      fallback._ts = Date.now(); cacheSet("news-cn", fallback);
       return ok(fallback);
     }
 
@@ -330,6 +339,42 @@ async function handle(req) {
 
 
 // ── Background: refresh news AI summary every 15 minutes ──
+async function refreshNewsCN() {
+  try {
+    const resp = await fetch("https://feeds.npr.org/1001/rss.xml", { signal: AbortSignal.timeout(10000) });
+    if (!resp.ok) return;
+    const xml = await resp.text();
+    const items = [...xml.matchAll(/<item>([\\s\\S]*?)<\\/item>/g)].slice(0, 20).map(m => {
+      const t = (m[1].match(/<title>([^<]+)<\\/title>/) || [])[1] || "";
+      return { title: t.replace(/&#39;/g,"'").replace(/&apos;/g,"'").replace(/&amp;/g,"&").replace(/&quot;/g,'"'), source: "NPR" };
+    });
+    if (!items.length) return;
+    const titles = items.map((n,i) => `${i+1}. ${n.title}`).join("\\n");
+    const r = await fetch(DEEPSEEK, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${DEEPSEEK_KEY}` },
+      body: JSON.stringify({
+        model: "deepseek-chat",
+        messages: [{ role: "system", content: "你是中文新闻编辑。将每条英文新闻翻译成简洁中文(20字内)，提取关键数字/指标，分配优先级(critical/high/normal/low)。输出纯JSON数组：[{\"level\":\"high\",\"title\":\"中文标题\",\"summary\":\"一句话要点\",\"metric\":\"关键数字\",\"source\":\"NPR\",\"keywords\":\"术语1,术语2\"}] keywords:负面前加!，经济数据前加*。" }, { role: "user", content: `翻译并分析以下新闻：\\n${titles}` }],
+        temperature: 0.2, max_tokens: 2500
+      })
+    });
+    if (!r.ok) return;
+    const data = await r.json();
+    const text = data.choices?.[0]?.message?.content || "";
+    const jsonMatch = text.match(/\\[[\\s\\S]*\\]/);
+    if (jsonMatch) {
+      const arr = JSON.parse(jsonMatch[0]);
+      const result = arr.map((item, i) => ({ ...item, id: i, time: new Date().toISOString() }));
+      result._ts = Date.now();
+      cacheSet("news-cn", result);
+      try { await Deno.writeTextFile("./news-cn-cache.json", JSON.stringify(result)); } catch(_) {}
+      if (data.usage) trackUsage("news-cn", data.usage, "deepseek-chat");
+      console.log(`[news-cn] updated: ${result.length} items`);
+    }
+  } catch(e) { console.log("[news-cn] bg error:", e.message); }
+}
+
 async function refreshNewsSummary() {
   try {
     console.log("[news-summary] fetching news...");
@@ -412,7 +457,10 @@ async function refreshNewsSummary() {
     if (!summary) { console.log("[news-summary] empty response"); return; }
     if (data.usage) trackUsage("news-summary", data.usage, "deepseek-chat");
 
-    cacheSet("news-summary", { summary, updated: new Date().toISOString(), newsCount: topNews.length });
+    const result = { summary, updated: new Date().toISOString(), newsCount: topNews.length };
+    cacheSet("news-summary", result);
+    // Persist to disk
+    try { await Deno.writeTextFile("./news-cache.json", JSON.stringify(result)); } catch(_) {}
     console.log(`[news-summary] updated (${summary.length} chars, ${topNews.length} news)`);
   } catch (e) {
     console.log(`[news-summary] error: ${e.message}`);
@@ -420,8 +468,12 @@ async function refreshNewsSummary() {
 }
 
 // Run immediately, then every 15 minutes
+// Load persistent caches on startup
+try { const cn = JSON.parse(await Deno.readTextFile("./news-cn-cache.json")); if (cn && cn.length) { cn._ts = Date.now(); cacheSet("news-cn", cn); console.log("[init] loaded news-cn cache:", cn.length, "items"); } } catch(_) {}
+try { const ns = JSON.parse(await Deno.readTextFile("./news-cache.json")); if (ns && ns.summary) { cacheSet("news-summary", ns); console.log("[init] loaded news-summary cache"); } } catch(_) {}
 refreshNewsSummary();
 setInterval(refreshNewsSummary, 900_000);
+setInterval(refreshNewsCN, 300000);
 
 const PORT = parseInt(Deno.env.get("PORT") || "8765");
 console.log(`AI Nav API server running on http://localhost:${PORT}`);
