@@ -77,12 +77,12 @@ function hl(t,kws){
 
 function render(){
   var h='';
-  h+=T('clock','sys','c3 r2','','<div class="ck"><div class="ckb" id="ct">--:--:--<span class="ckms">.---</span></div><div class="ckd" id="cd">----</div><div class="ckd"><span id="cci">广州</span></div></div>');
-  h+=T('wx','sys','c2 r2','','<div class="wt" id="wt">--°</div><div class="wd" id="wd">加载中</div><div class="wh" id="wh"></div>');
+  h+=T('clock','sys','c3','','<div class="ck"><div class="ckb" id="ct">--:--:--<span class="ckms">.---</span></div><div class="ckd" id="cd">----</div><div class="ckd"><span id="cci">广州</span></div></div>');
+  h+=T('wx','sys','c2','','<div class="wt" id="wt">--°</div><div class="wd" id="wd">加载中</div><div class="wh" id="wh"></div>');
   h+=T('w1','sys','','','<div class="tt">+1时</div><div class="ts" id="w1s">--</div>');
   h+=T('w2','sys','','','<div class="tt">+3时</div><div class="ts" id="w2s">--</div>');
   h+=T('w3','sys','','','<div class="tt">+6时</div><div class="ts" id="w3s">--</div>');
-  for(var i=0;i<ns.length;i++){var n=ns[i],lv=n.level||'normal',sp=i<2?'c2':'',rs=i<2?'r2':'';h+=T('n'+i,lv,sp,rs,'<div class="tt">'+hl(n.title,n.keywords)+'</div>'+(n.summary?'<div class="ts">'+hl(n.summary,n.keywords)+'</div>':'')+(n.metric?'<div class="tm">'+n.metric+'</div>':''))}
+  for(var i=0;i<ns.length;i++){var n=ns[i],lv=n.level||'normal',sp=i<2?'c2':'',rs='';h+=T('n'+i,lv,sp,rs,'<div class="tt">'+hl(n.title,n.keywords)+'</div>'+(n.summary?'<div class="ts">'+hl(n.summary,n.keywords)+'</div>':'')+(n.metric?'<div class="tm">'+n.metric+'</div>':''))}
   document.getElementById('g').innerHTML=h;
 }
 
