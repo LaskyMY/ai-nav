@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>硬件控制台</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.6;padding:16px;max-width:600px;margin:0 auto;padding-bottom:32px}
+h1{font-size:22px;font-weight:700;color:#00e5ff;margin-bottom:2px}
+.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:20px}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px 18px;margin-bottom:10px;cursor:pointer;transition:all .2s;text-decoration:none;display:block;color:inherit}
+.card:hover{border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.05);transform:translateY(-1px)}
+.card:active{transform:scale(.98)}
+.card-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:4px}
+.card-desc{font-size:11px;color:rgba(255,255,255,.4);line-height:1.5}
+.card-meta{font-size:10px;color:rgba(255,255,255,.2);margin-top:8px}
+.ico{font-size:28px;margin-right:12px;flex-shrink:0}
+.cat-title{font-size:12px;font-weight:700;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.5px;margin:20px 0 8px;padding-left:4px}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px;margin-right:4px}
+.tag.new{background:rgba(16,185,129,.15);color:#10b981}
+.tag.soon{background:rgba(99,102,241,.1);color:rgba(129,140,248,.6)}
+.row{display:flex;align-items:center}
+</style>
+</head>
+<body>
+
+<h1>硬件控制台</h1>
+<div class="sub">IoT 设备管理 · BLE / WiFi 控制面板</div>
+
+<div class="cat-title">📡 在线设备</div>
+
+<a class="card row" href="./esp32-c3.html">
+  <span class="ico">🕹️</span>
+  <div style="flex:1">
+    <div class="card-title">ESP32-C3 控制台</div>
+    <div class="card-desc">WiFiProv BLE 配网 · RGB LED 调色 · 蜂鸣器控制 · 按键监控 · HTTP API · 接线图</div>
+    <div class="card-meta">
+      <span class="tag new">已完成</span>
+      固件 v2 · WiFiProv + BLE 双模
+    </div>
+  </div>
+  <span style="color:rgba(255,255,255,.15);font-size:16px">→</span>
+</a>
+
+<div class="cat-title">📋 规划中</div>
+
+<a class="card row" style="opacity:.35;cursor:default">
+  <span class="ico">🌡️</span>
+  <div style="flex:1">
+    <div class="card-title">传感器仪表盘</div>
+    <div class="card-desc">温湿度 / 气压 / 光照 传感器数据实时监控面板</div>
+    <div class="card-meta"><span class="tag soon">待开发</span></div>
+  </div>
+</a>
+
+<a class="card row" style="opacity:.35;cursor:default">
+  <span class="ico">🔌</span>
+  <div style="flex:1">
+    <div class="card-title">智能插座控制</div>
+    <div class="card-desc">继电器 / 定时开关 / 功率监测</div>
+    <div class="card-meta"><span class="tag soon">待开发</span></div>
+  </div>
+</a>
+
+<p style="text-align:center;color:rgba(255,255,255,.15);font-size:10px;margin-top:24px">
+  更多硬件项目持续接入中
+</p>
+
+</body>
+</html>
