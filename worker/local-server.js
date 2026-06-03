@@ -581,28 +581,22 @@ async function refreshNewsSummary() {
   }
 }
 
-// ── Financial Briefs ──
-const FINANCIAL_DIR = "./financial";
+// ── Financial Briefs: 自动从腾讯文档抓取 ──
+import { fetchAllDocs } from "./txdocs.js";
 
-// Daily 6AM: read text files → store in DB → generate AI summary → cleanup old
 async function dailyFinancialTask() {
   console.log("[financial] Daily task running...");
   const today = new Date().toISOString().slice(0, 10);
 
-  const types = [
-    { file: `${FINANCIAL_DIR}/morning.txt`, type: "morning", title: "金融早间简报" },
-    { file: `${FINANCIAL_DIR}/evening.txt`, type: "evening", title: "金融晚间简报" },
-  ];
+  // 直接抓取腾讯文档 (不再需要手动导出txt!)
+  const docs = await fetchAllDocs();
 
   let allContent = "";
-  for (const t of types) {
-    try {
-      const content = await Deno.readTextFile(t.file);
-      if (content.trim()) {
-        if (dbReady) await dbIngestFinancial(today, t.type, t.title, content, "");
-        allContent += `\n## ${t.title}\n${content.slice(0, 3000)}\n`;
-      }
-    } catch (_) { console.log(`[financial] No file: ${t.file}`); }
+  for (const doc of docs) {
+    if (doc.text && dbReady) {
+      await dbIngestFinancial(today, doc.type, doc.title, doc.text, `https://docs.qq.com/doc/${doc.id}`);
+      allContent += `\n## ${doc.title}\n${doc.text.slice(0, 3000)}\n`;
+    }
   }
 
   // Generate AI summary (once per day)
@@ -631,7 +625,7 @@ async function dailyFinancialTask() {
     } catch (e) { console.log("[financial] AI summary failed:", e.message); }
   }
 
-  if (dbReady) { await dbCleanupFinancial(); console.log("[financial] Cleaned up old entries"); }
+  if (dbReady) { await dbCleanupFinancial(); console.log("[financial] Cleaned up"); }
   console.log("[financial] Daily task complete");
 }
 
