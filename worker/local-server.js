@@ -1,16 +1,15 @@
-// Local API server — same logic as deno-deploy.js, wrapped in Deno.serve
-// Run: deno run --allow-net --allow-env --allow-read --allow-write --allow-ffi worker/local-server.js
+// Local API server — PostgreSQL backend
+// Run: deno run --allow-net --allow-env --allow-read --allow-write worker/local-server.js
 
 const DEEPSEEK = "https://api.deepseek.com/v1/chat/completions";
 const USAGE_FILE = "./usage-log.json";
 const PRICING = { prompt: 0.27 / 1_000_000, completion: 1.10 / 1_000_000 }; // DeepSeek V3 pricing per token
 
-// ── Database ──
+// ── PostgreSQL Database ──
 import { initDB, insertNews, getNews, getNewsCount, searchNews, getLatestSummary, getSummaries,
          saveSummary, saveWeather, getWeather, logUsage as dbLogUsage, getUsageStats as dbUsageStats,
          getPageStats, trackPage, getDBStats, queryForAI } from "./db.js";
 let dbReady = false;
-try { initDB(); dbReady = true; console.log("[server] SQLite ready"); } catch(e) { console.log("[server] SQLite init failed:", e.message); }
 
 // ── Usage tracking ──
 async function loadUsage() { try { return JSON.parse(await Deno.readTextFile(USAGE_FILE)); } catch (_) { return []; } }
@@ -354,46 +353,41 @@ async function handle(req) {
 	    // ── DB: Database stats ──
 	    if (path === "/api/db/stats") {
 	      if (!dbReady) return err("database not ready", 503);
-	      return ok(getDBStats());
+	      return ok(await getDBStats());
 	    }
 
-	    // ── DB: News from database ──
 	    if (path === "/api/db/news") {
 	      if (!dbReady) return err("database not ready", 503);
 	      const limit = parseInt(url.searchParams.get("limit") || "50");
 	      const offset = parseInt(url.searchParams.get("offset") || "0");
-	      return ok(getNews(limit, offset));
+	      return ok(await getNews(limit, offset));
 	    }
 
-	    // ── DB: Search news ──
 	    if (path === "/api/db/search") {
 	      if (!dbReady) return err("database not ready", 503);
 	      const q = url.searchParams.get("q");
 	      if (!q) return err("missing q", 400);
-	      return ok(searchNews(q));
+	      return ok(await searchNews(q));
 	    }
 
-	    // ── DB: AI summaries ──
 	    if (path === "/api/db/summaries") {
 	      if (!dbReady) return err("database not ready", 503);
 	      const type = url.searchParams.get("type") || "news-summary";
-	      return ok(getSummaries(type));
+	      return ok(await getSummaries(type));
 	    }
 
-	    // ── DB: Page stats ──
 	    if (path === "/api/db/pages") {
 	      if (!dbReady) return err("database not ready", 503);
-	      return ok(getPageStats());
+	      return ok(await getPageStats());
 	    }
 
-	    // ── DB: AI query ──
 	    if (path === "/api/db/ai") {
 	      if (!dbReady) return err("database not ready", 503);
 	      const ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
 	      if (!rateLimit(ip, 5, 60_000)) return err("请求太频繁", 429);
 	      const question = url.searchParams.get("q") || "摘要数据库当前状态";
-	      const stats = getDBStats();
-	      const recentNews = getNews(5);
+	      const stats = await getDBStats();
+	      const recentNews = await getNews(5);
 	      const context = JSON.stringify({ stats, recentNews });
 	      const r = await fetch(DEEPSEEK, {
 	        method: "POST",
@@ -565,13 +559,16 @@ async function refreshNewsSummary() {
   }
 }
 
-// Run immediately, then every 15 minutes
-// Load persistent caches on startup
-try { const cn = JSON.parse(await Deno.readTextFile("./news-cn-cache.json")); if (cn && cn.length) { cn._ts = Date.now(); cacheSet("news-cn", cn); console.log("[init] loaded news-cn cache:", cn.length, "items"); } } catch(_) {}
-try { const ns = JSON.parse(await Deno.readTextFile("./news-cache.json")); if (ns && ns.summary) { cacheSet("news-summary", ns); console.log("[init] loaded news-summary cache"); } } catch(_) {}
-refreshNewsSummary();
-setInterval(refreshNewsSummary, 900_000);
-setInterval(refreshNewsCN, 300000);
+// ── Startup: init DB, load caches, start background tasks ──
+async function startup() {
+  try { await initDB(); dbReady = true; console.log("[server] PostgreSQL ready"); } catch(e) { console.log("[server] DB init failed:", e.message); }
+  try { const cn = JSON.parse(await Deno.readTextFile("./news-cn-cache.json")); if (cn && cn.length) { cn._ts = Date.now(); cacheSet("news-cn", cn); console.log("[init] loaded news-cn cache:", cn.length, "items"); } } catch(_) {}
+  try { const ns = JSON.parse(await Deno.readTextFile("./news-cache.json")); if (ns && ns.summary) { cacheSet("news-summary", ns); console.log("[init] loaded news-summary cache"); } } catch(_) {}
+  refreshNewsSummary();
+  setInterval(refreshNewsSummary, 900_000);
+  setInterval(refreshNewsCN, 300000);
+}
+startup();
 
 const PORT = parseInt(Deno.env.get("PORT") || "8765");
 console.log(`AI Nav API server running on http://localhost:${PORT}`);
