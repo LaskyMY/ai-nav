@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ESP32 开发板入门</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.7;padding:16px;max-width:600px;margin:0 auto;padding-bottom:32px}
+h1{font-size:22px;font-weight:700;color:#00e5ff;margin-bottom:2px}
+h2{font-size:16px;font-weight:700;color:#818cf8;margin:24px 0 10px;border-left:3px solid #818cf8;padding-left:10px}
+h3{font-size:14px;font-weight:700;color:rgba(255,255,255,.85);margin:16px 0 8px}
+.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:20px}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.card.warn{border-color:rgba(245,158,11,.15);background:rgba(245,158,11,.03)}
+.card.ok{border-color:rgba(16,185,129,.1);background:rgba(16,185,129,.03)}
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:11px}
+td,th{border:1px solid rgba(255,255,255,.08);padding:6px 10px;text-align:left}
+th{background:rgba(255,255,255,.04);color:#818cf8;font-weight:600}
+pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.6;margin:8px 0}
+code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
+.tip{border-left:2px solid #fbbf24;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(245,158,11,.04)}
+.step{display:flex;gap:10px;margin:8px 0;align-items:flex-start}
+.step-num{flex-shrink:0;width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:#818cf8;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+</style>
+</head>
+<body>
+
+<h1>ESP32 开发板入门</h1>
+<div class="sub">从零搭建开发环境 · 烧录第一个程序</div>
+
+<h2>一、认识 ESP32</h2>
+<div class="card">
+  <p>ESP32 是乐鑫科技(Espressif)推出的<b>双核 Wi-Fi + 蓝牙 MCU</b>，Arduino IDE 可直接编程。</p>
+  <table>
+    <tr><th>型号</th><th>特点</th><th>价格</th></tr>
+    <tr><td>ESP32-WROOM-32</td><td>经典款，引脚最多，双核240MHz</td><td>~¥15</td></tr>
+    <tr><td><b>ESP32-C3 Super Mini</b></td><td>RISC-V单核160MHz，小巧便宜</td><td>~¥8</td></tr>
+    <tr><td>ESP32-S3</td><td>双核+USB OTG+AI加速，性能最强</td><td>~¥25</td></tr>
+  </table>
+  <div class="tip">本教程以 <b>ESP32-C3 Super Mini</b> 为例（就是你手上的那块），其他型号步骤通用。</div>
+</div>
+
+<h2>二、安装 Arduino IDE</h2>
+<div class="card">
+  <div class="step"><div class="step-num">1</div><div>去 <b>arduino.cc/en/software</b> 下载对应系统版本（Windows/Mac/Linux）</div></div>
+  <div class="step"><div class="step-num">2</div><div>安装后打开 Arduino IDE</div></div>
+  <div class="step"><div class="step-num">3</div><div><b>Mac注意：</b>首次打开如果提示"无法验证开发者"，去 <b>系统偏好设置→安全性与隐私→仍然允许</b></div></div>
+</div>
+
+<h2>三、安装 ESP32 开发板支持包</h2>
+<div class="card">
+  <div class="step"><div class="step-num">1</div><div>Arduino IDE → <b>设置/Preferences</b></div></div>
+  <div class="step"><div class="step-num">2</div><div>在"附加开发板管理器网址"中添加：</div></div>
+  <pre>https://espressif.github.io/arduino-esp32/package_esp32_index.json</pre>
+  <div class="step"><div class="step-num">3</div><div><b>工具 → 开发板 → 开发板管理器</b></div></div>
+  <div class="step"><div class="step-num">4</div><div>搜索 <b>"esp32"</b> → 安装 <b>"esp32 by Espressif Systems"</b>（版本选最新）</div></div>
+  <div class="step"><div class="step-num">5</div><div>等待下载完成（约500MB，需要科学上网或耐心等待）</div></div>
+  <div class="tip">如果下载慢，可以用国内镜像：将 <code>espressif.github.io</code> 换成 <code>espressif.cdn.microsoc.cn</code></div>
+</div>
+
+<h2>四、安装 USB 驱动</h2>
+<div class="card">
+  <table>
+    <tr><th>芯片</th><th>驱动</th></tr>
+    <tr><td>CH340/CH341（最常见）</td><td>搜索下载 CH340 驱动，Mac/Linux通常免驱</td></tr>
+    <tr><td>CP2102</td><td>Silicon Labs CP210x 驱动</td></tr>
+    <tr><td>CH9102</td><td>WCH CH9102 驱动</td></tr>
+  </table>
+  <div class="step"><div class="step-num">1</div><div>ESP32-C3通过USB线连接电脑</div></div>
+  <div class="step"><div class="step-num">2</div><div>Mac: 打开 <b>终端</b>，输入 <code>ls /dev/cu.*</code>，看到 <code>/dev/cu.usbserial-XXXX</code> 说明驱动OK</div></div>
+  <div class="step"><div class="step-num">3</div><div>Windows: 设备管理器 → 端口(COM和LPT) → 看到 <code>USB-SERIAL CH340 (COMx)</code></div></div>
+</div>
+
+<h2>五、配置开发板参数</h2>
+<div class="card ok">
+  <p>Arduino IDE 菜单栏选择：</p>
+  <table>
+    <tr><td>开发板</td><td><b>ESP32C3 Dev Module</b></td></tr>
+    <tr><td>USB CDC On Boot</td><td><b>Enable</b>（启用串口输出）</td></tr>
+    <tr><td>CPU Frequency</td><td><b>160MHz</b></td></tr>
+    <tr><td>Flash Size</td><td><b>4MB</b></td></tr>
+    <tr><td>Partition Scheme</td><td><b>Huge App (3MB No OTA/1MB SPIFFS)</b></td></tr>
+    <tr><td>Upload Speed</td><td><b>921600</b></td></tr>
+  </table>
+  <div class="tip"><b>分区方案为什么选Huge App？</b><br>WiFi+BLE库很大，默认分区放不下会报错"sketch too big"。Huge App给程序3MB空间，足够用。</div>
+</div>
+
+<h2>六、烧录第一个程序：LED 闪烁</h2>
+<div class="card">
+  <div class="step"><div class="step-num">1</div><div>复制以下代码到 Arduino IDE：</div></div>
+  <pre>
+void setup() {
+  pinMode(8, OUTPUT);  // GPIO8 = 板载LED
+}
+void loop() {
+  digitalWrite(8, HIGH);
+  delay(500);
+  digitalWrite(8, LOW);
+  delay(500);
+}</pre>
+  <div class="step"><div class="step-num">2</div><div>点击 <b>→ (上传)</b> 按钮，等待编译+烧录</div></div>
+  <div class="step"><div class="step-num">3</div><div>看到 <b>"Leaving... Hard resetting via RTS pin..."</b> 表示成功</div></div>
+  <div class="step"><div class="step-num">4</div><div>板载LED开始每秒闪烁一次 ✅</div></div>
+</div>
+
+<h2>七、常见问题</h2>
+<div class="card">
+  <table>
+    <tr><th>问题</th><th>解决</th></tr>
+    <tr><td>上传失败 "Connecting..."</td><td>按住BOOT键再点上传，出现"Connecting"后松开</td></tr>
+    <tr><td>找不到串口</td><td>检查USB线是否数据线（不是充电线），重装驱动</td></tr>
+    <tr><td>编译报错 "sketch too big"</td><td>分区方案选 Huge App</td></tr>
+    <tr><td>上传后没反应</td><td>按一下 RST(EN) 键复位，或拔插USB</td></tr>
+    <tr><td>Mac 弹窗"无法验证"</td><td>系统偏好→安全性与隐私→仍然允许</td></tr>
+    <tr><td>串口监视器乱码</td><td>波特率设置为 115200</td></tr>
+  </table>
+</div>
+
+<h2>八、ESP32-C3 Super Mini 引脚图</h2>
+<div class="card">
+  <pre style="font-size:9px">
+         ┌──────────────────────┐
+    USB──│ 5V              GND  │──GND
+         │ GND             3.3V │──3.3V
+    TX──│ GPIO21          GPIO20│──RX
+    RX──│ GPIO20          GPIO21│──TX
+         │ GPIO10          GPIO9│
+         │ GPIO8           GPIO7│──蜂鸣器
+    LED──│ GPIO8(板载)     GPIO6│──RGB-B
+         │ GPIO5           GPIO4│──RGB-G
+         │ GPIO3(按键3)    GPIO2│──RGB-R
+         │ GPIO1(按键1)    GPIO0│──按键0(BOOT)
+         │ 3.3V           GND  │
+         │ RST(EN)        5V   │
+         └──────────────────────┘
+  </pre>
+  <div class="tip">GPIO0-GPIO3 可做按键输入（内置上拉）<br>GPIO4-6 可做 PWM 输出(RGB LED)<br>GPIO7-10 通用 IO<br>GPIO20-21 默认 UART(RX/TX)</div>
+</div>
+
+<p style="text-align:center;color:rgba(255,255,255,.2);font-size:10px;margin-top:24px">
+  <a href="./manual.html" style="color:rgba(255,255,255,.3)">← 返回生活手册</a>
+</p>
+
+</body>
+</html>
