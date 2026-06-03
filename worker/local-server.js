@@ -1,9 +1,16 @@
 // Local API server — same logic as deno-deploy.js, wrapped in Deno.serve
-// Run: deno run --allow-net --allow-env --allow-read --allow-write worker/local-server.js
+// Run: deno run --allow-net --allow-env --allow-read --allow-write --allow-ffi worker/local-server.js
 
 const DEEPSEEK = "https://api.deepseek.com/v1/chat/completions";
 const USAGE_FILE = "./usage-log.json";
 const PRICING = { prompt: 0.27 / 1_000_000, completion: 1.10 / 1_000_000 }; // DeepSeek V3 pricing per token
+
+// ── Database ──
+import { initDB, insertNews, getNews, getNewsCount, searchNews, getLatestSummary, getSummaries,
+         saveSummary, saveWeather, getWeather, logUsage as dbLogUsage, getUsageStats as dbUsageStats,
+         getPageStats, trackPage, getDBStats, queryForAI } from "./db.js";
+let dbReady = false;
+try { initDB(); dbReady = true; console.log("[server] SQLite ready"); } catch(e) { console.log("[server] SQLite init failed:", e.message); }
 
 // ── Usage tracking ──
 async function loadUsage() { try { return JSON.parse(await Deno.readTextFile(USAGE_FILE)); } catch (_) { return []; } }
@@ -25,6 +32,12 @@ async function trackUsage(endpoint, usage, model) {
   const cutoff = Date.now() - 90 * 86400000;
   const trimmed = entries.filter(e => new Date(e.ts).getTime() > cutoff);
   await saveUsage(trimmed);
+  // Also log to SQLite
+  if (dbReady) {
+    try {
+      dbLogUsage(entry.endpoint, entry.model, entry.prompt_tokens, entry.completion_tokens, entry.cost);
+    } catch(_) {}
+  }
   console.log(`[usage] ${entry.endpoint}: ${entry.total_tokens} tokens, $${entry.cost.toFixed(6)}`);
 }
 
@@ -338,7 +351,69 @@ async function handle(req) {
 	      return ok({ summary: "新闻简报生成中，请稍后再试...", updated: new Date().toISOString() });
 	    }
 
-	    return ok({ routes: ["/api/weather", "/api/news", "/api/geocode", "/api/papers", "/api/summary", "/api/papers-summary", "/api/news-summary"] });
+	    // ── DB: Database stats ──
+	    if (path === "/api/db/stats") {
+	      if (!dbReady) return err("database not ready", 503);
+	      return ok(getDBStats());
+	    }
+
+	    // ── DB: News from database ──
+	    if (path === "/api/db/news") {
+	      if (!dbReady) return err("database not ready", 503);
+	      const limit = parseInt(url.searchParams.get("limit") || "50");
+	      const offset = parseInt(url.searchParams.get("offset") || "0");
+	      return ok(getNews(limit, offset));
+	    }
+
+	    // ── DB: Search news ──
+	    if (path === "/api/db/search") {
+	      if (!dbReady) return err("database not ready", 503);
+	      const q = url.searchParams.get("q");
+	      if (!q) return err("missing q", 400);
+	      return ok(searchNews(q));
+	    }
+
+	    // ── DB: AI summaries ──
+	    if (path === "/api/db/summaries") {
+	      if (!dbReady) return err("database not ready", 503);
+	      const type = url.searchParams.get("type") || "news-summary";
+	      return ok(getSummaries(type));
+	    }
+
+	    // ── DB: Page stats ──
+	    if (path === "/api/db/pages") {
+	      if (!dbReady) return err("database not ready", 503);
+	      return ok(getPageStats());
+	    }
+
+	    // ── DB: AI query ──
+	    if (path === "/api/db/ai") {
+	      if (!dbReady) return err("database not ready", 503);
+	      const ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
+	      if (!rateLimit(ip, 5, 60_000)) return err("请求太频繁", 429);
+	      const question = url.searchParams.get("q") || "摘要数据库当前状态";
+	      const stats = getDBStats();
+	      const recentNews = getNews(5);
+	      const context = JSON.stringify({ stats, recentNews });
+	      const r = await fetch(DEEPSEEK, {
+	        method: "POST",
+	        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${DEEPSEEK_KEY}` },
+	        body: JSON.stringify({
+	          model: "deepseek-chat",
+	          messages: [
+	            { role: "system", content: "你是AI Nav网站的数据分析师。根据数据库内容回答用户问题。用中文，简洁准确。" },
+	            { role: "user", content: `数据库上下文：${context}\n\n用户问题：${question}` }
+	          ],
+	          temperature: 0.3, max_tokens: 1000
+	        })
+	      });
+	      if (!r.ok) return err("AI 服务暂不可用", 502);
+	      const data = await r.json();
+	      if (data.usage) trackUsage("/api/db/ai", data.usage, "deepseek-chat");
+	      return ok({ answer: data.choices?.[0]?.message?.content || "", question });
+	    }
+
+	    return ok({ routes: ["/api/weather", "/api/news", "/api/geocode", "/api/papers", "/api/summary", "/api/papers-summary", "/api/news-summary", "/api/db/stats", "/api/db/news", "/api/db/search", "/api/db/summaries", "/api/db/pages", "/api/db/ai"] });
   } catch (e) {
     return err("internal error", 500);
   }
