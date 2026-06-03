@@ -155,27 +155,28 @@ pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;fon
   <button class="btn" onclick="buzz(4)" style="width:100%">✨ LED闪烁3次</button>
 </div>
 
-<!-- WiFi Setup Guide (WiFiManager) -->
+<!-- WiFi Setup Guide (WiFiProv BLE) -->
 <div class="card warn">
-  <div class="section-title">📶 WiFi 配网说明 (WiFiManager)</div>
+  <div class="section-title">📶 BLE 蓝牙配网 (Espressif 官方协议)</div>
   <div class="steps">
-<b>ESP32</b> 上电后会自动尝试连接已保存的WiFi。
-如果连接失败，会自动进入 <b>配网模式</b>：
+<b>首次使用</b> 或 <b>更换WiFi</b> 时需要配网：
 
-  <span class="hl">1.</span> 打开手机 <b>WiFi设置</b>
-  <span class="hl">2.</span> 连接热点 <b>"AI-NAV-C3-Setup"</b>
-  <span class="hl">3.</span> 手机会自动弹出配网页面
-     (如未弹出，浏览器打开 <b>192.168.4.1</b>)
-  <span class="hl">4.</span> 点击 <b>"Configure WiFi"</b>
-  <span class="hl">5.</span> 选择你的WiFi，输入密码，保存
-  <span class="hl">6.</span> ESP32 自动重启并连接
+  <span class="hl">1.</span> 下载官方APP: <b>ESP BLE Provisioning</b>
+     Android: Google Play 搜索下载
+     iOS: App Store 搜索下载
+  <span class="hl">2.</span> 打开APP，允许蓝牙权限
+  <span class="hl">3.</span> 给ESP32上电 (LED会慢闪)
+  <span class="hl">4.</span> APP扫描到 <b>"AI-NAV-C3"</b>，点击连接
+  <span class="hl">5.</span> 输入POP安全码: <b>abcd1234</b>
+  <span class="hl">6.</span> 选择你的WiFi，输入密码
+  <span class="hl">7.</span> 点击发送 → ESP32连接WiFi ✅
 
-✅ 连接成功后状态LED <b>常亮</b>
-❌ 配网中LED会 <b>闪烁5次</b> 提示
+配网成功后WiFi信息自动保存。
+下次上电 <b>自动连接，无需重复配网</b>。
 
-配网成功后，下方 <b>HTTP API 控制</b> 区域自动出现。
+配网成功 = 状态LED常亮 + BLE设备控制可用
   </div>
-  <button class="btn orange" onclick="resetWiFi()" style="width:100%;margin-top:8px">🔄 重置WiFi (下次重启重新配网)</button>
+  <button class="btn orange" onclick="resetWiFi()" style="width:100%;margin-top:8px">🔄 重置WiFi (清除配网信息)</button>
 </div>
 
 <!-- HTTP API -->
@@ -359,13 +360,15 @@ async function httpCall(path){
 
 // Reset WiFi
 async function resetWiFi(){
-  if(!espIP){alert('ESP32 IP未知');return;}
+  if(!espIP){
+    alert('ESP32 IP未知。可以先连蓝牙查看IP，或用HTTP API区直接输入IP地址。');
+    return;
+  }
   try{
-    var r=await fetch('http://'+espIP+'/api/reset');
-    document.getElementById('httpResp').textContent='WiFi已重置，ESP32将重启进入配网模式...';
+    await fetch('http://'+espIP+'/api/resetwifi');
+    document.getElementById('httpResp').textContent='WiFi已重置，ESP32重启后将进入BLE配网模式';
   }catch(e){
-    // If ESP32 is on same network, try anyway
-    alert('WiFi重置请求已发送。下次上电时将进入配网模式。');
+    alert('请求发送。ESP32重启后将进入BLE配网模式。');
   }
 }
 </script>

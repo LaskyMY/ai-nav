@@ -1,14 +1,15 @@
-// ESP32-C3 — WiFiManager配网 + BLE控制 + HTTP API
-// 库依赖: WiFiManager (tzapu), 通过Arduino库管理器安装
+// ESP32-C3 — BLE配网 (Espressif WiFiProv) + BLE控制 + HTTP API
+// 配网APP: 安卓/iOS 搜索 "ESP BLE Provisioning" (Espressif官方)
+// 库依赖: 无外部依赖，WiFiProv内置在ESP32 Arduino Core 2.0+
 // Board: ESP32C3 Dev Module, Partition: Huge App (3MB No OTA)
 #include <WiFi.h>
-#include <WiFiManager.h>
+#include <WiFiProv.h>
 #include <Preferences.h>
 #include <BLEDevice.h>
 #include <BLEUtils.h>
 #include <BLEServer.h>
 
-// ── BLE UUIDs ──
+// ── BLE UUIDs (设备控制, 非配网) ──
 #define SVC     "12345678-1234-1234-1234-123456789abc"
 #define CH_LED  "12345678-1234-1234-1234-123456789001"
 #define CH_BUZZ "12345678-1234-1234-1234-123456789002"
@@ -27,7 +28,6 @@
 #define PIN_K3  3
 
 WiFiServer http(80);
-WiFiManager wm;
 Preferences prefs;
 bool wifiOK = false;
 String myIP = "";
@@ -35,26 +35,22 @@ BLECharacteristic *pInfoChar = nullptr;
 BLECharacteristic *pKeyChar = nullptr;
 unsigned long startMs = 0;
 
+// ── Proof of Possession ── 配网时APP需输入此码
+const char *POP = "abcd1234";
+const char *DEVICE_NAME = "AI-NAV-C3";
+
 // ── RGB LED ──
 void setLED(int r, int g, int b) {
-  analogWrite(PIN_R, r);
-  analogWrite(PIN_G, g);
-  analogWrite(PIN_B, b);
+  analogWrite(PIN_R, r); analogWrite(PIN_G, g); analogWrite(PIN_B, b);
 }
 
 // ── Active Buzzer ──
 void buzzActive(int mode) {
-  if (mode == 1) digitalWrite(PIN_BZ, HIGH);          // ON
-  else if (mode == 2) digitalWrite(PIN_BZ, LOW);       // OFF
-  else if (mode == 3) {                                // Short beep
-    digitalWrite(PIN_BZ, HIGH); delay(300);
-    digitalWrite(PIN_BZ, LOW);
-  }
-  else if (mode == 4) {                                // LED flash test
-    for (int i = 0; i < 3; i++) {
-      digitalWrite(PIN_LED, !digitalRead(PIN_LED));
-      delay(150);
-    }
+  if (mode == 1) digitalWrite(PIN_BZ, HIGH);
+  else if (mode == 2) digitalWrite(PIN_BZ, LOW);
+  else if (mode == 3) { digitalWrite(PIN_BZ, HIGH); delay(300); digitalWrite(PIN_BZ, LOW); }
+  else if (mode == 4) {
+    for (int i = 0; i < 3; i++) { digitalWrite(PIN_LED, !digitalRead(PIN_LED)); delay(150); }
     digitalWrite(PIN_LED, HIGH);
   }
 }
@@ -64,13 +60,9 @@ void buzzTone(int freq, int dur) {
   if (freq < 20 || freq > 20000) return;
   tone(PIN_BZ, freq, dur);
 }
-
 void buzzMelody() {
   int notes[] = {523, 587, 659, 698, 784, 880, 988, 1047};
-  for (int i = 0; i < 8; i++) {
-    tone(PIN_BZ, notes[i], 150);
-    delay(180);
-  }
+  for (int i = 0; i < 8; i++) { tone(PIN_BZ, notes[i], 150); delay(180); }
   noTone(PIN_BZ);
 }
 
@@ -79,15 +71,12 @@ int lastKey[4] = {-1, -1, -1, -1};
 void readKeys() {
   int pins[4] = {PIN_K0, PIN_K1, PIN_K2, PIN_K3};
   for (int i = 0; i < 4; i++) {
-    int v = digitalRead(pins[i]);
-    int state = (v == LOW) ? 1 : 0;
+    int state = (digitalRead(pins[i]) == LOW) ? 1 : 0;
     if (state != lastKey[i]) {
       lastKey[i] = state;
       if (pKeyChar) {
-        char buf[8];
-        snprintf(buf, 8, "%d:%d", i, state);
-        pKeyChar->setValue(buf);
-        pKeyChar->notify();
+        char buf[8]; snprintf(buf, 8, "%d:%d", i, state);
+        pKeyChar->setValue(buf); pKeyChar->notify();
       }
     }
   }
@@ -98,13 +87,10 @@ void infoUpdate() {
   if (!pInfoChar) return;
   char buf[96];
   snprintf(buf, 96, "WiFi:%s IP:%s Up:%lus RSSI:%d Free:%lu",
-    wifiOK ? "OK" : "NO",
-    wifiOK ? myIP.c_str() : "-",
+    wifiOK ? "OK" : "NO", wifiOK ? myIP.c_str() : "-",
     (unsigned long)((millis() - startMs) / 1000),
-    wifiOK ? WiFi.RSSI() : 0,
-    ESP.getFreeHeap());
-  pInfoChar->setValue(buf);
-  pInfoChar->notify();
+    wifiOK ? WiFi.RSSI() : 0, ESP.getFreeHeap());
+  pInfoChar->setValue(buf); pInfoChar->notify();
 }
 
 // ── HTTP Handlers ──
@@ -129,7 +115,7 @@ void handleHTTP(WiFiClient &c, String &req) {
     gp("r", ri); gp("g", gi); gp("b", bi);
     ri = constrain(ri, 0, 255); gi = constrain(gi, 0, 255); bi = constrain(bi, 0, 255);
     setLED(ri, gi, bi);
-    c.print(hdr + "{\"status\":\"ok\",\"r\":" + String(ri) + ",\"g\":" + String(gi) + ",\"b\":" + String(bi) + "}");
+    c.print(hdr + "{\"status\":\"ok\"}");
   }
   else if (req.indexOf("/api/buzzer") >= 0) {
     int cmd = 0, freq = 0, dur = 0;
@@ -138,50 +124,37 @@ void handleHTTP(WiFiClient &c, String &req) {
       if (i >= 0) { i += strlen(k) + 1; v = req.substring(i).toInt(); }
     };
     gp("cmd", cmd);
-    if (cmd >= 1 && cmd <= 4) {
-      buzzActive(cmd);
-      c.print(hdr + "{\"status\":\"ok\",\"cmd\":" + String(cmd) + ",\"type\":\"active\"}");
-    } else if (cmd == 5) {
-      gp("freq", freq); gp("dur", dur);
-      if (freq > 0 && dur > 0) buzzTone(freq, dur);
-      c.print(hdr + "{\"status\":\"ok\",\"cmd\":5,\"freq\":" + String(freq) + ",\"dur\":" + String(dur) + ",\"type\":\"passive\"}");
-    } else if (cmd == 6) {
-      buzzMelody();
-      c.print(hdr + "{\"status\":\"ok\",\"cmd\":6,\"type\":\"melody\"}");
-    } else {
-      c.print(hdr + "{\"status\":\"error\",\"msg\":\"unknown cmd\"}");
-    }
+    if (cmd >= 1 && cmd <= 4) { buzzActive(cmd); }
+    else if (cmd == 5) { gp("freq", freq); gp("dur", dur); if (freq > 0) buzzTone(freq, dur); }
+    else if (cmd == 6) { buzzMelody(); }
+    c.print(hdr + "{\"status\":\"ok\"}");
   }
   else if (req.indexOf("/api/breath") >= 0) {
-    c.print(hdr + "{\"status\":\"breathing\"}");
+    c.print(hdr + "{\"status\":\"ok\"}");
     for (int b = 0; b <= 255; b += 5) { setLED(0, b/2, b); delay(20); }
     for (int b = 255; b >= 0; b -= 5) { setLED(0, b/2, b); delay(20); }
     setLED(0, 0, 0);
   }
-  else if (req.indexOf("/api/reset") >= 0) {
+  else if (req.indexOf("/api/resetwifi") >= 0) {
     c.print(hdr + "{\"status\":\"resetting\"}");
-    wm.resetSettings();
-    delay(500);
-    ESP.restart();
+    WiFi.disconnect(true);
+    prefs.begin("ainav", false); prefs.clear(); prefs.end();
+    delay(500); ESP.restart();
   }
   else {
-    c.print(hdr + "{\"name\":\"AI-NAV-C3\",\"endpoints\":[\"/api/status\",\"/api/led?r=&g=&b=\",\"/api/buzzer?cmd=&freq=&dur=\",\"/api/breath\",\"/api/reset\"]}");
+    c.print(hdr + "{\"name\":\"AI-NAV-C3\",\"endpoints\":[\"/api/status\",\"/api/led\",\"/api/buzzer\",\"/api/breath\",\"/api/resetwifi\"]}");
   }
 }
 
-// ── BLE Callbacks ──
+// ── BLE Callbacks (设备控制) ──
 class LEDCB : public BLECharacteristicCallbacks {
   void onWrite(BLECharacteristic *p) {
     String v = p->getValue();
-    if (v.length() == 3) {
-      setLED((uint8_t)v[0], (uint8_t)v[1], (uint8_t)v[2]);
-    } else if (v.length() == 1) {
-      uint8_t cmd = (uint8_t)v[0];
-      if (cmd == 5) {  // Breathing
-        for (int b = 0; b <= 255; b += 5) { setLED(0, b/2, b); delay(20); }
-        for (int b = 255; b >= 0; b -= 5) { setLED(0, b/2, b); delay(20); }
-        setLED(0, 0, 0);
-      } else if (cmd == 6) { setLED(0, 0, 0); } // Off
+    if (v.length() == 3) { setLED((uint8_t)v[0], (uint8_t)v[1], (uint8_t)v[2]); }
+    else if (v.length() == 1 && (uint8_t)v[0] == 5) {
+      for (int b = 0; b <= 255; b += 5) { setLED(0, b/2, b); delay(20); }
+      for (int b = 255; b >= 0; b -= 5) { setLED(0, b/2, b); delay(20); }
+      setLED(0, 0, 0);
     }
   }
 };
@@ -191,13 +164,13 @@ class BuzzCB : public BLECharacteristicCallbacks {
     String v = p->getValue();
     if (v.length() == 0) return;
     uint8_t cmd = (uint8_t)v[0];
-    if (cmd >= 1 && cmd <= 4) { buzzActive(cmd); }
-    else if (cmd == 5 && v.length() >= 5) {
+    if (cmd >= 1 && cmd <= 4) { buzzActive(cmd); return; }
+    if (cmd == 5 && v.length() >= 5) {
       int freq = (uint8_t)v[1] | ((uint8_t)v[2] << 8);
       int dur  = (uint8_t)v[3] | ((uint8_t)v[4] << 8);
-      buzzTone(freq, dur);
+      buzzTone(freq, dur); return;
     }
-    else if (cmd == 6) { buzzMelody(); }
+    if (cmd == 6) { buzzMelody(); }
   }
 };
 
@@ -205,26 +178,66 @@ class InfoCB : public BLECharacteristicCallbacks {
   void onRead(BLECharacteristic *p) { infoUpdate(); }
 };
 
-// ── WiFiManager: 自定义配置页面 ──
-void setupWiFiManager() {
-  wm.setDebugOutput(false);
-  wm.setCaptivePortalEnable(true);
-  wm.setAPCallback([](WiFiManager *myWM) {
-    Serial.println("AP Mode: AI-NAV-C3-Setup");
-    Serial.println("IP: 192.168.4.1");
-    // LED flash to indicate AP mode
-    for (int i = 0; i < 5; i++) {
-      digitalWrite(PIN_LED, LOW); delay(200);
-      digitalWrite(PIN_LED, HIGH); delay(200);
-    }
-  });
-  wm.setSaveConfigCallback([]() {
-    Serial.println("WiFi saved — restarting...");
-  });
+// ── 启动BLE设备控制服务 ──
+void startBLEServer() {
+  Serial.println("Starting BLE device control...");
+  BLEDevice::init(DEVICE_NAME);
+  BLEServer *bs = BLEDevice::createServer();
+  BLEService *svc = bs->createService(SVC);
 
-  // Custom menu items (optional)
-  std::vector<const char *> menu = {"wifi", "info", "sep", "restart"};
-  wm.setMenu(menu);
+  svc->createCharacteristic(CH_LED, BLECharacteristic::PROPERTY_WRITE)
+     ->setCallbacks(new LEDCB());
+  svc->createCharacteristic(CH_BUZZ, BLECharacteristic::PROPERTY_WRITE)
+     ->setCallbacks(new BuzzCB());
+  pInfoChar = svc->createCharacteristic(CH_INFO,
+     BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
+  pInfoChar->setCallbacks(new InfoCB());
+  pKeyChar = svc->createCharacteristic(CH_KEY,
+     BLECharacteristic::PROPERTY_NOTIFY);
+  svc->start();
+
+  BLEAdvertising *adv = bs->getAdvertising();
+  adv->addServiceUUID(SVC);
+  adv->setScanResponse(true);
+  adv->start();
+
+  infoUpdate();
+  Serial.println("BLE device control ready");
+}
+
+// ── WiFi 事件回调 ──
+void onWiFiEvent(WiFiEvent_t event) {
+  switch (event) {
+    case ARDUINO_EVENT_WIFI_STA_GOT_IP:
+      wifiOK = true;
+      myIP = WiFi.localIP().toString();
+      http.begin();
+      digitalWrite(PIN_LED, LOW);
+      Serial.println("WiFi OK: " + myIP);
+      break;
+    case ARDUINO_EVENT_WIFI_STA_DISCONNECTED:
+      wifiOK = false;
+      myIP = "";
+      digitalWrite(PIN_LED, HIGH);
+      Serial.println("WiFi disconnected");
+      break;
+    case ARDUINO_EVENT_PROV_START:
+      Serial.println("Provisioning started — 请在APP输入POP码: " + String(POP));
+      break;
+    case ARDUINO_EVENT_PROV_CRED_RECV:
+      Serial.println("Received WiFi credentials");
+      break;
+    case ARDUINO_EVENT_PROV_CRED_FAIL:
+      Serial.println("Provisioning failed!");
+      break;
+    case ARDUINO_EVENT_PROV_CRED_SUCCESS:
+      Serial.println("Provisioning successful!");
+      break;
+    case ARDUINO_EVENT_PROV_END:
+      Serial.println("Provisioning end");
+      break;
+    default: break;
+  }
 }
 
 // ── Setup ──
@@ -240,57 +253,41 @@ void setup() {
   pinMode(PIN_K0, INPUT_PULLUP); pinMode(PIN_K1, INPUT_PULLUP);
   pinMode(PIN_K2, INPUT_PULLUP); pinMode(PIN_K3, INPUT_PULLUP);
 
-  // ── WiFi via WiFiManager ──
-  setupWiFiManager();
+  // WiFi event handler
+  WiFi.onEvent(onWiFiEvent);
 
-  // Try saved credentials first, if fail → AP mode
-  wifiOK = wm.autoConnect("AI-NAV-C3-Setup");
+  Serial.println("Starting BLE provisioning...");
+  Serial.println("设备名: " + String(DEVICE_NAME));
+  Serial.println("POP密码: " + String(POP));
 
-  if (wifiOK) {
-    myIP = WiFi.localIP().toString();
-    http.begin();
-    Serial.println("WiFi OK: " + myIP);
-    digitalWrite(PIN_LED, LOW);  // LED ON = connected
-  } else {
-    Serial.println("WiFi failed — running offline");
-    digitalWrite(PIN_LED, HIGH); // LED OFF = no WiFi
-  }
+  // WiFiProv: BLE配网 (Espressif官方协议)
+  // 首次上电 → BLE广播等手机APP配网
+  // 已配网 → 自动连接WiFi，不启动BLE配网
+  WiFiProv.beginProvision(
+    WIFI_PROV_SCHEME_BLE,          // BLE传输
+    WIFI_PROV_SCHEME_HANDLER_FREE_BT, // NimBLE (不与Bluedroid冲突)
+    WIFI_PROV_SECURITY_1,          // Security 1 (需要POP码)
+    POP,                           // Proof of Possession
+    DEVICE_NAME,                   // 设备名称
+    NULL,                          // Service Key (optional)
+    NULL,                          // UUID (default)
+    false                          // 不重置已保存的配置
+  );
 
-  // ── BLE Setup ──
-  BLEDevice::init("AI-NAV-C3");
-  BLEServer *bs = BLEDevice::createServer();
-  BLEService *svc = bs->createService(SVC);
+  Serial.println("WiFiProv returned — WiFi should be connected");
+  log_i("Free heap after WiFiProv: %lu", ESP.getFreeHeap());
 
-  svc->createCharacteristic(CH_LED, BLECharacteristic::PROPERTY_WRITE)
-     ->setCallbacks(new LEDCB());
+  // 启动设备控制BLE (Bluedroid)
+  // WiFiProv用NimBLE，设备控制用Bluedroid，互不冲突
+  delay(200); // 确保NimBLE完全释放
+  startBLEServer();
 
-  svc->createCharacteristic(CH_BUZZ, BLECharacteristic::PROPERTY_WRITE)
-     ->setCallbacks(new BuzzCB());
-
-  pInfoChar = svc->createCharacteristic(CH_INFO,
-     BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-  pInfoChar->setCallbacks(new InfoCB());
-
-  pKeyChar = svc->createCharacteristic(CH_KEY,
-     BLECharacteristic::PROPERTY_NOTIFY);
-
-  svc->start();
-
-  BLEAdvertising *adv = bs->getAdvertising();
-  adv->addServiceUUID(SVC);
-  adv->setScanResponse(true);
-  adv->start();
-
-  infoUpdate();
   Serial.println("AI-NAV-C3 Ready");
   Serial.print("Free heap: "); Serial.println(ESP.getFreeHeap());
 }
 
 // ── Loop ──
 void loop() {
-  // WiFiManager portal (if in AP mode)
-  wm.process();
-
   // HTTP server
   if (wifiOK) {
     WiFiClient c = http.available();
