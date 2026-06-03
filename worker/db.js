@@ -166,6 +166,38 @@ export async function getDBStats() {
   return stats;
 }
 
+// ── Financial Briefs ──
+export async function ingestFinancialBrief(date, type, title, content, sourceUrl = "") {
+  if (!client) return;
+  await client.queryArray(
+    `INSERT INTO financial_briefs (date, type, title, content, source_url)
+     VALUES ($1, $2, $3, $4, $5)
+     ON CONFLICT (date, type) DO UPDATE SET content=$4, title=$3, source_url=$5, created_at=NOW()`,
+    [date, type, title, content, sourceUrl]
+  );
+}
+
+export async function getFinancialBriefs(days = 10) {
+  if (!client) return [];
+  const r = await client.queryObject(
+    "SELECT * FROM financial_briefs WHERE date > CURRENT_DATE - $1 ORDER BY date DESC, type", [days]
+  );
+  return r.rows;
+}
+
+export async function getLatestFinancialBriefs() {
+  if (!client) return [];
+  const r = await client.queryObject(
+    "SELECT * FROM financial_briefs WHERE date = CURRENT_DATE ORDER BY type"
+  );
+  return r.rows;
+}
+
+export async function cleanupOldFinancialBriefs(days = 10) {
+  if (!client) return;
+  await client.queryArray("DELETE FROM financial_briefs WHERE date < CURRENT_DATE - $1", [days]);
+}
+
 // ── 关闭 ──
 export async function closeDB() {
   if (client) await client.end();

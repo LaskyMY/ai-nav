@@ -8,7 +8,9 @@ const PRICING = { prompt: 0.27 / 1_000_000, completion: 1.10 / 1_000_000 }; // D
 // ── PostgreSQL Database ──
 import { initDB, insertNews, getNews, getNewsCount, searchNews, getLatestSummary, getSummaries,
          saveSummary, saveWeather, getWeather, logUsage as dbLogUsage, getUsageStats as dbUsageStats,
-         getPageStats, trackPage, getDBStats, queryForAI } from "./db.js";
+         getPageStats, trackPage, getDBStats, queryForAI,
+         ingestFinancialBrief as dbIngestFinancial, getFinancialBriefs as dbGetFinancialBriefs,
+         getLatestFinancialBriefs as dbGetLatestFinancial, cleanupOldFinancialBriefs as dbCleanupFinancial } from "./db.js";
 let dbReady = false;
 
 // ── Usage tracking ──
@@ -411,20 +413,19 @@ async function handle(req) {
 	    if (path === "/api/financial/briefs") {
 	      if (!dbReady) return err("database not ready", 503);
 	      const days = parseInt(url.searchParams.get("days") || "10");
-	      return ok(await getFinancialBriefs(days));
+	      return ok(await dbGetFinancialBriefs(days));
 	    }
 	    if (path === "/api/financial/latest") {
 	      if (!dbReady) return err("database not ready", 503);
-	      return ok(await getLatestFinancialBriefs());
+	      return ok(await dbGetLatestFinancial());
 	    }
-	    // Manual ingest endpoint (POST)
 	    if (path === "/api/financial/ingest" && req.method === "POST") {
 	      if (!dbReady) return err("database not ready", 503);
 	      const body = await req.json().catch(() => null);
 	      if (!body || !body.content) return err("missing content", 400);
 	      const date = body.date || new Date().toISOString().slice(0, 10);
 	      const type = body.type || "morning";
-	      await ingestFinancialBrief(date, type, body.title || `金融${type==='morning'?'早间':'晚间'}简报`, body.content, body.source_url);
+	      await dbIngestFinancial(date, type, body.title || `金融${type==='morning'?'早间':'晚间'}简报`, body.content, body.source_url);
 	      return ok({ status: "ok", date, type });
 	    }
 
@@ -583,56 +584,11 @@ async function refreshNewsSummary() {
 // ── Financial Briefs ──
 const FINANCIAL_DIR = "./financial";
 
-async function ingestFinancialBrief(date, type, title, content, source_url = "") {
-  if (!dbReady) return;
-  const { Client } = await import("https://deno.land/x/postgres@v0.19.0/mod.ts");
-  const pg = new Client({ hostname:"127.0.0.1", port:5432, user:"lasky_my", database:"ai_nav" });
-  await pg.connect();
-  try {
-    await pg.queryArray(
-      `INSERT INTO financial_briefs (date, type, title, content, source_url)
-       VALUES ($1, $2, $3, $4, $5)
-       ON CONFLICT (date, type) DO UPDATE SET content=$4, title=$3, source_url=$5, created_at=NOW()`,
-      [date, type, title, content, source_url]
-    );
-    console.log(`[financial] ingested ${date} ${type}`);
-  } finally { await pg.end(); }
-}
-
-async function getFinancialBriefs(days = 10) {
-  if (!dbReady) return [];
-  const { Client } = await import("https://deno.land/x/postgres@v0.19.0/mod.ts");
-  const pg = new Client({ hostname:"127.0.0.1", port:5432, user:"lasky_my", database:"ai_nav" });
-  await pg.connect();
-  try {
-    const r = await pg.queryObject(
-      `SELECT * FROM financial_briefs WHERE date > CURRENT_DATE - $1 ORDER BY date DESC, type`,
-      [days]
-    );
-    return r.rows;
-  } finally { await pg.end(); }
-}
-
-async function getLatestFinancialBriefs() {
-  if (!dbReady) return {};
-  const { Client } = await import("https://deno.land/x/postgres@v0.19.0/mod.ts");
-  const pg = new Client({ hostname:"127.0.0.1", port:5432, user:"lasky_my", database:"ai_nav" });
-  await pg.connect();
-  try {
-    const today = new Date().toISOString().slice(0, 10);
-    const r = await pg.queryObject(
-      "SELECT * FROM financial_briefs WHERE date = $1 ORDER BY type", [today]
-    );
-    return r.rows;
-  } finally { await pg.end(); }
-}
-
 // Daily 6AM: read text files → store in DB → generate AI summary → cleanup old
 async function dailyFinancialTask() {
   console.log("[financial] Daily task running...");
   const today = new Date().toISOString().slice(0, 10);
 
-  // Read local text files (user exports from Tencent Docs)
   const types = [
     { file: `${FINANCIAL_DIR}/morning.txt`, type: "morning", title: "金融早间简报" },
     { file: `${FINANCIAL_DIR}/evening.txt`, type: "evening", title: "金融晚间简报" },
@@ -643,13 +599,13 @@ async function dailyFinancialTask() {
     try {
       const content = await Deno.readTextFile(t.file);
       if (content.trim()) {
-        await ingestFinancialBrief(today, t.type, t.title, content, "");
+        if (dbReady) await dbIngestFinancial(today, t.type, t.title, content, "");
         allContent += `\n## ${t.title}\n${content.slice(0, 3000)}\n`;
       }
     } catch (_) { console.log(`[financial] No file: ${t.file}`); }
   }
 
-  // Generate AI summary (once per day) if we have content
+  // Generate AI summary (once per day)
   if (allContent.trim() && DEEPSEEK_KEY) {
     try {
       const r = await fetch(DEEPSEEK, {
@@ -667,26 +623,15 @@ async function dailyFinancialTask() {
       if (r.ok) {
         const data = await r.json();
         const summary = data.choices?.[0]?.message?.content || "";
-        if (summary) {
-          await ingestFinancialBrief(today, "summary", "今日金融要点", summary, "");
+        if (summary && dbReady) {
+          await dbIngestFinancial(today, "summary", "今日金融要点", summary, "");
           if (data.usage) trackUsage("financial-summary", data.usage, "deepseek-chat");
         }
       }
     } catch (e) { console.log("[financial] AI summary failed:", e.message); }
   }
 
-  // Cleanup: delete briefs older than 10 days
-  if (dbReady) {
-    try {
-      const { Client } = await import("https://deno.land/x/postgres@v0.19.0/mod.ts");
-      const pg = new Client({ hostname:"127.0.0.1", port:5432, user:"lasky_my", database:"ai_nav" });
-      await pg.connect();
-      await pg.queryArray("DELETE FROM financial_briefs WHERE date < CURRENT_DATE - 10");
-      await pg.end();
-      console.log("[financial] Cleaned up old entries");
-    } catch (e) { console.log("[financial] Cleanup failed:", e.message); }
-  }
-
+  if (dbReady) { await dbCleanupFinancial(); console.log("[financial] Cleaned up old entries"); }
   console.log("[financial] Daily task complete");
 }
 
