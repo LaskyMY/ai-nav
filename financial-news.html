@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>金融每日简报</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.7;padding:16px;max-width:700px;margin:0 auto;padding-bottom:32px}
+h1{font-size:22px;font-weight:700;color:#00e5ff;margin-bottom:2px}
+.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:20px}
+.summary-card{background:linear-gradient(135deg,rgba(0,229,255,.06),rgba(99,102,241,.06));border:1px solid rgba(0,229,255,.12);border-radius:16px;padding:18px 20px;margin-bottom:16px}
+.summary-card .st{font-size:11px;color:#00e5ff;font-weight:700;margin-bottom:8px;letter-spacing:.5px}
+.summary-card .sc{font-size:13px;color:rgba(255,255,255,.8);line-height:1.8}
+.day-section{margin-bottom:20px}
+.day-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:0 4px}
+.day-date{font-size:14px;font-weight:700;color:#818cf8}
+.day-badges{display:flex;gap:4px}
+.badge{font-size:9px;padding:3px 8px;border-radius:4px;font-weight:600}
+.badge.morning{background:rgba(245,158,11,.12);color:#fbbf24}
+.badge.evening{background:rgba(99,102,241,.12);color:#818cf8}
+.brief-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:all .15s}
+.brief-card:hover{border-color:rgba(255,255,255,.12)}
+.brief-card.morning{border-left:3px solid rgba(245,158,11,.3)}
+.brief-card.evening{border-left:3px solid rgba(99,102,241,.3)}
+.brief-time{font-size:10px;font-weight:700;margin-bottom:6px}
+.morning .brief-time{color:#fbbf24}.evening .brief-time{color:#818cf8}
+.brief-content{font-size:12px;color:rgba(255,255,255,.6);line-height:1.7;max-height:200px;overflow:hidden;transition:max-height .3s}
+.brief-card.expanded .brief-content{max-height:2000px}
+.brief-toggle{font-size:10px;color:rgba(255,255,255,.25);text-align:center;margin-top:6px;cursor:pointer}
+.empty{text-align:center;padding:40px 20px;color:rgba(255,255,255,.2);font-size:13px}
+.empty .e{font-size:40px;margin-bottom:10px}
+.source-link{font-size:9px;color:rgba(255,255,255,.2);margin-top:8px;word-break:break-all}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px}
+.tag.ai{background:rgba(16,185,129,.12);color:#10b981}
+</style>
+</head>
+<body>
+
+<h1>金融每日简报</h1>
+<div class="sub" id="todayLabel">加载中...</div>
+
+<!-- AI 要点摘要 -->
+<div class="summary-card" id="aiSummary" style="display:none">
+  <div class="st">🤖 AI 今日要点</div>
+  <div class="sc" id="aiSummaryText"></div>
+</div>
+
+<!-- 简报列表 -->
+<div id="briefList">
+  <div class="empty"><div class="e">📭</div>加载中...</div>
+</div>
+
+<p style="text-align:center;margin-top:24px"><a href="./manual.html" style="color:rgba(255,255,255,.2);font-size:10px;text-decoration:none">← 返回生活手册</a></p>
+
+<script>
+var A = 'https://c46872d35aeba559-183-6-87-29.serveousercontent.com';
+
+function fmtDate(d) {
+  var dt = new Date(d);
+  var now = new Date();
+  var diff = Math.floor((now - dt) / 86400000);
+  if (diff === 0) return '今天';
+  if (diff === 1) return '昨天';
+  return dt.getFullYear() + '年' + (dt.getMonth()+1) + '月' + dt.getDate() + '日';
+}
+
+function load() {
+  document.getElementById('todayLabel').textContent = '加载中...';
+
+  fetch(A + '/api/financial/briefs?days=10')
+    .then(function(r) { return r.json() })
+    .then(function(briefs) {
+      render(briefs || []);
+    })
+    .catch(function() {
+      // Fallback: try local server
+      fetch('http://localhost:8765/api/financial/briefs?days=10')
+        .then(function(r) { return r.json() })
+        .then(function(briefs) { render(briefs || []) })
+        .catch(function() {
+          document.getElementById('briefList').innerHTML = '<div class="empty"><div class="e">🔌</div>无法连接到服务器</div>';
+        });
+    });
+}
+
+function render(briefs) {
+  if (!briefs.length) {
+    document.getElementById('briefList').innerHTML = '<div class="empty"><div class="e">📭</div>暂无简报数据<br><span style="font-size:10px">请先将腾讯文档导出为纯文本<br>保存到 financial/morning.txt 和 financial/evening.txt</span></div>';
+    document.getElementById('todayLabel').textContent = '无数据';
+    return;
+  }
+
+  // Group by date
+  var byDate = {};
+  for (var i = 0; i < briefs.length; i++) {
+    var b = briefs[i];
+    if (!byDate[b.date]) byDate[b.date] = { morning: null, evening: null, summary: null };
+    byDate[b.date][b.type] = b;
+  }
+
+  var dates = Object.keys(byDate).sort().reverse();
+  var latestDate = dates[0];
+  document.getElementById('todayLabel').textContent = fmtDate(latestDate) + ' · 共' + dates.length + '天数据 · 每日6:00自动更新';
+
+  // AI Summary
+  var todayData = byDate[latestDate];
+  if (todayData && todayData.summary) {
+    document.getElementById('aiSummary').style.display = 'block';
+    document.getElementById('aiSummaryText').textContent = todayData.summary.content.slice(0, 600);
+  }
+
+  // Build day sections
+  var h = '';
+  for (var d = 0; d < dates.length; d++) {
+    var date = dates[d];
+    var data = byDate[date];
+    var hasMorning = data.morning && data.morning.content.trim();
+    var hasEvening = data.evening && data.evening.content.trim();
+
+    h += '<div class="day-section">';
+    h += '<div class="day-header"><span class="day-date">' + fmtDate(date) + '</span><div class="day-badges">';
+    if (hasMorning) h += '<span class="badge morning">☀ 早间</span>';
+    if (hasEvening) h += '<span class="badge evening">🌙 晚间</span>';
+    if (data.summary) h += '<span class="tag ai">AI摘要</span>';
+    h += '</div></div>';
+
+    if (hasMorning) {
+      h += '<div class="brief-card morning" onclick="this.classList.toggle(\'expanded\')">';
+      h += '<div class="brief-time">☀ 早间简报</div>';
+      h += '<div class="brief-content">' + esc(data.morning.content.slice(0, 800)) + '</div>';
+      if (data.morning.content.length > 800) h += '<div class="brief-toggle">点击展开/收起</div>';
+      h += '</div>';
+    }
+
+    if (hasEvening) {
+      h += '<div class="brief-card evening" onclick="this.classList.toggle(\'expanded\')">';
+      h += '<div class="brief-time">🌙 晚间简报</div>';
+      h += '<div class="brief-content">' + esc(data.evening.content.slice(0, 800)) + '</div>';
+      if (data.evening.content.length > 800) h += '<div class="brief-toggle">点击展开/收起</div>';
+      h += '</div>';
+    }
+
+    h += '</div>';
+  }
+  document.getElementById('briefList').innerHTML = h;
+}
+
+function esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+load();
+</script>
+</body>
+</html>

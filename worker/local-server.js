@@ -407,7 +407,28 @@ async function handle(req) {
 	      return ok({ answer: data.choices?.[0]?.message?.content || "", question });
 	    }
 
-	    return ok({ routes: ["/api/weather", "/api/news", "/api/geocode", "/api/papers", "/api/summary", "/api/papers-summary", "/api/news-summary", "/api/db/stats", "/api/db/news", "/api/db/search", "/api/db/summaries", "/api/db/pages", "/api/db/ai"] });
+	    // ── Financial Briefs ──
+	    if (path === "/api/financial/briefs") {
+	      if (!dbReady) return err("database not ready", 503);
+	      const days = parseInt(url.searchParams.get("days") || "10");
+	      return ok(await getFinancialBriefs(days));
+	    }
+	    if (path === "/api/financial/latest") {
+	      if (!dbReady) return err("database not ready", 503);
+	      return ok(await getLatestFinancialBriefs());
+	    }
+	    // Manual ingest endpoint (POST)
+	    if (path === "/api/financial/ingest" && req.method === "POST") {
+	      if (!dbReady) return err("database not ready", 503);
+	      const body = await req.json().catch(() => null);
+	      if (!body || !body.content) return err("missing content", 400);
+	      const date = body.date || new Date().toISOString().slice(0, 10);
+	      const type = body.type || "morning";
+	      await ingestFinancialBrief(date, type, body.title || `金融${type==='morning'?'早间':'晚间'}简报`, body.content, body.source_url);
+	      return ok({ status: "ok", date, type });
+	    }
+
+	    return ok({ routes: ["/api/weather", "/api/news", "/api/geocode", "/api/papers", "/api/summary", "/api/papers-summary", "/api/news-summary", "/api/db/stats", "/api/db/news", "/api/db/search", "/api/db/summaries", "/api/db/pages", "/api/db/ai", "/api/financial/briefs", "/api/financial/latest"] });
   } catch (e) {
     return err("internal error", 500);
   }
@@ -559,6 +580,116 @@ async function refreshNewsSummary() {
   }
 }
 
+// ── Financial Briefs ──
+const FINANCIAL_DIR = "./financial";
+
+async function ingestFinancialBrief(date, type, title, content, source_url = "") {
+  if (!dbReady) return;
+  const { Client } = await import("https://deno.land/x/postgres@v0.19.0/mod.ts");
+  const pg = new Client({ hostname:"127.0.0.1", port:5432, user:"lasky_my", database:"ai_nav" });
+  await pg.connect();
+  try {
+    await pg.queryArray(
+      `INSERT INTO financial_briefs (date, type, title, content, source_url)
+       VALUES ($1, $2, $3, $4, $5)
+       ON CONFLICT (date, type) DO UPDATE SET content=$4, title=$3, source_url=$5, created_at=NOW()`,
+      [date, type, title, content, source_url]
+    );
+    console.log(`[financial] ingested ${date} ${type}`);
+  } finally { await pg.end(); }
+}
+
+async function getFinancialBriefs(days = 10) {
+  if (!dbReady) return [];
+  const { Client } = await import("https://deno.land/x/postgres@v0.19.0/mod.ts");
+  const pg = new Client({ hostname:"127.0.0.1", port:5432, user:"lasky_my", database:"ai_nav" });
+  await pg.connect();
+  try {
+    const r = await pg.queryObject(
+      `SELECT * FROM financial_briefs WHERE date > CURRENT_DATE - $1 ORDER BY date DESC, type`,
+      [days]
+    );
+    return r.rows;
+  } finally { await pg.end(); }
+}
+
+async function getLatestFinancialBriefs() {
+  if (!dbReady) return {};
+  const { Client } = await import("https://deno.land/x/postgres@v0.19.0/mod.ts");
+  const pg = new Client({ hostname:"127.0.0.1", port:5432, user:"lasky_my", database:"ai_nav" });
+  await pg.connect();
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+    const r = await pg.queryObject(
+      "SELECT * FROM financial_briefs WHERE date = $1 ORDER BY type", [today]
+    );
+    return r.rows;
+  } finally { await pg.end(); }
+}
+
+// Daily 6AM: read text files → store in DB → generate AI summary → cleanup old
+async function dailyFinancialTask() {
+  console.log("[financial] Daily task running...");
+  const today = new Date().toISOString().slice(0, 10);
+
+  // Read local text files (user exports from Tencent Docs)
+  const types = [
+    { file: `${FINANCIAL_DIR}/morning.txt`, type: "morning", title: "金融早间简报" },
+    { file: `${FINANCIAL_DIR}/evening.txt`, type: "evening", title: "金融晚间简报" },
+  ];
+
+  let allContent = "";
+  for (const t of types) {
+    try {
+      const content = await Deno.readTextFile(t.file);
+      if (content.trim()) {
+        await ingestFinancialBrief(today, t.type, t.title, content, "");
+        allContent += `\n## ${t.title}\n${content.slice(0, 3000)}\n`;
+      }
+    } catch (_) { console.log(`[financial] No file: ${t.file}`); }
+  }
+
+  // Generate AI summary (once per day) if we have content
+  if (allContent.trim() && DEEPSEEK_KEY) {
+    try {
+      const r = await fetch(DEEPSEEK, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${DEEPSEEK_KEY}` },
+        body: JSON.stringify({
+          model: "deepseek-chat",
+          messages: [
+            { role: "system", content: "你是资深金融分析师。根据提供的金融简报内容，生成一份200字以内的今日金融要点总结。突出最重要的3-5个关键信息。用中文。" },
+            { role: "user", content: `以下是今日金融简报：\n${allContent.slice(0, 5000)}` }
+          ],
+          temperature: 0.3, max_tokens: 500
+        })
+      });
+      if (r.ok) {
+        const data = await r.json();
+        const summary = data.choices?.[0]?.message?.content || "";
+        if (summary) {
+          await ingestFinancialBrief(today, "summary", "今日金融要点", summary, "");
+          if (data.usage) trackUsage("financial-summary", data.usage, "deepseek-chat");
+        }
+      }
+    } catch (e) { console.log("[financial] AI summary failed:", e.message); }
+  }
+
+  // Cleanup: delete briefs older than 10 days
+  if (dbReady) {
+    try {
+      const { Client } = await import("https://deno.land/x/postgres@v0.19.0/mod.ts");
+      const pg = new Client({ hostname:"127.0.0.1", port:5432, user:"lasky_my", database:"ai_nav" });
+      await pg.connect();
+      await pg.queryArray("DELETE FROM financial_briefs WHERE date < CURRENT_DATE - 10");
+      await pg.end();
+      console.log("[financial] Cleaned up old entries");
+    } catch (e) { console.log("[financial] Cleanup failed:", e.message); }
+  }
+
+  console.log("[financial] Daily task complete");
+}
+
 // ── Startup: init DB, load caches, start background tasks ──
 async function startup() {
   try { await initDB(); dbReady = true; console.log("[server] PostgreSQL ready"); } catch(e) { console.log("[server] DB init failed:", e.message); }
@@ -567,8 +698,26 @@ async function startup() {
   refreshNewsSummary();
   setInterval(refreshNewsSummary, 900_000);
   setInterval(refreshNewsCN, 300000);
+
+  // Financial briefs: schedule daily at 6AM
+  await scheduleDailyFinancial();
 }
 startup();
+
+async function scheduleDailyFinancial() {
+  const now = new Date();
+  const sixAM = new Date(now);
+  sixAM.setHours(6, 1, 0, 0); // 6:01 AM
+  if (now > sixAM) sixAM.setDate(sixAM.getDate() + 1);
+  const msUntil6AM = sixAM - now;
+  console.log(`[financial] Next daily task: ${sixAM.toLocaleString('zh-CN')} (${Math.round(msUntil6AM/3600000)}h)`);
+
+  setTimeout(() => {
+    dailyFinancialTask();
+    // Then repeat every 24 hours
+    setInterval(dailyFinancialTask, 86400000);
+  }, msUntil6AM);
+}
 
 const PORT = parseInt(Deno.env.get("PORT") || "8765");
 console.log(`AI Nav API server running on http://localhost:${PORT}`);
