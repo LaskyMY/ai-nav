@@ -105,6 +105,10 @@ var A='https://99107705bcfb4f23-183-6-87-29.serveousercontent.com';
 // ── Rich Text to HTML Renderer ──
 function richRender(text) {
   if (!text) return '';
+  // Aggressive clean before any processing
+  text = text.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\x9f]/g,'');
+  text = text.replace(/[�]|\b\d{6,}\b/g,'');
+  text = text.replace(/[?]{2,}/g,' ');
   var h = text;
 
   // Escape HTML first
@@ -259,14 +263,16 @@ function render(briefs) {
     html+='</div></div>';
 
     if(hasM){
-      var mt=richRender(data.morning.content);
+      var mc = data.morning.content.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\x9f]/g,'').replace(/[�]|\b\d{6,}\b/g,'').replace(/[?]{2,}/g,' ');
+      var mt=richRender(mc);
       html+='<div class="brief-card morning">';
       html+='<div class="brief-time"><span class="dot"></span>早间简报</div>';
       html+='<div class="rich-text">'+mt+'</div>';
       html+='</div>';
     }
     if(hasE){
-      var et=richRender(data.evening.content);
+      var ec = data.evening.content.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\x9f]/g,'').replace(/[�]|\b\d{6,}\b/g,'').replace(/[?]{2,}/g,' ');
+      var et=richRender(ec);
       html+='<div class="brief-card evening">';
       html+='<div class="brief-time"><span class="dot"></span>晚间简报</div>';
       html+='<div class="rich-text">'+et+'</div>';
