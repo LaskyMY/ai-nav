@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>时钟看板</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.6;padding:16px;max-width:500px;margin:0 auto;padding-bottom:32px}
+h1{font-size:22px;font-weight:700;color:#00e5ff;margin-bottom:2px}
+.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:20px}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:18px 20px;margin-bottom:10px;cursor:pointer;transition:all .2s;text-decoration:none;display:flex;align-items:center;gap:14px;color:inherit}
+.card:hover{border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.05);transform:translateY(-1px)}
+.card:active{transform:scale(.98)}
+.card-ico{font-size:32px;flex-shrink:0;width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.04)}
+.card-info{flex:1}
+.card-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:3px}
+.card-desc{font-size:11px;color:rgba(255,255,255,.4);line-height:1.5}
+.card-meta{font-size:10px;color:rgba(255,255,255,.2);margin-top:4px}
+.card-arrow{color:rgba(255,255,255,.15);font-size:18px}
+</style>
+</head>
+<body>
+
+<h1>时钟看板</h1>
+<div class="sub">三端时钟仪表盘 · 实时天气/新闻/AI简报</div>
+
+<a class="card" href="./clock.html">
+  <div class="card-ico" style="background:rgba(99,102,241,.12)">📱</div>
+  <div class="card-info">
+    <div class="card-title">iOS 时钟看板</div>
+    <div class="card-desc">390×844 · 毫秒级时钟 · 液态玻璃 · 3列网格</div>
+    <div class="card-meta">手机端 · 3列网格 · emoji图标</div>
+  </div>
+  <span class="card-arrow">→</span>
+</a>
+
+<a class="card" href="./clock-old.html">
+  <div class="card-ico" style="background:rgba(16,185,129,.12)">📟</div>
+  <div class="card-info">
+    <div class="card-title">Android 平板看板</div>
+    <div class="card-desc">1200px宽 · 秒级时钟 · 无特效兼容 · 4列网格</div>
+    <div class="card-meta">老安卓6.0兼容 · ES5语法 · 文字标签</div>
+  </div>
+  <span class="card-arrow">→</span>
+</a>
+
+<a class="card" href="./clock-proj.html">
+  <div class="card-ico" style="background:rgba(245,158,11,.12)">🖥️</div>
+  <div class="card-info">
+    <div class="card-title">投影仪时钟看板</div>
+    <div class="card-desc">1920×1080 · 80px大字 · 8列网格 · 24条新闻</div>
+    <div class="card-meta">大屏投影 · 8列网格 · 更多卡片</div>
+  </div>
+  <span class="card-arrow">→</span>
+</a>
+
+<p style="text-align:center;color:rgba(255,255,255,.15);font-size:10px;margin-top:24px">
+  数据来源: NPR RSS + Open-Meteo 天气 + DeepSeek AI 简报<br>
+  每10分钟自动刷新 · localStorage 离线缓存
+</p>
+
+</body>
+</html>
