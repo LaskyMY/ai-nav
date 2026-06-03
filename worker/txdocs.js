@@ -24,52 +24,76 @@ async function fetchDoc(id) {
 }
 
 function decodeDocText(encoded) {
-  // Decode base64 → Uint8Array
   const binaryStr = atob(encoded);
   const bytes = new Uint8Array(binaryStr.length);
   for (let i = 0; i < binaryStr.length; i++) bytes[i] = binaryStr.charCodeAt(i);
 
-  // Extract readable text from protobuf-encoded data
   const decoder = new TextDecoder("utf-8", { fatal: false });
-  let text = "";
-  const seq = [];
+  const chunks = [];
+  let start = -1;
 
-  const flush = () => {
-    if (seq.length < 3) { seq.length = 0; return; }
-    try {
-      const chunk = decoder.decode(new Uint8Array(seq), { stream: true });
-      if (/[一-鿿]/.test(chunk) || chunk.length > 5) text += chunk;
-    } catch (_) {}
-    seq.length = 0;
-  };
-
+  // Find all valid UTF-8 sequences and decode them as chunks
   for (let i = 0; i < bytes.length; i++) {
     const b = bytes[i];
-    if (b === 0x0a || b === 0x0d || (b >= 0x20 && b < 0x7f)) {
-      seq.push(b);
-    } else if (b >= 0xc0 && b <= 0xfd) {
-      seq.push(b);
+    // Start of a potential text sequence
+    if ((b >= 0x20 && b < 0x7f) || (b >= 0xc0 && b <= 0xfd)) {
+      if (start < 0) start = i;
     } else if (b >= 0x80 && b < 0xc0) {
-      if (seq.length > 0) seq.push(b);
+      // Continuation byte - OK if we're in a sequence
+      if (start < 0) continue;
     } else {
-      flush();
+      // End of sequence - decode what we accumulated
+      if (start >= 0) {
+        const slice = bytes.slice(start, i);
+        try {
+          const text = decoder.decode(slice);
+          // Only keep if it contains meaningful content
+          if (isReadableText(text)) chunks.push(text);
+        } catch (_) {}
+        start = -1;
+      }
     }
   }
-  flush();
+  // Last chunk
+  if (start >= 0) {
+    try {
+      const text = decoder.decode(bytes.slice(start));
+      if (isReadableText(text)) chunks.push(text);
+    } catch (_) {}
+  }
 
-  // Clean up
-  text = text.replace(/HYPERLINK\s+"[^"]*"/g, "");
-  text = text.replace(/https?:\/\/\S+/g, "");
-  // Remove Office/font metadata garbage
-  text = text.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "");
-  text = text.replace(/(?:Calibri|MS |ＭＳ|맑은 고딕|微软雅黑|新細明體|Times New Roman|Angsana|Nyala|Vrinda|Shruti|MoolBoran|Tunga|Raavi|Euphemia|Plantagenet|Microsoft Yi|Microsoft Himalaya|Wingdings|Office)[^\n]*/g, "");
-  text = text.replace(/[A-F0-9]{6,}(?![a-z])[A-F0-9]*/g, ""); // Hex color codes
-  text = text.replace(/@[A-Za-z0-9]+/g, ""); // @font references
-  text = text.replace(/\*[A-Za-z0-9]+\*/g, ""); // *Wingdings* etc
+  let text = chunks.join("\n");
+
+  // Aggressive cleanup
+  text = text.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\x9f]/g, "");   // Control chars
+  // Remove any remaining non-printable / binary-looking characters
+  text = text.split("").filter(c => {
+    const code = c.charCodeAt(0);
+    if (code < 0x20 && code !== 0x0a && code !== 0x0d) return false;
+    if (code >= 0x7f && code < 0xa0) return false;
+    if (code >= 0xd800 && code <= 0xdfff) return false; // surrogates
+    return true;
+  }).join("");
+  text = text.replace(/HYPERLINK\s+"[^"]*"/gi, "");                    // Word hyperlinks
+  text = text.replace(/https?:\/\/\S+/g, "");                           // URLs
+  text = text.replace(/@[A-Za-z0-9\x80-\xff]+/g, "");                  // @font refs
+  text = text.replace(/[A-Za-z0-9_\s]{20,}(?![一-鿿])/g, "");          // Long ASCII strings without CJK
   text = text.replace(/\n{3,}/g, "\n\n");
-  text = text.replace(/ {2,}/g, " ");
-  text = text.replace(/^\s*[\d.]+$/gm, ""); // Lines that are just numbers
-  return text.trim();
+  text = text.replace(/^\s*[\d.-]+\s*$/gm, "");                         // Lines with only numbers
+  text = text.replace(/(.).*?\1{10,}/g, "");                            // Repeated character garbage
+  text = text.trim();
+  return text;
+}
+
+function isReadableText(text) {
+  if (text.length < 3) return false;
+  // Has CJK characters = definitely readable
+  if (/[一-鿿]/.test(text)) return true;
+  // Has meaningful ASCII words
+  if (/[A-Za-z]{3,}/.test(text) && text.length > 8) return true;
+  // Has numbers with context
+  if (/[\d.]+%?/.test(text) && text.length > 5) return true;
+  return false;
 }
 
 // Deno-compatible atob
