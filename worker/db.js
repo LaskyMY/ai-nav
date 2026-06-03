@@ -180,15 +180,16 @@ export async function ingestFinancialBrief(date, type, title, content, sourceUrl
 export async function getFinancialBriefs(days = 10) {
   if (!client) return [];
   const r = await client.queryObject(
-    "SELECT * FROM financial_briefs WHERE date > CURRENT_DATE - $1 ORDER BY date DESC, type", [days]
+    `SELECT * FROM financial_briefs WHERE date > CURRENT_DATE - $1::int ORDER BY date DESC, type`, [days]
   );
   return r.rows;
 }
 
 export async function getLatestFinancialBriefs() {
   if (!client) return [];
+  // Get the most recent date's briefs (not strictly today)
   const r = await client.queryObject(
-    "SELECT * FROM financial_briefs WHERE date = CURRENT_DATE ORDER BY type"
+    "SELECT * FROM financial_briefs WHERE date = (SELECT MAX(date) FROM financial_briefs) ORDER BY type"
   );
   return r.rows;
 }
