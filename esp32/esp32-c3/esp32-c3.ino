@@ -1,20 +1,20 @@
-// ESP32-C3 — BLE配网 (Espressif WiFiProv) + BLE控制 + HTTP API
-// 配网APP: 安卓/iOS 搜索 "ESP BLE Provisioning" (Espressif官方)
-// 库依赖: 无外部依赖，WiFiProv内置在ESP32 Arduino Core 2.0+
+// ESP32-C3 — 网页BLE配网 + BLE控制 + HTTP API
+// 配网方式：打开 esp32-c3.html，蓝牙连接后在页面内完成配网
 // Board: ESP32C3 Dev Module, Partition: Huge App (3MB No OTA)
 #include <WiFi.h>
-#include <WiFiProv.h>
 #include <Preferences.h>
 #include <BLEDevice.h>
 #include <BLEUtils.h>
 #include <BLEServer.h>
 
-// ── BLE UUIDs (设备控制, 非配网) ──
-#define SVC     "12345678-1234-1234-1234-123456789abc"
-#define CH_LED  "12345678-1234-1234-1234-123456789001"
-#define CH_BUZZ "12345678-1234-1234-1234-123456789002"
-#define CH_INFO "12345678-1234-1234-1234-123456789004"
-#define CH_KEY  "12345678-1234-1234-1234-123456789005"
+// ── BLE UUIDs ──
+#define SVC      "12345678-1234-1234-1234-123456789abc"
+#define CH_LED   "12345678-1234-1234-1234-123456789001"
+#define CH_BUZZ  "12345678-1234-1234-1234-123456789002"
+#define CH_WIFI  "12345678-1234-1234-1234-123456789003"
+#define CH_INFO  "12345678-1234-1234-1234-123456789004"
+#define CH_KEY   "12345678-1234-1234-1234-123456789005"
+#define CH_WDATA "12345678-1234-1234-1234-123456789006"  // WiFi scan results + status (notify)
 
 // ── Pin Definitions ──
 #define PIN_R   4
@@ -33,11 +33,9 @@ bool wifiOK = false;
 String myIP = "";
 BLECharacteristic *pInfoChar = nullptr;
 BLECharacteristic *pKeyChar = nullptr;
+BLECharacteristic *pWifiDataChar = nullptr;
 unsigned long startMs = 0;
-
-// ── Proof of Possession ── 配网时APP需输入此码
-const char *POP = "abcd1234";
-const char *DEVICE_NAME = "AI-NAV-C3";
+String savedSSID = "", savedPass = "";
 
 // ── RGB LED ──
 void setLED(int r, int g, int b) {
@@ -85,12 +83,69 @@ void readKeys() {
 // ── System Info ──
 void infoUpdate() {
   if (!pInfoChar) return;
-  char buf[96];
-  snprintf(buf, 96, "WiFi:%s IP:%s Up:%lus RSSI:%d Free:%lu",
+  char buf[128];
+  snprintf(buf, 128, "WiFi:%s IP:%s Up:%lus RSSI:%d Free:%lu",
     wifiOK ? "OK" : "NO", wifiOK ? myIP.c_str() : "-",
     (unsigned long)((millis() - startMs) / 1000),
     wifiOK ? WiFi.RSSI() : 0, ESP.getFreeHeap());
   pInfoChar->setValue(buf); pInfoChar->notify();
+}
+
+// ── WiFi Scan → returns JSON via notify ──
+void doWiFiScan() {
+  if (!pWifiDataChar) return;
+  pWifiDataChar->setValue("SCANNING");
+  pWifiDataChar->notify();
+
+  int n = WiFi.scanNetworks(false, true); // async=false, show hidden
+  String json = "[";
+  for (int i = 0; i < n && i < 20; i++) {
+    if (i > 0) json += ",";
+    String ssid = WiFi.SSID(i);
+    // Escape quotes in SSID
+    ssid.replace("\"", "\\\"");
+    json += "{\"s\":\"" + ssid + "\",\"r\":" + String(WiFi.RSSI(i)) + ",\"o\":" + String(WiFi.encryptionType(i) != WIFI_AUTH_OPEN ? 1 : 0) + "}";
+  }
+  json += "]";
+  WiFi.scanDelete();
+
+  pWifiDataChar->setValue(json.c_str());
+  pWifiDataChar->notify();
+}
+
+// ── WiFi Connect ──
+void doWiFiConnect(String ssid, String pass) {
+  if (!pWifiDataChar) return;
+
+  // Save credentials
+  prefs.begin("ainav", false);
+  prefs.putString("ssid", ssid);
+  prefs.putString("pass", pass);
+  prefs.end();
+
+  pWifiDataChar->setValue("CONNECTING");
+  pWifiDataChar->notify();
+
+  WiFi.begin(ssid.c_str(), pass.c_str());
+  int t = 0;
+  while (WiFi.status() != WL_CONNECTED && t < 30) { delay(500); t++; }
+
+  if (WiFi.status() == WL_CONNECTED) {
+    wifiOK = true;
+    myIP = WiFi.localIP().toString();
+    http.begin();
+    digitalWrite(PIN_LED, LOW);
+    pWifiDataChar->setValue("OK:" + myIP);
+    pWifiDataChar->notify();
+    Serial.println("WiFi OK: " + myIP);
+  } else {
+    WiFi.disconnect(true);
+    digitalWrite(PIN_LED, HIGH);
+    pWifiDataChar->setValue("FAIL");
+    pWifiDataChar->notify();
+    Serial.println("WiFi failed");
+  }
+  infoUpdate();
 }
 
 // ── HTTP Handlers ──
@@ -109,8 +164,7 @@ void handleHTTP(WiFiClient &c, String &req) {
   else if (req.indexOf("/api/led") >= 0) {
     int ri = 0, gi = 0, bi = 0;
     auto gp = [&](const char* k, int& v) {
-      int i = req.indexOf(String(k) + "=");
-      if (i >= 0) { i += strlen(k) + 1; v = req.substring(i).toInt(); }
+      int i = req.indexOf(String(k) + "="); if (i >= 0) { i += strlen(k) + 1; v = req.substring(i).toInt(); }
     };
     gp("r", ri); gp("g", gi); gp("b", bi);
     ri = constrain(ri, 0, 255); gi = constrain(gi, 0, 255); bi = constrain(bi, 0, 255);
@@ -120,8 +174,7 @@ void handleHTTP(WiFiClient &c, String &req) {
   else if (req.indexOf("/api/buzzer") >= 0) {
     int cmd = 0, freq = 0, dur = 0;
     auto gp = [&](const char* k, int& v) {
-      int i = req.indexOf(String(k) + "=");
-      if (i >= 0) { i += strlen(k) + 1; v = req.substring(i).toInt(); }
+      int i = req.indexOf(String(k) + "="); if (i >= 0) { i += strlen(k) + 1; v = req.substring(i).toInt(); }
     };
     gp("cmd", cmd);
     if (cmd >= 1 && cmd <= 4) { buzzActive(cmd); }
@@ -146,7 +199,7 @@ void handleHTTP(WiFiClient &c, String &req) {
   }
 }
 
-// ── BLE Callbacks (设备控制) ──
+// ── BLE Callbacks ──
 class LEDCB : public BLECharacteristicCallbacks {
   void onWrite(BLECharacteristic *p) {
     String v = p->getValue();
@@ -174,14 +227,63 @@ class BuzzCB : public BLECharacteristicCallbacks {
   }
 };
 
+class WiFiCB : public BLECharacteristicCallbacks {
+  void onWrite(BLECharacteristic *p) {
+    String v = p->getValue();
+    if (v == "SCAN") {
+      doWiFiScan();
+    } else if (v.startsWith("W:") && v.indexOf("|") > 2) {
+      // W:ssid|password
+      String body = v.substring(2);
+      int sep = body.indexOf("|");
+      String ssid = body.substring(0, sep);
+      String pass = body.substring(sep + 1);
+      doWiFiConnect(ssid, pass);
+    }
+  }
+};
+
 class InfoCB : public BLECharacteristicCallbacks {
   void onRead(BLECharacteristic *p) { infoUpdate(); }
 };
 
-// ── 启动BLE设备控制服务 ──
-void startBLEServer() {
-  Serial.println("Starting BLE device control...");
-  BLEDevice::init(DEVICE_NAME);
+// ── Setup ──
+void setup() {
+  Serial.begin(115200);
+  startMs = millis();
+
+  // GPIO
+  pinMode(PIN_R, OUTPUT); pinMode(PIN_G, OUTPUT); pinMode(PIN_B, OUTPUT); setLED(0, 0, 0);
+  pinMode(PIN_BZ, OUTPUT); digitalWrite(PIN_BZ, LOW);
+  pinMode(PIN_LED, OUTPUT); digitalWrite(PIN_LED, HIGH);
+  pinMode(PIN_K0, INPUT_PULLUP); pinMode(PIN_K1, INPUT_PULLUP);
+  pinMode(PIN_K2, INPUT_PULLUP); pinMode(PIN_K3, INPUT_PULLUP);
+
+  // Try saved WiFi (non-blocking, quick attempt)
+  prefs.begin("ainav", false);
+  savedSSID = prefs.getString("ssid", "");
+  savedPass = prefs.getString("pass", "");
+  prefs.end();
+
+  if (savedSSID.length() > 0) {
+    Serial.println("Trying saved WiFi: " + savedSSID);
+    WiFi.begin(savedSSID.c_str(), savedPass.c_str());
+    int t = 0;
+    while (WiFi.status() != WL_CONNECTED && t < 40) { delay(250); t++; }
+    if (WiFi.status() == WL_CONNECTED) {
+      wifiOK = true;
+      myIP = WiFi.localIP().toString();
+      http.begin();
+      digitalWrite(PIN_LED, LOW);
+      Serial.println("WiFi OK: " + myIP);
+    } else {
+      WiFi.disconnect(true);
+      Serial.println("Saved WiFi failed — waiting for BLE config");
+    }
+  }
+
+  // ── BLE Setup (always starts immediately) ──
+  BLEDevice::init("AI-NAV-C3");
   BLEServer *bs = BLEDevice::createServer();
   BLEService *svc = bs->createService(SVC);
 
@@ -189,11 +291,19 @@ void startBLEServer() {
      ->setCallbacks(new LEDCB());
   svc->createCharacteristic(CH_BUZZ, BLECharacteristic::PROPERTY_WRITE)
      ->setCallbacks(new BuzzCB());
+  svc->createCharacteristic(CH_WIFI, BLECharacteristic::PROPERTY_WRITE)
+     ->setCallbacks(new WiFiCB());
+
   pInfoChar = svc->createCharacteristic(CH_INFO,
      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
   pInfoChar->setCallbacks(new InfoCB());
+
   pKeyChar = svc->createCharacteristic(CH_KEY,
      BLECharacteristic::PROPERTY_NOTIFY);
+
+  pWifiDataChar = svc->createCharacteristic(CH_WDATA,
+     BLECharacteristic::PROPERTY_NOTIFY);
+
   svc->start();
 
   BLEAdvertising *adv = bs->getAdvertising();
@@ -202,87 +312,7 @@ void startBLEServer() {
   adv->start();
 
   infoUpdate();
-  Serial.println("BLE device control ready");
-}
-
-// ── WiFi 事件回调 ──
-void onWiFiEvent(WiFiEvent_t event) {
-  switch (event) {
-    case ARDUINO_EVENT_WIFI_STA_GOT_IP:
-      wifiOK = true;
-      myIP = WiFi.localIP().toString();
-      http.begin();
-      digitalWrite(PIN_LED, LOW);
-      Serial.println("WiFi OK: " + myIP);
-      break;
-    case ARDUINO_EVENT_WIFI_STA_DISCONNECTED:
-      wifiOK = false;
-      myIP = "";
-      digitalWrite(PIN_LED, HIGH);
-      Serial.println("WiFi disconnected");
-      break;
-    case ARDUINO_EVENT_PROV_START:
-      Serial.println("Provisioning started — 请在APP输入POP码: " + String(POP));
-      break;
-    case ARDUINO_EVENT_PROV_CRED_RECV:
-      Serial.println("Received WiFi credentials");
-      break;
-    case ARDUINO_EVENT_PROV_CRED_FAIL:
-      Serial.println("Provisioning failed!");
-      break;
-    case ARDUINO_EVENT_PROV_CRED_SUCCESS:
-      Serial.println("Provisioning successful!");
-      break;
-    case ARDUINO_EVENT_PROV_END:
-      Serial.println("Provisioning end");
-      break;
-    default: break;
-  }
-}
-
-// ── Setup ──
-void setup() {
-  Serial.begin(115200);
-  startMs = millis();
-
-  // GPIO
-  pinMode(PIN_R, OUTPUT); pinMode(PIN_G, OUTPUT); pinMode(PIN_B, OUTPUT);
-  setLED(0, 0, 0);
-  pinMode(PIN_BZ, OUTPUT); digitalWrite(PIN_BZ, LOW);
-  pinMode(PIN_LED, OUTPUT); digitalWrite(PIN_LED, HIGH);
-  pinMode(PIN_K0, INPUT_PULLUP); pinMode(PIN_K1, INPUT_PULLUP);
-  pinMode(PIN_K2, INPUT_PULLUP); pinMode(PIN_K3, INPUT_PULLUP);
-
-  // WiFi event handler
-  WiFi.onEvent(onWiFiEvent);
-
-  Serial.println("Starting BLE provisioning...");
-  Serial.println("设备名: " + String(DEVICE_NAME));
-  Serial.println("POP密码: " + String(POP));
-
-  // WiFiProv: BLE配网 (Espressif官方协议)
-  // 首次上电 → BLE广播等手机APP配网
-  // 已配网 → 自动连接WiFi，不启动BLE配网
-  WiFiProv.beginProvision(
-    WIFI_PROV_SCHEME_BLE,          // BLE传输
-    WIFI_PROV_SCHEME_HANDLER_FREE_BT, // NimBLE (不与Bluedroid冲突)
-    WIFI_PROV_SECURITY_1,          // Security 1 (需要POP码)
-    POP,                           // Proof of Possession
-    DEVICE_NAME,                   // 设备名称
-    NULL,                          // Service Key (optional)
-    NULL,                          // UUID (default)
-    false                          // 不重置已保存的配置
-  );
-
-  Serial.println("WiFiProv returned — WiFi should be connected");
-  log_i("Free heap after WiFiProv: %lu", ESP.getFreeHeap());
-
-  // 启动设备控制BLE (Bluedroid)
-  // WiFiProv用NimBLE，设备控制用Bluedroid，互不冲突
-  delay(200); // 确保NimBLE完全释放
-  startBLEServer();
-
-  Serial.println("AI-NAV-C3 Ready");
+  Serial.println("AI-NAV-C3 Ready — BLE配网 + 控制");
   Serial.print("Free heap: "); Serial.println(ESP.getFreeHeap());
 }
 
