@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>电烙铁从入门到精通 · 德力西110W数显</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.7;padding:16px;max-width:600px;margin:0 auto;padding-bottom:32px}
+h1{font-size:22px;font-weight:700;color:#00e5ff;margin-bottom:2px}
+h2{font-size:16px;font-weight:700;color:#818cf8;margin:24px 0 10px;border-left:3px solid #818cf8;padding-left:10px}
+h3{font-size:14px;font-weight:700;color:rgba(255,255,255,.85);margin:16px 0 8px}
+.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:20px}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.card.warn{border-color:rgba(245,158,11,.15);background:rgba(245,158,11,.03)}
+.card.danger{border-color:rgba(239,68,68,.1);background:rgba(239,68,68,.025)}
+.card.ok{border-color:rgba(16,185,129,.1);background:rgba(16,185,129,.03)}
+.row{display:flex;align-items:center;justify-content:space-between;margin:5px 0}
+.lbl{color:rgba(255,255,255,.45);font-size:.9em}
+.val{font-weight:600;color:#00e5ff}
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:11px}
+td,th{border:1px solid rgba(255,255,255,.08);padding:6px 10px;text-align:left}
+th{background:rgba(255,255,255,.04);color:#818cf8;font-weight:600}
+ul,ol{padding-left:20px;margin:6px 0}
+li{margin:4px 0;color:rgba(255,255,255,.75)}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin:2px}
+.tag.ok{background:rgba(16,185,129,.15);color:#10b981}
+.tag.warn{background:rgba(245,158,11,.15);color:#fbbf24}
+.tag.r{background:rgba(239,68,68,.15);color:#f87171}
+.tag.b{background:rgba(99,102,241,.15);color:#818cf8}
+.step{display:flex;gap:10px;margin:8px 0;align-items:flex-start}
+.step-num{flex-shrink:0;width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:#818cf8;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.6;margin:8px 0}
+.tip{border-left:2px solid #fbbf24;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(245,158,11,.04)}
+.warn-box{border-left:2px solid #f87171;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(239,68,68,.04)}
+.temp-bar{height:8px;border-radius:4px;background:linear-gradient(90deg,#818cf8,#f59e0b,#f87171);margin:4px 0;position:relative}
+.temp-dot{position:absolute;top:-4px;width:16px;height:16px;border-radius:8px;background:#fff;border:2px solid #00e5ff;transform:translateX(-50%)}
+</style>
+</head>
+<body>
+
+<h1>电烙铁从入门到精通</h1>
+<div class="sub">德力西 110W 数显恒温电烙铁套装 | 新手教程</div>
+
+<!-- 套装清单 -->
+<h2>一、套装开箱清单</h2>
+<div class="card">
+  <h3>德力西电气（DELIXI ELECTRIC）110W 数显电烙铁</h3>
+  <table>
+    <tr><th style="width:30px">#</th><th>配件名称</th><th>数量</th><th>用途</th></tr>
+    <tr><td>1</td><td>大功率数显电烙铁</td><td>×1</td><td>主工具，数显温控按键，红黑机身</td></tr>
+    <tr><td>2</td><td>备用烙铁头</td><td>×1</td><td>替换用焊嘴配件</td></tr>
+    <tr><td>3</td><td>直头镊子</td><td>×1</td><td>平直尖头，夹持元器件</td></tr>
+    <tr><td>4</td><td>焊锡丝</td><td>×1</td><td>锡焊耗材（通常含松香芯）</td></tr>
+    <tr><td>5</td><td>烙铁架</td><td>×1</td><td>放置烙铁，隔热防烫</td></tr>
+    <tr><td>6</td><td>吸锡笔</td><td>×1</td><td>清理多余焊锡、吸除锡点</td></tr>
+    <tr><td>7</td><td>弯头镊子</td><td>×1</td><td>弯嘴夹取细小零件</td></tr>
+    <tr><td>8</td><td>松香</td><td>×1</td><td>助焊耗材，红色圆盒</td></tr>
+    <tr><td>9</td><td>清洁海绵</td><td>×1</td><td>沾水擦拭烙铁头除锡</td></tr>
+    <tr><td>10</td><td>一体式塑料收纳盒</td><td>×1</td><td>翻盖分格工具箱，分类收纳</td></tr>
+  </table>
+</div>
+
+<!-- 参数 -->
+<h2>二、核心参数</h2>
+<div class="card">
+  <div class="row"><span class="lbl">峰值功率</span><span class="val">183W</span></div>
+  <div class="row"><span class="lbl">额定功率</span><span class="val">110W</span></div>
+  <div class="row"><span class="lbl">控温范围</span><span class="val">180℃ ~ 500℃</span></div>
+  <div class="row"><span class="lbl">显示方式</span><span class="val">数显屏 + 按键调温</span></div>
+  <div class="row"><span class="lbl">温标切换</span><span class="val">℃ / ℉ 一键切换</span></div>
+  <div class="row"><span class="lbl">温度补偿</span><span class="val">支持（校准温差）</span></div>
+  <div class="row"><span class="lbl">功率增益</span><span class="val">大功率模式可调</span></div>
+  <div class="row"><span class="lbl">工作指示</span><span class="val">LED指示灯提示加热状态</span></div>
+
+  <h3 style="margin-top:12px">适用焊锡温度参考</h3>
+  <div class="temp-bar" style="margin-top:12px">
+    <div class="temp-dot" style="left:10%"></div>
+  </div>
+  <table style="margin-top:8px">
+    <tr><th>温度区间</th><th>适用场景</th></tr>
+    <tr><td>180~250℃</td><td>低温焊锡、热缩管、塑料焊接</td></tr>
+    <tr><td>250~300℃</td><td>细引脚IC、贴片元件（手机/平板维修）</td></tr>
+    <tr><td>300~350℃</td><td><b>最常用</b>：PCB直插元件、导线焊接</td></tr>
+    <tr><td>350~400℃</td><td>粗导线、大焊盘、散热快的焊点</td></tr>
+    <tr><td>400~450℃</td><td>无铅焊锡（熔点更高）、粗铜线</td></tr>
+    <tr><td>450~500℃</td><td>大面积散热片、金属片焊接（慎用）</td></tr>
+  </table>
+</div>
+
+<!-- 安全须知 -->
+<h2>三、安全须知 ⚠️ 必读</h2>
+<div class="card danger">
+  <ol>
+    <li><b>烙铁头温度可达500℃</b>——严禁触碰金属部分</li>
+    <li><b>使用中必须放在烙铁架上</b>——禁止平放桌面</li>
+    <li><b>焊锡烟雾有害</b>——保持通风，避免吸入松香烟雾</li>
+    <li><b>用后断电冷却</b>——至少冷却15分钟再收纳</li>
+    <li><b>远离易燃物</b>——纸张、布料、酒精等远离工作区</li>
+    <li><b>湿手勿操作</b>——防止触电</li>
+    <li><b>儿童远离</b>——工具存放在儿童无法接触的地方</li>
+  </ol>
+</div>
+
+<!-- 新手入门 -->
+<h2>四、新手第一步：开箱与准备</h2>
+
+<div class="step"><div class="step-num">1</div><div>
+  <b>检查套装完整性</b>——对照上方清单逐件核对。重点检查烙铁头是否拧紧（出厂可能松动）。
+</div></div>
+
+<div class="step"><div class="step-num">2</div><div>
+  <b>湿润清洁海绵</b>——将黄色海绵浸水后挤掉多余水分，保持潮湿状态。放在烙铁架底部的槽中。
+</div></div>
+
+<div class="step"><div class="step-num">3</div><div>
+  <b>安装烙铁架</b>——将烙铁架展开放在右手边（左撇子放左边），确保稳固不晃动。
+</div></div>
+
+<div class="step"><div class="step-num">4</div><div>
+  <b>首次上电"镀锡"保护</b>——新烙铁头首次加热时，必须在升温过程中不断用焊锡丝触碰烙铁头尖端，让锡均匀覆盖整个头表面。这一步<b>极其重要</b>：不镀锡的烙铁头会快速氧化变黑，再也沾不上锡。
+</div></div>
+
+<div class="tip">
+  <b>为什么烙铁头要镀锡？</b><br>
+  烙铁头是铜+铁合金镀层。高温下裸露的金属会瞬间氧化（变黑），氧化层不粘锡。镀锡层保护烙铁头不被氧化，同时锡的导热性保证热量快速传到焊点。
+</div>
+
+<!-- 焊接基础 -->
+<h2>五、焊接核心原理</h2>
+<div class="card">
+  <p>焊接不是"用烙铁把锡熔化滴到焊点上"。<b>正确的焊接是：</b></p>
+  <ol>
+    <li>烙铁头同时接触<b>焊盘 + 元件引脚</b>（两者一起加热）</li>
+    <li>等待1~2秒，让焊盘和引脚达到焊锡熔化温度</li>
+    <li>焊锡丝触碰<b>焊盘和引脚的交界处</b>（不是烙铁头！）</li>
+    <li>焊锡自动熔化、流动、覆盖焊盘和引脚</li>
+    <li>移开焊锡丝，保持烙铁头0.5秒</li>
+    <li>移开烙铁头，焊点在1~2秒内凝固（期间不要吹气或抖动）</li>
+  </ol>
+</div>
+
+<div class="warn-box">
+  <b>最常见的错误操作：</b><br>
+  ❌ 把锡熔化在烙铁头上，然后"涂抹"到焊点上 → 虚焊<br>
+  ❌ 只加热焊盘不加热引脚 → 焊锡不粘引脚<br>
+  ❌ 焊锡还没凝固就动了元件 → 焊点粗糙/虚焊<br>
+  ❌ 烙铁头压在焊点上超过5秒 → 焊盘脱落
+</div>
+
+<h2>六、实战：焊接一个LED</h2>
+<div class="card ok">
+  <p><b>目标：</b>在洞洞板（万能板）上焊接一个LED + 220Ω电阻</p>
+
+  <div class="step"><div class="step-num">1</div><div>
+    <b>设定温度 320℃</b>，等待数显屏稳定显示目标温度（指示灯由闪烁变常亮或熄灭）。
+  </div></div>
+  <div class="step"><div class="step-num">2</div><div>
+    <b>清洁烙铁头</b>——在湿海绵上擦拭两下，烙铁头应银白光亮。如果发黑，蘸一点松香再擦。
+  </div></div>
+  <div class="step"><div class="step-num">3</div><div>
+    <b>插入元件</b>——LED长脚（+）和电阻一端从正面穿过孔，在背面露出引脚。弯折引脚45°临时固定。
+  </div></div>
+  <div class="step"><div class="step-num">4</div><div>
+    <b>先给烙铁头补锡</b>——用焊锡丝碰一下烙铁头尖，形成一层薄锡（增加导热面积）。
+  </div></div>
+  <div class="step"><div class="step-num">5</div><div>
+    <b>焊接</b>——烙铁头同时接触焊盘和引脚，1秒后送锡丝到交汇处，锡自动熔化流动成圆锥形。锡量覆盖整个焊盘即可，不要堆成球。
+  </div></div>
+  <div class="step"><div class="step-num">6</div><div>
+    <b>检查焊点</b>——好的焊点：表面光亮、呈圆锥形（火山状）、边缘平滑。坏焊点：灰色粗糙、球形、有尖刺。
+  </div></div>
+  <div class="step"><div class="step-num">7</div><div>
+    <b>剪脚</b>——用斜口钳（或指甲刀代替）贴着焊点剪掉多余引脚。
+  </div></div>
+</div>
+
+<!-- 烙铁头维护 -->
+<h2>七、烙铁头养护（延长寿命的关键）</h2>
+<div class="card">
+  <table>
+    <tr><th>操作</th><th>频率</th><th>方法</th></tr>
+    <tr><td>清洁</td><td>每次焊接前后</td><td>湿海绵擦拭 → 立即补锡</td></tr>
+    <tr><td>补锡</td><td>每次放回烙铁架时</td><td>烙铁头留一层锡保护（不要擦干净放回）</td></tr>
+    <tr><td>深度清洁</td><td>烙铁头变黑时</td><td>蘸松香 → 在湿海绵上来回擦拭 → 立即镀锡</td></tr>
+    <tr><td>更换</td><td>尖端腐蚀/变形</td><td>断电冷却 → 拧下旧头 → 拧上新头 → 重新镀锡</td></tr>
+  </table>
+
+  <div class="tip" style="margin-top:12px">
+    <b>烙铁头是消耗品，但寿命取决于习惯。</b><br>
+    永远不让烙铁头裸露在高温下超过10秒——不焊接就镀一层锡放着。<br>
+    高温（>400℃）+ 不镀锡 = 烙铁头几小时内报废。<br>
+    低温（<350℃）+ 勤镀锡 = 一个烙铁头用半年以上。
+  </div>
+</div>
+
+<!-- 进阶技巧 -->
+<h2>八、进阶技巧</h2>
+
+<h3>8.1 使用吸锡笔拆元件</h3>
+<div class="card">
+  <div class="step"><div class="step-num">1</div><div>烙铁加热焊点至锡完全熔化（比焊接多1~2秒）</div></div>
+  <div class="step"><div class="step-num">2</div><div>吸锡笔活塞按下到底（听到"咔"一声锁定）</div></div>
+  <div class="step"><div class="step-num">3</div><div>吸嘴对准熔化焊点，尽量贴近</div></div>
+  <div class="step"><div class="step-num">4</div><div>按下释放按钮，锡液被吸入管内</div></div>
+  <div class="step"><div class="step-num">5</div><div>如果一次没吸干净，补一点新锡再吸（新锡帮助旧锡熔化）</div></div>
+</div>
+
+<h3>8.2 松香的正确用法</h3>
+<div class="card">
+  <ul>
+    <li><b>清洁烙铁头：</b>烙铁头蘸一下松香，松香沸腾溶解氧化物，再擦拭</li>
+    <li><b>助焊焊点：</b>焊点不粘锡时，用烙铁头蘸微量松香触碰焊点</li>
+    <li><b>拖焊IC：</b>在IC引脚上涂松香，烙铁头带锡横向拖动，松香帮助锡自动分开各引脚</li>
+    <li><b>注意：</b>松香高温产生烟雾，保持通风</li>
+  </ul>
+</div>
+
+<h3>8.3 常见问题速查</h3>
+<div class="card">
+  <table>
+    <tr><th>问题</th><th>原因</th><th>解决</th></tr>
+    <tr><td>焊锡不粘烙铁头</td><td>烙铁头氧化</td><td>蘸松香反复擦拭，还不行就换头</td></tr>
+    <tr><td>焊锡不粘焊盘</td><td>焊盘氧化/脏</td><td>用酒精擦焊盘，加松香助焊</td></tr>
+    <tr><td>焊点拉尖（锡刺）</td><td>烙铁移开太慢/温度低</td><td>提温10~20℃，快速移开</td></tr>
+    <tr><td>焊点灰暗粗糙</td><td>冷却时动了元件</td><td>重新加热焊点，自然冷却不动</td></tr>
+    <tr><td>焊点呈球形</td><td>焊盘没加热到位</td><td>烙铁头多接触焊盘，等1~2秒再送锡</td></tr>
+    <tr><td>PCB焊盘脱落</td><td>加热过久/温度过高</td><td>降温度<350℃，加热不超3秒</td></tr>
+    <tr><td>松香冒烟多</td><td>正常现象</td><td>通风即可，烟雾无害但有刺激性</td></tr>
+    <tr><td>数显温度不准</td><td>需要校准</td><td>用温度补偿功能调整偏差</td></tr>
+  </table>
+</div>
+
+<!-- 功能操作 -->
+<h2>九、数显面板操作指南</h2>
+<div class="card">
+  <div class="row"><span class="lbl">开机</span><span class="val">接通电源，屏显当前设置温度</span></div>
+  <div class="row"><span class="lbl">调温 + / -</span><span class="val">按键增减设定温度（长按快速调节）</span></div>
+  <div class="row"><span class="lbl">℃/℉ 切换</span><span class="val">功能键切换温标显示</span></div>
+  <div class="row"><span class="lbl">温度补偿</span><span class="val">进入设置菜单校准实际温度偏差</span></div>
+  <div class="row"><span class="lbl">功率增益</span><span class="val">大焊点时开启，提升回温速度</span></div>
+  <div class="row"><span class="lbl">加热指示灯</span><span class="val">闪烁=加热中 / 常亮=到达设定温度</span></div>
+  <div class="row"><span class="lbl">待机/关机</span><span class="val">拔掉电源！没有软开关，必须断电</span></div>
+</div>
+
+<!-- 保养 -->
+<h2>十、日常保养与收纳</h2>
+<div class="card">
+  <ol>
+    <li><b>每次用完：</b>烙铁头镀厚锡 → 断电冷却 → 收入烙铁架</li>
+    <li><b>冷却时间：</b>至少15分钟后再收入收纳盒，塑料遇热会变形</li>
+    <li><b>焊锡丝保存：</b>密封防潮，氧化后焊接效果变差</li>
+    <li><b>松香保存：</b>盖紧盖子，松香吸潮后焊接会飞溅</li>
+    <li><b>海绵维护：</b>定期清洗，长期不用时晾干防止发霉</li>
+    <li><b>收纳顺序：</b>烙铁 → 烙铁架 → 镊子 → 吸锡笔 → 耗材 → 合盖</li>
+  </ol>
+</div>
+
+<div class="card ok" style="margin-top:24px;text-align:center">
+  <span class="tag ok">✅ ℃/℉切换</span>
+  <span class="tag b">✅ 功率可调</span>
+  <span class="tag ok">✅ 温度补偿</span>
+  <span class="tag b">✅ 工作指示灯</span>
+  <span class="tag ok">✅ 180~500℃</span>
+  <span class="tag b">✅ 峰值183W</span>
+</div>
+
+<p style="text-align:center;color:rgba(255,255,255,.2);font-size:10px;margin-top:24px">
+德力西 110W 数显电烙铁 · 从入门到精通 · 生活手册
+</p>
+
+</body>
+</html>
