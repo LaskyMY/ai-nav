@@ -80,7 +80,10 @@ function decodeDocText(encoded) {
   text = text.replace(/[A-Za-z0-9_\s]{20,}(?![一-鿿])/g, "");          // Long ASCII strings without CJK
   text = text.replace(/\n{3,}/g, "\n\n");
   text = text.replace(/^\s*[\d.-]+\s*$/gm, "");                         // Lines with only numbers
+  text = text.replace(/\b\d{6,}\b\s*[^\n]*/g, "");                     // Long digit sequences (binary artifact: 000000...)
+  text = text.replace(/\n\s*\d{5,}\s*\n/g, "\n");                       // Standalone long number lines
   text = text.replace(/(.).*?\1{10,}/g, "");                            // Repeated character garbage
+  text = text.replace(/[�]/g, "");                                      // Unicode replacement char
   text = text.trim();
   return text;
 }
