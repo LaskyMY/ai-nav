@@ -41,27 +41,12 @@ void oledClear() {
 }
 
 void oledPrint(String text) {
+  if (text.length() == 0) return;
   display.clearDisplay();
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-
-  // Split text by \n, auto-wrap
-  int y = 0;
-  String line = "";
-  for (int i = 0; i <= text.length(); i++) {
-    char c = (i < text.length()) ? text[i] : '\n';
-    if (c == '\n' || display.getCursorX() + 6 > SCREEN_W) {
-      display.setCursor(0, y);
-      display.print(line);
-      y += 10;
-      line = "";
-      if (y >= SCREEN_H) break;
-      if (c != '\n') line += c;
-    } else {
-      line += c;
-    }
-  }
+  display.println(text);
   display.display();
 }
 
