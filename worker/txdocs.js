@@ -87,6 +87,7 @@ function decodeDocText(encoded) {
   // Post-process: strip known font/style names that survived whitelist
   text = text.replace(/^\s*(微软雅黑|新細明體|等线|宋体|黑体|楷体|DengXian|SimSun|SimHei|KaiTi|FangSong)\s*[A-Za-z0-9@:*]*\s*$/gim, "");
   text = text.replace(/^\s*(标题\s*字符|副标题\s*字符|正文\s*文本|要点\s*字符|标题\s*\d|副标题\s*\d)\s*[*:]*\s*$/gim, "");
+  text = text.replace(/^\s*Office\s*主题[@:*]*\s*$/gim, "");
   text = text.trim();
   return text;
 }
@@ -110,7 +111,8 @@ function isReadableText(text) {
   // Reject if it's just a font/style name with Chinese mixed in
   // Pattern: "FontName中文FontName" or "FontName:中文:"
   if (/^(微软雅黑|新細明體|等线|宋体|黑体|楷体|DengXian|SimSun|SimHei|KaiTi|FangSong)[@:*A-Za-z0-9]*$/i.test(t)) return false;
-  if (/^[A-Za-z\s]+(微软雅黑|新細明體)[\s:@*A-Za-z0-9]*$/i.test(t)) return false;
+  if (/^[A-Za-z\s]+(微软雅黑|新細明體|主题|标题)[\s:@*A-Za-z0-9]*$/i.test(t)) return false;
+  if (/^Office\s*主题/i.test(t)) return false;
 
   // Reject short lines that are just metadata labels
   if (t.length < 25) {
