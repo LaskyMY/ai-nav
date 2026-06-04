@@ -84,66 +84,51 @@ function decodeDocText(encoded) {
   text = text.replace(/\n\s*\d{5,}\s*\n/g, "\n");                       // Standalone long number lines
   text = text.replace(/(.).*?\1{10,}/g, "");                            // Repeated character garbage
   text = text.replace(/[�]/g, "");                                      // Unicode replacement char
+  // Post-process: strip known font/style names that survived whitelist
+  text = text.replace(/^\s*(微软雅黑|新細明體|等线|宋体|黑体|楷体|DengXian|SimSun|SimHei|KaiTi|FangSong)\s*[A-Za-z0-9@:*]*\s*$/gim, "");
+  text = text.replace(/^\s*(标题\s*字符|副标题\s*字符|正文\s*文本|要点\s*字符|标题\s*\d|副标题\s*\d)\s*[*:]*\s*$/gim, "");
   text = text.trim();
   return text;
 }
 
 function isReadableText(text) {
-  if (text.length < 3) return false;
+  if (text.length < 5) return false;
 
-  // ── REJECT: Office style names, metadata, font references ──
-  const officePatterns = [
-    // Font families
-    /Wingdings/i, /Calibri/i, /DaunPenh/i, /DokChampa/i, /Estrangelo Edessa/i,
-    /Iskoola Pota/i, /Mongolian Baiti/i, /Microsoft Uighur/i, /Microsoft Yi Baiti/i,
-    /Microsoft Himalaya/i, /MoolBoran/i, /Angsana/i, /Nyala/i, /Vrinda/i, /Shruti/i,
-    /Tunga/i, /Raavi/i, /Euphemia/i, /Plantagenet/i, /Cordia/i, /ＭＳ/i, /DengXian/i,
-    /Times New Roman/i, /等线/i,
-    // Style names (Office built-in styles)
-    /^heading\s/i, /^toc\s/i, /Subtitle/i, /Hyperlink/i, /Revision/i, /Table Grid/i,
-    /Light (Grid|List|Shading)/i, /Medium (Grid|List|Shading)/i, /Dark List/i,
-    /Book Title/i, /List Paragraph/i, /Normal Table/i, /No Spacing/i,
-    /Smart Link/i, /FollowedHyperlink/i, /Intense (Quote|Reference)/i,
-    /Title Char/i, /Subtitle Char/i, /Heading \d Char/i,
-    // Chinese style names
-    /标题\s*字符/, /副标题\s*字符/, /正文(文本)?\s*(字符)?/, /要点\s*字符/,
-    /引用\s*字符/, /列出段落/, /明显参考/, /不明显参考/,
-    /书籍标题/, /不明显强调/, /明显强调/, /列出\s*(字符|段落)/,
-    // Technical metadata
-    /ISO-8859/i, /melo-codeblock/i, /^080E/i, /Smart Link/i,
-    /^[A-F0-9]{6}:?\s*$/m, /^[A-F0-9]{8}\*?\s*$/m,
-    /^\d{5,7}[a-zA-Z]?\*?\s*$/m, /^[a-z0-9]+\*\s*$/im,
-    /^[*:\s]{3,}$/m, /^[!()*]{3,}$/m,
-    /Office\s*主题/i, /Default Paragraph Font/i,
-  ];
-
-  // If the ENTIRE text matches any office pattern, reject it
-  for (const pat of officePatterns) {
-    // Check if the chunk is primarily metadata (over 70% match)
-    const lines = text.split(/\n/);
-    let metaLines = 0;
-    for (const line of lines) {
-      if (pat.test(line.trim())) metaLines++;
-      else if (/^[\s*:]{2,}$/.test(line.trim())) metaLines++;
-    }
-    if (metaLines > 0 && metaLines >= lines.length * 0.6) return false;
-  }
-
-  // Single-line metadata check
+  // ── WHITELIST APPROACH: only accept real content ──
   const t = text.trim();
-  if (t.length < 30) {
-    for (const pat of officePatterns) {
-      if (pat.test(t)) return false;
-    }
+
+  // MUST have Chinese characters (real financial content is in Chinese)
+  const hasCJK = /[一-鿿]/.test(t);
+  if (!hasCJK) {
+    // Exception: pure number/metric lines with units
+    if (/^[\d.,]+\s*[%万亿年月日\$¥€]/.test(t) && t.length > 8) return true;
+    // Exception: multi-word English sentences (analyst commentary)
+    if (/[A-Z][a-z]+\s+[a-z]+\s+[a-z]+/.test(t) && t.length > 30) return true;
+    return false; // Everything else without Chinese = reject
   }
 
-  // Has CJK characters = definitely readable
-  if (/[一-鿿]/.test(text)) return true;
-  // Has meaningful ASCII words in sentence form
-  if (/[A-Za-z]{4,}\s+[A-Za-z]{3,}/.test(text) && text.length > 15) return true;
-  // Has numbers with context (percentages, prices, dates)
-  if (/[\d.]+\s*[%万亿年月日\$¥€]/.test(text) && text.length > 10) return true;
-  return false;
+  // Reject if it's just a font/style name with Chinese mixed in
+  // Pattern: "FontName中文FontName" or "FontName:中文:"
+  if (/^(微软雅黑|新細明體|等线|宋体|黑体|楷体|DengXian|SimSun|SimHei|KaiTi|FangSong)[@:*A-Za-z0-9]*$/i.test(t)) return false;
+  if (/^[A-Za-z\s]+(微软雅黑|新細明體)[\s:@*A-Za-z0-9]*$/i.test(t)) return false;
+
+  // Reject short lines that are just metadata labels
+  if (t.length < 25) {
+    // Office style patterns
+    if (/^(HTML |Table |Subtle |Intense |Strong |Book |List |Light |Medium |Dark |Smart |Normal )/i.test(t)) return false;
+    if (/(Definition|Typewriter|Emphasis|Reference|Paragraph|Columns|Classic|Colorful|Grid|List)$/i.test(t)) return false;
+    // Pure font names with decorations
+    if (/^[A-Za-z一-鿿]+[@:*]+$/i.test(t)) return false;
+    // Lines that are mostly asterisks/colons with minimal text
+    const textOnly = t.replace(/[*:@\s]/g, '');
+    if (textOnly.length < 5) return false;
+  }
+
+  // Reject if line is >50% non-text characters (colons, asterisks, etc.)
+  const nonText = t.replace(/[^一-鿿　-〿＀-￯a-zA-Z0-9]/g, '').length;
+  if (nonText < t.length * 0.3) return false;
+
+  return true;
 }
 
 // Deno-compatible atob
