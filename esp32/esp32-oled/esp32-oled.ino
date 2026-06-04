@@ -13,8 +13,8 @@
 
 // ── OLED ──
 #define OLED_ADDR 0x3C
-#define OLED_SDA  6
-#define OLED_SCL  7
+#define OLED_SDA  5
+#define OLED_SCL  6
 #define SCREEN_W  128
 #define SCREEN_H  64
 Adafruit_SSD1306 display(SCREEN_W, SCREEN_H, &Wire, -1);
