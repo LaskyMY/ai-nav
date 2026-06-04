@@ -90,12 +90,24 @@ function decodeDocText(encoded) {
 
 function isReadableText(text) {
   if (text.length < 3) return false;
+
+  // Reject Office metadata / font theme garbage
+  if (/^(Wingdings|Calibri|Times New Roman|微软雅黑|新細明體|Cordia|Angsana|DaunPenh|MoolBoran|Euphemia|DokChampa|Iskoola Pota|Mongolian Baiti|Microsoft Uighur|Estrangelo Edessa|ＭＳ|等线)[^*\n]*$/im.test(text)) return false;
+  if (/^(heading \d|toc \d|Subtitle|Hyperlink|Revision|Table Grid)[^*\n]*$/im.test(text)) return false;
+  if (/^[A-F0-9]{6}:?$/m.test(text)) return false; // Hex color lines
+  if (/^[A-F0-9]{8}\*?$/m.test(text)) return false; // 8-char hex codes
+  if (/^\d{5,6}[a-zA-Z]?\*?$/m.test(text)) return false; // 00000bJ patterns
+  if (/^[a-z0-9]+\*$/im.test(text) && text.length < 15) return false; // 9r3w32*
+  if (/^(ISO-8859-1|melo-codeblock|080E)/i.test(text)) return false; // Encoding/metadata tags
+  if (/^[*:]{3,}$/m.test(text)) return false; // Garbage ***:::* patterns
+  if (/^[!\(\)\*]{3,}$/m.test(text)) return false; // !!( !!((( **((
+
   // Has CJK characters = definitely readable
   if (/[一-鿿]/.test(text)) return true;
-  // Has meaningful ASCII words
-  if (/[A-Za-z]{3,}/.test(text) && text.length > 8) return true;
-  // Has numbers with context
-  if (/[\d.]+%?/.test(text) && text.length > 5) return true;
+  // Has meaningful ASCII words in sentence form
+  if (/[A-Za-z]{4,}\s+[A-Za-z]{3,}/.test(text) && text.length > 10) return true;
+  // Has numbers with context (percentages, prices)
+  if (/[\d.]+\s*[%万亿]/.test(text) && text.length > 8) return true;
   return false;
 }
 
