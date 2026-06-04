@@ -1,18 +1,15 @@
-// ESP32-C3 + SSD1306 OLED Dashboard — U8g2 专业仪表盘
-// 库: U8g2 (Arduino库管理器安装 "U8g2 by oliver")
+// ESP32-C3 + SSD1306 OLED Dashboard — U8g2
 // OLED: 0.96" 128x64 I2C, SDA=GPIO5 SCL=GPIO6
+// Library: U8g2 by oliver (Arduino Library Manager)
 #include <WiFi.h>
 #include <Preferences.h>
-#include <Wire.h>
 #include <U8g2lib.h>
 #include <BLEDevice.h>
 #include <BLEUtils.h>
 #include <BLEServer.h>
 
-// ── OLED ──
-U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /*reset=*/U8X8_PIN_NONE, /*clock=*/6, /*data=*/5);
+U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE, 6, 5);
 
-// ── BLE UUIDs ──
 #define SVC      "12345678-1234-1234-1234-123456789abc"
 #define CH_WIFI  "12345678-1234-1234-1234-123456789003"
 #define CH_INFO  "12345678-1234-1234-1234-123456789004"
@@ -26,159 +23,155 @@ String myIP = "";
 BLECharacteristic *pInfoChar = nullptr;
 BLECharacteristic *pWifiDataChar = nullptr;
 unsigned long startMs = 0;
-
-// Display state
-int screenMode = 0;       // 0=system info, 1=message, 2=WiFi detail, 3=animation
+int screenMode = 0;
 String dispMsg = "";
 unsigned long animStart = 0;
-int animFrame = 0;
 
-// ── Dashboard Rendering ──
-void drawHeader() {
-  u8g2.setFont(u8g2_font_6x10_tf);
-
-  // WiFi icon + RSSI
-  int cx = 4;
-  if (wifiOK) {
-    int rssi = WiFi.RSSI();
-    u8g2.drawStr(cx, 9, wifiOK ? "W" : "w");
-  } else {
-    u8g2.drawStr(cx, 9, "w");
-  }
-
-  // BT icon
-  u8g2.drawStr(20, 9, "B");
-
-  // Time
-  char tbuf[12];
-  unsigned long up = (millis() - startMs) / 1000;
-  int h = up / 3600, m = (up % 3600) / 60, s = up % 60;
-  snprintf(tbuf, 12, "%02d:%02d:%02d", h, m, s);
-  u8g2.setFont(u8g2_font_7x14_tf);
-  int tw = u8g2.getStrWidth(tbuf);
-  u8g2.drawStr(128 - tw - 2, 13, tbuf);
-
-  // Separator line
-  u8g2.drawHLine(0, 15, 128);
+// ── Helper: draw text with top-left origin ──
+void drawText(int x, int y, const char* str) {
+  // U8g2 drawStr uses baseline Y. Add font ascent to get top-aligned
+  u8g2.drawStr(x + 2, y + 10, str);
 }
 
+// ── Header bar ──
+void drawHeader() {
+  char buf[20];
+  unsigned long up = (millis() - startMs) / 1000;
+  snprintf(buf, 20, "%02lu:%02lu:%02lu", up / 3600, (up % 3600) / 60, up % 60);
+
+  // Left: status icons
+  u8g2.setFont(u8g2_font_6x10_tf);
+  u8g2.drawStr(2, 10, "W");  // WiFi icon placeholder
+  u8g2.drawStr(16, 10, "B"); // BT icon placeholder
+
+  // Right: time
+  u8g2.drawStr(90, 10, buf);
+
+  // Separator
+  u8g2.drawHLine(0, 12, 128);
+}
+
+// ── Screen 0: System Info ──
 void drawSysInfo() {
   drawHeader();
   u8g2.setFont(u8g2_font_6x10_tf);
 
-  // WiFi status
-  u8g2.setCursor(0, 26);
-  u8g2.print("WiFi: ");
-  u8g2.print(wifiOK ? "OK  " + myIP : "---");
+  // WiFi row
+  u8g2.drawStr(2, 24, "WiFi:");
+  u8g2.drawStr(36, 24, wifiOK ? (wifiOK ? myIP.c_str() : "OK") : "OFF");
 
-  // BT status
-  u8g2.setCursor(0, 36);
-  u8g2.print("BLE:  AI-NAV-OLED");
+  // IP row
+  if (wifiOK) {
+    u8g2.drawStr(2, 36, "IP:");
+    u8g2.drawStr(24, 36, myIP.c_str());
+  } else {
+    u8g2.drawStr(2, 36, "Scan WiFi via BLE");
+  }
 
   // Memory
-  u8g2.setCursor(0, 46);
-  u8g2.print("Free: ");
-  u8g2.print(ESP.getFreeHeap() / 1024);
-  u8g2.print(" KB");
+  char mbuf[20];
+  snprintf(mbuf, 20, "Free: %lu KB", ESP.getFreeHeap() / 1024);
+  u8g2.drawStr(2, 48, mbuf);
 
   // RSSI bar
-  u8g2.setCursor(0, 56);
   if (wifiOK) {
+    u8g2.drawStr(2, 60, "Sig:");
     int rssi = WiFi.RSSI();
-    u8g2.print("RSSI: ");
-    u8g2.print(rssi);
-    u8g2.print(" dBm");
-    // Signal bar
-    int bars = (rssi > -50) ? 5 : (rssi > -60) ? 4 : (rssi > -70) ? 3 : (rssi > -80) ? 2 : (rssi > -90) ? 1 : 0;
-    int sx = 80;
-    for (int i = 0; i < 5; i++) {
-      int h = 3 + i * 3;
-      if (i < bars) u8g2.drawBox(sx + i * 6, 50 - h, 4, h);
-      else u8g2.drawFrame(sx + i * 6, 50 - h, 4, h);
+    int bars = constrain((rssi + 90) / 8, 0, 10);
+    for (int i = 0; i < bars; i++) {
+      u8g2.drawBox(36 + i * 7, 50, 5, 10);
     }
+    for (int i = bars; i < 10; i++) {
+      u8g2.drawFrame(36 + i * 7, 50, 5, 10);
+    }
+    char rbuf[10];
+    snprintf(rbuf, 10, "%d", rssi);
+    u8g2.drawStr(110, 60, rbuf);
   } else {
-    u8g2.print("No WiFi");
+    u8g2.drawStr(2, 60, "Ready");
   }
 }
 
+// ── Screen 1: Message ──
 void drawMessage() {
   drawHeader();
   u8g2.setFont(u8g2_font_6x10_tf);
 
   if (dispMsg.length() == 0) {
-    u8g2.setCursor(10, 40);
-    u8g2.print("Waiting for message...");
+    int tw = u8g2.getStrWidth("No message");
+    u8g2.drawStr((128 - tw) / 2, 40, "No message");
     return;
   }
 
-  // Print message with basic wrapping
-  int y = 24;
-  int ci = 0;
-  String line = "";
-  while (ci < dispMsg.length() && y < 62) {
-    char c = dispMsg[ci];
-    if (c == '\n' || line.length() > 20) {
-      u8g2.setCursor(0, y);
-      // Only print ASCII chars
-      for (int j = 0; j < line.length(); j++) {
-        if ((uint8_t)line[j] < 128) u8g2.print(line[j]);
-        else u8g2.print('?');
-      }
-      y += 12;
-      line = "";
-      if (c != '\n') line += c;
-    } else {
-      if ((uint8_t)c >= 32 && (uint8_t)c < 128) line += c;
-    }
-    ci++;
+  // Filter non-ASCII
+  String clean;
+  for (int i = 0; i < dispMsg.length(); i++) {
+    uint8_t c = (uint8_t)dispMsg[i];
+    if (c == '\n' || (c >= 32 && c < 128)) clean += (char)c;
   }
-  // Remaining
-  if (line.length() > 0 && y < 62) {
-    u8g2.setCursor(0, y);
-    for (int j = 0; j < line.length(); j++) {
-      if ((uint8_t)line[j] < 128) u8g2.print(line[j]);
+
+  // Print with line wrap
+  int y = 24;
+  int start = 0;
+  int col = 0;
+  for (int i = 0; i <= clean.length(); i++) {
+    char c = (i < clean.length()) ? clean[i] : '\n';
+    if (c == '\n' || col >= 21) {
+      if (i > start) {
+        u8g2.drawStr(2, y, clean.substring(start, i).c_str());
+        y += 12;
+      }
+      start = i + (c == '\n' ? 1 : 0);
+      col = 0;
+      if (y > 60) break;
+    } else {
+      col++;
     }
   }
 }
 
+// ── Screen 2: WiFi Detail ──
 void drawWiFiDetail() {
   drawHeader();
   u8g2.setFont(u8g2_font_6x10_tf);
 
-  if (wifiOK) {
-    u8g2.setCursor(0, 26); u8g2.print("SSID: " + WiFi.SSID());
-    u8g2.setCursor(0, 36); u8g2.print("IP:   " + myIP);
-    u8g2.setCursor(0, 46); u8g2.print("RSSI: " + String(WiFi.RSSI()) + " dBm");
-    u8g2.setCursor(0, 56); u8g2.print("Host: AI-NAV-OLED");
-  } else {
-    u8g2.setCursor(0, 30); u8g2.print("WiFi Not Connected");
-    u8g2.setCursor(0, 44); u8g2.print("Use BLE to configure");
-    u8g2.setCursor(0, 54); u8g2.print("Open esp32-oled.html");
+  if (!wifiOK) {
+    u8g2.drawStr(2, 30, "WiFi: Not Connected");
+    u8g2.drawStr(2, 44, "Use web page to scan");
+    u8g2.drawStr(2, 56, "and connect via BLE");
+    return;
   }
+
+  u8g2.drawStr(2, 24, ("SSID: " + WiFi.SSID()).c_str());
+  u8g2.drawStr(2, 38, ("IP:   " + myIP).c_str());
+  char rbuf[20];
+  snprintf(rbuf, 20, "RSSI: %d dBm", WiFi.RSSI());
+  u8g2.drawStr(2, 52, rbuf);
 }
 
+// ── Screen 3: Animation ──
 void drawAnimation() {
   drawHeader();
 
-  int elapsed = (millis() - animStart) / 50;
-  int frame = elapsed % 16;
-
+  int t = (millis() - animStart) / 30;
   u8g2.setFont(u8g2_font_10x20_tf);
 
-  // Bouncing loading dots
+  // 3 bouncing dots centered
   for (int i = 0; i < 3; i++) {
-    int dotX = 30 + i * 25;
-    int dotY = 30 + (sin((elapsed + i * 5) * 0.3) * 10);
-    u8g2.drawDisc(dotX, dotY, 4);
+    int dx = 44 + i * 22;
+    int dy = 30 + (int)(sin((t + i * 4) * 0.25) * 10);
+    u8g2.drawDisc(dx, dy, 4);
   }
 
   u8g2.setFont(u8g2_font_6x10_tf);
-  u8g2.setCursor(10, 56);
-  u8g2.print(frame % 4 < 2 ? "Processing" : "Processing.");
-  u8g2.print(frame % 4 < 1 ? "." : frame % 4 < 2 ? ".." : frame % 4 < 3 ? "..." : "");
+  int dots = (t / 8) % 4;
+  String msg = "Loading";
+  for (int i = 0; i < dots; i++) msg += ".";
+  int tw = u8g2.getStrWidth(msg.c_str());
+  u8g2.drawStr((128 - tw) / 2, 60, msg.c_str());
 }
 
-// ── Main render loop ──
+// ── Main render ──
 void renderDisplay() {
   u8g2.clearBuffer();
   switch (screenMode) {
@@ -186,7 +179,6 @@ void renderDisplay() {
     case 1: drawMessage(); break;
     case 2: drawWiFiDetail(); break;
     case 3: drawAnimation(); break;
-    default: drawSysInfo(); break;
   }
   u8g2.sendBuffer();
 }
@@ -232,6 +224,7 @@ void doWiFiConnect(String ssid, String pass) {
   if (WiFi.status() == WL_CONNECTED) {
     wifiOK = true; myIP = WiFi.localIP().toString(); http.begin();
     pWifiDataChar->setValue(("OK:" + myIP).c_str()); pWifiDataChar->notify();
+    screenMode = 0;
   } else {
     WiFi.disconnect(true);
     pWifiDataChar->setValue("FAIL"); pWifiDataChar->notify();
@@ -245,12 +238,13 @@ void handleHTTP(WiFiClient &c, String &req) {
   if (req.indexOf("/api/status") >= 0) {
     c.print(hdr + "{\"wifi\":" + String(wifiOK?"true":"false") + ",\"ip\":\"" + myIP + "\",\"uptime\":" + String((millis()-startMs)/1000) + "}");
   } else if (req.indexOf("/api/oled") >= 0) {
-    auto gp = [&](const char* k, String& v) {
-      int i = req.indexOf(String(k)+"="); if(i>=0){i+=strlen(k)+1;int e=req.indexOf('&',i);if(e<0)e=req.indexOf(' ',i);if(e<0)e=req.length();v=req.substring(i,e);}
-    };
-    String txt, icon;
-    gp("t", txt); gp("i", icon);
-    if (txt.length() > 0) { dispMsg = txt; screenMode = 1; }
+    int ti = req.indexOf("t=");
+    if (ti >= 0) {
+      String txt = req.substring(ti + 2);
+      int ei = txt.indexOf('&'); if (ei < 0) ei = txt.indexOf(' '); if (ei < 0) ei = txt.length();
+      dispMsg = txt.substring(0, ei);
+      screenMode = 1;
+    }
     c.print(hdr + "{\"status\":\"ok\"}");
   } else {
     c.print(hdr + "{\"name\":\"AI-NAV-OLED\"}");
@@ -268,10 +262,6 @@ class WiFiCB : public BLECharacteristicCallbacks {
       doWiFiConnect(body.substring(0, sep), body.substring(sep + 1));
       return;
     }
-    if (v == "SYS") { screenMode = 0; return; }
-    if (v == "MSG") { screenMode = 1; return; }
-    if (v == "WIFI") { screenMode = 2; return; }
-    if (v == "ANIM") { screenMode = 3; animStart = millis(); return; }
   }
 };
 
@@ -284,7 +274,6 @@ class OLEDCB : public BLECharacteristicCallbacks {
     if (v == "WIFI") { screenMode = 2; return; }
     if (v == "ANIM") { screenMode = 3; animStart = millis(); return; }
     if (v.startsWith("T:") && v.length() > 2) { dispMsg = v.substring(2); screenMode = 1; return; }
-    // Default: treat as message
     dispMsg = v; screenMode = 1;
   }
 };
@@ -297,18 +286,19 @@ class InfoCB : public BLECharacteristicCallbacks {
 void setup() {
   Serial.begin(115200); startMs = millis();
   u8g2.begin();
-  u8g2.setContrast(128);
+  u8g2.setContrast(200);
 
   // Boot screen
   u8g2.clearBuffer();
   u8g2.setFont(u8g2_font_10x20_tf);
-  u8g2.drawStr(20, 30, "AI NAV");
+  int tw = u8g2.getStrWidth("AI NAV");
+  u8g2.drawStr((128 - tw) / 2, 35, "AI NAV");
   u8g2.setFont(u8g2_font_6x10_tf);
-  u8g2.drawStr(25, 50, "Booting...");
+  u8g2.drawStr(35, 55, "Booting...");
   u8g2.sendBuffer();
-  delay(1200);
+  delay(1500);
 
-  // Try saved WiFi
+  // WiFi
   prefs.begin("ainav", false);
   String ssid = prefs.getString("ssid", ""), pass = prefs.getString("pass", "");
   prefs.end();
@@ -336,23 +326,15 @@ void setup() {
   Serial.println("Ready");
 }
 
-// ── Loop ──
 unsigned long lastRender = 0;
 void loop() {
   if (wifiOK) {
     WiFiClient c = http.available();
     if (c) { String req = c.readStringUntil('\n'); if (req.length() > 0) handleHTTP(c, req); c.stop(); }
   }
-
-  // Render display at ~30fps (animation mode) or 2fps (other modes)
   unsigned long interval = (screenMode == 3) ? 33 : 500;
-  if (millis() - lastRender > interval) {
-    lastRender = millis();
-    renderDisplay();
-  }
-
+  if (millis() - lastRender > interval) { lastRender = millis(); renderDisplay(); }
   static unsigned long lastInfo = 0;
   if (millis() - lastInfo > 30000) { lastInfo = millis(); infoUpdate(); }
-
   delay(5);
 }
