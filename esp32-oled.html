@@ -7,41 +7,42 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.5;padding:16px;max-width:500px;margin:0 auto;padding-bottom:32px}
-h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:4px}
-.sub{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:16px}
+h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:2px}
+.sub{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:14px}
 .card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px}
 .card.warn{border-color:rgba(245,158,11,.15);background:rgba(245,158,11,.03)}
 .card.ok{border-color:rgba(16,185,129,.15);background:rgba(16,185,129,.03)}
-.row{display:flex;align-items:center;justify-content:space-between;margin:6px 0}
-.lbl{color:rgba(255,255,255,.5)}.val{font-weight:600;color:#00e5ff}
-.btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:12px;cursor:pointer;font-family:inherit;margin:2px;transition:all .15s}
+.row{display:flex;align-items:center;justify-content:space-between;margin:4px 0}
+.lbl{color:rgba(255,255,255,.5);font-size:11px}.val{font-weight:600;color:#00e5ff;font-size:12px}
+.btn{display:inline-block;padding:8px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:12px;cursor:pointer;font-family:inherit;margin:2px;transition:all .15s}
 .btn:active{transform:scale(.96)}
 .btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:#00e5ff}
 .btn.danger{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.2);color:#f87171}
 .btn.green{background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.2);color:#10b981}
 .btn.orange{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.2);color:#fbbf24}
-.btn.sm{padding:4px 10px;font-size:10px}
+.btn.purple{background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.2);color:#818cf8}
 .btn:disabled{opacity:.35;pointer-events:none}
-input[type=text],input[type=password]{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:6px 10px;color:#fff;font-size:12px;width:100%}
+input[type=text],input[type=password]{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:8px 10px;color:#fff;font-size:12px;width:100%}
 .status{display:inline-block;width:8px;height:8px;border-radius:4px;margin-right:6px}
 .status.ok{background:#10b981}.status.err{background:#ef4444}.status.wait{background:#f59e0b;animation:pulse 1s infinite}
 @keyframes pulse{50%{opacity:.3}}
-.section-title{font-size:14px;font-weight:700;margin-bottom:8px}
-pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.6;margin:8px 0;max-height:120px;overflow-y:auto}
-.wifi-item{display:flex;align-items:center;padding:8px 10px;margin:4px 0;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);cursor:pointer;transition:all .15s}
-.wifi-item:hover{background:rgba(255,255,255,.05)}
-.wifi-item:active{background:rgba(0,229,255,.08)}
-.wifi-name{flex:1;font-size:12px;font-weight:600}
-.wifi-rssi{font-size:10px;color:rgba(255,255,255,.4);margin-right:8px}
+.section-title{font-size:14px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.6;margin:8px 0;max-height:100px;overflow-y:auto}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mode-btn{border-radius:10px;padding:12px 8px;text-align:center;cursor:pointer;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);transition:all .15s}
+.mode-btn:hover{border-color:rgba(255,255,255,.15);background:rgba(255,255,255,.05)}
+.mode-btn:active{transform:scale(.95)}
+.mode-btn .ico{font-size:22px;display:block;margin-bottom:4px}
+.mode-btn .lbl{font-size:10px;color:rgba(255,255,255,.5)}
+.mode-btn.active{border-color:rgba(0,229,255,.3);background:rgba(0,229,255,.08)}
+.mode-btn.active .lbl{color:#00e5ff}
 .wifi-sig{display:flex;gap:2px;margin-right:8px;align-items:flex-end;height:14px}
 .wifi-sig i{width:4px;border-radius:2px;display:inline-block}
+.wifi-item{display:flex;align-items:center;padding:8px 10px;margin:4px 0;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);cursor:pointer}
+.wifi-item:hover{background:rgba(255,255,255,.05)}
 .wifi-item.selected{border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.06)}
-.ico-grid{display:flex;flex-wrap:wrap;gap:6px}
-.ico-btn{width:52px;height:52px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;color:rgba(255,255,255,.5);gap:2px;transition:all .15s}
-.ico-btn:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.15)}
-.ico-btn:active{transform:scale(.94);background:rgba(0,229,255,.1)}
-.ico-btn .e{font-size:20px}
-.debug{font-size:9px;color:rgba(255,255,255,.2);font-family:monospace;max-height:80px;overflow-y:auto;margin-top:6px}
+.wifi-name{flex:1;font-size:12px;font-weight:600}
+.debug{font-size:9px;color:rgba(255,255,255,.2);font-family:monospace;margin-top:6px;max-height:60px;overflow-y:auto}
 </style>
 </head>
 <body>
@@ -51,102 +52,80 @@ pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;fon
 
 <!-- Connection -->
 <div class="card">
-  <div class="section-title">📡 蓝牙连接</div>
-  <div class="row"><span class="lbl">BLE</span><span><span class="status wait" id="st"></span><span id="stt">未连接</span></span></div>
-  <div class="row"><span class="lbl">设备</span><span class="val" id="devName">—</span></div>
+  <div class="section-title">📡 蓝牙</div>
+  <div class="row"><span class="lbl">状态</span><span><span class="status wait" id="st"></span><span id="stt">未连接</span></span></div>
   <button class="btn green" onclick="connect()" id="btnC" style="width:100%">🔗 连接 AI-NAV-OLED</button>
   <button class="btn danger" onclick="disconnect()" id="btnD" style="width:100%;display:none">✂ 断开</button>
 </div>
 
-<!-- WiFi 配网 -->
+<!-- WiFi -->
 <div class="card warn">
-  <div class="section-title">📶 WiFi 配网 (蓝牙)</div>
-  <div class="row"><span class="lbl">状态</span><span class="val" id="wifiStatus">等待蓝牙连接...</span></div>
-
-  <!-- Scan button (shows when WiFi not connected) -->
+  <div class="section-title">📶 WiFi 配网</div>
+  <div class="row"><span class="lbl">状态</span><span class="val" id="wifiStatus">等待蓝牙...</span></div>
   <div id="wifiScanArea" style="display:none">
-    <button class="btn primary" onclick="wifiScan()" id="btnScan" style="width:48%">🔍 扫描WiFi</button>
-    <button class="btn orange" onclick="showManualWifi()" style="width:48%">✏️ 手动输入</button>
-    <div id="wifiScanStatus" style="font-size:10px;color:rgba(255,255,255,.4);margin-top:4px;text-align:center"></div>
+    <button class="btn primary" onclick="wifiScan()" id="btnScan" style="width:48%">🔍 扫描</button>
+    <button class="btn orange" onclick="showManual()" style="width:48%">✏️ 手动</button>
+    <div style="font-size:10px;color:rgba(255,255,255,.3);text-align:center;margin-top:4px" id="wifiScanStatus"></div>
   </div>
-
-  <!-- WiFi list -->
-  <div id="wifiList" style="margin-top:4px"></div>
-
-  <!-- Password + manual input -->
-  <div id="wifiPwdArea" style="display:none;margin-top:8px">
-    <div class="row"><span class="lbl">WiFi名</span><input type="text" id="wifiSSIDInput" placeholder="WiFi名称"></div>
-    <div class="row"><span class="lbl">密码</span><input type="password" id="wifiPassInput" placeholder="WiFi密码"></div>
-    <div style="margin-top:6px">
-      <button class="btn green" onclick="wifiConnect()" style="width:60%">📶 连接</button>
-      <button class="btn" onclick="document.getElementById('wifiPwdArea').style.display='none'" style="width:36%">取消</button>
-    </div>
+  <div id="wifiList"></div>
+  <div id="wifiPwdArea" style="display:none;margin-top:6px">
+    <div class="row"><span class="lbl">WiFi</span><input type="text" id="wifiSSID" placeholder="WiFi名称"></div>
+    <div class="row"><span class="lbl">密码</span><input type="password" id="wifiPass" placeholder="密码"></div>
+    <button class="btn green" onclick="wifiConnect()" style="width:60%;margin-top:4px">📶 连接</button>
+    <button class="btn" onclick="document.getElementById('wifiPwdArea').style.display='none'" style="width:36%;margin-top:4px">取消</button>
   </div>
-
-  <div id="wifiConnStatus" style="font-size:11px;color:#fbbf24;margin-top:6px;text-align:center"></div>
-
-  <!-- Debug -->
-  <div class="debug" id="wifiDebug"></div>
+  <div style="font-size:10px;color:#fbbf24;text-align:center;margin-top:4px" id="wifiConnStatus"></div>
 </div>
 
 <!-- System Info -->
 <div class="card">
-  <div class="section-title">📊 系统信息</div>
+  <div class="section-title">📊 系统</div>
   <div class="row"><span class="lbl">WiFi</span><span class="val" id="sysWifi">—</span></div>
-  <div class="row"><span class="lbl">IP</span><span class="val" id="sysIP" style="font-size:10px">—</span></div>
+  <div class="row"><span class="lbl">IP</span><span class="val" id="sysIP">—</span></div>
   <div class="row"><span class="lbl">运行</span><span class="val" id="sysUp">—</span></div>
   <div class="row"><span class="lbl">信号</span><span class="val" id="sysRSSI">—</span></div>
   <div class="row"><span class="lbl">内存</span><span class="val" id="sysHeap">—</span></div>
 </div>
 
-<!-- OLED 屏幕控制 -->
+<!-- Screen Mode Control -->
 <div class="card ok">
-  <div class="section-title">📺 OLED 屏幕控制</div>
-
-  <!-- Text input -->
-  <div style="margin-bottom:8px">
-    <input type="text" id="oledText" placeholder="输入文字发送到屏幕显示" onkeydown="if(event.key==='Enter')sendOledText()">
+  <div class="section-title">📺 屏幕模式</div>
+  <div class="mode-grid">
+    <div class="mode-btn active" onclick="setMode('SYS')" id="btnSYS">
+      <span class="ico">📊</span><span class="lbl">系统信息</span>
+    </div>
+    <div class="mode-btn" onclick="setMode('MSG')" id="btnMSG">
+      <span class="ico">💬</span><span class="lbl">消息显示</span>
+    </div>
+    <div class="mode-btn" onclick="setMode('WIFI')" id="btnWIFI">
+      <span class="ico">📶</span><span class="lbl">WiFi详情</span>
+    </div>
+    <div class="mode-btn" onclick="setMode('ANIM')" id="btnANIM">
+      <span class="ico">✨</span><span class="lbl">动画</span>
+    </div>
   </div>
-  <button class="btn primary" onclick="sendOledText()" style="width:48%">📝 发送文字</button>
-  <button class="btn green" onclick="sendOledCmd('S')" style="width:48%">📊 系统信息</button>
-  <button class="btn" onclick="sendOledCmd('C')" style="width:48%;margin-top:4px">🧹 清屏</button>
-  <button class="btn orange" onclick="sendOledCmd('I:start')" style="width:48%;margin-top:4px">⭐ 随机图标</button>
-
-  <!-- Icon grid -->
-  <div style="margin-top:10px;font-size:10px;color:rgba(255,255,255,.3);margin-bottom:4px">快捷图标</div>
-  <div class="ico-grid">
-    <div class="ico-btn" onclick="sendOledIcon('wifi')"><span class="e">📶</span>WiFi</div>
-    <div class="ico-btn" onclick="sendOledIcon('bt')"><span class="e">📡</span>蓝牙</div>
-    <div class="ico-btn" onclick="sendOledIcon('ok')"><span class="e">✅</span>确认</div>
-    <div class="ico-btn" onclick="sendOledIcon('x')"><span class="e">❌</span>失败</div>
-    <div class="ico-btn" onclick="sendOledIcon('heart')"><span class="e">❤️</span>爱心</div>
-    <div class="ico-btn" onclick="sendOledIcon('star')"><span class="e">⭐</span>星星</div>
-    <div class="ico-btn" onclick="sendOledIcon('sun')"><span class="e">☀️</span>太阳</div>
-    <div class="ico-btn" onclick="sendOledIcon('moon')"><span class="e">🌙</span>月亮</div>
-    <div class="ico-btn" onclick="sendOledIcon('bolt')"><span class="e">⚡</span>闪电</div>
-    <div class="ico-btn" onclick="sendOledIcon('bell')"><span class="e">🔔</span>通知</div>
-    <div class="ico-btn" onclick="sendOledIcon('arrow_up')"><span class="e">⬆️</span>上</div>
-    <div class="ico-btn" onclick="sendOledIcon('arrow_down')"><span class="e">⬇️</span>下</div>
+  <div style="margin-top:8px;display:flex;gap:4px">
+    <input type="text" id="oledText" placeholder="输入文字发送到OLED屏幕" onkeydown="if(event.key==='Enter')sendText()">
+    <button class="btn primary" onclick="sendText()" style="white-space:nowrap">发送</button>
   </div>
-
   <div class="debug" id="oledDebug"></div>
 </div>
 
 <!-- HTTP API -->
 <div class="card ok" id="httpCard" style="display:none">
-  <div class="section-title">🌐 HTTP API (WiFi直连)</div>
+  <div class="section-title">🌐 HTTP API</div>
   <div class="row"><span class="lbl">地址</span><span class="val" id="httpAddr">—</span></div>
-  <div style="margin-top:8px">
-    <button class="btn primary" onclick="httpCall('/api/status')" style="width:48%">📊 状态</button>
-    <button class="btn" onclick="httpCall('/api/oled?t='+encodeURIComponent(document.getElementById('oledText').value||'Hello'))" style="width:48%">📝 发文字</button>
-    <button class="btn green" onclick="httpCall('/api/oled?i=wifi')" style="width:48%;margin-top:4px">📶 WiFi图标</button>
-    <button class="btn danger" onclick="httpCall('/api/resetwifi')" style="width:48%;margin-top:4px">🔄 重置WiFi</button>
+  <div style="margin-top:6px">
+    <button class="btn primary" onclick="httpCall('/api/status')">📊 状态</button>
+    <button class="btn" onclick="httpCall('/api/oled?t=Hello')">💬 发文字</button>
+    <button class="btn danger" onclick="httpCall('/api/resetwifi')">🔄 重置WiFi</button>
   </div>
-  <pre id="httpResp" style="margin-top:8px;font-size:10px">连接WiFi后自动启用...</pre>
+  <pre id="httpResp">WiFi连接后自动启用</pre>
 </div>
 
+<p style="text-align:center;margin-top:24px"><a href="./hardware.html" style="color:rgba(255,255,255,.2);font-size:10px;text-decoration:none">← 返回硬件控制台</a></p>
+
 <script>
-// ── BLE UUIDs ──
 var S='12345678-1234-1234-1234-123456789abc';
 var W='12345678-1234-1234-1234-123456789003';
 var I='12345678-1234-1234-1234-123456789004';
@@ -154,48 +133,33 @@ var WD='12345678-1234-1234-1234-123456789006';
 var OL='12345678-1234-1234-1234-123456789007';
 
 var dev=null,svr=null,wifiCh=null,info=null,wifiData=null,oledCh=null;
-var espIP='',wifiOk=false,scanResults=[];
+var espIP='',wifiOk=false,scanResults=[],currentMode='SYS';
 
 function st(t,c){document.getElementById('st').className='status '+(c||'wait');document.getElementById('stt').textContent=t}
-function dlog(id,msg){var el=document.getElementById(id);if(el)el.textContent+='\n'+new Date().toLocaleTimeString('zh-CN')+' '+msg;}
+function dlog(id,msg){var el=document.getElementById(id);if(el)el.textContent=new Date().toLocaleTimeString('zh-CN')+' '+msg+'\n'+el.textContent.slice(0,200)}
 
-// ── Connect ──
 async function connect(){
   try{
     st('扫描中...','wait');
-    dev=await navigator.bluetooth.requestDevice({
-      filters:[{name:'AI-NAV-OLED'}],
-      optionalServices:[S]
-    });
-    document.getElementById('devName').textContent=dev.name||'AI-NAV-OLED';
+    dev=await navigator.bluetooth.requestDevice({filters:[{name:'AI-NAV-OLED'}],optionalServices:[S]});
     svr=await dev.gatt.connect();
     var s=await svr.getPrimaryService(S);
     wifiCh=await s.getCharacteristic(W);
+    oledCh=await s.getCharacteristic(OL);
 
-    // WiFi data notify
     try{
       wifiData=await s.getCharacteristic(WD);
       await wifiData.startNotifications();
       wifiData.addEventListener('characteristicvaluechanged',onWifiData);
-      dlog('wifiDebug','WD notify OK');
     }catch(e){dlog('wifiDebug','WD err: '+e.message)}
 
-    // System info
     try{
       info=await s.getCharacteristic(I);
       await info.startNotifications();
       info.addEventListener('characteristicvaluechanged',onInfo);
-      // Read initial value
       var iv=await info.readValue();
-      dlog('wifiDebug','Info read OK');
       onInfo({target:{value:iv}});
     }catch(e){dlog('wifiDebug','Info err: '+e.message)}
-
-    // OLED characteristic
-    try{
-      oledCh=await s.getCharacteristic(OL);
-      dlog('oledDebug','OLED ch OK');
-    }catch(e){dlog('oledDebug','OLED err: '+e.message)}
 
     st('已连接','ok');
     document.getElementById('btnC').style.display='none';
@@ -216,11 +180,7 @@ function disconnect(){if(svr)svr.disconnect();onDisconnect()}
 // ── System Info ──
 function onInfo(ev){
   var txt=new TextDecoder().decode(ev.target.value);
-  dlog('wifiDebug','Info: '+txt.slice(0,60));
-  var parts=txt.split(' '),m={};
-  for(var i=0;i<parts.length;i++){
-    var kv=parts[i].split(':');if(kv.length>=2)m[kv[0]]=kv.slice(1).join(':');
-  }
+  var m={}; txt.split(' ').forEach(function(p){var kv=p.split(':');if(kv.length>=2)m[kv[0]]=kv.slice(1).join(':')});
   document.getElementById('sysWifi').textContent=m['WiFi']||'—';
   document.getElementById('sysIP').textContent=m['IP']||'—';
   document.getElementById('sysUp').textContent=(m['Up']||'—')+'s';
@@ -228,174 +188,108 @@ function onInfo(ev){
   document.getElementById('sysHeap').textContent=((m['Free']||'—')/1024).toFixed(1)+' KB';
 
   if(m['WiFi']==='OK'&&m['IP']&&m['IP']!=='-'){
-    if(!wifiOk){wifiOk=true;espIP=m['IP'];
-      document.getElementById('httpAddr').textContent='http://'+espIP;
-      document.getElementById('httpCard').style.display='block';
-      document.getElementById('wifiStatus').textContent='✅ 已连接: '+espIP;
-      document.getElementById('wifiConnStatus').textContent='';
-      document.getElementById('wifiScanArea').style.display='none';
-      document.getElementById('wifiPwdArea').style.display='none';
-    }
+    if(!wifiOk){wifiOk=true;espIP=m['IP'];showHttpCard();}
   }else{
-    if(wifiOk){wifiOk=false;espIP='';document.getElementById('httpCard').style.display='none'}
-    document.getElementById('wifiStatus').textContent='❌ 未连接 — 下方配网';
+    if(wifiOk){wifiOk=false;espIP=''}
+    document.getElementById('wifiStatus').textContent='❌ 未连接';
     document.getElementById('wifiScanArea').style.display='block';
   }
 }
 
-// ── WiFi Scan ──
-async function wifiScan(){
-  if(!wifiCh)return;
-  document.getElementById('btnScan').disabled=true;
-  document.getElementById('wifiScanStatus').textContent='⏳ 扫描中...';
-  document.getElementById('wifiList').innerHTML='<div style="text-align:center;padding:8px;font-size:10px;color:rgba(255,255,255,.2)">扫描附近WiFi...</div>';
-  dlog('wifiDebug','Sending SCAN...');
+function showHttpCard(){
+  document.getElementById('httpAddr').textContent='http://'+espIP;
+  document.getElementById('httpCard').style.display='block';
+  document.getElementById('wifiStatus').textContent='✅ '+espIP;
+  document.getElementById('wifiScanArea').style.display='none';
+}
+
+// ── Screen Mode ──
+async function setMode(mode){
+  if(!oledCh){alert('请先连接蓝牙');return}
+  currentMode=mode;
+  document.querySelectorAll('.mode-btn').forEach(function(b){b.classList.remove('active')});
+  document.getElementById('btn'+mode).classList.add('active');
   try{
-    await wifiCh.writeValue(new TextEncoder().encode('SCAN'));
-    dlog('wifiDebug','SCAN sent OK');
-  }catch(e){
-    dlog('wifiDebug','SCAN err: '+e.message);
-    document.getElementById('wifiScanStatus').textContent='❌ 发送失败: '+e.message;
-    document.getElementById('btnScan').disabled=false;
-  }
+    await oledCh.writeValue(new TextEncoder().encode(mode));
+    dlog('oledDebug','切换到: '+mode);
+  }catch(e){dlog('oledDebug','切换失败: '+e.message)}
 }
 
-// ── WiFi Data Handler ──
-function onWifiData(ev){
-  var txt=new TextDecoder().decode(ev.target.value);
-  dlog('wifiDebug','WD: '+txt.slice(0,80));
-
-  if(txt==='SCANNING'){document.getElementById('wifiScanStatus').textContent='⏳ 扫描中...';return}
-  if(txt==='CONNECTING'){document.getElementById('wifiConnStatus').textContent='⏳ 连接中...';return}
-  if(txt.startsWith('OK:')){
-    espIP=txt.substring(3);wifiOk=true;
-    document.getElementById('wifiStatus').textContent='✅ 已连接: '+espIP;
-    document.getElementById('wifiConnStatus').textContent='';
-    document.getElementById('httpAddr').textContent='http://'+espIP;
-    document.getElementById('httpCard').style.display='block';
-    document.getElementById('wifiPwdArea').style.display='none';
-    document.getElementById('wifiScanArea').style.display='none';
-    if(info)info.readValue().catch(function(){});
-    return;
-  }
-  if(txt==='FAIL'){
-    document.getElementById('wifiConnStatus').textContent='❌ 密码错误或连接失败';
-    document.getElementById('wifiPwdArea').style.display='none';
-    document.getElementById('btnScan').style.display='inline-block';
-    return;
-  }
-
-  // Parse scan JSON
-  try{
-    var arr=JSON.parse(txt);
-    scanResults=arr;
-    dlog('wifiDebug','Scan: '+arr.length+' networks');
-    var h='';
-    for(var i=0;i<arr.length;i++){
-      var n=arr[i],rssi=n.r;
-      var sigBars='';
-      for(var j=0;j<4;j++){
-        var on=(rssi>-50&&j<4)||(rssi>-65&&j<3)||(rssi>-75&&j<2)||(rssi>-85&&j<1);
-        sigBars+='<i style="height:'+(5+j*3)+'px;background:'+(on?(rssi>-60?'#10b981':'#fbbf24'):'rgba(255,255,255,.15)')+'"></i>';
-      }
-      h+='<div class="wifi-item" onclick="selectWiFi('+i+')">'+
-        '<div class="wifi-sig">'+sigBars+'</div>'+
-        '<span class="wifi-name">'+esc(n.s)+'</span>'+
-        '<span class="wifi-rssi">'+rssi+' dBm</span>'+
-        '<span style="font-size:12px">'+(n.o?'🔒':'🔓')+'</span>'+
-        '</div>';
-    }
-    document.getElementById('wifiList').innerHTML=h||'<div style="text-align:center;padding:8px;font-size:10px;color:rgba(255,255,255,.2)">未发现WiFi</div>';
-    document.getElementById('wifiScanStatus').textContent='找到 '+arr.length+' 个网络 (点一下选网)';
-    document.getElementById('btnScan').disabled=false;
-  }catch(e){
-    dlog('wifiDebug','JSON err: '+e.message);
-    document.getElementById('btnScan').disabled=false;
-  }
-}
-
-function esc(s){return s.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-
-// ── WiFi Select / Manual ──
-function selectWiFi(i){
-  var n=scanResults[i];
-  document.getElementById('wifiSSIDInput').value=n.s;
-  document.getElementById('wifiPassInput').value='';
-  document.getElementById('wifiPwdArea').style.display='block';
-  document.getElementById('wifiPassInput').focus();
-  // Highlight selected
-  var items=document.querySelectorAll('.wifi-item');
-  items.forEach(function(el){el.classList.remove('selected')});
-  if(items[i])items[i].classList.add('selected');
-}
-
-function showManualWifi(){
-  document.getElementById('wifiSSIDInput').value='';
-  document.getElementById('wifiPassInput').value='';
-  document.getElementById('wifiPwdArea').style.display='block';
-  document.getElementById('wifiSSIDInput').focus();
-}
-
-async function wifiConnect(){
-  if(!wifiCh)return;
-  var ssid=document.getElementById('wifiSSIDInput').value.trim();
-  var pass=document.getElementById('wifiPassInput').value;
-  if(!ssid){alert('请输入WiFi名称');return}
-  if(!pass){alert('请输入WiFi密码');return}
-  dlog('wifiDebug','Connect: '+ssid);
-  document.getElementById('wifiConnStatus').textContent='⏳ 发送中...';
-  document.getElementById('wifiPwdArea').style.display='none';
-  try{
-    await wifiCh.writeValue(new TextEncoder().encode('W:'+ssid+'|'+pass));
-    dlog('wifiDebug','WiFi cred sent OK');
-  }catch(e){
-    dlog('wifiDebug','Send err: '+e.message);
-    document.getElementById('wifiConnStatus').textContent='❌ 发送失败: '+e.message;
-  }
-}
-
-// ── OLED Control ──
-async function sendOledText(){
+async function sendText(){
   if(!oledCh){alert('请先连接蓝牙');return}
   var txt=document.getElementById('oledText').value.trim();
   if(!txt){alert('请输入文字');return}
-  dlog('oledDebug','Send: '+txt.slice(0,40));
   try{
     await oledCh.writeValue(new TextEncoder().encode('T:'+txt));
-    dlog('oledDebug','OK');
-  }catch(e){dlog('oledDebug','Err: '+e.message)}
+    setMode('MSG'); // Auto-switch to message screen
+    dlog('oledDebug','发送: '+txt.slice(0,30));
+  }catch(e){dlog('oledDebug','发送失败: '+e.message)}
 }
 
-async function sendOledCmd(cmd){
-  if(!oledCh){alert('请先连接蓝牙');return}
-  dlog('oledDebug','Cmd: '+cmd);
+// ── WiFi ──
+async function wifiScan(){
+  if(!wifiCh)return;
+  document.getElementById('btnScan').disabled=true;
+  document.getElementById('wifiScanStatus').textContent='扫描中...';
+  document.getElementById('wifiList').innerHTML='<div style="text-align:center;padding:8px;font-size:10px;color:rgba(255,255,255,.2)">扫描附近WiFi...</div>';
+  try{await wifiCh.writeValue(new TextEncoder().encode('SCAN'))}
+  catch(e){document.getElementById('wifiScanStatus').textContent='失败: '+e.message;document.getElementById('btnScan').disabled=false}
+}
+
+function onWifiData(ev){
+  var txt=new TextDecoder().decode(ev.target.value);
+  if(txt==='SCANNING'){document.getElementById('wifiScanStatus').textContent='扫描中...';return}
+  if(txt==='CONNECTING'){document.getElementById('wifiConnStatus').textContent='连接中...';return}
+  if(txt.startsWith('OK:')){espIP=txt.substring(3);wifiOk=true;showHttpCard();document.getElementById('wifiConnStatus').textContent='';return}
+  if(txt==='FAIL'){document.getElementById('wifiConnStatus').textContent='密码错误';return}
   try{
-    await oledCh.writeValue(new TextEncoder().encode(cmd));
-    dlog('oledDebug','OK');
-  }catch(e){dlog('oledDebug','Err: '+e.message)}
+    var arr=JSON.parse(txt);scanResults=arr;
+    var h='';
+    for(var i=0;i<arr.length;i++){
+      var n=arr[i],rssi=n.r;
+      var sig='';
+      for(var j=0;j<4;j++){
+        var on=(rssi>-50&&j<4)||(rssi>-65&&j<3)||(rssi>-75&&j<2)||(rssi>-85&&j<1);
+        sig+='<i style="height:'+(5+j*3)+'px;background:'+(on?(rssi>-60?'#10b981':'#fbbf24'):'rgba(255,255,255,.15)')+'"></i>';
+      }
+      h+='<div class="wifi-item" onclick="selWiFi('+i+')"><div class="wifi-sig">'+sig+'</div><span class="wifi-name">'+esc(n.s)+'</span><span style="font-size:10px;color:rgba(255,255,255,.3)">'+rssi+' dBm '+(n.o?'🔒':'🔓')+'</span></div>';
+    }
+    document.getElementById('wifiList').innerHTML=h||'<div style="text-align:center;padding:8px;font-size:10px;color:rgba(255,255,255,.2)">未发现WiFi</div>';
+    document.getElementById('wifiScanStatus').textContent='找到 '+arr.length+' 个网络';
+    document.getElementById('btnScan').disabled=false;
+  }catch(e){document.getElementById('btnScan').disabled=false}
 }
 
-async function sendOledIcon(name){
-  if(!oledCh){alert('请先连接蓝牙');return}
-  dlog('oledDebug','Icon: '+name);
-  try{
-    await oledCh.writeValue(new TextEncoder().encode('I:'+name));
-    dlog('oledDebug','OK');
-  }catch(e){dlog('oledDebug','Err: '+e.message)}
+function selWiFi(i){
+  document.getElementById('wifiSSID').value=scanResults[i].s;
+  document.getElementById('wifiPass').value='';
+  document.getElementById('wifiPwdArea').style.display='block';
+  document.getElementById('wifiPass').focus();
 }
 
-// ── HTTP API ──
+function showManual(){document.getElementById('wifiSSID').value='';document.getElementById('wifiPass').value='';document.getElementById('wifiPwdArea').style.display='block'}
+
+async function wifiConnect(){
+  if(!wifiCh)return;
+  var ssid=document.getElementById('wifiSSID').value.trim();
+  var pass=document.getElementById('wifiPass').value;
+  if(!ssid||!pass){alert('请输入WiFi名称和密码');return}
+  document.getElementById('wifiConnStatus').textContent='发送中...';
+  document.getElementById('wifiPwdArea').style.display='none';
+  try{await wifiCh.writeValue(new TextEncoder().encode('W:'+ssid+'|'+pass))}
+  catch(e){document.getElementById('wifiConnStatus').textContent='失败: '+e.message}
+}
+
+function esc(s){return s.replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+// ── HTTP ──
 async function httpCall(path){
   if(!espIP)return;
   var url='http://'+espIP+path;
-  document.getElementById('httpResp').textContent='GET '+url+'...';
-  try{
-    var r=await fetch(url),t=await r.text();
-    try{document.getElementById('httpResp').textContent=JSON.stringify(JSON.parse(t),null,2)}
-    catch(e){document.getElementById('httpResp').textContent=t}
-  }catch(e){document.getElementById('httpResp').textContent='失败: '+e.message}
+  document.getElementById('httpResp').textContent='GET '+url;
+  try{var r=await fetch(url);var t=await r.text();document.getElementById('httpResp').textContent=t}
+  catch(e){document.getElementById('httpResp').textContent='失败: '+e.message}
 }
 </script>
-<p style="text-align:center;margin-top:24px"><a href="./hardware.html" style="color:rgba(255,255,255,.25);font-size:10px;text-decoration:none">← 返回硬件控制台</a></p>
 </body>
 </html>
