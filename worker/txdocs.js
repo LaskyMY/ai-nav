@@ -91,23 +91,58 @@ function decodeDocText(encoded) {
 function isReadableText(text) {
   if (text.length < 3) return false;
 
-  // Reject Office metadata / font theme garbage
-  if (/^(Wingdings|Calibri|Times New Roman|微软雅黑|新細明體|Cordia|Angsana|DaunPenh|MoolBoran|Euphemia|DokChampa|Iskoola Pota|Mongolian Baiti|Microsoft Uighur|Estrangelo Edessa|ＭＳ|等线)[^*\n]*$/im.test(text)) return false;
-  if (/^(heading \d|toc \d|Subtitle|Hyperlink|Revision|Table Grid)[^*\n]*$/im.test(text)) return false;
-  if (/^[A-F0-9]{6}:?$/m.test(text)) return false; // Hex color lines
-  if (/^[A-F0-9]{8}\*?$/m.test(text)) return false; // 8-char hex codes
-  if (/^\d{5,6}[a-zA-Z]?\*?$/m.test(text)) return false; // 00000bJ patterns
-  if (/^[a-z0-9]+\*$/im.test(text) && text.length < 15) return false; // 9r3w32*
-  if (/^(ISO-8859-1|melo-codeblock|080E)/i.test(text)) return false; // Encoding/metadata tags
-  if (/^[*:]{3,}$/m.test(text)) return false; // Garbage ***:::* patterns
-  if (/^[!\(\)\*]{3,}$/m.test(text)) return false; // !!( !!((( **((
+  // ── REJECT: Office style names, metadata, font references ──
+  const officePatterns = [
+    // Font families
+    /Wingdings/i, /Calibri/i, /DaunPenh/i, /DokChampa/i, /Estrangelo Edessa/i,
+    /Iskoola Pota/i, /Mongolian Baiti/i, /Microsoft Uighur/i, /Microsoft Yi Baiti/i,
+    /Microsoft Himalaya/i, /MoolBoran/i, /Angsana/i, /Nyala/i, /Vrinda/i, /Shruti/i,
+    /Tunga/i, /Raavi/i, /Euphemia/i, /Plantagenet/i, /Cordia/i, /ＭＳ/i, /DengXian/i,
+    /Times New Roman/i, /等线/i,
+    // Style names (Office built-in styles)
+    /^heading\s/i, /^toc\s/i, /Subtitle/i, /Hyperlink/i, /Revision/i, /Table Grid/i,
+    /Light (Grid|List|Shading)/i, /Medium (Grid|List|Shading)/i, /Dark List/i,
+    /Book Title/i, /List Paragraph/i, /Normal Table/i, /No Spacing/i,
+    /Smart Link/i, /FollowedHyperlink/i, /Intense (Quote|Reference)/i,
+    /Title Char/i, /Subtitle Char/i, /Heading \d Char/i,
+    // Chinese style names
+    /标题\s*字符/, /副标题\s*字符/, /正文(文本)?\s*(字符)?/, /要点\s*字符/,
+    /引用\s*字符/, /列出段落/, /明显参考/, /不明显参考/,
+    /书籍标题/, /不明显强调/, /明显强调/, /列出\s*(字符|段落)/,
+    // Technical metadata
+    /ISO-8859/i, /melo-codeblock/i, /^080E/i, /Smart Link/i,
+    /^[A-F0-9]{6}:?\s*$/m, /^[A-F0-9]{8}\*?\s*$/m,
+    /^\d{5,7}[a-zA-Z]?\*?\s*$/m, /^[a-z0-9]+\*\s*$/im,
+    /^[*:\s]{3,}$/m, /^[!()*]{3,}$/m,
+    /Office\s*主题/i, /Default Paragraph Font/i,
+  ];
+
+  // If the ENTIRE text matches any office pattern, reject it
+  for (const pat of officePatterns) {
+    // Check if the chunk is primarily metadata (over 70% match)
+    const lines = text.split(/\n/);
+    let metaLines = 0;
+    for (const line of lines) {
+      if (pat.test(line.trim())) metaLines++;
+      else if (/^[\s*:]{2,}$/.test(line.trim())) metaLines++;
+    }
+    if (metaLines > 0 && metaLines >= lines.length * 0.6) return false;
+  }
+
+  // Single-line metadata check
+  const t = text.trim();
+  if (t.length < 30) {
+    for (const pat of officePatterns) {
+      if (pat.test(t)) return false;
+    }
+  }
 
   // Has CJK characters = definitely readable
   if (/[一-鿿]/.test(text)) return true;
   // Has meaningful ASCII words in sentence form
-  if (/[A-Za-z]{4,}\s+[A-Za-z]{3,}/.test(text) && text.length > 10) return true;
-  // Has numbers with context (percentages, prices)
-  if (/[\d.]+\s*[%万亿]/.test(text) && text.length > 8) return true;
+  if (/[A-Za-z]{4,}\s+[A-Za-z]{3,}/.test(text) && text.length > 15) return true;
+  // Has numbers with context (percentages, prices, dates)
+  if (/[\d.]+\s*[%万亿年月日\$¥€]/.test(text) && text.length > 10) return true;
   return false;
 }
 

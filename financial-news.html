@@ -177,23 +177,23 @@ function richRender(text) {
     return '\n<li>'+content.trim()+'</li>';
   });
 
-  // ==== PARAGRAPHS ====
-  // Double newlines → paragraphs
-  var paras = h.split(/\n\n+/);
-  var result = [];
-  for (var i=0; i<paras.length; i++) {
-    var p = paras[i].trim();
-    if (!p) continue;
-    // Wrap consecutive <li> in <ul>
-    p = p.replace(/((?:\s*<li[^>]*>.*?<\/li>\s*)+)/g, '<ul>$1</ul>');
-    // Don't wrap headings/hr in <p>
-    if (/^<(h[1-4]|ul|ol|hr|table|blockquote)/.test(p)) {
-      result.push(p);
-    } else {
-      result.push('<p>'+p+'</p>');
-    }
-  }
-  return result.join('\n');
+  // ==== PARAGRAPHS & LINE BREAKS ====
+  // Single newline → <br> for readability
+  h = h.replace(/\n/g, '<br>');
+  // Double <br> → paragraph break
+  h = h.replace(/(?:<br>\s*){2,}/g, '</p><p>');
+  // Wrap in paragraph
+  h = '<p>'+h+'</p>';
+  // Clean empty paragraphs
+  h = h.replace(/<p>\s*<\/p>/g, '');
+  h = h.replace(/<p><br>/g, '<p>');
+
+  // Wrap consecutive <li> in <ul>
+  h = h.replace(/((?:\s*<li[^>]*>.*?<\/li>\s*)+)/g, function(m){
+    return '<ul>'+m+'</ul>';
+  });
+
+  return h;
 }
 
 // ── Format date ──
