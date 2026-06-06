@@ -2,7 +2,7 @@
 // Run: deno run --allow-net --allow-env --allow-read --allow-write worker/local-server.js
 
 const DEEPSEEK = "https://api.deepseek.com/v1/chat/completions";
-const USAGE_FILE = "./usage-log.json";
+const USAGE_FILE = "/Users/lasky_my/ai-nav/usage-log.json";
 const PRICING = { prompt: 0.27 / 1_000_000, completion: 1.10 / 1_000_000 }; // DeepSeek V3 pricing per token
 
 // ── PostgreSQL Database ──
@@ -90,7 +90,8 @@ async function handle(req) {
 
   try {
     // ── Static pages ──
-    const staticFiles = {"/clock.html":"./clock.html","/clock":"./clock.html","/clock-old.html":"./clock-old.html","/clock-old":"./clock-old.html","/clock-proj.html":"./clock-proj.html","/clock-proj":"./clock-proj.html","/usage.html":"./usage.html"};
+    const BASE = "/Users/lasky_my/ai-nav";
+    const staticFiles = {"/clock.html":`${BASE}/clock.html`,"/clock":`${BASE}/clock.html`,"/clock-old.html":`${BASE}/clock-old.html`,"/clock-old":`${BASE}/clock-old.html`,"/clock-proj.html":`${BASE}/clock-proj.html`,"/clock-proj":`${BASE}/clock-proj.html`,"/usage.html":`${BASE}/usage.html`};
     if (staticFiles[path]) {
       try {
         const html = await Deno.readTextFile(staticFiles[path]);
@@ -327,13 +328,13 @@ async function handle(req) {
             result._ts = Date.now();
             // Accumulate: merge with existing, keep last 100 unique
             try {
-              const old = JSON.parse(await Deno.readTextFile("./news-cn-cache.json"));
+              const old = JSON.parse(await Deno.readTextFile("/Users/lasky_my/ai-nav/news-cn-cache.json"));
               const seen = new Set(old.map(e => e.title));
               const fresh = result.filter(e => !seen.has(e.title));
               result = [...fresh, ...old].slice(0, 100);
             } catch(_) {}
             cacheSet("news-cn", result);
-            try { await Deno.writeTextFile("./news-cn-cache.json", JSON.stringify(result)); } catch(_) {}
+            try { await Deno.writeTextFile("/Users/lasky_my/ai-nav/news-cn-cache.json", JSON.stringify(result)); } catch(_) {}
             if (data.usage) trackUsage("news-cn", data.usage, "deepseek-chat");
             return ok(result);
           }
@@ -467,13 +468,13 @@ async function refreshNewsCN() {
       result._ts = Date.now();
       // Accumulate: merge with existing, keep last 100 unique
       try {
-        const old = JSON.parse(await Deno.readTextFile("./news-cn-cache.json"));
+        const old = JSON.parse(await Deno.readTextFile("/Users/lasky_my/ai-nav/news-cn-cache.json"));
         const seen = new Set(old.map(e => e.title));
         const fresh = result.filter(e => !seen.has(e.title));
         result = [...fresh, ...old].slice(0, 100);
       } catch(_) {}
       cacheSet("news-cn", result);
-      try { await Deno.writeTextFile("./news-cn-cache.json", JSON.stringify(result)); } catch(_) {}
+      try { await Deno.writeTextFile("/Users/lasky_my/ai-nav/news-cn-cache.json", JSON.stringify(result)); } catch(_) {}
       if (data.usage) trackUsage("news-cn", data.usage, "deepseek-chat");
       console.log(`[news-cn] updated: ${result.length} items`);
     }
@@ -565,16 +566,16 @@ async function refreshNewsSummary() {
     const result = { summary, updated: new Date().toISOString(), newsCount: topNews.length };
     // Accumulate: keep last 10 summaries
             try {
-              const old = JSON.parse(await Deno.readTextFile("./news-summaries.json"));
+              const old = JSON.parse(await Deno.readTextFile("/Users/lasky_my/ai-nav/news-summaries.json"));
               old.unshift(result);
               const trimmed = old.slice(0, 10);
-              await Deno.writeTextFile("./news-summaries.json", JSON.stringify(trimmed));
+              await Deno.writeTextFile("/Users/lasky_my/ai-nav/news-summaries.json", JSON.stringify(trimmed));
             } catch(_) {
-              try { await Deno.writeTextFile("./news-summaries.json", JSON.stringify([result])); } catch(_) {}
+              try { await Deno.writeTextFile("/Users/lasky_my/ai-nav/news-summaries.json", JSON.stringify([result])); } catch(_) {}
             }
             cacheSet("news-summary", result);
     // Persist to disk
-    try { await Deno.writeTextFile("./news-cache.json", JSON.stringify(result)); } catch(_) {}
+    try { await Deno.writeTextFile("/Users/lasky_my/ai-nav/news-cache.json", JSON.stringify(result)); } catch(_) {}
     console.log(`[news-summary] updated (${summary.length} chars, ${topNews.length} news)`);
   } catch (e) {
     console.log(`[news-summary] error: ${e.message}`);
@@ -632,8 +633,8 @@ async function dailyFinancialTask() {
 // ── Startup: init DB, load caches, start background tasks ──
 async function startup() {
   try { await initDB(); dbReady = true; console.log("[server] PostgreSQL ready"); } catch(e) { console.log("[server] DB init failed:", e.message); }
-  try { const cn = JSON.parse(await Deno.readTextFile("./news-cn-cache.json")); if (cn && cn.length) { cn._ts = Date.now(); cacheSet("news-cn", cn); console.log("[init] loaded news-cn cache:", cn.length, "items"); } } catch(_) {}
-  try { const ns = JSON.parse(await Deno.readTextFile("./news-cache.json")); if (ns && ns.summary) { cacheSet("news-summary", ns); console.log("[init] loaded news-summary cache"); } } catch(_) {}
+  try { const cn = JSON.parse(await Deno.readTextFile("/Users/lasky_my/ai-nav/news-cn-cache.json")); if (cn && cn.length) { cn._ts = Date.now(); cacheSet("news-cn", cn); console.log("[init] loaded news-cn cache:", cn.length, "items"); } } catch(_) {}
+  try { const ns = JSON.parse(await Deno.readTextFile("/Users/lasky_my/ai-nav/news-cache.json")); if (ns && ns.summary) { cacheSet("news-summary", ns); console.log("[init] loaded news-summary cache"); } } catch(_) {}
   refreshNewsSummary();
   setInterval(refreshNewsSummary, 900_000);
   setInterval(refreshNewsCN, 300000);
