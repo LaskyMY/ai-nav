@@ -145,11 +145,12 @@ async function connect(){
   try{st('扫描...','wait');
     dev=await navigator.bluetooth.requestDevice({filters:[{name:'AI-NAV-RELAY'}],optionalServices:[S]});
     svr=await dev.gatt.connect();
+    await new Promise(r=>setTimeout(r,500)); // Wait for BLE stack
     var s=await svr.getPrimaryService(S);
     relayCh=await s.getCharacteristic(R); console.log('relayCh OK');
     wifiCh=await s.getCharacteristic(W); console.log('wifiCh OK');
     try{wifiData=await s.getCharacteristic(WD);await wifiData.startNotifications();wifiData.addEventListener('characteristicvaluechanged',onWifiData);console.log('wifiData OK')}catch(e){console.log('wifiData fail:',e)}
-    try{info=await s.getCharacteristic(I);await info.startNotifications();info.addEventListener('characteristicvaluechanged',onInfo);var iv=await info.readValue();onInfo({target:{value:iv}});console.log('info OK')}catch(e){console.log('info fail:',e)}
+    try{info=await s.getCharacteristic(I);await new Promise(r=>setTimeout(r,300));await info.startNotifications();info.addEventListener('characteristicvaluechanged',onInfo);var iv=await info.readValue();onInfo({target:{value:iv}});console.log('info OK')}catch(e){console.log('info fail:',e)}
     st('已连接','ok');document.getElementById('btnC').style.display='none';document.getElementById('btnD').style.display='block';document.getElementById('infoBar').textContent='AI-NAV-RELAY';
     ['relayCard','timerCard','schedCard','wifiCard','statusCard'].forEach(function(id){document.getElementById(id).style.display='block'});
     dev.addEventListener('gattserverdisconnected',onDisconnect);
