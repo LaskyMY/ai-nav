@@ -1,9 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>ESP32 继电器控制</title>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>ESP32 继电器控制</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.5;padding:16px;max-width:500px;margin:0 auto;padding-bottom:32px}
@@ -13,71 +8,113 @@ h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:2px}
 .card.ok{border-color:rgba(16,185,129,.15);background:rgba(16,185,129,.03)}
 .card.warn{border-color:rgba(245,158,11,.15);background:rgba(245,158,11,.03)}
 .row{display:flex;align-items:center;gap:8px;margin:4px 0}
-.lbl{color:rgba(255,255,255,.5);font-size:11px;width:40px;flex-shrink:0}.val{font-weight:600;color:#00e5ff;font-size:11px}
-.btn{display:inline-block;padding:10px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s;text-align:center}
+.lbl{color:rgba(255,255,255,.5);font-size:11px;width:50px;flex-shrink:0}.val{font-weight:600;color:#00e5ff;font-size:11px}
+.btn{display:inline-block;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s;text-align:center}
 .btn:active{transform:scale(.96)}
 .btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:#00e5ff}
-.btn.green{background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.2);color:#10b981;font-size:16px;font-weight:700}
-.btn.danger{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.2);color:#f87171;font-size:16px;font-weight:700}
+.btn.green{background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.2);color:#10b981}
+.btn.danger{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.2);color:#f87171}
 .btn.orange{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.2);color:#fbbf24}
+.btn.big{font-size:18px;font-weight:700;padding:16px}
 .btn:disabled{opacity:.35}
-input[type=number]{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:8px;color:#fff;font-size:13px;width:80px;text-align:center}
-select{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:8px;color:#fff;font-size:12px}
+input[type=text],input[type=password],input[type=number]{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:8px;color:#fff;font-size:12px;width:100%}
+select{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:6px;color:#fff;font-size:11px}
 .status{display:inline-block;width:10px;height:10px;border-radius:5px;margin-right:6px}
-.status.on{background:#10b981;box-shadow:0 0 8px #10b981}.status.off{background:#ef4444}.status.wait{background:#f59e0b;animation:pulse 1s infinite}
+.status.on{background:#10b981;box-shadow:0 0 10px #10b981}.status.off{background:#ef4444}.status.wait{background:#f59e0b;animation:pulse 1s infinite}
 @keyframes pulse{50%{opacity:.3}}
-.relay-indicator{width:80px;height:80px;border-radius:50%;margin:0 auto 12px;border:4px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:36px;transition:all .3s}
-.relay-indicator.on{border-color:#10b981;background:rgba(16,185,129,.1);box-shadow:0 0 24px rgba(16,185,129,.2)}
+.relay-dot{width:80px;height:80px;border-radius:50%;margin:0 auto 10px;border:4px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:32px;transition:all .3s}
+.relay-dot.on{border-color:#10b981;background:rgba(16,185,129,.08);box-shadow:0 0 30px rgba(16,185,129,.15)}
 .section-title{font-size:13px;font-weight:700;margin-bottom:8px}
-.timer-row{display:flex;align-items:center;gap:8px;margin:6px 0}
-.timer-row input{flex:1;max-width:100px}
-.preset-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:4px}.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px}
+.wifi-item{display:flex;align-items:center;padding:6px 10px;margin:2px 0;border-radius:6px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);cursor:pointer;gap:6px;font-size:11px}
+.wifi-item:hover{background:rgba(255,255,255,.05)}
+.day-btn{width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);color:rgba(255,255,255,.4);font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.day-btn.on{background:rgba(99,102,241,.2);border-color:rgba(99,102,241,.3);color:#818cf8;font-weight:700}
 .wire{font-family:monospace;font-size:9px;color:rgba(255,255,255,.4);line-height:1.8;background:rgba(0,0,0,.2);padding:10px;border-radius:8px;white-space:pre}
 .wire b{color:#00e5ff}.wire span.r{color:#f87171}.wire span.g{color:#10b981}.wire span.y{color:#fbbf24}
-</style>
-</head>
-<body>
+.debug{font-size:9px;color:rgba(255,255,255,.2);font-family:monospace;margin-top:6px}
+</style></head><body>
 
-<h1>继电器控制</h1>
+<h1>⚡ 继电器控制台</h1>
 <div class="sub" id="infoBar">未连接</div>
 
-<!-- Connection -->
+<!-- BLE Connection -->
 <div class="card">
-  <div class="section-title">📡 蓝牙连接</div>
+  <div class="section-title">📡 蓝牙</div>
   <div class="row"><span class="lbl" style="width:auto">状态</span><span><span class="status wait" id="st"></span><span id="stt">未连接</span></span></div>
   <button class="btn green" onclick="connect()" id="btnC" style="width:100%;margin-top:4px">🔗 连接 AI-NAV-RELAY</button>
   <button class="btn danger" onclick="disconnect()" id="btnD" style="width:100%;margin-top:4px;display:none">✂ 断开</button>
 </div>
 
-<!-- Relay Status + ON/OFF -->
+<!-- Relay ON/OFF -->
 <div class="card ok" id="relayCard" style="display:none">
-  <div class="relay-indicator off" id="relayIndicator">🔌</div>
-  <div class="row" style="justify-content:center;gap:12px">
-    <button class="btn green" onclick="relayCmd('ON')" id="btnON" style="flex:1;padding:14px">ON 开启</button>
-    <button class="btn danger" onclick="relayCmd('OFF')" id="btnOFF" style="flex:1;padding:14px">OFF 关闭</button>
+  <div class="relay-dot off" id="relayDot">🔌</div>
+  <div style="display:flex;gap:8px">
+    <button class="btn green big" onclick="relayCmd('ON')" style="flex:1">ON</button>
+    <button class="btn danger big" onclick="relayCmd('OFF')" style="flex:1">OFF</button>
   </div>
-  <div class="row" style="justify-content:center;margin-top:4px">
-    <button class="btn" onclick="relayCmd('TOGGLE')" style="width:100%">🔄 翻转</button>
-  </div>
+  <button class="btn" onclick="relayCmd('TOGGLE')" style="width:100%;margin-top:4px">🔄 翻转</button>
 </div>
 
-<!-- Timer Control -->
+<!-- Timer -->
 <div class="card" id="timerCard" style="display:none">
-  <div class="section-title">⏱ 定时控制</div>
-  <div class="preset-grid">
+  <div class="section-title">⏱ 倒计时</div>
+  <div class="grid3">
     <button class="btn" onclick="relayCmd('T:5')">5秒</button>
-    <button class="btn" onclick="relayCmd('T:10')">10秒</button>
     <button class="btn" onclick="relayCmd('T:30')">30秒</button>
     <button class="btn" onclick="relayCmd('T:60')">1分钟</button>
     <button class="btn" onclick="relayCmd('T:300')">5分钟</button>
     <button class="btn" onclick="relayCmd('T:1800')">30分钟</button>
+    <button class="btn" onclick="relayCmd('T:3600')">1小时</button>
   </div>
-  <div class="timer-row" style="margin-top:8px">
+  <div class="row" style="margin-top:6px">
     <span class="lbl">自定义:</span>
-    <input type="number" id="timerSecs" value="10" min="1" max="86400">
-    <span style="font-size:11px;color:rgba(255,255,255,.4)">秒</span>
-    <button class="btn primary" onclick="relayCmd('T:'+document.getElementById('timerSecs').value)">启动</button>
+    <input type="number" id="timerSecs" value="10" min="1" max="86400" style="width:80px">
+    <span style="font-size:10px;color:rgba(255,255,255,.3)">秒</span>
+    <button class="btn primary" onclick="relayCmd('T:'+document.getElementById('timerSecs').value)" style="flex:1">启动</button>
   </div>
+</div>
+
+<!-- Schedule -->
+<div class="card" id="schedCard" style="display:none">
+  <div class="section-title">📅 定时调度 (需WiFi+NTP校时)</div>
+  <div class="row"><span class="lbl">时间</span>
+    <input type="number" id="schedH" value="8" min="0" max="23" style="width:50px"><span>:</span>
+    <input type="number" id="schedM" value="30" min="0" max="59" style="width:50px">
+    <span style="font-size:10px;color:rgba(255,255,255,.3)">持续</span>
+    <input type="number" id="schedD" value="60" min="1" max="86400" style="width:60px"><span style="font-size:10px">秒</span>
+  </div>
+  <div style="display:flex;gap:4px;margin:8px 0">
+    <span class="lbl" style="width:auto;font-size:10px">星期:</span>
+    <button class="day-btn on" onclick="toggleDay(this)" data-d="1">一</button>
+    <button class="day-btn on" onclick="toggleDay(this)" data-d="2">二</button>
+    <button class="day-btn on" onclick="toggleDay(this)" data-d="3">三</button>
+    <button class="day-btn on" onclick="toggleDay(this)" data-d="4">四</button>
+    <button class="day-btn on" onclick="toggleDay(this)" data-d="5">五</button>
+    <button class="day-btn" onclick="toggleDay(this)" data-d="6">六</button>
+    <button class="day-btn" onclick="toggleDay(this)" data-d="0">日</button>
+  </div>
+  <div class="grid2">
+    <button class="btn primary" onclick="setSchedule()">✅ 设置调度</button>
+    <button class="btn danger" onclick="relayCmd('SCHED:0')">❌ 取消调度</button>
+  </div>
+</div>
+
+<!-- WiFi -->
+<div class="card warn" id="wifiCard" style="display:none">
+  <div class="section-title">📶 WiFi 配网 (蓝牙)</div>
+  <div class="row"><span class="lbl" style="width:auto">状态</span><span class="val" id="wifiStatus">—</span></div>
+  <button class="btn primary" onclick="wifiScan()" id="btnScan" style="width:48%">🔍 扫描WiFi</button>
+  <button class="btn orange" onclick="showWifiManual()" style="width:48%">✏️ 手动输入</button>
+  <div style="font-size:10px;color:rgba(255,255,255,.3);text-align:center;margin-top:4px" id="scanStatus"></div>
+  <div id="wifiList"></div>
+  <div id="wifiPwd" style="display:none;margin-top:6px">
+    <input type="text" id="wifiSsid" placeholder="WiFi名称"><br>
+    <input type="password" id="wifiPass" placeholder="WiFi密码" style="margin-top:4px">
+    <button class="btn green" onclick="wifiConnect()" style="width:100%;margin-top:4px">📶 连接WiFi (并保存)</button>
+    <button class="btn" onclick="document.getElementById('wifiPwd').style.display='none'" style="width:100%;margin-top:2px">取消</button>
+  </div>
+  <div style="font-size:10px;color:#fbbf24;text-align:center;margin-top:4px" id="wifiConnStatus"></div>
 </div>
 
 <!-- Status -->
@@ -86,56 +123,33 @@ select{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);bo
   <div class="row"><span class="lbl">继电器</span><span class="val" id="relayState">—</span></div>
   <div class="row"><span class="lbl">定时剩余</span><span class="val" id="timerRemain">—</span></div>
   <div class="row"><span class="lbl">运行时间</span><span class="val" id="uptime">—</span></div>
+  <div class="row"><span class="lbl">WiFi</span><span class="val" id="wifiState">—</span></div>
+  <div class="row"><span class="lbl">IP</span><span class="val" id="wifiIP" style="font-size:10px">—</span></div>
+  <div class="row"><span class="lbl">调度</span><span class="val" id="schedState" style="font-size:10px">—</span></div>
 </div>
 
 <!-- Wiring -->
-<div class="card">
-  <div class="section-title">🔌 接线图</div>
-  <div class="wire">
-<b>5V继电器模块 (3根线)</b>
-┌─────────────────────┐
-│  <span class="r">DC+</span>  ──── <b>ESP32 5V</b>     供电正极
-│  <span class="g">DC-</span>  ──── <b>ESP32 GND</b>     供电负极
-│  <span class="y">IN</span>   ──── <b>GPIO10</b>        信号控制
-└─────────────────────┘
-
-<b>12V端</b>: COM接电源, NO接负载, NC为空
-  COM = 公共端 (接12V+)
-  NO  = 常开端 (继电器吸合时接通, 接设备+)
-  NC  = 常闭端 (不用)
-
-<b>注意:</b>
-  5V继电器: DC+接ESP32 5V脚
-  3.3V继电器: DC+接ESP32 3.3V脚
-  GPIO10输出3.3V, 如果继电器需要5V信号
-  需加电平转换模块(或直接用3.3V继电器)</div>
-</div>
+<div class="card"><div class="section-title">🔌 接线</div><div class="wire">
+<b>5V继电器 → ESP32-C3</b>
+<span class="r">DC+</span> → 5V  <span class="g">DC-</span> → GND  <span class="y">IN</span> → GPIO10</div></div>
 
 <p style="text-align:center;margin-top:24px"><a href="./hardware.html" style="color:rgba(255,255,255,.2);font-size:10px;text-decoration:none">← 返回硬件控制台</a></p>
 
 <script>
-var S='12345678-1234-1234-1234-123456789abc',R='12345678-1234-1234-1234-123456789010',I='12345678-1234-1234-1234-123456789004';
-var dev,svr,relayCh,info;
+var S='12345678-1234-1234-1234-123456789abc',R='12345678-1234-1234-1234-123456789010',I='12345678-1234-1234-1234-123456789004',W='12345678-1234-1234-1234-123456789003',WD='12345678-1234-1234-1234-123456789006';
+var dev,svr,relayCh,info,wifiCh,wifiData,scanResults=[];
 
 function st(t,c){document.getElementById('st').className='status '+(c||'wait');document.getElementById('stt').textContent=t}
 
 async function connect(){
-  try{
-    st('扫描...','wait');
-    dev=await navigator.bluetooth.requestDevice({filters:[{name:'AI-NAV-RELAY'}],optionalServices:[S]});
-    svr=await dev.gatt.connect();
-    var s=await svr.getPrimaryService(S);
-    relayCh=await s.getCharacteristic(R);
+  try{st('扫描...','wait');dev=await navigator.bluetooth.requestDevice({filters:[{name:'AI-NAV-RELAY'}],optionalServices:[S]});svr=await dev.gatt.connect();var s=await svr.getPrimaryService(S);relayCh=await s.getCharacteristic(R);wifiCh=await s.getCharacteristic(W);
+    try{wifiData=await s.getCharacteristic(WD);await wifiData.startNotifications();wifiData.addEventListener('characteristicvaluechanged',onWifiData)}catch(e){}
     try{info=await s.getCharacteristic(I);await info.startNotifications();info.addEventListener('characteristicvaluechanged',onInfo);var iv=await info.readValue();onInfo({target:{value:iv}})}catch(e){}
-    st('已连接','ok');document.getElementById('btnC').style.display='none';document.getElementById('btnD').style.display='block';
-    document.getElementById('infoBar').textContent='已连接 AI-NAV-RELAY';
-    document.getElementById('relayCard').style.display='block';
-    document.getElementById('timerCard').style.display='block';
-    document.getElementById('statusCard').style.display='block';
+    st('已连接','ok');document.getElementById('btnC').style.display='none';document.getElementById('btnD').style.display='block';document.getElementById('infoBar').textContent='AI-NAV-RELAY';
+    ['relayCard','timerCard','schedCard','wifiCard','statusCard'].forEach(function(id){document.getElementById(id).style.display='block'});
     dev.addEventListener('gattserverdisconnected',onDisconnect);
-  }catch(e){st('失败: '+e.message,'err')}
+  }catch(e){st('失败','err')}
 }
-
 function onDisconnect(){st('已断开','err');document.getElementById('btnC').style.display='block';document.getElementById('btnD').style.display='none'}
 function disconnect(){if(svr)svr.disconnect();onDisconnect()}
 
@@ -143,19 +157,48 @@ function onInfo(ev){
   var txt=new TextDecoder().decode(ev.target.value),m={};
   txt.split(' ').forEach(function(p){var kv=p.split(':');if(kv.length>=2)m[kv[0]]=kv.slice(1).join(':')});
   document.getElementById('relayState').textContent=m['Relay']||'—';
-  document.getElementById('timerRemain').textContent=(m['Timer']||'0')+'s';
-  document.getElementById('uptime').textContent=(m['Up']||'—')+'s';
-  var ind=document.getElementById('relayIndicator');
-  if(m['Relay']==='ON'){ind.className='relay-indicator on';ind.textContent='⚡'}
-  else{ind.className='relay-indicator off';ind.textContent='🔌'}
+  document.getElementById('timerRemain').textContent=(m['Remain']||'0')+'s';
+  document.getElementById('uptime').textContent=(m['Up']||'0')+'s';
+  document.getElementById('wifiState').textContent=m['WiFi']||'—';
+  document.getElementById('wifiIP').textContent=m['IP']||'—';
+  document.getElementById('schedState').textContent=m['Sched']||'none';
+  document.getElementById('wifiStatus').textContent=m['WiFi']==='OK'?'✅ '+(m['IP']||''):'❌ 未连接';
+
+  var dot=document.getElementById('relayDot');
+  if(m['Relay']==='ON'){dot.className='relay-dot on';dot.textContent='⚡'}
+  else{dot.className='relay-dot off';dot.textContent='🔌'}
 }
 
-async function relayCmd(cmd){
-  if(!relayCh)return;
-  try{await relayCh.writeValue(new TextEncoder().encode(cmd))}catch(e){}
-}
+// Relay commands
+async function relayCmd(cmd){if(relayCh)try{await relayCh.writeValue(new TextEncoder().encode(cmd))}catch(e){}}
 
+// WiFi
+async function wifiScan(){if(!wifiCh)return;document.getElementById('btnScan').disabled=true;document.getElementById('scanStatus').textContent='扫描中...';try{await wifiCh.writeValue(new TextEncoder().encode('SCAN'))}catch(e){}}
+function onWifiData(ev){
+  var txt=new TextDecoder().decode(ev.target.value);
+  if(txt==='SCANNING'){document.getElementById('scanStatus').textContent='扫描中...';return}
+  if(txt==='CONNECTING'){document.getElementById('wifiConnStatus').textContent='连接中...';return}
+  if(txt.startsWith('OK:')){document.getElementById('wifiConnStatus').textContent='✅ 已连接';info.readValue().catch(function(){});return}
+  if(txt==='FAIL'){document.getElementById('wifiConnStatus').textContent='❌ 失败, 请检查密码';return}
+  try{
+    scanResults=JSON.parse(txt);var h='';
+    scanResults.forEach(function(n,i){h+='<div class="wifi-item" onclick="selWiFi('+i+')">'+n.s+' <span style="font-size:9px;color:rgba(255,255,255,.3);margin-left:auto">'+n.r+'dBm</span></div>'});
+    document.getElementById('wifiList').innerHTML=h||'<div style="font-size:10px;color:rgba(255,255,255,.2);text-align:center;padding:8px">无WiFi</div>';
+    document.getElementById('scanStatus').textContent='找到'+scanResults.length+'个';
+    document.getElementById('btnScan').disabled=false;
+  }catch(e){document.getElementById('btnScan').disabled=false}
+}
+function selWiFi(i){document.getElementById('wifiSsid').value=scanResults[i].s;document.getElementById('wifiPass').value='';document.getElementById('wifiPwd').style.display='block';document.getElementById('wifiPass').focus()}
+function showWifiManual(){document.getElementById('wifiSsid').value='';document.getElementById('wifiPass').value='';document.getElementById('wifiPwd').style.display='block'}
+async function wifiConnect(){if(!wifiCh)return;var s=document.getElementById('wifiSsid').value.trim(),p=document.getElementById('wifiPass').value;if(!s||!p)return;document.getElementById('wifiPwd').style.display='none';try{await wifiCh.writeValue(new TextEncoder().encode('W:'+s+'|'+p))}catch(e){}}
+
+// Schedule
+function toggleDay(btn){btn.classList.toggle('on')}
+function setSchedule(){
+  var h=document.getElementById('schedH').value,m=document.getElementById('schedM').value,d=document.getElementById('schedD').value;
+  var days=[];document.querySelectorAll('.day-btn.on').forEach(function(b){days.push(b.dataset.d)});
+  if(!days.length){alert('请选择至少一天');return}
+  relayCmd('SCHED:'+h+','+m+','+d+','+days.join(','));
+}
 setInterval(function(){if(info)info.readValue().catch(function(){})},3000);
-</script>
-</body>
-</html>
+</script></body></html>
