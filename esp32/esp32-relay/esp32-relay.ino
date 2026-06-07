@@ -1,4 +1,4 @@
-// ESP32-C3 继电器控制器 — 基于已验证C3 BLE栈
+// ESP32-C3 继电器 — 调试版
 #include <WiFi.h>
 #include <Preferences.h>
 #include <BLEDevice.h>
@@ -31,11 +31,13 @@ void infoUpdate() {
     relayOn ? "ON" : "OFF", wifiOK ? "OK" : "NO", wifiOK ? myIP.c_str() : "-",
     (unsigned long)((millis() - startMs) / 1000), wifiOK ? WiFi.RSSI() : 0, ESP.getFreeHeap());
   pInfoChar->setValue(buf); pInfoChar->notify();
+  Serial.print("INFO sent: "); Serial.println(buf);
 }
 
 void doWiFiScan() {
-  if (!pWifiDataChar) return;
+  if (!pWifiDataChar) { Serial.println("SCAN: no pWifiDataChar!"); return; }
   pWifiDataChar->setValue("SCANNING"); pWifiDataChar->notify();
+  Serial.println("SCAN: scanning...");
   int n = WiFi.scanNetworks(false, true);
   String json = "[";
   for (int i = 0; i < n && i < 20; i++) {
@@ -44,10 +46,12 @@ void doWiFiScan() {
   }
   json += "]"; WiFi.scanDelete();
   pWifiDataChar->setValue(json.c_str()); pWifiDataChar->notify();
+  Serial.print("SCAN: found "); Serial.print(n); Serial.println(" networks");
 }
 
 void doWiFiConnect(String ssid, String pass) {
   if (!pWifiDataChar) return;
+  Serial.println("WiFi connecting: " + ssid);
   prefs.begin("ainav", false); prefs.putString("ssid", ssid); prefs.putString("pass", pass); prefs.end();
   pWifiDataChar->setValue("CONNECTING"); pWifiDataChar->notify();
   WiFi.begin(ssid.c_str(), pass.c_str());
@@ -55,11 +59,13 @@ void doWiFiConnect(String ssid, String pass) {
   if (WiFi.status() == WL_CONNECTED) { wifiOK = true; myIP = WiFi.localIP().toString(); http.begin(); pWifiDataChar->setValue(("OK:" + myIP).c_str()); }
   else { WiFi.disconnect(true); pWifiDataChar->setValue("FAIL"); }
   pWifiDataChar->notify(); infoUpdate();
+  Serial.println(wifiOK ? "WiFi OK" : "WiFi FAIL");
 }
 
 class RelayCB : public BLECharacteristicCallbacks {
   void onWrite(BLECharacteristic *p) {
     String v = p->getValue();
+    Serial.println("RELAY_CMD: " + v);
     if (v == "ON")       { setRelay(true); }
     else if (v == "OFF") { setRelay(false); }
     else if (v == "TOGGLE") { setRelay(!relayOn); }
@@ -71,6 +77,7 @@ class RelayCB : public BLECharacteristicCallbacks {
 class WiFiCB : public BLECharacteristicCallbacks {
   void onWrite(BLECharacteristic *p) {
     String v = p->getValue();
+    Serial.println("WIFI_CMD: " + v);
     if (v == "SCAN") { doWiFiScan(); }
     else if (v.startsWith("W:") && v.indexOf("|") > 2) { String body = v.substring(2); int sep = body.indexOf("|"); doWiFiConnect(body.substring(0, sep), body.substring(sep + 1)); }
   }
@@ -79,10 +86,12 @@ class WiFiCB : public BLECharacteristicCallbacks {
 class InfoCB : public BLECharacteristicCallbacks { void onRead(BLECharacteristic *p) { infoUpdate(); } };
 
 void setup() {
-  Serial.begin(115200); startMs = millis();
+  Serial.begin(115200); startMs = millis(); delay(200);
+  Serial.println("\n=== AI-NAV-RELAY START ===");
   pinMode(PIN_RELAY, OUTPUT); digitalWrite(PIN_RELAY, LOW);
   prefs.begin("ainav", false); String ssid = prefs.getString("ssid", ""), pass = prefs.getString("pass", ""); prefs.end();
   if (ssid.length() > 0) { WiFi.begin(ssid.c_str(), pass.c_str()); int t = 0; while (WiFi.status() != WL_CONNECTED && t < 40) { delay(250); t++; } if (WiFi.status() == WL_CONNECTED) { wifiOK = true; myIP = WiFi.localIP().toString(); http.begin(); } else { WiFi.disconnect(true); } }
+  Serial.print("WiFi: "); Serial.println(wifiOK ? "OK" : "OFF");
   BLEDevice::init("AI-NAV-RELAY");
   BLEServer *bs = BLEDevice::createServer(); BLEService *svc = bs->createService(SVC);
   svc->createCharacteristic(CH_RELAY, BLECharacteristic::PROPERTY_WRITE)->setCallbacks(new RelayCB());
@@ -90,7 +99,7 @@ void setup() {
   pInfoChar = svc->createCharacteristic(CH_INFO, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY); pInfoChar->setCallbacks(new InfoCB());
   pWifiDataChar = svc->createCharacteristic(CH_WDATA, BLECharacteristic::PROPERTY_NOTIFY);
   svc->start(); bs->getAdvertising()->addServiceUUID(SVC); bs->getAdvertising()->setScanResponse(true); bs->getAdvertising()->start();
-  infoUpdate(); Serial.println("AI-NAV-RELAY Ready");
+  infoUpdate(); Serial.println("BLE Ready - advertising as AI-NAV-RELAY");
 }
 
 void loop() {

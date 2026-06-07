@@ -142,13 +142,18 @@ var dev,svr,relayCh,info,wifiCh,wifiData,scanResults=[];
 function st(t,c){document.getElementById('st').className='status '+(c||'wait');document.getElementById('stt').textContent=t}
 
 async function connect(){
-  try{st('扫描...','wait');dev=await navigator.bluetooth.requestDevice({filters:[{name:'AI-NAV-RELAY'}],optionalServices:[S]});svr=await dev.gatt.connect();var s=await svr.getPrimaryService(S);relayCh=await s.getCharacteristic(R);wifiCh=await s.getCharacteristic(W);
-    try{wifiData=await s.getCharacteristic(WD);await wifiData.startNotifications();wifiData.addEventListener('characteristicvaluechanged',onWifiData)}catch(e){}
-    try{info=await s.getCharacteristic(I);await info.startNotifications();info.addEventListener('characteristicvaluechanged',onInfo);var iv=await info.readValue();onInfo({target:{value:iv}})}catch(e){}
+  try{st('扫描...','wait');
+    dev=await navigator.bluetooth.requestDevice({filters:[{name:'AI-NAV-RELAY'}],optionalServices:[S]});
+    svr=await dev.gatt.connect();
+    var s=await svr.getPrimaryService(S);
+    relayCh=await s.getCharacteristic(R); console.log('relayCh OK');
+    wifiCh=await s.getCharacteristic(W); console.log('wifiCh OK');
+    try{wifiData=await s.getCharacteristic(WD);await wifiData.startNotifications();wifiData.addEventListener('characteristicvaluechanged',onWifiData);console.log('wifiData OK')}catch(e){console.log('wifiData fail:',e)}
+    try{info=await s.getCharacteristic(I);await info.startNotifications();info.addEventListener('characteristicvaluechanged',onInfo);var iv=await info.readValue();onInfo({target:{value:iv}});console.log('info OK')}catch(e){console.log('info fail:',e)}
     st('已连接','ok');document.getElementById('btnC').style.display='none';document.getElementById('btnD').style.display='block';document.getElementById('infoBar').textContent='AI-NAV-RELAY';
     ['relayCard','timerCard','schedCard','wifiCard','statusCard'].forEach(function(id){document.getElementById(id).style.display='block'});
     dev.addEventListener('gattserverdisconnected',onDisconnect);
-  }catch(e){st('失败','err')}
+  }catch(e){st('失败: '+e.message,'err');console.log('connect fail:',e)}
 }
 function onDisconnect(){st('已断开','err');document.getElementById('btnC').style.display='block';document.getElementById('btnD').style.display='none'}
 function disconnect(){if(svr)svr.disconnect();onDisconnect()}
@@ -170,10 +175,10 @@ function onInfo(ev){
 }
 
 // Relay commands
-async function relayCmd(cmd){if(relayCh)try{await relayCh.writeValue(new TextEncoder().encode(cmd))}catch(e){}}
+async function relayCmd(cmd){if(!relayCh){console.log('relayCh null');return}try{await relayCh.writeValue(new TextEncoder().encode(cmd));console.log('relayCmd sent:',cmd)}catch(e){console.log('relayCmd fail:',e)}}
 
 // WiFi
-async function wifiScan(){if(!wifiCh)return;document.getElementById('btnScan').disabled=true;document.getElementById('scanStatus').textContent='扫描中...';try{await wifiCh.writeValue(new TextEncoder().encode('SCAN'))}catch(e){}}
+async function wifiScan(){if(!wifiCh){console.log('wifiCh null');return}document.getElementById('btnScan').disabled=true;document.getElementById('scanStatus').textContent='扫描中...';try{await wifiCh.writeValue(new TextEncoder().encode('SCAN'));console.log('SCAN sent')}catch(e){console.log('SCAN fail:',e)}}
 function onWifiData(ev){
   var txt=new TextDecoder().decode(ev.target.value);
   if(txt==='SCANNING'){document.getElementById('scanStatus').textContent='扫描中...';return}
