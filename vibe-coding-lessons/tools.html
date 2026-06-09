@@ -66,6 +66,31 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">🧰 阶段2 · 学会说话</span>
 <h1>三件套就够了</h1>
 <div class="hero-desc">不需要装一百个软件。核心就三个：一个写代码的地方（VS Code，免费）、一个打命令的地方（终端，电脑自带）、一个存代码的地方（Git，五分钟学会）。这三个就像笔、纸和文件夹——你不需要先学一年书法再开始写字。装好一次就不用再管。</div>
+<div class="game-wrap">
+  <canvas id="game" width="800" height="300"></canvas>
+  <div class="game-hint">🖱 翻开卡片找配对——记住三件套</div>
+</div>
+<script>document.addEventListener('DOMContentLoaded',function(){var cards=[],matched=0,attempts=0,canClick=true,sel1=null,sel2=null,c2=document.getElementById('game'),ctx=c2.getContext('2d'),W=800,H=300;
+var emojis=['📝','📝','⬛','⬛','💾','💾'];
+for(var i=emojis.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=emojis[i];emojis[i]=emojis[j];emojis[j]=t}
+for(var i=0;i<6;i++){var x=140+i*90,y=H/2-40;cards.push({x:x,y:y,w:70,h:70,e:emojis[i],f:false,m:false})}
+function draw(){
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='rgba(99,102,241,.02)';ctx.fillRect(0,0,W,H);
+  for(var i=0;i<cards.length;i++){var cd=cards[i];
+    if(cd.m){ctx.fillStyle='rgba(16,185,129,.06)';ctx.fillRect(cd.x,cd.y,cd.w,cd.h);ctx.strokeStyle='rgba(16,185,129,.2)';ctx.strokeRect(cd.x,cd.y,cd.w,cd.h);ctx.font='24px system-ui';ctx.textAlign='center';ctx.fillText('✅',cd.x+cd.w/2,cd.y+cd.h/2+8)}
+    else if(cd.f||cd===sel1||cd===sel2){ctx.fillStyle='rgba(99,102,241,.1)';ctx.fillRect(cd.x,cd.y,cd.w,cd.h);ctx.strokeStyle='rgba(99,102,241,.3)';ctx.strokeRect(cd.x,cd.y,cd.w,cd.h);ctx.font='28px system-ui';ctx.textAlign='center';ctx.fillText(cd.e,cd.x+cd.w/2,cd.y+cd.h/2+8)}
+    else{ctx.fillStyle='rgba(255,255,255,.03)';ctx.fillRect(cd.x,cd.y,cd.w,cd.h);ctx.strokeStyle='rgba(255,255,255,.1)';ctx.strokeRect(cd.x,cd.y,cd.w,cd.h);ctx.font='28px system-ui';ctx.textAlign='center';ctx.fillText('❓',cd.x+cd.w/2,cd.y+cd.h/2+8)}
+  }
+  ctx.font='12px system-ui';ctx.fillStyle='rgba(255,255,255,.5)';ctx.textAlign='center';ctx.fillText('翻牌: '+matched+'/3 | 尝试: '+attempts,W/2,40);
+  if(matched===3){ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,W,H);ctx.font='22px system-ui';ctx.fillStyle='#10b981';ctx.fillText('✅ 全记住了!',W/2,H/2-10);ctx.font='13px system-ui';ctx.fillStyle='rgba(255,255,255,.7)';ctx.fillText('VS Code + 终端 + Git',W/2,H/2+20)}
+  requestAnimationFrame(draw);
+}
+c2.addEventListener('click',function(e){if(!canClick||matched===3)return;var r=c2.getBoundingClientRect(),cx=(e.clientX-r.left)*(W/r.width),cy=(e.clientY-r.top)*(H/r.height);
+  for(var i=0;i<cards.length;i++){var cd=cards[i];if(cd.m||cd.f)continue;
+    if(cx>cd.x&&cx<cd.x+cd.w&&cy>cd.y&&cy<cd.y+cd.h){if(!sel1){sel1=cd;cd.f=true}else if(cd!==sel1){sel2=cd;cd.f=true;canClick=false;attempts++;
+      if(sel1.e===sel2.e){sel1.m=true;sel2.m=true;sel1.f=false;sel2.f=false;matched++;sel1=null;sel2=null;canClick=true}
+      else{setTimeout(function(){sel1.f=false;sel2.f=false;sel1=null;sel2=null;canClick=true},800)}}return}}});
+draw();});</script>
 <div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let c=document.getElementById("hc");c.width=600;c.height=200;
 let t=0,w=c.width=600,h=c.height=200;
 function draw(){

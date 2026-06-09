@@ -66,6 +66,27 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">🔍 阶段3 · 开始创造</span>
 <h1>跑一下再信</h1>
 <div class="hero-desc">AI会编造不存在的东西——我就见过它发明一个Python库里根本不存在的函数。它不是说谎，它只是在做词语接龙，有时候接错了。所以永远验证：AI写的代码，复制粘贴跑一下。AI给的信息，搜索引擎搜一下。AI说"可以做到"，让它证明。怀疑不是不信任——是专业习惯。</div>
+<div class="game-wrap">
+  <canvas id="game" width="800" height="300"></canvas>
+  <div class="game-hint">🖱 判断每条说法——真的点✅，假的点❌</div>
+</div>
+<script>document.addEventListener('DOMContentLoaded',function(){var claims=[{t:'npm install react 可以安装React',real:true,d:false,c:false},{t:'Python有个叫autowrite的库会自动写代码',real:false,d:false,c:false},{t:'git commit 可以给代码存档',real:true,d:false,c:false},{t:'VS Code是免费的代码编辑器',real:true,d:false,c:false},{t:'Chrome API密钥可以免费无限用GPT-5',real:false,d:false,c:false}];
+var score=0,total=0,fb='',c2=document.getElementById('game'),ctx=c2.getContext('2d'),W=800,H=300;
+function draw(){
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='rgba(239,68,68,.02)';ctx.fillRect(0,0,W,H);ctx.font='14px system-ui';ctx.textAlign='center';
+  for(var i=0;i<claims.length;i++){var y=30+i*50,c=claims[i];
+    ctx.fillStyle=c.d?(c.c?'rgba(16,185,129,.08)':'rgba(239,68,68,.08)'):'rgba(255,255,255,.03)';ctx.fillRect(40,y,600,40);
+    ctx.fillStyle=c.d?(c.c?'#10b981':'#f87171'):'rgba(255,255,255,.7)';ctx.fillText((c.d?(c.c?'✅ ':'❌ '):'')+c.t,340,y+25);
+    if(!c.d){ctx.fillStyle='rgba(16,185,129,.15)';ctx.fillRect(660,y,60,18);ctx.fillStyle='#10b981';ctx.fillText('✅真的',690,y+14);
+      ctx.fillStyle='rgba(239,68,68,.15)';ctx.fillRect(660,y+20,60,18);ctx.fillStyle='#f87171';ctx.fillText('❌假的',690,y+34)}}
+  ctx.font='bold 14px system-ui';ctx.fillStyle='#00e5ff';ctx.fillText('准确率: '+(total>0?Math.round(score/total*100)+'%':'--'),W/2,H-20);
+  if(fb){ctx.font='16px system-ui';ctx.fillStyle='#fbbf24';ctx.fillText(fb,W/2,H/2)}requestAnimationFrame(draw);
+}
+c2.addEventListener('click',function(e){var r=c2.getBoundingClientRect(),cx=(e.clientX-r.left)*(W/r.width),cy=(e.clientY-r.top)*(H/r.height);
+  for(var i=0;i<claims.length;i++){if(claims[i].d)continue;var y=30+i*50;
+    if(cx>660&&cx<720&&cy>y&&cy<y+18){claims[i].d=true;claims[i].c=claims[i].real==true;claims[i].c?score++:score;total++;fb=claims[i].c?'✅答对了!':'❌这是编的!';setTimeout(function(){fb=''},1500);return}
+    if(cx>660&&cx<720&&cy>y+20&&cy<y+38){claims[i].d=true;claims[i].c=claims[i].real==false;claims[i].c?score++:score;total++;fb=claims[i].c?'✅答对了!':'❌是真的!';setTimeout(function(){fb=''},1500);return}}});
+draw();});</script>
 <div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let c=document.getElementById("hc");if(!c)return;c.width=600;c.height=200;
 let t=0,w=c.width=600,h=c.height=200;
 function draw(){

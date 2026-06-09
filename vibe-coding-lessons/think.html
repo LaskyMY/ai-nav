@@ -66,6 +66,25 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">🧠 阶段3 · 开始创造</span>
 <h1>写代码之前——停下来想一想</h1>
 <div class="hero-desc">最贵的bug是需求没想清楚的bug。最常犯的错误：上来就让AI写代码。你肯定这么干过。我也经常收到"帮我写个网站"这种一句话需求。花两分钟把需求写清楚——写给谁用、核心功能是什么、长什么样子——能省十个小时的返工。</div>
+<div class="game-wrap">
+  <canvas id="game" width="800" height="280"></canvas>
+  <div class="game-hint">🎰 点SPIN——随机生成项目创意</div>
+</div>
+<script>document.addEventListener('DOMContentLoaded',function(){var reels=[['📱App','🌐网站','🖥桌面工具','🤖Bot','📊仪表盘','🎮小游戏'],['给学生','给上班族','给创作者','给家庭','给团队','给自己'],['提效率','记生活','学知识','自动化','做分析','搞社交']];
+var pos=[0,0,0],spinning=false,timer=0,speed=[],c2=document.getElementById('game'),ctx=c2.getContext('2d'),W=800,H=280;
+function draw(){
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='rgba(99,102,241,.02)';ctx.fillRect(0,0,W,H);
+  for(var i=0;i<3;i++){var cx=140+i*270,items=reels[i];
+    for(var j=-2;j<=2;j++){var idx=((pos[i]+j)%items.length+items.length)%items.length,y=H/2+j*45,a=1-Math.abs(j)*0.35;
+      ctx.font=j===0?'bold 18px system-ui':'14px system-ui';ctx.fillStyle='rgba(255,255,255,'+a+')';ctx.textAlign='center';ctx.fillText(items[idx],cx,y+6)}
+    ctx.strokeStyle='rgba(0,229,255,.2)';ctx.lineWidth=2;ctx.strokeRect(cx-120,H/2-30,240,60)}
+  ctx.fillStyle=spinning?'rgba(255,255,255,.05)':'rgba(0,229,255,.1)';ctx.fillRect(W/2-60,H-50,120,36);
+  ctx.strokeStyle='rgba(0,229,255,.3)';ctx.strokeRect(W/2-60,H-50,120,36);ctx.font='14px system-ui';ctx.fillStyle='#00e5ff';ctx.fillText(spinning?'🎰...':'🎰 SPIN',W/2,H-25);
+  if(spinning){for(var i=0;i<3;i++){pos[i]=(pos[i]+speed[i])%items.length;speed[i]*=0.97;if(speed[i]<0.2){speed[i]=0;timer--;if(timer<=0){spinning=false;ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(0,0,W,H);ctx.font='18px system-ui';ctx.fillStyle='#10b981';ctx.fillText('💡 '+items[0][pos[0]]+'+'+items[1][pos[1]]+'+'+items[2][pos[2]],W/2,H/2);ctx.font='12px system-ui';ctx.fillStyle='rgba(255,255,255,.5)';ctx.fillText('让AI帮你做这个项目',W/2,H/2+30)}}}}}
+  requestAnimationFrame(draw);}
+c2.addEventListener('click',function(e){var r=c2.getBoundingClientRect(),cx=(e.clientX-r.left)*(W/r.width),cy=(e.clientY-r.top)*(H/r.height);
+  if(!spinning&&cx>W/2-60&&cx<W/2+60&&cy>H-50&&cy<H-14){spinning=true;timer=30;for(var i=0;i<3;i++)speed[i]=3+Math.random()*5}});
+draw();});</script>
 <div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let t=0;let c=document.getElementById('hc');c.width=600;c.height=200;
 function draw(){let g=c.getContext('2d');g.clearRect(0,0,600,200);t+=0.02;
 g.font='50px system-ui';g.textAlign='center';

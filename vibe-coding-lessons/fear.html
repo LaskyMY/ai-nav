@@ -66,6 +66,27 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">🎯 阶段1 · 认知重启</span>
 <h1>恐惧是正常的——怎么跨过去</h1>
 <div class="hero-desc">你打开终端看到黑底白字会紧张。你看到红色报错会心跳加速。你觉得"我不是那块料"。每个人刚接触代码都这样——包括那些你现在觉得"好厉害"的人。编程难的不是技术，是过自己心里那关。一旦你接受"我肯定一开始写不对"，事情就简单了。错了就改，AI会帮你。</div>
+<div class="game-wrap">
+  <canvas id="game" width="800" height="280"></canvas>
+  <div class="game-hint">🖱 点击发光的圈——跟上节奏</div>
+</div>
+<script>document.addEventListener('DOMContentLoaded',function(){var t=0,beats=[],score=0,combo=0,floating=[],c2=document.getElementById('game'),ctx=c2.getContext('2d'),W=800,H=280;
+function spawn(){beats.push({x:300+Math.random()*200,y:60,life:100,hit:false,size:20+Math.random()*20})}
+setInterval(spawn,1500);spawn();
+function draw(){
+  ctx.clearRect(0,0,W,H);t++;let p=Math.sin(t*0.05)*0.05;ctx.fillStyle='rgba(245,158,11,'+(0.02+p)+')';ctx.fillRect(0,0,W,H);
+  for(var i=beats.length-1;i>=0;i--){var b=beats[i];b.life--;b.size+=0.5;
+    if(b.life<=0&&!b.hit){combo=0;beats.splice(i,1);continue}
+    let a=b.life/100;ctx.fillStyle='rgba(245,158,11,'+a+')';ctx.beginPath();ctx.arc(b.x,b.y,b.size,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,'+(a*0.5)+')';ctx.lineWidth=2;ctx.beginPath();ctx.arc(b.x,b.y,b.size+8,0,Math.PI*2);ctx.stroke();
+    if(b.life<30)ctx.fillText('TAP',b.x,b.y+5)}
+  ctx.font='14px system-ui';ctx.fillStyle='#fff';ctx.textAlign='center';
+  ctx.fillText('COMBO: '+combo+'  |  每跨过恐惧+1步',W/2,H-20);
+  requestAnimationFrame(draw);
+}
+c2.addEventListener('click',function(e){var r=c2.getBoundingClientRect(),cx=(e.clientX-r.left)*(W/r.width),cy=(e.clientY-r.top)*(H/r.height);
+  for(var i=beats.length-1;i>=0;i--){var b=beats[i];if(Math.abs(cx-b.x)<b.size+20&&Math.abs(cy-b.y)<b.size+20&&!b.hit){b.hit=true;combo++;beats.splice(i,1);return}}});
+draw();});</script>
 <div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let c=document.getElementById("hc");c.width=600;c.height=200;
 let t=0,w=c.width=600,h=c.height=200;
 function draw(){

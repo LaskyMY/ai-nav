@@ -66,6 +66,30 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">💾 阶段4 · 思维方式</span>
 <h1>随便改，改不坏的</h1>
 <div class="hero-desc">你怕改代码。怕改坏了回不去。这很正常。解决办法简单到夸张：改之前存个档。就像你玩RPG打Boss前先存档——输了就重新来。Git就是你的存档系统。改之前 git commit，改坏了 git checkout。三秒恢复。从此你什么都不怕。</div>
+<div class="game-wrap">
+  <canvas id="game" width="800" height="260"></canvas>
+  <div class="game-hint">🖱 点击时间线上的存档点——随时回滚</div>
+</div>
+<script>document.addEventListener('DOMContentLoaded',function(){var tl=[{t:'v1.0
+Hello',g:true},{t:'v1.1
++按钮',g:true},{t:'v1.2
+修bug',g:true},{t:'💥v1.3
+改坏了!',g:false},{t:'⏪v1.2
+回滚',g:true}];
+var cur=2,c2=document.getElementById('game'),ctx=c2.getContext('2d'),W=800,H=260;
+function draw(){
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='rgba(16,185,129,.02)';ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(60,H/2);ctx.lineTo(W-60,H/2);ctx.stroke();
+  for(var i=0;i<tl.length;i++){var x=100+i*150,tg=tl[i];
+    ctx.fillStyle=tg.g?'#10b981':'#f87171';ctx.beginPath();ctx.arc(x,H/2,i===cur?10:6,0,Math.PI*2);ctx.fill();
+    if(i===cur){ctx.strokeStyle='rgba(0,229,255,.5)';ctx.lineWidth=3;ctx.beginPath();ctx.arc(x,H/2,16,0,Math.PI*2);ctx.stroke()}
+    var ls=tg.t.split('
+');ctx.font='10px system-ui';ctx.fillStyle='rgba(255,255,255,.6)';ctx.textAlign='center';
+    for(var j=0;j<ls.length;j++)ctx.fillText(ls[j],x,H/2+25+j*13)}
+  ctx.font='12px system-ui';ctx.fillStyle='rgba(255,255,255,.4)';ctx.textAlign='center';ctx.fillText('存档→修改→改坏了→回滚——永远不怕',W/2,H-10);
+  requestAnimationFrame(draw);}
+c2.addEventListener('click',function(e){var r=c2.getBoundingClientRect(),cx=(e.clientX-r.left)*(W/r.width);
+  for(var i=0;i<tl.length;i++){if(Math.abs(cx-(100+i*150))<30)cur=i}});draw();});</script>
 <div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let c=document.getElementById("hc");if(!c)return;c.width=600;c.height=200;
 let t=0,w=c.width=600,h=c.height=200;
 function draw(){
