@@ -66,6 +66,27 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">🚨 阶段2 · 学会说话</span>
 <h1>报错不是你的敌人</h1>
 <div class="hero-desc">红字报错不是世界末日。它只是程序在说："嘿，有个问题，我停在第47行。"你唯一要做的事：把报错完整复制给AI，问"这是什么意思"。AI能帮你解决99%的报错。最蠢的做法是看到报错→关掉→假装没看见。十分钟后还是同一个报错。</div>
+<div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let c=document.getElementById("hc");c.width=600;c.height=200;
+let t=0,w=c.width=600,h=c.height=200;
+function draw(){
+  let g=c.getContext('2d');g.clearRect(0,0,w,h);
+  t+=0.02;
+  // Error → Fix → Success flow
+  let stages=[{x:w*.2,y:h/2,e:'❌',l:'报错',c:'#f87171'},{x:w*.5,y:h/2,e:'🔧',l:'分析',c:'#fbbf24'},{x:w*.8,y:h/2,e:'✅',l:'修复',c:'#10b981'}];
+  for(let s of stages){
+    g.font='40px system-ui';g.textAlign='center';
+    let bounce=Math.sin(t*3+stages.indexOf(s))*5;
+    g.fillText(s.e,s.x,s.y+bounce-10);
+    g.font='11px system-ui';g.fillStyle=s.c;g.fillText(s.l,s.x,s.y+bounce+30);
+  }
+  // Flowing line
+  g.strokeStyle='rgba(255,255,255,.15)';g.lineWidth=2;
+  g.beginPath();g.moveTo(stages[0].x+30,stages[0].y-10);
+  g.quadraticCurveTo(stages[1].x,stages[1].y-30,stages[2].x-30,stages[2].y-10);
+  g.stroke();
+  requestAnimationFrame(draw);
+}draw();
+});</script>
 <div class="diag"><b>错误位置</b> <span class="arr">→</span> <b>错误类型</b> <span class="arr">→</span> <b>发给AI</b> <span class="arr">→</span> ✅ 修复</div>
 <div class="card card-ok"><h2>核心要点</h2><ul><li>报错=位置+原因。位置在第几行，原因在最后一句</li>
 <li>80%的bug是拼写错误、少了括号、路径写错</li>

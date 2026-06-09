@@ -66,6 +66,21 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">🎲 阶段4 · 思维方式</span>
 <h1>你敢不敢试试</h1>
 <div class="hero-desc">你卡在一个问题上不敢动。你怕改坏了。你等别人告诉你正确答案。这个心态要改。编程里80%的问题没有"标准答案"——只有"试试看"。试了A，不对，你学到了一个新东西。试了B，对了，问题解决。两次尝试，两次收获。不敢试的人学得最慢。最差的结果不过是报错——你已经不怕报错了，对吧？</div>
+<div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let c=document.getElementById("hc");if(!c)return;c.width=600;c.height=200;
+let t=0,w=c.width=600,h=c.height=200;
+function draw(){
+  let g=c.getContext('2d');g.clearRect(0,0,w,h);t+=0.03;
+  let dice='🎲';
+  g.font='70px system-ui';g.textAlign='center';
+  let roll=Math.floor(t*3)%6+1;
+  g.fillText(['','⚀','⚁','⚂','⚃','⚄','⚅'][roll],w/2,h/2);
+  g.font='12px system-ui';g.fillStyle='rgba(255,255,255,.7)';
+  g.fillText('掷出了 '+roll+' 点',w/2,h/2+45);
+  g.font='10px system-ui';g.fillStyle='rgba(255,255,255,.3)';
+  g.fillText('最差的结果不过是报错——你试试看',w/2,185);
+  requestAnimationFrame(draw);
+}draw();
+});</script>
 
 <div class="card card-ok"><h2>核心要点</h2><ul><li>编程没有标准答案——只有试过才知道</li>
 <li>每次尝试都有收获：试对了得到答案，试错了得到经验</li>

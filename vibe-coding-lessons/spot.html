@@ -66,6 +66,22 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">🎯 阶段5 · 实战心法</span>
 <h1>三秒定位bug</h1>
 <div class="hero-desc">你看到报错会慌——但报错其实写得一清二楚。先看最后一行——那是错误总结。再看中间行——那是详细原因。最后看第一行附近——那是出错位置。三秒找到位置，五秒理解原因，十秒修复。十八秒一个bug。熟练了会更快。</div>
+<div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let c=document.getElementById("hc");if(!c)return;c.width=600;c.height=200;
+let t=0,w=c.width=600,h=c.height=200;
+function draw(){
+  let g=c.getContext('2d');g.clearRect(0,0,w,h);t+=0.02;
+  // Timer display
+  let sec=t%18;
+  let color=sec<3?'#f87171':sec<8?'#fbbf24':sec<13?'#f59e0b':'#10b981';
+  g.font='bold 60px monospace';g.textAlign='center';g.fillStyle=color;
+  let remaining=Math.max(0,18-Math.floor(sec));
+  g.fillText('00:'+(remaining<10?'0':'')+remaining,w/2,h/2+15);
+  g.font='11px system-ui';g.fillStyle='rgba(255,255,255,.6)';
+  g.fillText(['⏱ 最后一行...','⏱ 中间几行...','⏱ 开头附近...','✅ 找到!'][Math.min(3,Math.floor(sec/4.5))],w/2,h/2+45);
+  g.font='10px system-ui';g.fillStyle='rgba(255,255,255,.3)';g.fillText('18秒一个bug——你也可以',w/2,185);
+  requestAnimationFrame(draw);
+}draw();
+});</script>
 <div class="diag"><b>0-3s</b> 最后一行 <span class="arr">→</span> <b>3-8s</b> 中间 <span class="arr">→</span> <b>8-13s</b> 开头 <span class="arr">→</span> <b>13-18s</b> 修复</div>
 <div class="card card-ok"><h2>核心要点</h2><ul><li>⏱ 0-3秒：看最后一行——错误类型</li>
 <li>⏱ 3-8秒：看中间几行——详细堆栈</li>

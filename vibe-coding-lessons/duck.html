@@ -66,6 +66,26 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">🐤 阶段4 · 思维方式</span>
 <h1>跟橡皮鸭说话</h1>
 <div class="hero-desc">编程界最有名的调试技巧：在桌上放一只橡皮鸭，当你遇到bug时，向鸭子一行一行解释你的代码。往往解释到一半，你自己就发现问题了。因为你被迫理清思路。AI是你的超级橡皮鸭——它不仅听，还会帮你分析。把问题说出来这个动作本身，就已经解决一半了。</div>
+<div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let c=document.getElementById("hc");if(!c)return;c.width=600;c.height=200;
+let t=0,w=c.width=600,h=c.height=200;
+function draw(){
+  let g=c.getContext('2d');g.clearRect(0,0,w,h);t+=0.03;
+  g.font='60px system-ui';g.textAlign='center';
+  g.fillText('🐤',w/2+Math.sin(t)*10,h/2+15+Math.sin(t*0.7)*5);
+  // Speech bubble
+  let bubble=t%8;
+  let texts=['为什么这段
+代码不工作?','让我一行一行
+解释给你听...','等等! 我刚
+解释到一半...','我发现了!!','问题在第47行
+变量名拼错了'];
+  let idx=Math.floor(t/2)%5;
+  g.font='10px system-ui';g.fillStyle='rgba(255,255,255,.6)';g.fillText(texts[idx].replace('
+',' '),w/2,h/2+60);
+  g.font='11px system-ui';g.fillStyle='rgba(255,255,255,.3)';g.fillText('把问题说出来，说到一半你就明白了',w/2,185);
+  requestAnimationFrame(draw);
+}draw();
+});</script>
 
 <div class="card card-ok"><h2>核心要点</h2><ul><li>把问题说出来 = 问题解决了一半</li>
 <li>不要只在大脑里想——打出来给AI看</li>

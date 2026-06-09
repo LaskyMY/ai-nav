@@ -66,6 +66,14 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">📋 阶段4 · 思维方式</span>
 <h1>抄，使劲抄</h1>
 <div class="hero-desc">新手最怕"抄袭"。但所有优秀程序员都在抄——抄官方文档、抄StackOverflow、抄开源项目。区别只是：新手抄了不知道在抄什么，老手抄了能改。关键不是"不抄"，是"抄完理解"。把AI给的代码复制过来，跑通，然后改一个数字看看有什么变化——你已经在学习了。</div>
+<div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let t=0;let c=document.getElementById('hc');c.width=600;c.height=200;
+function draw(){let g=c.getContext('2d');g.clearRect(0,0,600,200);t+=0.04;
+g.font='14px monospace';g.textAlign='center';g.fillStyle='rgba(255,255,255,.5)';
+let code=['const btn = document','  .querySelector(',  '    ".submit-btn"','  );','btn.onclick = () => {','  alert("Done!");','};'];
+for(let i=0;i<code.length;i++)g.fillText(code[i],300,30+i*22);
+g.font='11px system-ui';g.fillStyle='rgba(255,255,255,.6)';g.fillText('抄→跑通→改个数字→学习开始',300,185);
+g.font='10px system-ui';g.fillStyle='rgba(255,255,255,.3)';g.fillText('所有优秀程序员都在抄。关键是抄完理解',300,170);
+requestAnimationFrame(draw);}draw();});</script>
 
 <div class="card card-ok"><h2>核心要点</h2><ul><li>抄代码不丢人——丢人的是抄了不改、抄了不想</li>
 <li>学习方法：抄→跑通→改一个地方→观察变化→改坏了→修</li>

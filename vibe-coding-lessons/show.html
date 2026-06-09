@@ -66,6 +66,15 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">🎬 阶段5 · 实战心法</span>
 <h1>让人看到，不是解释</h1>
 <div class="hero-desc">你做完了项目。你想展示。最差的展示："我给你讲讲"。最好的展示：一个能点开的链接。人类是视觉动物——看到能用的东西，比听你解释十分钟管用。花半小时录屏，花半小时写README——这两个投资回报率比你想象的高一百倍。你的GitHub就是你的简历。</div>
+<div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let t=0;let c=document.getElementById('hc');c.width=600;c.height=200;
+function draw(){let g=c.getContext('2d');g.clearRect(0,0,600,200);t+=0.02;
+g.font='50px system-ui';g.textAlign='center';
+let steps=['🎬','📤','🌐','✨'];let idx=Math.floor(t/2)%4;
+g.fillText(steps[idx],300,70);
+g.font='13px system-ui';g.fillStyle='rgba(255,255,255,.7)';
+g.fillText(['录一段演示','传到GitHub','部署上线','发给别人看'][idx],300,125);
+g.font='10px system-ui';g.fillStyle='rgba(255,255,255,.3)';g.fillText('一个能跑的链接 > 一千字解释',300,175);
+requestAnimationFrame(draw);}draw();});</script>
 
 <div class="card card-ok"><h2>核心要点</h2><ul><li>展示 > 解释。一个能跑的链接 > 一千字的描述</li>
 <li>Mac录屏：QuickTime（自带，免费）</li>

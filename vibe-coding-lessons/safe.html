@@ -66,6 +66,23 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">💾 阶段4 · 思维方式</span>
 <h1>随便改，改不坏的</h1>
 <div class="hero-desc">你怕改代码。怕改坏了回不去。这很正常。解决办法简单到夸张：改之前存个档。就像你玩RPG打Boss前先存档——输了就重新来。Git就是你的存档系统。改之前 git commit，改坏了 git checkout。三秒恢复。从此你什么都不怕。</div>
+<div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let c=document.getElementById("hc");if(!c)return;c.width=600;c.height=200;
+let t=0,w=c.width=600,h=c.height=200;
+function draw(){
+  let g=c.getContext('2d');g.clearRect(0,0,w,h);t+=0.6;
+  let s=t%4;
+  // States: Save → Edit → Problem → Restore
+  g.font='48px system-ui';g.textAlign='center';
+  if(s<1)g.fillText('💾',w/2,h/2+10);
+  else if(s<2)g.fillText('✏️',w/2,h/2+10);
+  else if(s<3)g.fillText('💥',w/2,h/2+10);
+  else g.fillText('⏪',w/2,h/2+10);
+  g.font='13px system-ui';g.fillStyle='rgba(255,255,255,.7)';
+  g.fillText(['存档 commit','随便改','改坏了!','读档恢复'][Math.floor(s)],w/2,h/2+50);
+  g.font='10px system-ui';g.fillStyle='rgba(255,255,255,.3)';g.fillText('三秒恢复，从此不怕改代码',w/2,180);
+  requestAnimationFrame(draw);
+}draw();
+});</script>
 <div class="diag"><b>存档</b> <span class="arr">→</span> <b>修改</b> <span class="arr">→</span> <b>不满意</b> <span class="arr">→</span> <b>读档</b> — 三秒恢复</div>
 <div class="card card-ok"><h2>核心要点</h2><ul><li>git commit = 存档——三秒完成</li>
 <li>git checkout = 读档——一秒回到存档点</li>

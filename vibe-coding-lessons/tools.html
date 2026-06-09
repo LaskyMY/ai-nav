@@ -66,6 +66,23 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">🧰 阶段2 · 学会说话</span>
 <h1>三件套就够了</h1>
 <div class="hero-desc">不需要装一百个软件。核心就三个：一个写代码的地方（VS Code，免费）、一个打命令的地方（终端，电脑自带）、一个存代码的地方（Git，五分钟学会）。这三个就像笔、纸和文件夹——你不需要先学一年书法再开始写字。装好一次就不用再管。</div>
+<div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let c=document.getElementById("hc");c.width=600;c.height=200;
+let t=0,w=c.width=600,h=c.height=200;
+function draw(){
+  let g=c.getContext('2d');g.clearRect(0,0,w,h);
+  t+=0.015;
+  let tools=[{e:'📝',n:'VS Code',x:w*.2},{e:'⬛',n:'终端',x:w*.5},{e:'💾',n:'Git',x:w*.8}];
+  for(let i=0;i<3;i++){
+    let tt=tools[i],y=h/2+Math.sin(t+i*2)*10;
+    g.font='36px system-ui';g.textAlign='center';g.fillText(tt.e,tt.x,y-10);
+    g.font='11px system-ui';g.fillStyle='rgba(255,255,255,.7)';g.fillText(tt.n,tt.x,y+30);
+    // Pulsing ring
+    g.strokeStyle=`rgba(16,185,129,${0.2+Math.sin(t+i)*0.15})`;g.lineWidth=2;
+    g.beginPath();g.arc(tt.x,y-10,30+Math.sin(t+i)*5,0,Math.PI*2);g.stroke();
+  }
+  requestAnimationFrame(draw);
+}draw();
+});</script>
 
 <div class="card card-ok"><h2>核心要点</h2><ul><li>VS Code：下载→安装→打开文件夹→开始写。就这么简单</li>
 <li>终端：黑窗口，你打字，它执行。不可怕</li>

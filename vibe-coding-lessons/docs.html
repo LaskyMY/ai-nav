@@ -66,6 +66,15 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">📖 阶段5 · 实战心法</span>
 <h1>不要从头读文档</h1>
 <div class="hero-desc">新手喜欢从头到尾读文档。最慢的学习方式。正确做法：你要做什么→搜"怎么做"→找到那一段→只看那一段→剩下的以后用到再看。你不需要把整本字典背下来才能写文章——需要哪个字就查哪个字。需要哪个功能就看哪个文档。</div>
+<div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let t=0;let c=document.getElementById('hc');c.width=600;c.height=200;
+function draw(){let g=c.getContext('2d');g.clearRect(0,0,600,200);t+=0.03;
+g.font='40px system-ui';g.textAlign='center';
+let icons=['📖','🔍','📋','✅'];let idx=Math.floor(t/2)%4;
+g.fillText(icons[idx],300,70);
+g.font='12px system-ui';g.fillStyle='rgba(255,255,255,.7)';
+g.fillText(['别从头读!','搜你需要的','看Examples','复制→改→跑通'][idx],300,120);
+g.font='10px system-ui';g.fillStyle='rgba(255,255,255,.3)';g.fillText('用到什么查什么——你不是来背字典的',300,170);
+requestAnimationFrame(draw);}draw();});</script>
 
 <div class="card card-ok"><h2>核心要点</h2><ul><li>不要从头读文档——用到什么查什么</li>
 <li>搜"XX怎么做"比读完整API文档快十倍</li>

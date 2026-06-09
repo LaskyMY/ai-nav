@@ -66,6 +66,38 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">🧭 阶段1 · 认知重启</span>
 <h1>认知重启：编程不是你想的那样</h1>
 <div class="hero-desc">你不需要成为程序员。你不需要数学好。你不需要辞职去上课。你只需要把脑子里的想法，用AI能听懂的方式说出来。这门课的第一件事：打破你对编程的所有错误想象。</div>
+<div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let c=document.getElementById("hc");c.width=600;c.height=200;
+let t=0,ps=[],w=c.width=600,h=c.height=200;
+for(let i=0;i<30;i++) ps.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*2,vy:(Math.random()-.5)*2,r:4+Math.random()*8});
+function draw(){
+  let g=c.getContext('2d');g.clearRect(0,0,w,h);
+  t+=0.016;
+  // Draw flow: YOU → AI → PRODUCT
+  g.fillStyle='rgba(255,255,255,.05)';g.fillRect(0,0,w,h);
+  // Animated particles
+  for(let p of ps){
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;
+    let a=1-Math.abs(p.x-w/2)/(w/2);
+    g.fillStyle=`rgba(99,102,241,${0.2+a*0.3})`;g.beginPath();g.arc(p.x,p.y,p.r,0,Math.PI*2);g.fill();
+  }
+  // Three nodes
+  let nodes=[{x:w*.15,y:h/2,l:'🧑',c:'#fbbf24'},{x:w*.5,y:h/2,l:'🤖',c:'#818cf8'},{x:w*.85,y:h/2,l:'✅',c:'#10b981'}];
+  for(let n of nodes){
+    g.font='36px system-ui';g.textAlign='center';g.fillText(n.l,n.x,n.y+12);
+    g.font='10px system-ui';g.fillStyle=n.c;g.fillText(n.x==w*.15?'你':'AI',n.x,n.y-20);
+  }
+  // Animated arrows
+  let phase=t*3%1;
+  for(let i=0;i<2;i++){
+    let x1=nodes[i].x+30,x2=nodes[i+1].x-30,y=nodes[i].y;
+    g.strokeStyle=`rgba(255,255,255,${0.4+Math.sin(t*3+i)*0.2})`;g.lineWidth=2;
+    g.beginPath();g.moveTo(x1,y);g.lineTo(x2,y);g.stroke();
+    let ax=x1+(x2-x1)*phase;g.fillStyle='#00e5ff';g.beginPath();g.arc(ax,y,4,0,Math.PI*2);g.fill();
+  }
+  requestAnimationFrame(draw);
+}draw();
+});</script>
 <div class="diag"><b>你</b> <span class="arr">→描述需求→</span> <b>AI</b> <span class="arr">→写代码→</span> <b>你</b> <span class="arr">→验证结果→</span> ✅</div>
 <div class="card card-ok"><h2>核心要点</h2><ul><li>编程 ≠ 数学。我见过数学只及格但代码写得很好的程序员</li>
 <li>编程 ≠ 背单词。忘了就搜，搜不到就问AI</li>

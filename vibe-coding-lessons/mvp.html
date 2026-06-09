@@ -66,6 +66,29 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">🦴 阶段3 · 开始创造</span>
 <h1>先做最丑的版本</h1>
 <div class="hero-desc">完美主义是进度最大的杀手。别追求第一版就完美。先做一个最丑但能跑的版本——哪怕只有一个输入框和一个按钮。只要用户能看到界面→点击→有反馈，闭环就通了。我的经验：先让AI做"Hello World"级别的最小原型，验证核心逻辑，然后慢慢加肉。每次只加一个功能，加完就测。</div>
+<div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let c=document.getElementById("hc");if(!c)return;c.width=600;c.height=200;
+let t=0,w=c.width=600,h=c.height=200;
+function draw(){
+  let g=c.getContext('2d');g.clearRect(0,0,w,h);t+=0.02;
+  // MVP evolution: line → box → filled box
+  let stages=[{p:'  ──  ',l:'v1: 一行代码',x:100},{p:'[ BTN ]',l:'v2: 有按钮',x:300},{p:'┌──────┐
+│ TODO │
+└──────┘',l:'v3: 能用了',x:500}];
+  for(let i=0;i<3;i++){
+    let s=stages[i],a=t>i?1:Math.max(0,t-i);
+    g.globalAlpha=a;g.font='14px monospace';g.textAlign='center';g.fillStyle='#fff';
+    // Fix: single line display for simplicity
+    g.fillText(i==0?'──':i==1?'[BTN]':'[TODO]',s.x,h/2);
+    g.font='10px system-ui';g.fillStyle='#10b981';g.fillText(s.l,s.x,h/2+30);
+    g.globalAlpha=1;
+  }
+  // Arrow
+  if(t>1){g.strokeStyle='rgba(255,255,255,.3)';g.lineWidth=2;g.beginPath();g.moveTo(160,h/2-5);g.lineTo(280,h/2-5);g.stroke()}
+  if(t>2){g.beginPath();g.moveTo(360,h/2-5);g.lineTo(480,h/2-5);g.stroke()}
+  if(t<3) t+=0.003;
+  requestAnimationFrame(draw);
+}draw();
+});</script>
 <div class="diag"><b>MVP</b> = 1个按钮 + 1个输入框 + 1个反馈 = <span style="color:var(--emerald)">闭环</span></div>
 <div class="card card-ok"><h2>核心要点</h2><ul><li>一个按钮+一个输入框+一个反馈=一个完整的产品闭环</li>
 <li>先做功能，再做界面。功能跑通了，好看是锦上添花</li>

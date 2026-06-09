@@ -66,6 +66,35 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">🎯 阶段1 · 认知重启</span>
 <h1>恐惧是正常的——怎么跨过去</h1>
 <div class="hero-desc">你打开终端看到黑底白字会紧张。你看到红色报错会心跳加速。你觉得"我不是那块料"。每个人刚接触代码都这样——包括那些你现在觉得"好厉害"的人。编程难的不是技术，是过自己心里那关。一旦你接受"我肯定一开始写不对"，事情就简单了。错了就改，AI会帮你。</div>
+<div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let c=document.getElementById("hc");c.width=600;c.height=200;
+let t=0,w=c.width=600,h=c.height=200;
+function draw(){
+  let g=c.getContext('2d');g.clearRect(0,0,w,h);
+  t+=0.02;
+  // Heartbeat line
+  g.strokeStyle=`rgba(245,158,11,${0.5+Math.sin(t*5)*0.3})`;g.lineWidth=3;
+  g.beginPath();g.moveTo(0,h/2);
+  for(let x=0;x<w;x+=2){
+    let beat=Math.sin(x*0.02+t*5)*Math.exp(-Math.abs(x-w*0.3)/100)*40;
+    let calm=Math.sin(x*0.01)*5*(x>w*0.4?1:0);
+    let y=h/2+beat+calm;
+    g.lineTo(x,y);
+  }
+  g.stroke();
+  // Labels
+  g.font='11px system-ui';g.fillStyle='#fbbf24';g.textAlign='center';
+  g.fillText('😰 紧张',w*.15,h/2-30);
+  g.fillText('🤔 尝试',w*.35,h/2-30);
+  g.fillText('😌 熟练',w*.7,h/2-30);
+  // Growing circles
+  for(let i=0;i<3;i++){
+    let x=w*(0.2+i*0.25),r=15+i*10;
+    g.strokeStyle=`rgba(16,185,129,${0.3+i*0.2})`;g.lineWidth=2;
+    g.beginPath();g.arc(x,h/2,r+Math.sin(t+i)*3,0,Math.PI*2);g.stroke();
+  }
+  requestAnimationFrame(draw);
+}draw();
+});</script>
 
 <div class="card card-ok"><h2>核心要点</h2><ul><li>编程的秘诀不是不犯错，是快速发现错误并修正</li>
 <li>报错不是惩罚——是你的朋友在告诉你哪里有问题</li>

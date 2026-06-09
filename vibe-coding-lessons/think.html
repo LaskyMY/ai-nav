@@ -66,6 +66,15 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">🧠 阶段3 · 开始创造</span>
 <h1>写代码之前——停下来想一想</h1>
 <div class="hero-desc">最贵的bug是需求没想清楚的bug。最常犯的错误：上来就让AI写代码。你肯定这么干过。我也经常收到"帮我写个网站"这种一句话需求。花两分钟把需求写清楚——写给谁用、核心功能是什么、长什么样子——能省十个小时的返工。</div>
+<div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let t=0;let c=document.getElementById('hc');c.width=600;c.height=200;
+function draw(){let g=c.getContext('2d');g.clearRect(0,0,600,200);t+=0.02;
+g.font='50px system-ui';g.textAlign='center';
+let steps=['🤔','📝','✅'];let idx=Math.floor(t/2)%3;
+g.fillText(steps[idx],300,80);
+g.font='13px system-ui';g.fillStyle='rgba(255,255,255,.7)';
+g.fillText(['Who? 给谁用?','What? 做什么?','How? 长啥样?'][idx],300,130);
+g.font='10px system-ui';g.fillStyle='rgba(255,255,255,.3)';g.fillText('想清楚这3个问题再让AI动手',300,170);
+requestAnimationFrame(draw);}draw();});</script>
 <div class="diag"><b>谁用？</b> <span class="arr">→</span> <b>干嘛？</b> <span class="arr">→</span> <b>长啥样？</b> <span class="arr">→</span> <b>动手</b></div>
 <div class="card card-ok"><h2>核心要点</h2><ul><li>在AI干活之前，用三句话回答：谁用？干嘛？长啥样？</li>
 <li>写需求不是写论文——手机备忘录打几行字就行</li>

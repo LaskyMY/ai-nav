@@ -66,6 +66,32 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">💬 阶段2 · 学会说话</span>
 <h1>怎么跟AI说话——四要素法则</h1>
 <div class="hero-desc">"帮我写个网页"→ 一坨垃圾。"帮我写一个深色主题的待办列表，能添加删除，数据存localStorage，不要框架"→ 一个能用的东西。差距就是六个字：具体、具体、具体。好Prompt=角色+任务+标准+约束。这四个写齐了，AI基本不跑偏。</div>
+<div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let c=document.getElementById("hc");c.width=600;c.height=200;
+let t=0,w=c.width=600,h=c.height=200;
+function draw(){
+  let g=c.getContext('2d');g.clearRect(0,0,w,h);
+  t+=0.015;
+  let blocks=['角色 👤','任务 📋','标准 ✅','约束 🔒'];
+  let colors=['#6366f1','#06b6d4','#10b981','#f59e0b'];
+  for(let i=0;i<4;i++){
+    let x=40+i*140,y=40+Math.sin(t+i)*10;
+    let scale=1+Math.sin(t*2+i)*0.05;
+    g.save();g.translate(x+50,y+50);g.scale(scale,scale);
+    g.fillStyle=colors[i];g.globalAlpha=0.15;
+    g.fillRect(-50,-50,100,100);
+    g.globalAlpha=1;g.font='bold 13px system-ui';g.textAlign='center';
+    g.fillText(blocks[i],0,5);
+    g.restore();
+  }
+  // Arrow connecting them
+  g.strokeStyle='rgba(255,255,255,0.2)';g.lineWidth=2;
+  g.beginPath();g.moveTo(140,90);g.lineTo(460,90);g.stroke();
+  // Pulsing dot
+  let dotX=140+(t%4)*80;
+  g.fillStyle='#00e5ff';g.beginPath();g.arc(dotX,90,6,0,Math.PI*2);g.fill();
+  requestAnimationFrame(draw);
+}draw();
+});</script>
 <div class="diag"><b>角色</b> + <b>任务</b> + <b>标准</b> + <b>约束</b> = <span style="color:var(--emerald)">好Prompt</span></div>
 <div class="card card-ok"><h2>核心要点</h2><ul><li>四要素模板："你是[角色]。请[任务]。要求：[条件]。输出格式：[怎么交]"</li>
 <li>坏例子："帮我写个网页"——AI要猜你100件事</li>

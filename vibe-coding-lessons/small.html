@@ -66,6 +66,19 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">🐢 阶段5 · 实战心法</span>
 <h1>一次只改一件事</h1>
 <div class="hero-desc">你让AI"帮我重写整个界面"——它改了30个文件，你找不到哪个改坏了。你让AI"把这个按钮颜色改成蓝色"——它改了一行CSS，你一眼确认。这就是小步快跑：每次只动一个东西，确认没问题再动下一个。听起来慢——实际上不需要花时间找bug，是最快的。</div>
+<div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let t=0;let c=document.getElementById('hc');c.width=600;c.height=200;
+function draw(){let g=c.getContext('2d');g.clearRect(0,0,600,200);t+=0.015;
+let blocks=[{x:50,w:80},{x:160,w:30},{x:220,w:50},{x:300,w:20},{x:350,w:60}];
+for(let i=0;i<blocks.length;i++){
+  let b=blocks[i];
+  g.fillStyle=`rgba(99,102,241,${0.15+i*0.05})`;g.fillRect(b.x,50,b.w,80);
+  g.strokeStyle='rgba(255,255,255,.2)';g.strokeRect(b.x,50,b.w,80);
+}
+g.font='13px system-ui';g.fillStyle='rgba(255,255,255,.7)';g.textAlign='center';
+g.fillText('🐢 小步快跑：一次只改一小块',300,160);
+g.font='10px system-ui';g.fillStyle='rgba(255,255,255,.3)';
+g.fillText('小改动=一眼确认。大改动=找不到bug',300,185);
+requestAnimationFrame(draw);}draw();});</script>
 
 <div class="card card-ok"><h2>核心要点</h2><ul><li>每次只让AI做一件事——改完确认再做下一件</li>
 <li>大改动=多文件=找不到bug在哪里</li>
