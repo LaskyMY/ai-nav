@@ -212,7 +212,7 @@ function fmtDate(d) {
 // ── Load Data ──
 function load() {
   document.getElementById('todayLabel').textContent = '加载中...';
-  fetch(A+'/api/financial/briefs?days=10')
+  fetch(A+'/api/financial/briefs?days=10').catch(function(){return fetch('http://localhost:8765/api/financial/briefs?days=10')}).catch(function(){return fetch('https://99107705bcfb4f23-183-6-87-29.serveousercontent.com/api/financial/briefs?days=10')})
     .then(function(r){return r.json()})
     .then(function(b){render(b||[])})
     .catch(function(){

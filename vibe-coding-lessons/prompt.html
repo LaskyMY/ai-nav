@@ -1,4 +1,5 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>03/17 · 跟AI说话</title>
+<link rel="stylesheet" href="../shared.css">
 <style>
 :root{--bg:#0a0a0f;--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
@@ -87,4 +88,5 @@ function draw(){
 c.addEventListener('mousemove',function(e){var r=c.getBoundingClientRect();player.x=(e.clientX-r.left)*(W/r.width)});
 c.addEventListener('touchmove',function(e){e.preventDefault();var r=c.getBoundingClientRect();player.x=(e.touches[0].clientX-r.left)*(W/r.width)});
 setInterval(spawn,1200);draw();
-</script></body></html>
+</script><script src="../shared.js"></script>
+</body></html>
