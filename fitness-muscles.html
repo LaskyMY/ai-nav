@@ -1,0 +1,217 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"><meta name="theme-color" content="#0a0a0f"><title>三块被忽视的肌肉 · 打造完美身材</title><link rel="stylesheet" href="./shared.css"><link rel="icon" href="./icon.svg"><style>
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--green:#10B981;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:16px;--ease:cubic-bezier(.22,1,.36,1)}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:80px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.bg{position:fixed;inset:0;pointer-events:none;z-index:0}.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.4}.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,#6366f1 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,#ec4899 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,#06B6D4 0%,transparent 70%);top:50%;left:50%;animation:floatOrb 22s ease-in-out infinite;animation-delay:-7s}@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
+.wrap{max-width:800px;margin:0 auto;padding:20px;position:relative;z-index:1}
+h1{font-size:26px;font-weight:700;margin:12px 0 4px;background:linear-gradient(135deg,#6366f1,#06B6D4,#ec4899);background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:tFlow 5s ease-in-out infinite}@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+h2{font-size:18px;font-weight:700;color:var(--cyan);margin:28px 0 12px;border-left:3px solid var(--cyan);padding-left:12px}
+h3{font-size:15px;font-weight:700;color:rgba(255,255,255,.85);margin:18px 0 8px}
+
+/* 136 Reading Modes */
+.reading-mode{display:flex;gap:8px;margin:16px 0}
+.mode-btn{flex:1;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:var(--tx3);font-size:12px;cursor:pointer;text-align:center;transition:all .3s;font-family:inherit}
+.mode-btn:hover{border-color:rgba(99,102,241,.2);color:var(--tx2)}
+.mode-btn.active{border-color:rgba(99,102,241,.4);background:rgba(99,102,241,.1);color:var(--a1);font-weight:600}
+.mode-btn .mode-time{display:block;font-size:20px;font-weight:700;margin-bottom:2px}
+.mode-btn .mode-label{font-size:10px;opacity:.6}
+
+/* Content sections */
+.content-section{margin:16px 0;transition:all .3s}
+.content-section.hidden{display:none}
+
+/* Muscle cards */
+.muscle-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:16px 0}
+.muscle-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:20px;text-align:center;position:relative;overflow:hidden;transition:all .3s;backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px)}
+.muscle-card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.03) 0%,transparent 50%,rgba(255,255,255,.01) 100%);pointer-events:none}
+.muscle-card:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(99,102,241,.1)}
+.muscle-emoji{font-size:48px;display:block;margin-bottom:8px}
+.muscle-name{font-size:16px;font-weight:700;color:#fff;margin-bottom:4px}
+.muscle-loc{font-size:11px;color:var(--tx3);margin-bottom:8px}
+.muscle-why{font-size:12px;color:var(--tx2);line-height:1.6;margin-bottom:10px}
+.muscle-exercise{display:inline-block;padding:6px 14px;border-radius:8px;background:rgba(0,229,255,.08);color:var(--cyan);font-size:11px;margin:3px}
+
+/* TOC */
+.toc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:16px;margin:20px 0}
+.toc-title{font-size:13px;font-weight:700;color:var(--cyan);margin-bottom:10px}
+.toc a{display:block;padding:5px 0;font-size:12px;color:var(--tx3);text-decoration:none;transition:all .15s}
+.toc a:hover{color:var(--tx2);padding-left:4px}
+
+/* Exercise table */
+.ex-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12px}
+.ex-table td,.ex-table th{border:1px solid rgba(255,255,255,.06);padding:8px 12px;text-align:left}
+.ex-table th{background:rgba(255,255,255,.04);color:var(--cyan);font-weight:600}
+.ex-table tr:hover{background:rgba(255,255,255,.02)}
+
+/* Animated canvas */
+.hero-canvas{width:100%;max-width:600px;height:220px;margin:0 auto 16px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.2)}
+.hero-canvas canvas{width:100%;height:100%;display:block}
+
+.card{border-radius:16px;padding:18px;margin-bottom:12px;position:relative;overflow:hidden}
+.card-ok{border-left:3px solid rgba(16,185,129,.4)}
+.card-warn{border-left:3px solid rgba(245,158,11,.4)}
+.badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:10px;font-weight:600;margin-bottom:10px;background:rgba(99,102,241,.15);color:#818cf8}
+ul{padding-left:20px;margin:6px 0}li{margin:4px 0;font-size:14px;color:rgba(255,255,255,.7)}
+.nav-btns{display:flex;gap:8px;margin:24px 0}.btn{display:inline-block;padding:10px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;transition:all .25s;backdrop-filter:blur(20px)}.btn:hover{border-color:rgba(99,102,241,.25);color:var(--tx)}
+.back{text-align:center;margin-top:28px}.back a{color:var(--tx4);font-size:11px;text-decoration:none}
+@media(max-width:600px){.wrap{padding:14px}h1{font-size:20px}.muscle-grid{grid-template-columns:1fr}}
+</style></head><body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot" id="glowSpot"></div>
+
+<div class="wrap">
+<div class="breadcrumb"><a href="./knowledge.html">百科</a> / 健身</div>
+<span class="badge">🏋️ 健身</span>
+<h1>三块被忽视的肌肉</h1>
+<p style="font-size:13px;color:var(--tx2);margin:8px 0 16px;">你练胸、练背、练手臂——但少了这三块，永远练不出那种"穿上衣服也能看出来"的美观身材。参考 Captain Workout</p>
+
+<!-- Hero Canvas Animation -->
+<div class="hero-canvas"><canvas id="hc"></canvas></div>
+<script>document.addEventListener("DOMContentLoaded",function(){var c=document.getElementById("hc"),ctx=c.getContext("2d"),W=600,H=220;var t=0,parts=[],muscles=[{x:200,y:130,label:"三角肌\n后束",r:25,c:"#6366f1"},{x:400,y:80,label:"斜方肌",r:22,c:"#ec4899"},{x:300,y:60,label:"前臂",r:20,c:"#06B6D4"}];for(var i=0;i<40;i++)parts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*1.5,vy:(Math.random()-.5)*1.5,r:3+Math.random()*6,c:["#6366f1","#ec4899","#06B6D4"][Math.floor(Math.random()*3)],a:Math.random()});function draw(){ctx.clearRect(0,0,W,H);t+=0.015;for(var i=0;i<parts.length;i++){var p=parts[i];p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;ctx.fillStyle=p.c.replace(")","")+",0.15)";ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill()}for(var i=0;i<3;i++){var m=muscles[i],pulse=1+Math.sin(t*2+i)*0.08;ctx.strokeStyle=m.c;ctx.lineWidth=2;ctx.beginPath();ctx.arc(m.x,m.y,m.r*pulse,0,Math.PI*2);ctx.stroke();ctx.fillStyle=m.c.replace(")","")+",0.1)";ctx.beginPath();ctx.arc(m.x,m.y,m.r*pulse,0,Math.PI*2);ctx.fill()}ctx.font="14px system-ui";ctx.textAlign="center";for(var i=0;i<3;i++){var m=muscles[i];ctx.fillStyle="#fff";ctx.fillText(m.label,m.x,m.y+40)}ctx.font="11px system-ui";ctx.fillStyle="rgba(255,255,255,.3)";ctx.fillText("80%的人忽视了这3块肌肉",W/2,H-10);requestAnimationFrame(draw)}draw()});</script>
+
+<!-- 136 Reading Modes -->
+<div class="reading-mode">
+  <button class="mode-btn active" onclick="switchMode('1min')" id="btn1min">
+    <span class="mode-time">⚡ 1分钟</span><span class="mode-label">快速扫读</span>
+  </button>
+  <button class="mode-btn" onclick="switchMode('3min')" id="btn3min">
+    <span class="mode-time">📖 3分钟</span><span class="mode-label">标准阅读</span>
+  </button>
+  <button class="mode-btn" onclick="switchMode('6min')" id="btn6min">
+    <span class="mode-time">🧠 6分钟</span><span class="mode-label">深度学习</span>
+  </button>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <div class="toc-title">📑 目录</div>
+  <a href="#what">三块肌肉分别是哪三块</a>
+  <a href="#why">为什么它们被忽视</a>
+  <a href="#how">每块怎么练（具体动作）</a>
+  <a href="#plan">一周训练计划</a>
+  <a href="#tips">关键要点</a>
+</div>
+
+<!-- ═══ 1分钟 ═══ -->
+<div class="content-section" id="sec1min">
+<div class="card card-ok"><h2>⚡ 1分钟速览</h2>
+<p><strong>三块被忽视的肌肉：</strong></p>
+<ol>
+  <li><strong>三角肌后束</strong> — 肩膀后面的肌肉。没有它，肩膀从侧面看是平的。</li>
+  <li><strong>斜方肌</strong> — 脖子到肩膀的肌肉。没有它，穿T恤撑不起来。</li>
+  <li><strong>前臂肌群</strong> — 手臂上半段再粗，小臂细也白练。</li>
+</ol>
+<p><strong>怎么练：</strong>每周各加2-3组针对性训练。后束=反向飞鸟。斜方=耸肩。前臂=腕弯举。3个动作，10分钟搞定。</p>
+<p style="font-size:11px;color:var(--tx3)">📺 来源: Captain Workout · <a href="https://www.bilibili.com/video/BV1Ejo4B1Ewz/" target="_blank" style="color:var(--cyan)">B站视频</a></p>
+</div>
+</div>
+
+<!-- ═══ 3分钟 ═══ -->
+<div class="content-section hidden" id="sec3min">
+<h2 id="what">三块肌肉分别是什么</h2>
+
+<div class="muscle-grid">
+<div class="muscle-card">
+  <span class="muscle-emoji">🔱</span>
+  <div class="muscle-name">三角肌后束</div>
+  <div class="muscle-loc">Posterior Deltoid</div>
+  <div class="muscle-why">肩膀由前、中、后三束组成。大多数人拼命推胸推肩，前束和中束练得很大，但后束完全没练。结果：肩膀从侧面看是平的，没有3D立体感。</div>
+  <span class="muscle-exercise">反向飞鸟</span><span class="muscle-exercise">绳索面拉</span>
+</div>
+<div class="muscle-card">
+  <span class="muscle-emoji">🏔️</span>
+  <div class="muscle-name">斜方肌</div>
+  <div class="muscle-loc">Trapezius</div>
+  <div class="muscle-why">斜方肌连接脖子和肩膀，是"看起来壮"的关键。发达的斜方肌让你穿任何衣服都撑得起肩部线条。但很多人怕"脖子粗"不敢练——事实是，适度的斜方肌让你看起来更挺拔，不是粗脖子。</div>
+  <span class="muscle-exercise">哑铃耸肩</span><span class="muscle-exercise">农夫行走</span>
+</div>
+<div class="muscle-card">
+  <span class="muscle-emoji">💪</span>
+  <div class="muscle-name">前臂肌群</div>
+  <div class="muscle-loc">Forearm Flexors/Extensors</div>
+  <div class="muscle-why">前臂是全身最容易被看到的肌肉之一——穿短袖时露在外面。但几乎没人专门练它。粗壮的前臂让你的手臂看起来完整，不是"大臂粗小臂细"的尴尬比例。</div>
+  <span class="muscle-exercise">腕弯举</span><span class="muscle-exercise">反握弯举</span>
+</div>
+</div>
+
+<h2 id="why">为什么你一直忽视它们</h2>
+<ul>
+<li><strong>镜子看不到：</strong>这三块肌肉都在身体背面或手臂末端，你照镜子不常看到它们</li>
+<li><strong>大动作不练：</strong>卧推、深蹲、硬拉这些大动作几乎不刺激到后束和斜方（尤其是后束）</li>
+<li><strong>没人教：</strong>大部分教程都在讲胸肌腹肌，没人告诉你这三块才是"看起来好看"的关键</li>
+</ul>
+</div>
+
+<!-- ═══ 6分钟 ═══ -->
+<div class="content-section hidden" id="sec6min">
+<h2 id="how">每块肌肉怎么练（完整指南）</h2>
+
+<h3>1. 三角肌后束</h3>
+<table class="ex-table">
+<tr><th>动作</th><th>组数</th><th>次数</th><th>要点</th></tr>
+<tr><td>哑铃反向飞鸟</td><td>3组</td><td>12-15</td><td>俯身45°，肘微弯，向后上方打开。想象"用肩胛骨夹东西"</td></tr>
+<tr><td>绳索面拉 (Face Pull)</td><td>3组</td><td>15-20</td><td>绳索拉到面部高度，肘向外展。这是后束的王牌动作</td></tr>
+<tr><td>蝴蝶机反向飞鸟</td><td>2组</td><td>12-15</td><td>坐姿，胸部贴靠垫，手臂向后打开</td></tr>
+</table>
+
+<h3>2. 斜方肌</h3>
+<table class="ex-table">
+<tr><th>动作</th><th>组数</th><th>次数</th><th>要点</th></tr>
+<tr><td>哑铃耸肩</td><td>3组</td><td>15-20</td><td>大重量，纯上下移动，不要转肩。顶峰收缩1秒</td></tr>
+<tr><td>农夫行走</td><td>3组</td><td>30-60秒</td><td>双手提重哑铃，挺胸收腹，走直线。全身稳定+斜方肌轰炸</td></tr>
+<tr><td>杠铃划船（高位）</td><td>3组</td><td>10-12</td><td>杠铃拉向上腹位置，肘向外展，自然带到斜方肌</td></tr>
+</table>
+
+<h3>3. 前臂肌群</h3>
+<table class="ex-table">
+<tr><th>动作</th><th>组数</th><th>次数</th><th>要点</th></tr>
+<tr><td>杠铃腕弯举（正手）</td><td>3组</td><td>15-20</td><td>前臂放于大腿，手腕悬空，只动手腕。练前臂内侧</td></tr>
+<tr><td>杠铃腕弯举（反手）</td><td>3组</td><td>15-20</td><td>反握，同样动作。练前臂外侧</td></tr>
+<tr><td>反握杠铃弯举</td><td>2组</td><td>12-15</td><td>反握杠铃做弯举，同时练肱二头肌和前臂</td></tr>
+</table>
+
+<h2 id="plan">一周训练计划模板</h2>
+<div class="card card-warn">
+<table class="ex-table">
+<tr><th>星期</th><th>主训练</th><th>加入的"忽视肌肉"训练</th></tr>
+<tr><td>周一</td><td>胸+三头</td><td>训练后加3组反向飞鸟（后束）</td></tr>
+<tr><td>周三</td><td>背+二头</td><td>训练后加3组耸肩（斜方）+3组腕弯举（前臂）</td></tr>
+<tr><td>周五</td><td>肩+腿</td><td>训练后加3组面拉（后束）+3组农夫行走（斜方）</td></tr>
+</table>
+<p style="font-size:12px;color:var(--tx3);margin-top:8px">只需在现有训练后加10分钟，三块肌肉全部覆盖。</p>
+</div>
+
+<h2 id="tips">关键要点</h2>
+<ul>
+<li><strong>小重量高次数：</strong>这些肌肉不大，不需要冲大重量。15-20次/组，感受肌肉收缩最重要</li>
+<li><strong>每周2-3次：</strong>和胸背不一样，这些肌肉可以高频训练，恢复快</li>
+<li><strong>蛋白质：</strong>每公斤体重1.6-2g蛋白质，没有营养再练也没用</li>
+<li><strong>体脂要低：</strong>体脂超过18%，再发达的肌肉也看不出来。先减脂再塑形</li>
+<li><strong>一致性 > 强度：</strong>每周坚持10分钟，三个月后效果远超你想象</li>
+</ul>
+</div>
+
+<div class="nav-btns">
+  <a class="btn" href="./knowledge.html">📚 返回百科</a>
+  <a class="btn" href="https://www.bilibili.com/video/BV1Ejo4B1Ewz/" target="_blank" style="color:var(--cyan)">📺 原视频</a>
+</div>
+<div class="back"><a href="./knowledge.html">← 返回百科</a></div></div>
+
+<script src="./shared.js"></script>
+<script>
+function switchMode(mode){
+  document.querySelectorAll('.mode-btn').forEach(function(b){b.classList.remove('active')});
+  document.getElementById('btn'+mode).classList.add('active');
+  document.querySelectorAll('.content-section').forEach(function(s){s.classList.add('hidden')});
+  if(mode==='1min'){document.getElementById('sec1min').classList.remove('hidden')}
+  else if(mode==='3min'){
+    document.getElementById('sec1min').classList.remove('hidden');
+    document.getElementById('sec3min').classList.remove('hidden');
+  }else{
+    document.getElementById('sec1min').classList.remove('hidden');
+    document.getElementById('sec3min').classList.remove('hidden');
+    document.getElementById('sec6min').classList.remove('hidden');
+  }
+}
+</script></body></html>
