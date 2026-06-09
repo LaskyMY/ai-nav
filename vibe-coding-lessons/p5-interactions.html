@@ -14,7 +14,7 @@ body{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;backgroun
 .bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
 .bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
 @keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
-.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle 420px at 50% 50%,rgba(99,102,241,.05),rgba(236,72,153,.04) 20%,rgba(168,85,247,.02) 45%,transparent 70%)}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1;transition:background .3s ease}
 .container{max-width:700px;margin:0 auto;padding:18px 20px;position:relative;z-index:1}
 h1{font-size:22px;font-weight:700;letter-spacing:-.03em;margin-bottom:4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
@@ -47,7 +47,7 @@ p{margin:8px 0;font-size:13px;color:rgba(255,255,255,.65)}
 </head>
 <body>
 <div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
-<div class="glow-spot"></div>
+<div class="glow-spot" id="glowSpot"></div>
 <div class="container">
 <div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / AI 协作开发实战 - 做一款代办工具 / 实践课 · §P5</div>
 <div class="lesson-kicker"><span class="badge practice">实践课</span><span class="lesson-index">第 32 / 33 节</span></div><h1>验证闭环：冒烟测试、边界清单和回归检查</h1><p>AI 能很快把功能做出来，也可能很快把旧功能改坏。专业感来自验证：手动冒烟、自动测试、截图检查、边界条件和回归记录。</p>
@@ -78,5 +78,21 @@ p{margin:8px 0;font-size:13px;color:rgba(255,255,255,.65)}
 <div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
 </div>
 <div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+<script>
+// Mouse-follow glow
+(function(){
+  var g = document.getElementById('glowSpot');
+  if (!g || 'ontouchstart' in window) return;
+  var x = window.innerWidth/2, y = window.innerHeight/2;
+  var tx = x, ty = y;
+  document.addEventListener('mousemove', function(e){ tx=e.clientX; ty=e.clientY });
+  function anim(){
+    x += (tx-x)*0.05; y += (ty-y)*0.05;
+    g.style.background = 'radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)';
+    requestAnimationFrame(anim);
+  }
+  anim();
+})();
+</script>
 </body>
 </html>
