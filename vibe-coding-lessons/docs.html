@@ -66,6 +66,29 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">📖 阶段5 · 实战心法</span>
 <h1>不要从头读文档</h1>
 <div class="hero-desc">新手喜欢从头到尾读文档。最慢的学习方式。正确做法：你要做什么→搜"怎么做"→找到那一段→只看那一段→剩下的以后用到再看。你不需要把整本字典背下来才能写文章——需要哪个字就查哪个字。需要哪个功能就看哪个文档。</div>
+<div class="game-box"><canvas id="g"></canvas>
+<div class="game-hint">🖱 互动游戏</div></div>
+<script>document.addEventListener('DOMContentLoaded',function(){var c=document.getElementById('g');c.width=800;c.height=360;var c2=document.getElementById('g'),ctx=c2.getContext('2d'),W=800,H=360;
+var query='',results=[],t=0;
+var allDocs=['addEventListener() — 绑定点击事件','querySelector() — 查找HTML元素','fetch() — 发送网络请求','setTimeout() — 延迟执行代码','localStorage.setItem() — 存数据到浏览器','Array.map() — 遍历数组并转换','JSON.parse() — 解析JSON字符串'];
+function search(q){
+  if(!q){results=[];return}
+  results=allDocs.filter(function(d){return d.toLowerCase().indexOf(q.toLowerCase())>=0});
+}
+function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle='rgba(6,182,212,.02)';ctx.fillRect(0,0,W,H);
+  // Search bar
+  ctx.fillStyle='rgba(255,255,255,.05)';ctx.fillRect(100,30,600,36);ctx.strokeStyle=query?'rgba(0,229,255,.3)':'rgba(255,255,255,.1)';ctx.lineWidth=1;ctx.strokeRect(100,30,600,36);
+  ctx.font='14px system-ui';ctx.fillStyle=query?'#fff':'rgba(255,255,255,.3)';ctx.textAlign='left';ctx.fillText(query||'🔍 输入搜索... (点击页面后打字)',115,53);
+  if(query||t>60){ctx.font='10px system-ui';ctx.fillStyle='rgba(255,255,255,.2)';ctx.textAlign='right';ctx.fillText(results.length+' 个结果',690,53)}
+  // Results
+  for(var i=0;i<results.length;i++){var y=85+i*38;
+    ctx.fillStyle='rgba(255,255,255,.03)';ctx.fillRect(100,y,600,32);
+    ctx.font='12px system-ui';ctx.fillStyle='#00e5ff';ctx.textAlign='left';ctx.fillText(results[i].split(' — ')[0],115,y+20);ctx.fillStyle='rgba(255,255,255,.4)';ctx.fillText(results[i].split(' — ')[1]||'',300,y+20)}
+  t++;
+  ctx.font='11px system-ui';ctx.fillStyle='rgba(255,255,255,.25)';ctx.textAlign='center';ctx.fillText('用到什么查什么——你不是来背字典的',W/2,H-12);
+  requestAnimationFrame(draw);}
+document.addEventListener('keydown',function(e){if(e.key.length===1){query+=e.key;search(query)}else if(e.key==='Backspace'){query=query.slice(0,-1);search(query)}});
+draw();});</script>
 <div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let t=0;let c=document.getElementById('hc');c.width=600;c.height=200;
 function draw(){let g=c.getContext('2d');g.clearRect(0,0,600,200);t+=0.03;
 g.font='40px system-ui';g.textAlign='center';

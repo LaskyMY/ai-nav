@@ -66,6 +66,36 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">🎬 阶段5 · 实战心法</span>
 <h1>让人看到，不是解释</h1>
 <div class="hero-desc">你做完了项目。你想展示。最差的展示："我给你讲讲"。最好的展示：一个能点开的链接。人类是视觉动物——看到能用的东西，比听你解释十分钟管用。花半小时录屏，花半小时写README——这两个投资回报率比你想象的高一百倍。你的GitHub就是你的简历。</div>
+<div class="game-box"><canvas id="g"></canvas>
+<div class="game-hint">🖱 互动游戏</div></div>
+<script>document.addEventListener('DOMContentLoaded',function(){var c=document.getElementById('g');c.width=800;c.height=380;var c2=document.getElementById('g'),ctx=c2.getContext('2d'),W=800,H=380;
+var before=true,t=0,transition=0;
+function draw(){ctx.clearRect(0,0,W,H);t++;
+  // Before/After
+  var splitX=before?0:W/2;
+  if(transition>0){splitX=W/2*(1-transition);transition-=0.02}
+  // "Before" side
+  ctx.fillStyle='rgba(255,255,255,.02)';ctx.fillRect(0,0,W/2,H);
+  ctx.font='bold 16px system-ui';ctx.fillStyle='rgba(255,255,255,.3)';ctx.textAlign='center';ctx.fillText('📝 只写代码',W/4,40);
+  ctx.font='13px system-ui';ctx.fillStyle='rgba(255,255,255,.4)';ctx.fillText('"我做了个东西"',W/4,H/2-20);
+  ctx.font='40px system-ui';ctx.fillText('📁',W/4,H/2+10);
+  ctx.font='11px system-ui';ctx.fillStyle='rgba(255,255,255,.2)';ctx.fillText('没人知道是什么',W/4,H/2+45);
+  // "After" side
+  ctx.fillStyle='rgba(16,185,129,.02)';ctx.fillRect(W/2,0,W/2,H);
+  ctx.font='bold 16px system-ui';ctx.fillStyle='#10b981';ctx.textAlign='center';ctx.fillText('✨ 展示出来',W*3/4,40);
+  ctx.font='13px system-ui';ctx.fillStyle='rgba(255,255,255,.5)';ctx.fillText('"看看我做的!"',W*3/4,H/2-20);
+  ctx.font='40px system-ui';ctx.fillText('🌐',W*3/4,H/2+10);
+  ctx.font='11px system-ui';ctx.fillStyle='rgba(255,255,255,.3)';ctx.fillText('一个链接 = 最好的简历',W*3/4,H/2+45);
+  // Divider
+  ctx.strokeStyle='rgba(0,229,255,.3)';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(W/2,10);ctx.lineTo(W/2,H-60);ctx.stroke();
+  ctx.fillStyle='#00e5ff';ctx.beginPath();ctx.arc(W/2,H/2,8,0,Math.PI*2);ctx.fill();
+  // Button
+  ctx.fillStyle='rgba(0,229,255,.1)';ctx.fillRect(W/2-80,H-50,160,36);ctx.strokeStyle='rgba(0,229,255,.3)';ctx.strokeRect(W/2-80,H-50,160,36);
+  ctx.font='14px system-ui';ctx.fillStyle='#00e5ff';ctx.textAlign='center';ctx.fillText('👆 点击切换',W/2,H-25);
+  ctx.font='11px system-ui';ctx.fillStyle='rgba(255,255,255,.25)';ctx.fillText('一个能跑的链接 > 一千字的解释',W/2,H-65);
+  requestAnimationFrame(draw);}
+c2.addEventListener('click',function(){before=!before;transition=1});
+draw();});</script>
 <div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let t=0;let c=document.getElementById('hc');c.width=600;c.height=200;
 function draw(){let g=c.getContext('2d');g.clearRect(0,0,600,200);t+=0.02;
 g.font='50px system-ui';g.textAlign='center';

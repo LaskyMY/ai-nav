@@ -66,6 +66,39 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">📋 阶段4 · 思维方式</span>
 <h1>抄，使劲抄</h1>
 <div class="hero-desc">新手最怕"抄袭"。但所有优秀程序员都在抄——抄官方文档、抄StackOverflow、抄开源项目。区别只是：新手抄了不知道在抄什么，老手抄了能改。关键不是"不抄"，是"抄完理解"。把AI给的代码复制过来，跑通，然后改一个数字看看有什么变化——你已经在学习了。</div>
+<div class="game-box"><canvas id="g"></canvas>
+<div class="game-hint">🖱 互动游戏</div></div>
+<script>document.addEventListener('DOMContentLoaded',function(){var c=document.getElementById('g');c.width=800;c.height=360;var c2=document.getElementById('g'),ctx=c2.getContext('2d'),W=800,H=360;
+var blocks=[],placed=[],drag=null,mx=0,my=0,targets=[{x:120,y:120,w:200,h:40,text:'const btn ='},{x:120,y:175,w:200,h:40,text:'  document.'},{x:120,y:230,w:200,h:40,text:'    querySelector'},{x:120,y:285,w:200,h:40,text:'    (".btn")'}];
+var pieces=[{x:500,y:80,w:160,h:35,text:'const btn =',idx:0},{x:500,y:130,w:160,h:35,text:'  document.',idx:1},{x:500,y:180,w:160,h:35,text:'    querySelector',idx:2},{x:500,y:230,w:160,h:35,text:'    (".btn")',idx:3}];
+// Shuffle
+for(var i=pieces.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=pieces[i];pieces[i]=pieces[j];pieces[j]=t;for(var k=0;k<pieces.length;k++){pieces[k].x=500;pieces[k].y=80+k*55}}
+var score=0;
+function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle='rgba(99,102,241,.02)';ctx.fillRect(0,0,W,H);
+  // Targets
+  for(var i=0;i<targets.length;i++){var tg=targets[i];ctx.fillStyle='rgba(255,255,255,.03)';ctx.fillRect(tg.x,tg.y,tg.w,tg.h);ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=1;ctx.strokeRect(tg.x,tg.y,tg.w,tg.h)}
+  // Pieces
+  for(var i=0;i<pieces.length;i++){var p=pieces[i];if(p.placed)continue;var px=p.dragging?mx-p.w/2:p.x,py=p.dragging?my-p.h/2:p.y;
+    ctx.fillStyle='rgba(99,102,241,.15)';ctx.fillRect(px,py,p.w,p.h);ctx.strokeStyle='rgba(99,102,241,.4)';ctx.lineWidth=1;ctx.strokeRect(px,py,p.w,p.h);
+    ctx.font='12px monospace';ctx.fillStyle='#fff';ctx.textAlign='left';ctx.fillText(p.text,px+8,py+23)}
+  // Score
+  ctx.font='13px system-ui';ctx.fillStyle='#00e5ff';ctx.textAlign='center';ctx.fillText('拖拽代码块到左边正确位置 — 抄完你就学会了',W/2,H-15);
+  ctx.font='11px system-ui';ctx.fillStyle='rgba(255,255,255,.3)';ctx.fillText('所有程序员都在"抄"——关键是抄完理解',W/2,H-35);
+  if(score>=4){ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,W,H);ctx.font='bold 22px system-ui';ctx.fillStyle='#10b981';ctx.textAlign='center';ctx.fillText('✅ 代码拼好了!',W/2,H/2-10);ctx.font='14px system-ui';ctx.fillStyle='rgba(255,255,255,.7)';ctx.fillText('这就是querySelector——选中HTML元素',W/2,H/2+25)}
+  requestAnimationFrame(draw);}
+c2.addEventListener('mousedown',function(e){var r=c2.getBoundingClientRect(),cx=(e.clientX-r.left)*(W/r.width),cy=(e.clientY-r.top)*(H/r.height);
+  for(var i=pieces.length-1;i>=0;i--){var p=pieces[i];if(p.placed)continue;if(cx>p.x&&cx<p.x+p.w&&cy>p.y&&cy<p.y+p.h){drag=p;p.dragging=true;return}}});
+c2.addEventListener('touchstart',function(e){e.preventDefault();var r=c2.getBoundingClientRect(),cx=(e.touches[0].clientX-r.left)*(W/r.width),cy=(e.touches[0].clientY-r.top)*(H/r.height);
+  for(var i=pieces.length-1;i>=0;i--){var p=pieces[i];if(p.placed)continue;if(cx>p.x&&cx<p.x+p.w&&cy>p.y&&cy<p.y+p.h){drag=p;p.dragging=true;return}}},{passive:false});
+c2.addEventListener('mousemove',function(e){var r=c2.getBoundingClientRect();mx=(e.clientX-r.left)*(W/r.width);my=(e.clientY-r.top)*(H/r.height)});
+c2.addEventListener('touchmove',function(e){e.preventDefault();var r=c2.getBoundingClientRect();mx=(e.touches[0].clientX-r.left)*(W/r.width);my=(e.touches[0].clientY-r.top)*(H/r.height)},{passive:false});
+c2.addEventListener('mouseup',function(){if(!drag)return;drag.dragging=false;
+  for(var i=0;i<targets.length;i++){var tg=targets[i];if(mx>tg.x&&mx<tg.x+tg.w&&my>tg.y&&my<tg.y+tg.h&&i===drag.idx){drag.placed=true;drag.x=tg.x;drag.y=tg.y;score++;drag=null;return}}
+  drag=null});
+c2.addEventListener('touchend',function(){if(!drag)return;drag.dragging=false;
+  for(var i=0;i<targets.length;i++){var tg=targets[i];if(mx>tg.x&&mx<tg.x+tg.w&&my>tg.y&&my<tg.y+tg.h&&i===drag.idx){drag.placed=true;drag.x=tg.x;drag.y=tg.y;score++;drag=null;return}}
+  drag=null});
+draw();});</script>
 <div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let t=0;let c=document.getElementById('hc');c.width=600;c.height=200;
 function draw(){let g=c.getContext('2d');g.clearRect(0,0,600,200);t+=0.04;
 g.font='14px monospace';g.textAlign='center';g.fillStyle='rgba(255,255,255,.5)';

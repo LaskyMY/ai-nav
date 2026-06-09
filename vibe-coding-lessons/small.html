@@ -66,6 +66,29 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">🐢 阶段5 · 实战心法</span>
 <h1>一次只改一件事</h1>
 <div class="hero-desc">你让AI"帮我重写整个界面"——它改了30个文件，你找不到哪个改坏了。你让AI"把这个按钮颜色改成蓝色"——它改了一行CSS，你一眼确认。这就是小步快跑：每次只动一个东西，确认没问题再动下一个。听起来慢——实际上不需要花时间找bug，是最快的。</div>
+<div class="game-box"><canvas id="g"></canvas>
+<div class="game-hint">🖱 互动游戏</div></div>
+<script>document.addEventListener('DOMContentLoaded',function(){var c=document.getElementById('g');c.width=800;c.height=360;var c2=document.getElementById('g'),ctx=c2.getContext('2d'),W=800,H=360;
+var blocks=[],score=0,t=0,gameOver=false,nextBlock=null,fallSpeed=1;
+function spawnBlock(){var w=60+Math.random()*80;return{x:Math.random()*(W-200)+100,y:-40,w:w,h:24,color:'hsl('+(200+Math.random()*60)+',70%,60%)',vx:(Math.random()-.5)*1.5}}
+function draw(){ctx.clearRect(0,0,W,H);t++;ctx.fillStyle='rgba(99,102,241,.02)';ctx.fillRect(0,0,W,H);
+  // "One thing at a time" zone
+  ctx.fillStyle='rgba(16,185,129,.03)';ctx.fillRect(50,H-60,W-100,40);ctx.strokeStyle='rgba(16,185,129,.2)';ctx.lineWidth=2;ctx.strokeRect(50,H-60,W-100,40);
+  ctx.font='12px system-ui';ctx.fillStyle='rgba(255,255,255,.3)';ctx.textAlign='center';ctx.fillText('一次只做一件事 —— 小步快跑',W/2,H-38);
+  // Falling blocks
+  if(!nextBlock)nextBlock=spawnBlock();
+  if(nextBlock){
+    ctx.fillStyle=nextBlock.color;ctx.globalAlpha=0.6;ctx.fillRect(nextBlock.x,nextBlock.y,nextBlock.w,nextBlock.h);ctx.globalAlpha=1;
+    nextBlock.y+=fallSpeed;nextBlock.x+=nextBlock.vx;
+    if(nextBlock.y>H-70){blocks.push({x:nextBlock.x,y:H-60,w:nextBlock.w,h:nextBlock.h,color:nextBlock.color});nextBlock=null;score++;
+      if(blocks.length>7){gameOver=true;ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,W,H);ctx.font='bold 20px system-ui';ctx.fillStyle='#fbbf24';ctx.textAlign='center';ctx.fillText('堆太高了! 一次只做一个',W/2,H/2-10);ctx.font='14px system-ui';ctx.fillStyle='rgba(255,255,255,.6)';ctx.fillText('像搭积木——一次一块，稳稳当当',W/2,H/2+25)}}}
+  // Placed blocks
+  for(var i=0;i<blocks.length;i++){var b=blocks[i];ctx.fillStyle=b.color;ctx.fillRect(b.x,b.y,b.w,b.h);
+    ctx.font='9px system-ui';ctx.fillStyle='#fff';ctx.textAlign='center';ctx.fillText('✅',b.x+b.w/2,b.y+16)}
+  ctx.font='13px system-ui';ctx.fillStyle='#00e5ff';ctx.textAlign='center';ctx.fillText('积木: '+score,W/2,25);
+  if(gameOver)return;
+  requestAnimationFrame(draw);}
+draw();});</script>
 <div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let t=0;let c=document.getElementById('hc');c.width=600;c.height=200;
 function draw(){let g=c.getContext('2d');g.clearRect(0,0,600,200);t+=0.015;
 let blocks=[{x:50,w:80},{x:160,w:30},{x:220,w:50},{x:300,w:20},{x:350,w:60}];

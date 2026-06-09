@@ -66,6 +66,32 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">🚨 阶段2 · 学会说话</span>
 <h1>报错不是你的敌人</h1>
 <div class="hero-desc">红字报错不是世界末日。它只是程序在说："嘿，有个问题，我停在第47行。"你唯一要做的事：把报错完整复制给AI，问"这是什么意思"。AI能帮你解决99%的报错。最蠢的做法是看到报错→关掉→假装没看见。十分钟后还是同一个报错。</div>
+<div class="game-box"><canvas id="g"></canvas>
+<div class="game-hint">🖱 互动游戏 — 点击开始</div></div>
+<script>document.addEventListener('DOMContentLoaded',function(){var c=document.getElementById('g');c.width=800;c.height=380;var c2=document.getElementById('g'),ctx=c2.getContext('2d'),W=800,H=380;
+var bugs=[],score=0,missed=0,particles=[],t=0,level=1;
+function spawnBug(){var side=Math.floor(Math.random()*4),x,y;
+  if(side===0){x=Math.random()*W;y=-20}else if(side===1){x=W+20;y=Math.random()*H}else if(side===2){x=Math.random()*W;y=H+20}else{x=-20;y=Math.random()*H}
+  bugs.push({x:x,y:y,r:8+Math.random()*12,speed:0.5+Math.random()*1.5+level*0.2,vx:0,vy:0,life:1,hit:false})}
+setInterval(function(){if(bugs.length<8+level*2)spawnBug()},1500-level*100);
+function burst(x,y,c,n){for(var i=0;i<n;i++){var a=Math.random()*Math.PI*2,s=2+Math.random()*5;particles.push({x:x,y:y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:1,color:c})}}
+function draw(){ctx.clearRect(0,0,W,H);t++;
+  ctx.fillStyle='rgba(239,68,68,'+(0.01+missed*0.005)+')';ctx.fillRect(0,0,W,H);
+  for(var i=bugs.length-1;i>=0;i--){var b=bugs[i];b.vx+=(Math.random()-.5)*0.1;b.vy+=(Math.random()-.5)*0.1;b.vx*=0.98;b.vy*=0.98;b.x+=b.vx;b.y+=b.vy;
+    if(b.hit){b.life-=0.05;if(b.life<=0){bugs.splice(i,1);continue}
+      ctx.fillStyle='rgba(16,185,129,'+(b.life*0.5)+')';ctx.beginPath();ctx.arc(b.x,b.y,b.r*b.life,0,Math.PI*2);ctx.fill();continue}
+    if(b.x<-30||b.x>W+30||b.y<-30||b.y>H+30){missed++;bugs.splice(i,1);continue}
+    ctx.fillStyle='rgba(239,68,68,0.6)';ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,0.3)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.stroke();
+    ctx.font='12px system-ui';ctx.fillStyle='#fff';ctx.textAlign='center';ctx.fillText('🐛',b.x,b.y+4)}
+  for(var i=particles.length-1;i>=0;i--){var p=particles[i];p.x+=p.vx;p.y+=p.vy;p.life-=0.03;if(p.life<=0){particles.splice(i,1);continue}ctx.fillStyle=p.color.replace('1)',(p.life*0.7)+')');ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fill()}
+  if(score>=level*10){level++;ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(0,0,W,H);ctx.font='24px system-ui';ctx.fillStyle='#10b981';ctx.textAlign='center';ctx.fillText('Level '+level+' !',W/2,H/2)}
+  ctx.font='bold 14px system-ui';ctx.fillStyle='#fff';ctx.textAlign='left';ctx.fillText('🐛修复:'+score+' 跑掉:'+missed+' Lv.'+level,10,25);
+  ctx.font='11px system-ui';ctx.fillStyle='rgba(255,255,255,.3)';ctx.textAlign='center';ctx.fillText('点击虫虫——消灭bug',W/2,H-10);
+  requestAnimationFrame(draw);}
+c2.addEventListener('click',function(e){var r=c2.getBoundingClientRect(),cx=(e.clientX-r.left)*(W/r.width),cy=(e.clientY-r.top)*(H/r.height);
+  for(var i=bugs.length-1;i>=0;i--){var b=bugs[i];if(!b.hit&&Math.sqrt((cx-b.x)**2+(cy-b.y)**2)<b.r+10){b.hit=true;score++;burst(b.x,b.y,'rgba(16,185,129,1)',15);return}}});
+draw();});</script>
 <div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let c=document.getElementById("hc");c.width=600;c.height=200;
 let t=0,w=c.width=600,h=c.height=200;
 function draw(){

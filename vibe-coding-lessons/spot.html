@@ -66,6 +66,32 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">🎯 阶段5 · 实战心法</span>
 <h1>三秒定位bug</h1>
 <div class="hero-desc">你看到报错会慌——但报错其实写得一清二楚。先看最后一行——那是错误总结。再看中间行——那是详细原因。最后看第一行附近——那是出错位置。三秒找到位置，五秒理解原因，十秒修复。十八秒一个bug。熟练了会更快。</div>
+<div class="game-box"><canvas id="g"></canvas>
+<div class="game-hint">🖱 互动游戏 — 点击开始</div></div>
+<script>document.addEventListener('DOMContentLoaded',function(){var c=document.getElementById('g');c.width=800;c.height=380;var c2=document.getElementById('g'),ctx=c2.getContext('2d'),W=800,H=380;
+var bugs=[],score=0,timer=0,gameOn=true,bgBugs=[];
+for(var i=0;i<8;i++)bgBugs.push({x:Math.random()*W,y:Math.random()*H,r:4+Math.random()*8,color:'rgba(239,68,68,0.3)',vx:(Math.random()-.5)*2,vy:(Math.random()-.5)*2});
+function findBug(){var x=100+Math.random()*(W-200),y=50+Math.random()*(H-100);bugs.push({x:x,y:y,r:8+Math.random()*10,found:false})}
+function draw(){ctx.clearRect(0,0,W,H);
+  // Background bugs
+  for(var i=0;i<bgBugs.length;i++){var b=bgBugs[i];b.x+=b.vx;b.y+=b.vy;if(b.x<0||b.x>W)b.vx*=-1;if(b.y<0||b.y>H)b.vy*=-1;ctx.fillStyle=b.color;ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fill()}
+  // Search area
+  ctx.strokeStyle='rgba(0,229,255,.1)';ctx.lineWidth=1;ctx.strokeRect(80,30,W-160,H-70);
+  ctx.font='10px system-ui';ctx.fillStyle='rgba(255,255,255,.2)';ctx.fillText('🔍 搜索区域 — 找到隐藏的bug并点击',100,20);
+  // Bugs
+  for(var i=bugs.length-1;i>=0;i--){var bg=bugs[i];
+    if(bg.found){bugs.splice(i,1);continue}
+    ctx.fillStyle='rgba(239,68,68,0.6)';ctx.beginPath();ctx.arc(bg.x,bg.y,bg.r,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,0.2)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(bg.x,bg.y,bg.r+2,0,Math.PI*2);ctx.stroke()}
+  // Timer
+  timer++;var secs=Math.floor(timer/60);
+  ctx.font='bold 16px system-ui';ctx.fillStyle='#00e5ff';ctx.textAlign='right';ctx.fillText('⏱ '+secs+'s | 🐛 '+score,W-20,30);
+  if(bugs.length===0&&score>=5){ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,W,H);ctx.font='bold 28px system-ui';ctx.fillStyle='#10b981';ctx.textAlign='center';ctx.fillText('✅ 全部找到! ('+secs+'秒)',W/2,H/2-10);ctx.font='14px system-ui';ctx.fillStyle='rgba(255,255,255,.7)';ctx.fillText('18秒一个bug——你也可以',W/2,H/2+25)}
+  if(bugs.length<3)findBug();
+  requestAnimationFrame(draw);}
+c2.addEventListener('click',function(e){var r=c2.getBoundingClientRect(),cx=(e.clientX-r.left)*(W/r.width),cy=(e.clientY-r.top)*(H/r.height);
+  for(var i=bugs.length-1;i>=0;i--){var bg=bugs[i];if(Math.sqrt((cx-bg.x)**2+(cy-bg.y)**2)<bg.r+8){bg.found=true;score++;return}}});
+draw();});</script>
 <div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let c=document.getElementById("hc");if(!c)return;c.width=600;c.height=200;
 let t=0,w=c.width=600,h=c.height=200;
 function draw(){

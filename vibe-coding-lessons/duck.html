@@ -66,6 +66,29 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">🐤 阶段4 · 思维方式</span>
 <h1>跟橡皮鸭说话</h1>
 <div class="hero-desc">编程界最有名的调试技巧：在桌上放一只橡皮鸭，当你遇到bug时，向鸭子一行一行解释你的代码。往往解释到一半，你自己就发现问题了。因为你被迫理清思路。AI是你的超级橡皮鸭——它不仅听，还会帮你分析。把问题说出来这个动作本身，就已经解决一半了。</div>
+<div class="game-box"><canvas id="g"></canvas>
+<div class="game-hint">🖱 互动游戏 — 点击开始</div></div>
+<script>document.addEventListener('DOMContentLoaded',function(){var c=document.getElementById('g');c.width=800;c.height=380;var c2=document.getElementById('g'),ctx=c2.getContext('2d'),W=800,H=380;
+var msgs=[],duckX=W/2,duckY=H/2-20,duckT=0,typed='',showHint=true;
+var prompts=['我的代码为什么不工作?','第47行有个bug...','等等!让我一行一行解释...','哦!变量名拼错了!'];
+var pIdx=0,pTimer=0;
+function draw(){ctx.clearRect(0,0,W,H);duckT+=0.03;
+  ctx.fillStyle='rgba(245,158,11,.02)';ctx.fillRect(0,0,W,H);
+  // Duck
+  var bob=Math.sin(duckT)*5;
+  ctx.font='80px system-ui';ctx.textAlign='center';ctx.fillText('🐤',duckX+bob,duckY+20);
+  // Speech bubble
+  var bw=300,bh=60,bx=duckX-bw/2-30,by=duckY-80;
+  ctx.fillStyle='rgba(255,255,255,.08)';ctx.strokeStyle='rgba(255,255,255,.15)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(bx+20,by);ctx.lineTo(bx+bw-20,by);ctx.quadraticCurveTo(bx+bw,by,bx+bw,by+20);ctx.lineTo(bx+bw,by+bh-20);ctx.quadraticCurveTo(bx+bw,by+bh,bx+bw-20,by+bh);ctx.lineTo(bx+40,by+bh);ctx.lineTo(bx+20,by+bh+20);ctx.lineTo(bx+20,by+bh);ctx.lineTo(bx+20,by+bh-20);ctx.quadraticCurveTo(bx,by+bh,bx,by+bh-20);ctx.lineTo(bx,by+20);ctx.quadraticCurveTo(bx,by,bx+20,by);ctx.fill();ctx.stroke();
+  // Text in bubble
+  pTimer++;if(pTimer>120){pIdx=(pIdx+1)%4;pTimer=0}
+  ctx.font='13px system-ui';ctx.fillStyle='#fbbf24';ctx.textAlign='center';ctx.fillText(prompts[pIdx],duckX-30,duckY-45);
+  // Hint
+  ctx.font='12px system-ui';ctx.fillStyle='rgba(255,255,255,.5)';ctx.textAlign='center';ctx.fillText('把你的问题说出来——说到一半你就会发现问题在哪',W/2,H-15);
+  ctx.font='11px system-ui';ctx.fillStyle='rgba(255,255,255,.25)';ctx.fillText('这是编程界最有名的"橡皮鸭调试法"',W/2,H-40);
+  requestAnimationFrame(draw);}
+draw();});</script>
 <div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let c=document.getElementById("hc");if(!c)return;c.width=600;c.height=200;
 let t=0,w=c.width=600,h=c.height=200;
 function draw(){

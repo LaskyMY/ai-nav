@@ -66,6 +66,31 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 <span class="badge">🦴 阶段3 · 开始创造</span>
 <h1>先做最丑的版本</h1>
 <div class="hero-desc">完美主义是进度最大的杀手。别追求第一版就完美。先做一个最丑但能跑的版本——哪怕只有一个输入框和一个按钮。只要用户能看到界面→点击→有反馈，闭环就通了。我的经验：先让AI做"Hello World"级别的最小原型，验证核心逻辑，然后慢慢加肉。每次只加一个功能，加完就测。</div>
+<div class="game-box"><canvas id="g"></canvas>
+<div class="game-hint">🖱 互动游戏</div></div>
+<script>document.addEventListener('DOMContentLoaded',function(){var c=document.getElementById('g');c.width=800;c.height=360;var c2=document.getElementById('g'),ctx=c2.getContext('2d'),W=800,H=360;
+var stage=0,t=0,blocks=[],done=[false,false,false,false];
+function draw(){ctx.clearRect(0,0,W,H);t++;ctx.fillStyle='rgba(16,185,129,.02)';ctx.fillRect(0,0,W,H);
+  var steps=[{x:100,y:H/2-40,w:140,h:80,text:'v1
+输入框',icon:'📝'},{x:270,y:H/2-40,w:140,h:80,text:'v2
++按钮',icon:'🔘'},{x:440,y:H/2-40,w:140,h:80,text:'v3
++列表',icon:'📋'},{x:610,y:H/2-40,w:140,h:80,text:'v4
+发布!',icon:'✅'}];
+  for(var i=0;i<steps.length;i++){var s=steps[i],bright=i<=stage;
+    ctx.fillStyle=bright?'rgba(16,185,129,.1)':'rgba(255,255,255,.03)';ctx.fillRect(s.x,s.y,s.w,s.h);
+    ctx.strokeStyle=bright?'rgba(16,185,129,.4)':'rgba(255,255,255,.1)';ctx.lineWidth=bright?2:1;ctx.strokeRect(s.x,s.y,s.w,s.h);
+    ctx.font='28px system-ui';ctx.fillStyle=bright?'#fff':'rgba(255,255,255,.3)';ctx.textAlign='center';ctx.fillText(s.icon,s.x+s.w/2,s.y+30);
+    ctx.font='11px system-ui';ctx.fillText(s.text.replace('
+',' '),s.x+s.w/2,s.y+58);
+    if(i<stage){ctx.fillStyle='rgba(16,185,129,.15)';ctx.fillRect(s.x,s.y,s.w,s.h);ctx.font='14px system-ui';ctx.fillStyle='#10b981';ctx.fillText('✅',s.x+s.w/2,s.y+15)}
+    if(i===stage){var pulse=Math.sin(t*0.1)*0.3+0.7;ctx.strokeStyle='rgba(0,229,255,'+pulse+')';ctx.lineWidth=3;ctx.strokeRect(s.x-3,s.y-3,s.w+6,s.h+6)}}
+  if(stage>0&&stage<4){ctx.strokeStyle='rgba(255,255,255,.2)';ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(steps[stage-1].x+steps[stage-1].w,steps[stage-1].y+steps[stage-1].h/2);ctx.lineTo(steps[stage].x,steps[stage].y+steps[stage].h/2);ctx.stroke();ctx.setLineDash([])}
+  ctx.font='14px system-ui';ctx.fillStyle='#fff';ctx.textAlign='center';ctx.fillText('点击下一步——从一行代码到完整产品',W/2,H-20);
+  ctx.font='11px system-ui';ctx.fillStyle='rgba(255,255,255,.3)';ctx.fillText('每次只加一个功能——这就是MVP',W/2,H-40);
+  if(stage>=4){ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,W,H);ctx.font='bold 24px system-ui';ctx.fillStyle='#10b981';ctx.fillText('🚀 产品活了!',W/2,H/2-10);ctx.font='14px system-ui';ctx.fillStyle='rgba(255,255,255,.7)';ctx.fillText('从1个输入框开始，一步一步加上去的',W/2,H/2+25)}
+  requestAnimationFrame(draw);}
+c2.addEventListener('click',function(){if(stage<4)stage++});
+draw();});</script>
 <div class="hero-canvas"><canvas id="hc"></canvas></div><script>document.addEventListener("DOMContentLoaded",function(){let c=document.getElementById("hc");if(!c)return;c.width=600;c.height=200;
 let t=0,w=c.width=600,h=c.height=200;
 function draw(){
