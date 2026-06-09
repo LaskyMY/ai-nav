@@ -411,7 +411,17 @@ async function handle(req) {
 	      return ok({ answer: data.choices?.[0]?.message?.content || "", question });
 	    }
 
-	    // ── Financial Briefs ──
+	    
+// ── DB Query Helper ──
+async function dbQuery(sql, params = []) {
+  const { Client } = await import("https://deno.land/x/postgres@v0.19.0/mod.ts");
+  const pg = new Client({ hostname:"127.0.0.1", port:5432, user:"lasky_my", database:"ai_nav" });
+  await pg.connect();
+  try { const r = await pg.queryObject(sql, params); return r.rows; }
+  finally { await pg.end(); }
+}
+
+// ── Financial Briefs ──
 	    if (path === "/api/financial/briefs") {
 	      if (!dbReady) return err("database not ready", 503);
 	      const days = parseInt(url.searchParams.get("days") || "10");
@@ -431,7 +441,22 @@ async function handle(req) {
 	      return ok({ status: "ok", date, type });
 	    }
 
-	    return ok({ routes: ["/api/weather", "/api/news", "/api/geocode", "/api/papers", "/api/summary", "/api/papers-summary", "/api/news-summary", "/api/db/stats", "/api/db/news", "/api/db/search", "/api/db/summaries", "/api/db/pages", "/api/db/ai", "/api/financial/briefs", "/api/financial/latest"] });
+	    
+    // ── Course API ──
+    if (path === "/api/course/list") {
+      if (!dbReady) return err("database not ready", 503);
+      const r = await dbQuery("SELECT slug, title, stage, num, emoji, desc_text FROM course_lessons ORDER BY num");
+      return ok(r);
+    }
+    if (path.startsWith("/api/course/")) {
+      if (!dbReady) return err("database not ready", 503);
+      const slug = path.replace("/api/course/", "").replace(/[^a-z-]/g, "");
+      const r = await dbQuery("SELECT * FROM course_lessons WHERE slug = $1", [slug]);
+      if (!r.length) return err("lesson not found", 404);
+      return ok(r[0]);
+    }
+
+    return ok({ routes: ["/api/weather", "/api/news", "/api/geocode", "/api/papers", "/api/summary", "/api/papers-summary", "/api/news-summary", "/api/db/stats", "/api/db/news", "/api/db/search", "/api/db/summaries", "/api/db/pages", "/api/db/ai", "/api/financial/briefs", "/api/financial/latest"] });
   } catch (e) {
     return err("internal error", 500);
   }
@@ -581,6 +606,16 @@ async function refreshNewsSummary() {
   } catch (e) {
     console.log(`[news-summary] error: ${e.message}`);
   }
+}
+
+
+// ── DB Query Helper ──
+async function dbQuery(sql, params = []) {
+  const { Client } = await import("https://deno.land/x/postgres@v0.19.0/mod.ts");
+  const pg = new Client({ hostname:"127.0.0.1", port:5432, user:"lasky_my", database:"ai_nav" });
+  await pg.connect();
+  try { const r = await pg.queryObject(sql, params); return r.rows; }
+  finally { await pg.end(); }
 }
 
 // ── Financial Briefs: 自动从腾讯文档抓取 ──
