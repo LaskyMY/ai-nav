@@ -149,6 +149,44 @@ for (const p of pages.slice(0, 4)) {
   check(p + " CORS头", r.body.length > 0);
 }
 
+
+// ══════════════════════════════════════════
+// 9. 设计规范QA
+// ══════════════════════════════════════════
+console.log("\n═══ 9. 设计规范QA ═══");
+
+const designPages = [
+  "financial-news.html", "manual.html", "hardware.html", "dashboards.html",
+  "esp32-c3.html", "esp32-oled.html", "esp32-relay.html",
+  "soldering-iron.html", "esp32-guide.html", "multimeter-guide.html", "tools-guide.html",
+  "changelog.html", "status.html", "usage.html", "papers.html", "sitemap.html",
+];
+for (const p of designPages) {
+  const r = await httpGet("/" + p);
+  const h = r.body;
+  const checks = {
+    DOCTYPE: h.startsWith("<!DOCTYPE"),
+    viewport: h.includes("viewport"),
+    bg_0a0a0f: h.includes("0a0a0f") || h.includes("--bg"),
+    glowSpot: h.includes("glowSpot"),
+    system_ui: h.includes("system-ui"),
+    antialiased: h.includes("antialiased"),
+    backdrop_filter: h.includes("backdrop-filter"),
+    return_link: h.includes("返回"),
+  };
+  let failed = [];
+  for (const [k, v] of Object.entries(checks)) { if (!v) failed.push(k); }
+  if (failed.length > 0) {
+    check(p + " 设计规范", false, "缺: " + failed.join(", "));
+  } else {
+    check(p + " 设计规范", true);
+  }
+}
+for (const c of ["clock.html","clock-old.html","clock-proj.html"]) {
+  check(c + " 时钟豁免", true);
+}
+
+
 // ══════════════════════════════════════════
 // 总结
 // ══════════════════════════════════════════
