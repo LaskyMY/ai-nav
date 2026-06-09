@@ -467,6 +467,36 @@ async function dbQuery(sql, params = []) {
       return ok(await dbQuery("SELECT slug, title, category, description FROM manual_content ORDER BY category"));
     }
 
+    
+    // ── DB-driven Sitemap ──
+    if (path === "/api/site/sitemap-db") {
+      if (!dbReady) return err("db not ready", 503);
+      const pages = await dbQuery("SELECT path, title, category, nav_order FROM page_meta WHERE is_active = true ORDER BY nav_order");
+      const categories = {};
+      for (const p of pages) {
+        const cat = p.category || "other";
+        if (!categories[cat]) categories[cat] = [];
+        categories[cat].push(p);
+      }
+      return ok({ pages, categories, total: pages.length, updated: new Date().toISOString() });
+    }
+
+    // ── Git log sync to changelog ──
+    if (path === "/api/site/git-log") {
+      try {
+        const cmd = new Deno.Command("git", { args: ["-C", "/Users/lasky_my/ai-nav", "log", "--oneline", "-20", "--format=%h|%s|%ai"], stdout: "piped" });
+        const out = await cmd.output();
+        const text = new TextDecoder().decode(out.stdout);
+        const entries = text.trim().split("\n").filter(l => l).map(line => {
+          const [hash, msg, date] = line.split("|");
+          return { hash, message: msg, date: date?.replace(/\s+\+\d+$/, "") };
+        });
+        return ok({ entries, total: entries.length });
+      } catch(e) {
+        return ok({ entries: [], error: e.message });
+      }
+    }
+
     // ── Course API ──
     if (path === "/api/course/list") {
       if (!dbReady) return err("database not ready", 503);

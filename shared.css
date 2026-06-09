@@ -11,11 +11,11 @@ body{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;backgroun
 .glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
 
 /* ── Header ── */
-.header{position:sticky;top:0;z-index:50;background:rgba(24,24,32,.85);backdrop-filter:saturate(200%)blur(60px);-webkit-backdrop-filter:saturate(200%)blur(60px);border:1px solid rgba(255,255,255,.1);border-top:none;padding:8px 16px;border-radius:0 0 18px 18px;box-shadow:0 0 40px rgba(99,102,241,.1),0 4px 20px rgba(0,0,0,.2);margin-bottom:12px}
+.header{position:sticky;top:0;z-index:50;background:rgba(24,24,32,.78);backdrop-filter:saturate(200%)blur(60px);-webkit-backdrop-filter:saturate(200%)blur(60px);border:1px solid rgba(255,255,255,.1);border-top:none;padding:10px 20px;border-radius:0 0 22px 22px;box-shadow:0 0 40px rgba(99,102,241,.1),0 0 20px rgba(236,72,153,.05),0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04);margin-bottom:12px}
 .header-in{max-width:800px;margin:0 auto;display:flex;align-items:center;gap:8px}
 .back-btn,.home-btn{width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;color:var(--tx3);flex-shrink:0;text-decoration:none;transition:all .2s}
 .back-btn:hover,.home-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
-.header-logo{font-size:14px;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.header-logo{font-size:15px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;letter-spacing:-.02em;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:tFlow 6s ease-in-out infinite}
 .header-clock{font-size:12px;color:var(--tx2);font-family:monospace;white-space:nowrap}
 .header-ver{font-size:9px;color:var(--tx4);white-space:nowrap}
 
