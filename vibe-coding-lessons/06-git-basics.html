@@ -3,125 +3,109 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Git 是什么：给代码做存档和回滚 · 小K的大神之路</title>
+<title>DAY 26 · Git 给代码做存档</title>
 <style>
-:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.8;padding:0;min-height:100vh;-webkit-font-smoothing:antialiased}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
 .bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.4}
 .bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
 .bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
-.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
 @keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
-.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1;transition:background .3s ease}
-.container{max-width:700px;margin:0 auto;padding:18px 20px;position:relative;z-index:1}
-h1{font-size:22px;font-weight:700;letter-spacing:-.03em;margin-bottom:4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
+.wrap{max-width:800px;margin:0 auto;padding:20px;position:relative;z-index:1}
+h1{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:12px 0 4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
-h2{font-size:16px;font-weight:700;color:var(--cyan);margin:24px 0 8px;border-left:3px solid var(--cyan);padding-left:10px}
-h3{font-size:14px;color:rgba(255,255,255,.85);margin:16px 0 6px}
-.breadcrumb{font-size:10px;color:var(--tx3);margin-bottom:16px}
+h2{font-size:16px;font-weight:700;color:var(--cyan);margin:30px 0 10px;border-left:3px solid var(--cyan);padding-left:10px}
+.breadcrumb{font-size:11px;color:var(--tx3);margin-bottom:8px}
 .breadcrumb a{color:var(--tx4);text-decoration:none}
-.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;margin-right:6px}
 .badge.req{background:rgba(99,102,241,.15);color:#818cf8}
-.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;position:relative;overflow:hidden}
-.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
-.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
-.scene-tag{font-size:9px;color:var(--cyan);font-weight:700;margin-bottom:8px;letter-spacing:.5px}
-.who{color:var(--amber);font-weight:600}
-.checklist{list-style:none;padding:0}
-.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
-.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
-.nav-btns{display:flex;gap:8px;margin:20px 0}
+.hero-desc{font-size:14px;color:var(--tx2);margin:8px 0 16px;line-height:1.7}
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:16px;padding:16px 18px;margin-bottom:10px;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.card.card-ok{border-left:3px solid rgba(16,185,129,.4)}
+.card.card-warn{border-left:3px solid rgba(245,158,11,.4)}
+ul{padding-left:20px;margin:6px 0}
+li{margin:4px 0;font-size:14px;color:rgba(255,255,255,.7)}
+li::marker{color:var(--tx4)}
+.nav-btns{display:flex;gap:8px;margin:24px 0}
 .btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;text-align:center;transition:all .25s var(--ease);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .btn:hover{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.08);color:var(--tx)}
 .btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:var(--cyan)}
-pre{background:rgba(0,0,0,.4);padding:14px;border-radius:10px;overflow-x:auto;font-size:11px;line-height:1.6;margin:10px 0;border:1px solid rgba(255,255,255,.05)}
-code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
-.tip{border-left:2px solid var(--amber);padding:8px 14px;margin:10px 0;font-size:12px;color:var(--tx2);background:rgba(245,158,11,.05);border-radius:0 8px 8px 0}
-p{margin:8px 0;font-size:13px;color:rgba(255,255,255,.65)}
 .back{text-align:center;margin-top:28px}
-.back a{color:var(--tx4);font-size:10px;text-decoration:none}
-.lesson-kicker{font-size:10px;color:var(--tx3);margin-bottom:6px}
+.back a{color:var(--tx4);font-size:11px;text-decoration:none}
+
+/* TOC Sidebar */
+.toc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px;margin-bottom:20px}
+.toc-title{font-size:13px;font-weight:700;color:var(--cyan);margin-bottom:8px}
+.toc-track{font-size:10px;color:var(--tx4);margin-bottom:6px}
+.toc-list{display:flex;flex-direction:column;gap:2px}
+.toc-item{display:block;padding:5px 10px;border-radius:6px;font-size:11px;color:var(--tx3);text-decoration:none;transition:all .15s}
+.toc-item:hover{background:rgba(255,255,255,.05);color:var(--tx2)}
+.toc-item.active{background:rgba(99,102,241,.1);color:var(--a1);font-weight:600}
+.toc-all{display:block;margin-top:8px;font-size:10px;color:var(--tx4);text-decoration:none}
+.toc-all:hover{color:var(--tx2)}
+
+@media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
 </style>
 </head>
 <body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot" id="glowSpot"></div>
-<div class="container">
-<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / 编程基础 / 必修课 · §6</div>
-<div class="lesson-kicker"><span class="badge required">必修</span><span class="lesson-index">第 7 / 33 节</span></div><h1>Git 是什么：给代码做存档和回滚</h1><p>小K 终于敢让 AI 改代码了，但新的恐惧来了：万一 AI 一口气把项目改坏，我怎么回到之前那个能跑的版本？</p>
-<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
-<article><div class="scene">
-    <div class="scene-tag">SCENE · 第一次想回到过去</div>
-    <p><span class="who">小K</span>：“G哥，我让 AI 美化页面，它改了 8 个文件。现在页面能打开，但按钮全歪了。我想回到刚才那个版本，怎么办？”</p>
-    <p><span class="who">G 哥</span>：“这就是 Git 要解决的问题。Git 不是高级程序员才用的东西，它是你和 AI 协作时的安全绳。”</p>
-  </div>
 
-  <div class="why">
-    <div class="why-tag">为什么要懂这个</div>
-    <h4>VibeCoding 最大的风险不是写得慢，而是 AI 改得太快。没有版本管理，你就不敢大胆试。</h4>
-    <p>Git 可以把项目在某个时间点的状态保存下来。你可以比较“改前”和“改后”，可以给每次有效改动打一个存档点，也可以在方向错了的时候回到上一个能跑的版本。</p>
-  </div>
+<div class="wrap">
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 编程基础 / DAY 26</div>
 
-  <h3>第一步：Git 不是 GitHub</h3>
-  <p>新手最容易把 Git 和 GitHub 混成一件事。它们经常一起出现，但不是同一个东西。</p>
-  <table class="decision-table"><tr><th>名字</th><th>它是什么</th><th>人话理解</th><th>常见误会</th></tr><tr><td>Git</td><td>版本控制工具</td><td>在你电脑上给代码做存档、对比、回滚。</td><td>以为不用 GitHub 就不能用 Git。其实 Git 本地就能用。</td></tr><tr><td>GitHub / GitLab</td><td>远程代码平台</td><td>把代码仓库放到网上，方便备份、协作、审核。</td><td>以为它们就是 Git 本身。</td></tr><tr><td>Repository / Repo</td><td>仓库</td><td>一个被 Git 管起来的项目文件夹。</td><td>以为 repo 是某个神秘服务器，其实本地项目也可以是 repo。</td></tr><tr><td>Commit</td><td>一次提交</td><td>一个明确的存档点，记录“这次改了什么”。</td><td>把 commit 当成保存按钮乱按，不写说明。</td></tr></table>
-
-  <h3>第二步：Git 的三层空间</h3>
-  <p>Git 最难的地方不是命令，而是它有几个“空间”。你不用一开始全背，但要知道文件正在经历哪一步。</p>
-  <div class="artifact-grid"><div class="artifact"><h4>Working Tree</h4><p>工作区。你正在编辑的真实文件，都在这里。</p></div><div class="artifact"><h4>Staging Area</h4><p>暂存区。你挑选“这次准备提交哪些改动”的地方。</p></div><div class="artifact"><h4>Commit History</h4><p>提交历史。一个个存档点串成时间线。</p></div><div class="artifact"><h4>Remote</h4><p>远程仓库。团队共享和备份的位置，例如 GitHub、GitLab。</p></div></div>
-
-  <div class="callout key">
-    <div class="callout-title">一句话记住</div>
-    <p><strong>编辑文件不等于提交，提交不等于上传。</strong>先改文件，再选择要提交的改动，再生成 commit；如果有远程仓库，最后才 push。</p>
-  </div>
-
-  <h3>第三步：最常见的 Git 黑话</h3>
-  <table class="decision-table"><tr><th>黑话</th><th>它在说什么</th><th>你要关心什么</th></tr><tr><td>diff</td><td>改动对比</td><td>AI 改了哪些行、删了哪些行、有没有碰不该碰的文件。</td></tr><tr><td>branch</td><td>分支</td><td>单独开一条修改路线，不影响主线。</td></tr><tr><td>merge</td><td>合并</td><td>把一条分支的改动合回另一条。</td></tr><tr><td>conflict</td><td>冲突</td><td>两边改了同一块内容，Git 不知道该保留谁。</td></tr><tr><td>checkout / switch</td><td>切换</td><td>切到另一个分支或历史状态。</td></tr><tr><td>revert</td><td>反向撤销</td><td>生成一个新提交，把某次提交的效果抵消掉，比较适合协作场景。</td></tr></table>
-
-  <h3>第四步：和 AI 协作时，Git 应该怎么用</h3>
-  <p>最专业的 VibeCoding 不是“让 AI 一次做完”，而是把项目切成很多个可控的小存档点。</p>
-  <div class="vibe-timeline"><div class="vibe-step"><b>01</b><p>开始前确认当前项目能运行，保存一个干净的 commit。</p></div><div class="vibe-step"><b>02</b><p>让 AI 一次只改一个目标，例如“只改课程首页卡片，不碰脚本”。</p></div><div class="vibe-step"><b>03</b><p>改完先看 diff，确认它改了哪些文件。</p></div><div class="vibe-step"><b>04</b><p>跑一遍最小验证，能打开、链接没断、主要功能还在。</p></div><div class="vibe-step"><b>05</b><p>验证通过再 commit，提交信息写清楚这次完成了什么。</p></div></div>
-
-  <div class="ai-chat"><div class="ai-chat-title">AI 互动现场：先看 diff，再夸 AI</div><div class="chat-turn user"><div class="role">你</div><p>你已经改完了吗？</p></div><div class="chat-turn ai"><div class="role">AI</div><p>改好了，页面应该更漂亮了。</p></div><div class="chat-turn user"><div class="role">你</div><p>先别总结。请列出这次修改过的文件、每个文件的改动目的、是否包含无关改动，并给我一份验证清单。</p></div><div class="chat-turn ai"><div class="role">AI</div><p>好的，我会先按文件列 diff 摘要，再说明验证方式。</p></div></div>
-
-  <h3>第五步：Git 和 P4、SVN、备份文件夹有什么关系</h3>
-  <p>游戏公司里经常能见到 Perforce（P4），因为它很适合管理大量二进制资源、大文件和美术资产。Git 更适合代码和文本文件。你不用在第一天就成为版本控制专家，但要知道它们解决的是同一类问题：<strong>保存历史、协作修改、出现问题时能回退</strong>。</p>
-  <div class="compare"><div><b>Git 更像代码时间线</b><p>适合小步提交、分支开发、看 diff、多人代码协作。</p></div><div><b>P4 更像大型资产仓库</b><p>适合游戏项目里的二进制资产、锁文件、集中式流程。</p></div></div>
-
-  <div class="prompt-block">请你作为我的版本管理教练，帮我检查这次 AI 修改是否适合提交。
-
-要求：
-1. 先列出修改过的文件；
-2. 按“功能改动 / 样式改动 / 配置改动 / 可疑改动”分类；
-3. 指出有没有不该动的文件；
-4. 给出建议提交信息；
-5. 如果不建议提交，请告诉我应该先验证什么。</div>
-
-  <div class="big-quote">Git 的本质不是命令。<br/>它是在告诉你：<strong>大胆试，但每一步都要能回来。</strong></div>
-
-  <div class="tasks"><h4>本节打卡</h4><label class="task" data-task="git-t1"><input type="checkbox"/><span class="t-text">能说清 Git 和 GitHub 的区别</span></label><label class="task" data-task="git-t2"><input type="checkbox"/><span class="t-text">能解释 working tree、staging area、commit history</span></label><label class="task" data-task="git-t3"><input type="checkbox"/><span class="t-text">知道 diff 是检查 AI 改动的第一入口</span></label><label class="task" data-task="git-t4"><input type="checkbox"/><span class="t-text">知道 branch、merge、conflict 分别在说什么</span></label><label class="task" data-task="git-t5"><input type="checkbox"/><span class="t-text">能说出 Git 和 P4 适合的不同场景</span></label><label class="task" data-task="git-t6"><input type="checkbox"/><span class="t-text">能写出一条让 AI 帮你审查 diff 的提示词</span></label></div>
-  <div class="day-foot"><span class="day-progress" data-progress></span><button class="complete-btn" data-complete>完成本节</button></div>
-</article>
+<div class="toc">
+<div class="toc-title">📑 本模块目录</div>
+<div class="toc-track">编程基础</div>
+<div class="toc-list"><a class="toc-item" href="./00-code.html">代码到底是个什么东西</a>
+<a class="toc-item" href="./01-program-run.html">程序是怎么跑起来的</a>
+<a class="toc-item" href="./02-languages.html">编程语言大观园</a>
+<a class="toc-item" href="./03-algorithm.html">算法是个什么东西</a>
+<a class="toc-item" href="./04-framework.html">框架是个什么东西</a>
+<a class="toc-item" href="./05-programming-jargon.html">编程黑话扫盲</a>
+<a class="toc-item active" href="./06-git-basics.html">Git 给代码做存档</a></div>
+<a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a>
 </div>
-<div class="container">
-<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+
+<span class="badge req">DAY · 26</span>
+<h1>Git 给代码做存档</h1>
+<div class="hero-desc">Git 就是给代码做"游戏存档"。你改代码之前存个档，改坏了可以读档恢复。GitHub 是存这些档案的网盘。</div>
+
+<div class="card card-ok">
+<h2>📝 核心要点</h2>
+<ul><li>Git = 代码的存档系统</li>
+<li>提交(commit) = 存一个档</li>
+<li>分支(branch) = 一条独立的存档线</li>
+<li>GitHub = 把存档放到网上（网盘）</li>
+<li>改坏了？git checkout 回到之前的存档</li>
+<li>让 AI 改代码前先 commit，改坏了能回滚</li></ul>
 </div>
+
+<div class="card card-warn">
+<h2>✅ 打卡任务</h2>
+<ul><li>在 GitHub 上创建一个账号</li>
+<li>下载 GitHub Desktop（图形界面，不用打命令）</li>
+<li>理解 commit / push / pull 三个操作的区别</li></ul>
+</div>
+
+<div class="nav-btns">
+  <a class="btn" href="../vibe-coding.html">📚 课程目录</a>
+</div>
+
 <div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</div>
+
 <script>
-// Mouse-follow glow
 (function(){
   var g = document.getElementById('glowSpot');
   if (!g || 'ontouchstart' in window) return;
-  var x = window.innerWidth/2, y = window.innerHeight/2;
-  var tx = x, ty = y;
+  var x = window.innerWidth/2, y = window.innerHeight/2, tx = x, ty = y;
   document.addEventListener('mousemove', function(e){ tx=e.clientX; ty=e.clientY });
-  function anim(){
-    x += (tx-x)*0.05; y += (ty-y)*0.05;
-    g.style.background = 'radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)';
-    requestAnimationFrame(anim);
-  }
+  function anim(){ x+=(tx-x)*0.05; y+=(ty-y)*0.05; g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)'; requestAnimationFrame(anim); }
   anim();
 })();
 </script>

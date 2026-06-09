@@ -3,91 +3,107 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>技术选型：让 AI 先给权衡，再做决定 · 小K的大神之路</title>
+<title>DAY 17 · 技术选型</title>
 <style>
-:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.8;padding:0;min-height:100vh;-webkit-font-smoothing:antialiased}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
 .bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.4}
 .bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
 .bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
-.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
 @keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
-.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1;transition:background .3s ease}
-.container{max-width:700px;margin:0 auto;padding:18px 20px;position:relative;z-index:1}
-h1{font-size:22px;font-weight:700;letter-spacing:-.03em;margin-bottom:4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
+.wrap{max-width:800px;margin:0 auto;padding:20px;position:relative;z-index:1}
+h1{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:12px 0 4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
-h2{font-size:16px;font-weight:700;color:var(--cyan);margin:24px 0 8px;border-left:3px solid var(--cyan);padding-left:10px}
-h3{font-size:14px;color:rgba(255,255,255,.85);margin:16px 0 6px}
-.breadcrumb{font-size:10px;color:var(--tx3);margin-bottom:16px}
+h2{font-size:16px;font-weight:700;color:var(--cyan);margin:30px 0 10px;border-left:3px solid var(--cyan);padding-left:10px}
+.breadcrumb{font-size:11px;color:var(--tx3);margin-bottom:8px}
 .breadcrumb a{color:var(--tx4);text-decoration:none}
-.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;margin-right:6px}
 .badge.req{background:rgba(99,102,241,.15);color:#818cf8}
-.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;position:relative;overflow:hidden}
-.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
-.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
-.scene-tag{font-size:9px;color:var(--cyan);font-weight:700;margin-bottom:8px;letter-spacing:.5px}
-.who{color:var(--amber);font-weight:600}
-.checklist{list-style:none;padding:0}
-.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
-.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
-.nav-btns{display:flex;gap:8px;margin:20px 0}
+.hero-desc{font-size:14px;color:var(--tx2);margin:8px 0 16px;line-height:1.7}
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:16px;padding:16px 18px;margin-bottom:10px;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.card.card-ok{border-left:3px solid rgba(16,185,129,.4)}
+.card.card-warn{border-left:3px solid rgba(245,158,11,.4)}
+ul{padding-left:20px;margin:6px 0}
+li{margin:4px 0;font-size:14px;color:rgba(255,255,255,.7)}
+li::marker{color:var(--tx4)}
+.nav-btns{display:flex;gap:8px;margin:24px 0}
 .btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;text-align:center;transition:all .25s var(--ease);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .btn:hover{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.08);color:var(--tx)}
 .btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:var(--cyan)}
-pre{background:rgba(0,0,0,.4);padding:14px;border-radius:10px;overflow-x:auto;font-size:11px;line-height:1.6;margin:10px 0;border:1px solid rgba(255,255,255,.05)}
-code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
-.tip{border-left:2px solid var(--amber);padding:8px 14px;margin:10px 0;font-size:12px;color:var(--tx2);background:rgba(245,158,11,.05);border-radius:0 8px 8px 0}
-p{margin:8px 0;font-size:13px;color:rgba(255,255,255,.65)}
 .back{text-align:center;margin-top:28px}
-.back a{color:var(--tx4);font-size:10px;text-decoration:none}
-.lesson-kicker{font-size:10px;color:var(--tx3);margin-bottom:6px}
+.back a{color:var(--tx4);font-size:11px;text-decoration:none}
+
+/* TOC Sidebar */
+.toc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px;margin-bottom:20px}
+.toc-title{font-size:13px;font-weight:700;color:var(--cyan);margin-bottom:8px}
+.toc-track{font-size:10px;color:var(--tx4);margin-bottom:6px}
+.toc-list{display:flex;flex-direction:column;gap:2px}
+.toc-item{display:block;padding:5px 10px;border-radius:6px;font-size:11px;color:var(--tx3);text-decoration:none;transition:all .15s}
+.toc-item:hover{background:rgba(255,255,255,.05);color:var(--tx2)}
+.toc-item.active{background:rgba(99,102,241,.1);color:var(--a1);font-weight:600}
+.toc-all{display:block;margin-top:8px;font-size:10px;color:var(--tx4);text-decoration:none}
+.toc-all:hover{color:var(--tx2)}
+
+@media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
 </style>
 </head>
 <body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot" id="glowSpot"></div>
-<div class="container">
-<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / AI 协作开发实战 - 做一款代办工具 / 实践课 · §P2</div>
-<div class="lesson-kicker"><span class="badge practice">实践课</span><span class="lesson-index">第 29 / 33 节</span></div><h1>技术选型：让 AI 先给权衡，再做决定</h1><p>真正有条理的 AI 开发，不是让模型直接开写，而是先要求它列方案、讲取舍、给推荐、说明不选什么。</p>
-<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
-<article><div class="scene"><div class="scene-tag">SCENE · 不急着搭项目</div><p><span class="who">小K</span>：“需求有了，是不是可以让 AI 直接生成项目？”</p><p><span class="who">G 哥</span>：“先别。你要让 AI 把技术路线讲明白。选型不是炫技，是给后面的所有实现减少分叉。”</p></div><div class="why"><div class="why-tag">为什么这一节很关键</div><h4>技术选型的核心不是“选最强”，而是选一个最适合当前目标的约束系统。</h4><p>这次目标是做一个能展示 Vibe Coding 流程的桌面待办工具。所以我们不追求大而全，而是追求：能快速起原型、能用 Web 技术美化、能打包成桌面应用、能被 Codex 稳定修改和验证。</p></div>
-<h3>第一步：让 AI 给出候选方案和评估维度</h3><div class="prompt-block">基于这份项目简报，请你不要直接写代码，先做技术选型。
 
-目标：桌面悬浮待办工具，强调 UI 质感、快速原型、离线本地保存、后续可打包发布。
+<div class="wrap">
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 发布与迭代 / DAY 17</div>
 
-请比较至少 4 种方案：
-- Tauri + React + TypeScript
-- Electron + React
-- 纯 Web / PWA
-- Flutter Desktop
-
-请按这些维度打分：开发速度、包体积、UI 灵活性、系统能力、学习成本、AI 辅助友好度、后续维护成本。
-最后给出推荐方案，并说明哪些方案不适合当前项目。</div>
-<div class="ai-chat"><div class="ai-chat-title">AI 互动现场：不要只听“最佳方案”</div><div class="chat-turn user"><div class="role">你</div><p>基于这个待办工具，请给我技术选型建议。</p></div><div class="chat-turn ai"><div class="role">AI</div><p>推荐 Electron + React + SQLite，扩展性最好，也方便以后做系统托盘、通知和本地数据库。</p></div><div class="chat-turn user"><div class="role">你</div><p>你现在像在给正式产品做架构。请反过来批判这个方案：对零基础课程、两天原型、演示稳定性来说，它哪里过重？</p></div><div class="chat-turn ai"><div class="role">AI</div><p>确实过重。SQLite、托盘和通知会增加环境复杂度。课程阶段更适合 React + Vite + localStorage，先证明交互闭环，再讨论桌面壳。</p></div></div><div class="ai-moment"><b>有意思的转折</b><p>这里最“高级”的不是 AI 给了答案，而是你要求 AI 反驳自己的答案。这样选型就从“听 AI 拍脑袋”变成了“让 AI 给论据，人做决策”。</p></div><h3>第二步：把 AI 的建议变成选型矩阵</h3><table class="decision-table"><tr><th>方案</th><th>优势</th><th>劣势</th><th>结论</th></tr><tr><td>Tauri + React</td><td>包体小，能调用系统能力，前端生态成熟，AI 很擅长改 React/CSS。</td><td>Rust 和窗口 API 有学习成本。</td><td><strong>主方案</strong>。适合做“像产品”的桌面工具。</td></tr><tr><td>Electron + React</td><td>成熟、资料多、桌面能力强。</td><td>包体和资源占用偏大，展示“轻量悬浮工具”时说服力弱。</td><td>备选，但不是这次最优。</td></tr><tr><td>纯 Web / PWA</td><td>最快，部署简单，验证 UI 方便。</td><td>缺少真实桌面悬浮、托盘、窗口控制能力。</td><td>可做原型，不适合作为最终形态。</td></tr><tr><td>Flutter Desktop</td><td>跨平台 UI 一致，性能好。</td><td>生态和 AI 生成前端 UI 的效率不如 React/CSS。</td><td>不选，偏离本次 Vibe Coding 目标。</td></tr></table>
-<h3>第三步：定义“最小可行技术路线”</h3><p>选型不是终点。真正让开发顺起来的是把技术路线拆成阶段：先证明产品能跑，再证明体验好，再证明质量可控。</p><div class="vibe-timeline"><div class="vibe-step"><b>阶段 1</b><p>用 React 先做 Web 原型：验证信息结构、状态流转和 UI 形态，不急着碰系统托盘。</p></div><div class="vibe-step"><b>阶段 2</b><p>接入 Tauri：把 Web 原型装进桌面壳，补窗口尺寸、悬浮和托盘能力。</p></div><div class="vibe-step"><b>阶段 3</b><p>用 UI UX Pro 做视觉审查：检查层级、触控目标、色彩对比、阅读密度和动效节奏。</p></div><div class="vibe-step"><b>阶段 4</b><p>用 Codex 做工程化收尾：拆组件、补测试、跑冒烟、修边界问题。</p></div></div>
-<h3>第四步：让 AI 解释“不做什么”</h3><p>一个项目看起来专业，不是因为做得多，而是因为知道哪些暂时不做。</p><ul class="evidence-list"><li>不做账号系统：学习项目不需要后端复杂度。</li><li>不做多端同步：同步冲突会吞掉大量时间。</li><li>不做自定义插件：会让 MVP 范围失控。</li><li>不一开始追求完美动画：先让核心流程闭环。</li></ul>
-<div class="big-quote">这一节最“牛”的地方，是你让 AI 先当架构评审。<br/>不是“AI 说用什么我就用什么”，而是<strong>AI 给论据，人做决策</strong>。</div>
-<div class="tasks"><h4>本节打卡</h4><label class="task" data-task="p2v2t1"><input type="checkbox"/><span class="t-text">能让 AI 输出候选方案、评估维度和推荐理由</span></label><label class="task" data-task="p2v2t2"><input type="checkbox"/><span class="t-text">能解释为什么本项目选 Tauri + React，而不是 Electron / PWA / Flutter</span></label><label class="task" data-task="p2v2t3"><input type="checkbox"/><span class="t-text">写出阶段化路线：Web 原型、桌面壳、UI 审查、工程验证</span></label><label class="task" data-task="p2v2t4"><input type="checkbox"/><span class="t-text">明确列出这一版不做什么，并知道为什么不做</span></label></div><div class="day-foot"><span class="day-progress" data-progress></span><button class="complete-btn" data-complete>完成本节</button></div></article>
+<div class="toc">
+<div class="toc-title">📑 本模块目录</div>
+<div class="toc-track">发布与迭代</div>
+<div class="toc-list"><a class="toc-item" href="./p1-requirements.html">需求脑暴</a>
+<a class="toc-item active" href="./p2-architecture.html">技术选型</a>
+<a class="toc-item" href="./p3-data-model.html">最小原型</a>
+<a class="toc-item" href="./p4-interface.html">UI 打磨</a>
+<a class="toc-item" href="./p5-interactions.html">验证闭环</a>
+<a class="toc-item" href="./p6-polish-release.html">复盘包装</a></div>
+<a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a>
 </div>
-<div class="container">
-<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+
+<span class="badge req">DAY · 17</span>
+<h1>技术选型</h1>
+<div class="hero-desc">不要直接让 AI 开写。先让它列出几个技术方案，比较优缺点，再选一个。这个过程叫"技术选型"。</div>
+
+<div class="card card-ok">
+<h2>📝 核心要点</h2>
+<ul><li>让AI列出3个方案</li>
+<li>每个方案说明：适合什么、不适合什么</li>
+<li>让AI推荐哪一个，并说明理由</li>
+<li>你选一个，然后让AI解释"为什么不选另外两个"</li>
+<li>选型完成后再开始写代码</li></ul>
 </div>
+
+<div class="card card-warn">
+<h2>✅ 打卡任务</h2>
+<ul><li>让AI帮你做一次技术选型（描述你的项目，让它给方案）</li>
+<li>看看AI给的理由，你同意吗？</li>
+<li>记住：方案没有完美的，只有适合的</li></ul>
+</div>
+
+<div class="nav-btns">
+  <a class="btn" href="../vibe-coding.html">📚 课程目录</a>
+</div>
+
 <div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</div>
+
 <script>
-// Mouse-follow glow
 (function(){
   var g = document.getElementById('glowSpot');
   if (!g || 'ontouchstart' in window) return;
-  var x = window.innerWidth/2, y = window.innerHeight/2;
-  var tx = x, ty = y;
+  var x = window.innerWidth/2, y = window.innerHeight/2, tx = x, ty = y;
   document.addEventListener('mousemove', function(e){ tx=e.clientX; ty=e.clientY });
-  function anim(){
-    x += (tx-x)*0.05; y += (ty-y)*0.05;
-    g.style.background = 'radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)';
-    requestAnimationFrame(anim);
-  }
+  function anim(){ x+=(tx-x)*0.05; y+=(ty-y)*0.05; g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)'; requestAnimationFrame(anim); }
   anim();
 })();
 </script>

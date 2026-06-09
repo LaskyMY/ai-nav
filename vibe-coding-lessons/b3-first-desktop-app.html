@@ -3,190 +3,107 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>搭建第一个桌面应用项目 · 小K的大神之路</title>
+<title>DAY 15 · 搭建第一个桌面应用</title>
 <style>
-:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.8;padding:0;min-height:100vh;-webkit-font-smoothing:antialiased}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
 .bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.4}
 .bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
 .bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
-.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
 @keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
-.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1;transition:background .3s ease}
-.container{max-width:700px;margin:0 auto;padding:18px 20px;position:relative;z-index:1}
-h1{font-size:22px;font-weight:700;letter-spacing:-.03em;margin-bottom:4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
+.wrap{max-width:800px;margin:0 auto;padding:20px;position:relative;z-index:1}
+h1{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:12px 0 4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
-h2{font-size:16px;font-weight:700;color:var(--cyan);margin:24px 0 8px;border-left:3px solid var(--cyan);padding-left:10px}
-h3{font-size:14px;color:rgba(255,255,255,.85);margin:16px 0 6px}
-.breadcrumb{font-size:10px;color:var(--tx3);margin-bottom:16px}
+h2{font-size:16px;font-weight:700;color:var(--cyan);margin:30px 0 10px;border-left:3px solid var(--cyan);padding-left:10px}
+.breadcrumb{font-size:11px;color:var(--tx3);margin-bottom:8px}
 .breadcrumb a{color:var(--tx4);text-decoration:none}
-.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;margin-right:6px}
 .badge.req{background:rgba(99,102,241,.15);color:#818cf8}
-.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;position:relative;overflow:hidden}
-.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
-.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
-.scene-tag{font-size:9px;color:var(--cyan);font-weight:700;margin-bottom:8px;letter-spacing:.5px}
-.who{color:var(--amber);font-weight:600}
-.checklist{list-style:none;padding:0}
-.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
-.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
-.nav-btns{display:flex;gap:8px;margin:20px 0}
+.hero-desc{font-size:14px;color:var(--tx2);margin:8px 0 16px;line-height:1.7}
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:16px;padding:16px 18px;margin-bottom:10px;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.card.card-ok{border-left:3px solid rgba(16,185,129,.4)}
+.card.card-warn{border-left:3px solid rgba(245,158,11,.4)}
+ul{padding-left:20px;margin:6px 0}
+li{margin:4px 0;font-size:14px;color:rgba(255,255,255,.7)}
+li::marker{color:var(--tx4)}
+.nav-btns{display:flex;gap:8px;margin:24px 0}
 .btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;text-align:center;transition:all .25s var(--ease);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .btn:hover{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.08);color:var(--tx)}
 .btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:var(--cyan)}
-pre{background:rgba(0,0,0,.4);padding:14px;border-radius:10px;overflow-x:auto;font-size:11px;line-height:1.6;margin:10px 0;border:1px solid rgba(255,255,255,.05)}
-code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
-.tip{border-left:2px solid var(--amber);padding:8px 14px;margin:10px 0;font-size:12px;color:var(--tx2);background:rgba(245,158,11,.05);border-radius:0 8px 8px 0}
-p{margin:8px 0;font-size:13px;color:rgba(255,255,255,.65)}
 .back{text-align:center;margin-top:28px}
-.back a{color:var(--tx4);font-size:10px;text-decoration:none}
-.lesson-kicker{font-size:10px;color:var(--tx3);margin-bottom:6px}
+.back a{color:var(--tx4);font-size:11px;text-decoration:none}
+
+/* TOC Sidebar */
+.toc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px;margin-bottom:20px}
+.toc-title{font-size:13px;font-weight:700;color:var(--cyan);margin-bottom:8px}
+.toc-track{font-size:10px;color:var(--tx4);margin-bottom:6px}
+.toc-list{display:flex;flex-direction:column;gap:2px}
+.toc-item{display:block;padding:5px 10px;border-radius:6px;font-size:11px;color:var(--tx3);text-decoration:none;transition:all .15s}
+.toc-item:hover{background:rgba(255,255,255,.05);color:var(--tx2)}
+.toc-item.active{background:rgba(99,102,241,.1);color:var(--a1);font-weight:600}
+.toc-all{display:block;margin-top:8px;font-size:10px;color:var(--tx4);text-decoration:none}
+.toc-all:hover{color:var(--tx2)}
+
+@media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
 </style>
 </head>
 <body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot" id="glowSpot"></div>
-<div class="container">
-<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / 独立桌面应用开发 / 选修 B · §3</div>
-<div class="lesson-kicker"><span class="badge elective">选修 B</span><span class="lesson-index">第 24 / 33 节</span></div><h1>搭建第一个桌面应用项目</h1><p>纸上谈兵够了。这一节我们真的动手——用 Tauri + React 搭出第一个桌面窗口。 不用写任何复杂代码，你只需要知道每一步在干什么。</p>
-<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
-<article><div class="scene">
-    <div class="scene-tag">SCENE · 周末下午</div>
-    <p><span class="who">小K</span> 在终端里敲下第一个命令，按下回车——
-    屏幕上开始刷刷刷地输出安装日志。几分钟后，一个空白窗口弹了出来。</p>
-    <p>"……这是我的桌面应用？就这么简单？"</p>
-    <p><span class="who">小K</span> 看着那个窗口，突然觉得"桌面应用开发"这件事从神秘的魔法，
-    变成了他能实实在在摸到、看到的东西。</p>
-  </div>
 
-  <div class="why">
-    <div class="why-tag">为什么要懂这个</div>
-    <h4>看到成果是新人的最强动力。搭项目这一步，是你从"看书"到"动手"的分界线。</h4>
-    <p>很多人学编程学了一两个月还在看教程、看文档，从来没自己跑起来过一行代码。
-    今天你就要打破这个循环——先跑起来一个东西，哪怕它只是一个空白窗口。</p>
-  </div>
+<div class="wrap">
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 产品设计与开发 / DAY 15</div>
 
-  <h3>前置准备：你需要装什么</h3>
-
-  <table style="width:100%;border-collapse:collapse;color:var(--read);font-size:14px;margin:24px 0">
-    <tr style="border-bottom:1px solid var(--line)">
-      <td style="padding:10px 12px;font-weight:700;color:#fff;white-space:nowrap">Node.js</td>
-      <td style="padding:10px 12px"><a href="https://nodejs.org/" target="_blank">nodejs.org</a>
-        &nbsp;→ 下载 LTS 版本。它是 JavaScript 的"本地运行环境"——让你不打开浏览器也能跑 JS。</td>
-    </tr>
-    <tr style="border-bottom:1px solid var(--line)">
-      <td style="padding:10px 12px;font-weight:700;color:#fff;white-space:nowrap">Rust</td>
-      <td style="padding:10px 12px"><a href="https://www.rust-lang.org/tools/install" target="_blank">rustup.rs</a>
-        &nbsp;→ Tauri 的底层用 Rust 写的，需要装 Rust 工具链。一路默认选项即可。</td>
-    </tr>
-    <tr style="border-bottom:1px solid var(--line)">
-      <td style="padding:10px 12px;font-weight:700;color:#fff;white-space:nowrap">VS Code</td>
-      <td style="padding:10px 12px"><a href="https://code.visualstudio.com/" target="_blank">code.visualstudio.com</a>
-        &nbsp;→ 写代码的编辑器。免费的，装好即可。</td>
-    </tr>
-    <tr>
-      <td style="padding:10px 12px;font-weight:700;color:#fff;white-space:nowrap">WebView2</td>
-      <td style="padding:10px 12px">Windows 10/11 一般已自带。如果没有，
-        去微软官网下载 "<a href="https://developer.microsoft.com/en-us/microsoft-edge/webview2/" target="_blank">WebView2 Runtime</a>"。</td>
-    </tr>
-  </table>
-
-  <h3>创建项目</h3>
-
-  <p>打开一个终端（PowerShell 或 CMD），输入以下命令：</p>
-
-<pre><code># 1. 用 npm 创建 Tauri v2 项目（React + TypeScript 模板）
-npm create tauri-app@latest floatthings -- --template react-ts
-
-# 2. 进入项目文件夹
-cd floatthings
-
-# 3. 安装依赖（JavaScript 库）
-npm install
-
-# 4. 启动开发模式 —— 这会打开一个桌面窗口！
-npm run tauri dev</code></pre>
-
-  <p>几分钟后，你的桌面上会出现一个窗口。这个窗口里面是一个 React 页面——
-  不是浏览器打开的，是一个真正的桌面应用窗口。恭喜，<strong>你已经是一个桌面应用开发者了</strong>。</p>
-
-  <h3>这个命令背后发生了什么？</h3>
-
-  <ol>
-    <li><code>npm create tauri-app</code> 帮你下载了一个项目模板——里面已经有了基础的文件结构。</li>
-    <li><code>npm install</code> 下载了所有依赖库——React、Tauri 的前端 SDK、TypeScript 编译器等等。</li>
-    <li><code>npm run tauri dev</code> 做了两件事：
-      先启动前端开发服务器（React 的热更新页面），
-      再启动 Tauri 的 Rust 后端，打开一个桌面窗口，把前端页面装进去。</li>
-  </ol>
-
-  <h3>项目结构一览</h3>
-
-  <p>你的项目文件夹现在大概是这样的：</p>
-
-<pre><code>floatthings/
-├── src/              ← 前端代码（React + TypeScript），你主要写这里
-│   ├── App.tsx       ← 主界面
-│   ├── main.tsx      ← 入口文件
-│   └── ...
-├── src-tauri/        ← Tauri 后端（Rust），负责系统调用
-│   ├── src/
-│   │   └── lib.rs    ← Rust 逻辑（窗口管理、系统托盘等）
-│   ├── Cargo.toml    ← Rust 依赖配置
-│   └── tauri.conf.json ← Tauri 配置文件
-├── package.json      ← 前端依赖和脚本
-└── tsconfig.json     ← TypeScript 配置</code></pre>
-
-  <p><strong>前端</strong>（src/）是你用 React + TypeScript 写界面的地方。
-  <strong>后端</strong>（src-tauri/）是你写 Rust 代码、跟操作系统交互的地方。
-  日常开发中 80%+ 的时间你都在 <code>src/</code> 里写界面，只有需要调用系统功能时才碰 Rust。</p>
-
-  <div class="callout tip">
-    <div class="callout-title">💡 前端和后端怎么通信？</div>
-    <p>在前端（TypeScript）里，你调用 <code>invoke('命令名', {参数})</code>。
-    在后端（Rust）里，你用 <code>#[tauri::command]</code> 标注一个函数。
-    Tauri 自动帮你搭好桥——你在前端 invoke 一下，后端的 Rust 函数就会执行，
-    结果自动传回前端。这就是 Tauri 的核心工作机制。</p>
-  </div>
-
-  <div class="big-quote">
-    从"我装了个 Tauri"到"我看到了自己的桌面窗口"，<br/>
-    这一步跨越的，不是你学了多少新知识，<br/>
-    而是<strong>你相信自己"真的能做出东西"</strong>。
-  </div>
-
-  <div class="tasks">
-    <h4>本节打卡</h4>
-    <label class="task" data-task="b3t1"><input type="checkbox"/><span class="t-text">成功安装了 Node.js 和 Rust 工具链</span></label>
-    <label class="task" data-task="b3t2"><input type="checkbox"/><span class="t-text">用 Tauri 模板创建了一个项目并成功跑起来</span></label>
-    <label class="task" data-task="b3t3"><input type="checkbox"/><span class="t-text">知道项目结构：src/ 写界面，src-tauri/ 管系统</span></label>
-    <label class="task" data-task="b3t4"><input type="checkbox"/><span class="t-text">理解 invoke / command 是前端和后端的通信方式</span></label>
-  </div>
-  <div class="day-foot">
-    <span class="day-progress" data-progress></span>
-    <button class="complete-btn" data-complete>完成本节 ✓</button>
-  </div>
-</article>
+<div class="toc">
+<div class="toc-title">📑 本模块目录</div>
+<div class="toc-track">产品设计与开发</div>
+<div class="toc-list"><a class="toc-item" href="./b1-desktop-vs-web.html">桌面应用 vs 网页</a>
+<a class="toc-item" href="./b2-tauri-electron-flutter.html">技术选型比较</a>
+<a class="toc-item active" href="./b3-first-desktop-app.html">搭建第一个桌面应用</a>
+<a class="toc-item" href="./b4-system-features.html">桌面应用的系统能力</a>
+<a class="toc-item" href="./b5-local-data.html">本地数据与配置</a>
+<a class="toc-item" href="./b6-packaging-release.html">打包发布</a></div>
+<a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a>
 </div>
-<div class="container">
-<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+
+<span class="badge req">DAY · 15</span>
+<h1>搭建第一个桌面应用</h1>
+<div class="hero-desc">动手搭一个 Tauri + React 桌面窗口。不需要完全理解，先跑通最小项目，知道每一步在干什么。</div>
+
+<div class="card card-ok">
+<h2>📝 核心要点</h2>
+<ul><li>安装 Rust + Node.js</li>
+<li>npx create-tauri-app 创建项目</li>
+<li>npm run tauri dev 跑起来</li>
+<li>看到桌面窗口出现 = 成功</li>
+<li>接下来可以在里面写 HTML 了</li></ul>
 </div>
+
+<div class="card card-warn">
+<h2>✅ 打卡任务</h2>
+<ul><li>按教程创建一个 Tauri 项目</li>
+<li>运行 npm run tauri dev 看到窗口</li>
+<li>修改 index.html 里的文字，看看窗口里的变化</li></ul>
+</div>
+
+<div class="nav-btns">
+  <a class="btn" href="../vibe-coding.html">📚 课程目录</a>
+</div>
+
 <div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</div>
+
 <script>
-// Mouse-follow glow
 (function(){
   var g = document.getElementById('glowSpot');
   if (!g || 'ontouchstart' in window) return;
-  var x = window.innerWidth/2, y = window.innerHeight/2;
-  var tx = x, ty = y;
+  var x = window.innerWidth/2, y = window.innerHeight/2, tx = x, ty = y;
   document.addEventListener('mousemove', function(e){ tx=e.clientX; ty=e.clientY });
-  function anim(){
-    x += (tx-x)*0.05; y += (ty-y)*0.05;
-    g.style.background = 'radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)';
-    requestAnimationFrame(anim);
-  }
+  function anim(){ x+=(tx-x)*0.05; y+=(ty-y)*0.05; g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)'; requestAnimationFrame(anim); }
   anim();
 })();
 </script>

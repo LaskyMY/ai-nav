@@ -3,126 +3,107 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>本地数据与配置：保存、缓存和同步边界 · 小K的大神之路</title>
+<title>DAY 31 · 本地数据与配置</title>
 <style>
-:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.8;padding:0;min-height:100vh;-webkit-font-smoothing:antialiased}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
 .bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.4}
 .bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
 .bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
-.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
 @keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
-.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1;transition:background .3s ease}
-.container{max-width:700px;margin:0 auto;padding:18px 20px;position:relative;z-index:1}
-h1{font-size:22px;font-weight:700;letter-spacing:-.03em;margin-bottom:4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
+.wrap{max-width:800px;margin:0 auto;padding:20px;position:relative;z-index:1}
+h1{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:12px 0 4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
-h2{font-size:16px;font-weight:700;color:var(--cyan);margin:24px 0 8px;border-left:3px solid var(--cyan);padding-left:10px}
-h3{font-size:14px;color:rgba(255,255,255,.85);margin:16px 0 6px}
-.breadcrumb{font-size:10px;color:var(--tx3);margin-bottom:16px}
+h2{font-size:16px;font-weight:700;color:var(--cyan);margin:30px 0 10px;border-left:3px solid var(--cyan);padding-left:10px}
+.breadcrumb{font-size:11px;color:var(--tx3);margin-bottom:8px}
 .breadcrumb a{color:var(--tx4);text-decoration:none}
-.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;margin-right:6px}
 .badge.req{background:rgba(99,102,241,.15);color:#818cf8}
-.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;position:relative;overflow:hidden}
-.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
-.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
-.scene-tag{font-size:9px;color:var(--cyan);font-weight:700;margin-bottom:8px;letter-spacing:.5px}
-.who{color:var(--amber);font-weight:600}
-.checklist{list-style:none;padding:0}
-.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
-.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
-.nav-btns{display:flex;gap:8px;margin:20px 0}
+.hero-desc{font-size:14px;color:var(--tx2);margin:8px 0 16px;line-height:1.7}
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:16px;padding:16px 18px;margin-bottom:10px;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.card.card-ok{border-left:3px solid rgba(16,185,129,.4)}
+.card.card-warn{border-left:3px solid rgba(245,158,11,.4)}
+ul{padding-left:20px;margin:6px 0}
+li{margin:4px 0;font-size:14px;color:rgba(255,255,255,.7)}
+li::marker{color:var(--tx4)}
+.nav-btns{display:flex;gap:8px;margin:24px 0}
 .btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;text-align:center;transition:all .25s var(--ease);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .btn:hover{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.08);color:var(--tx)}
 .btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:var(--cyan)}
-pre{background:rgba(0,0,0,.4);padding:14px;border-radius:10px;overflow-x:auto;font-size:11px;line-height:1.6;margin:10px 0;border:1px solid rgba(255,255,255,.05)}
-code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
-.tip{border-left:2px solid var(--amber);padding:8px 14px;margin:10px 0;font-size:12px;color:var(--tx2);background:rgba(245,158,11,.05);border-radius:0 8px 8px 0}
-p{margin:8px 0;font-size:13px;color:rgba(255,255,255,.65)}
 .back{text-align:center;margin-top:28px}
-.back a{color:var(--tx4);font-size:10px;text-decoration:none}
-.lesson-kicker{font-size:10px;color:var(--tx3);margin-bottom:6px}
+.back a{color:var(--tx4);font-size:11px;text-decoration:none}
+
+/* TOC Sidebar */
+.toc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px;margin-bottom:20px}
+.toc-title{font-size:13px;font-weight:700;color:var(--cyan);margin-bottom:8px}
+.toc-track{font-size:10px;color:var(--tx4);margin-bottom:6px}
+.toc-list{display:flex;flex-direction:column;gap:2px}
+.toc-item{display:block;padding:5px 10px;border-radius:6px;font-size:11px;color:var(--tx3);text-decoration:none;transition:all .15s}
+.toc-item:hover{background:rgba(255,255,255,.05);color:var(--tx2)}
+.toc-item.active{background:rgba(99,102,241,.1);color:var(--a1);font-weight:600}
+.toc-all{display:block;margin-top:8px;font-size:10px;color:var(--tx4);text-decoration:none}
+.toc-all:hover{color:var(--tx2)}
+
+@media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
 </style>
 </head>
 <body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot" id="glowSpot"></div>
-<div class="container">
-<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / 独立桌面应用开发 / 选修 B · §5</div>
-<div class="lesson-kicker"><span class="badge elective">选修 B</span><span class="lesson-index">第 26 / 33 节</span></div><h1>本地数据与配置：保存、缓存和同步边界</h1><p>桌面工具一旦真的被人使用，就一定会遇到“数据保存在哪里”。配置、草稿、最近文件、缓存、历史记录，看似小事，做不好就会变成数据丢失事故。</p>
-<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
-<article><div class="scene">
-    <div class="scene-tag">SCENE · 用户最怕数据没了</div>
-    <p><span class="who">小K</span>：“我做的待办工具能添加任务了。那我把数据存在浏览器 localStorage 里，是不是就完事了？”</p>
-    <p><span class="who">G 哥</span>：“原型阶段可以。真要当桌面应用用，就要想清楚：用户数据、软件配置、临时缓存、导出文件，它们不应该混在一起。”</p>
-  </div>
 
-  <div class="why">
-    <div class="why-tag">为什么要懂这个</div>
-    <h4>桌面应用不像网页一样随时依赖服务器。它经常要离线工作，所以本地数据策略特别重要。</h4>
-    <p>一个小工具越好用，用户越会把真实数据交给它。只要涉及真实数据，你就不能只想“能保存”，还要想“保存在哪里、怎么备份、坏了怎么恢复、升级时会不会丢”。</p>
-  </div>
+<div class="wrap">
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 产品设计与开发 / DAY 31</div>
 
-  <h3>第一步：先把数据分成四类</h3>
-  <table class="decision-table"><tr><th>数据类型</th><th>例子</th><th>适合放哪里</th><th>注意点</th></tr><tr><td>用户数据</td><td>待办列表、项目记录、批处理结果</td><td>数据库、JSON 文件、用户选择的工作区</td><td>最重要，不能轻易覆盖或清空</td></tr><tr><td>软件配置</td><td>主题、语言、窗口大小、默认路径</td><td>应用配置目录</td><td>可以重置，但要可恢复</td></tr><tr><td>缓存</td><td>缩略图、临时下载、加速索引</td><td>缓存目录</td><td>可以删除，不能当唯一数据源</td></tr><tr><td>日志</td><td>错误记录、操作记录、诊断信息</td><td>日志目录</td><td>方便排查，但要注意隐私</td></tr></table>
-
-  <div class="callout warn">
-    <div class="callout-title">新手高危误区</div>
-    <p>不要把所有东西都塞进一个 <code>data.json</code>。原型可以这样，长期使用会很难迁移、备份、排错，也更容易一次写坏全部数据。</p>
-  </div>
-
-  <h3>第二步：localStorage、JSON、SQLite 怎么选</h3>
-  <table class="decision-table"><tr><th>方案</th><th>适合阶段</th><th>优点</th><th>风险</th></tr><tr><td>localStorage</td><td>网页原型、演示版</td><td>最快、最简单、不需要后端</td><td>不适合大数据，不适合严肃备份</td></tr><tr><td>JSON 文件</td><td>轻量桌面工具</td><td>可读、可备份、方便导入导出</td><td>并发写入和结构升级要小心</td></tr><tr><td>SQLite</td><td>数据量更大、有搜索和历史记录</td><td>稳定、可查询、适合结构化数据</td><td>需要设计表结构和迁移</td></tr><tr><td>云同步</td><td>多设备协作</td><td>跨设备、可备份</td><td>账号、网络、冲突、隐私都会复杂很多</td></tr></table>
-
-  <h3>第三步：同步不是第一天就该做</h3>
-  <p>很多新手一上来就想“我要支持云同步”。听起来高级，但会立刻带来账号、权限、冲突、离线、隐私和成本问题。VibeCoding 里更稳的做法是先把本地保存做好，再考虑导出/导入，最后才考虑云同步。</p>
-  <div class="vibe-timeline"><div class="vibe-step"><b>阶段 1</b><p>本地内存数据：先验证功能流程。</p></div><div class="vibe-step"><b>阶段 2</b><p>localStorage 或 JSON：能关闭重开还在。</p></div><div class="vibe-step"><b>阶段 3</b><p>导出和导入：用户能自己备份。</p></div><div class="vibe-step"><b>阶段 4</b><p>SQLite：数据量、搜索、历史记录变复杂时再上。</p></div><div class="vibe-step"><b>阶段 5</b><p>云同步：真的需要多设备时再设计。</p></div></div>
-
-  <h3>第四步：数据升级和迁移</h3>
-  <p>软件会迭代，数据结构也会变。今天的待办只有标题，明天可能有优先级、截止日期、标签。你要让 AI 记住：改数据结构时，旧数据不能突然读不了。</p>
-  <div class="artifact-grid"><div class="artifact"><h4>加版本号</h4><p>在数据里记录 schema version，知道当前数据属于哪一版。</p></div><div class="artifact"><h4>写迁移逻辑</h4><p>旧数据打开时，自动补默认字段或转换格式。</p></div><div class="artifact"><h4>先备份再写入</h4><p>写入新格式前保留旧文件，失败时能退。</p></div><div class="artifact"><h4>保留导出入口</h4><p>让用户能把自己的数据拿走，这是信任感。</p></div></div>
-
-  <div class="ai-chat"><div class="ai-chat-title">AI 互动现场：不要急着上云同步</div><div class="chat-turn user"><div class="role">你</div><p>帮我给待办工具加云同步。</p></div><div class="chat-turn ai"><div class="role">AI</div><p>可以接 Supabase、Firebase、登录系统……</p></div><div class="chat-turn user"><div class="role">你</div><p>先停。请先判断这个阶段是否真的需要云同步。给我一个从本地保存、导入导出到云同步的分阶段路线，并说明每阶段的风险。</p></div><div class="chat-turn ai"><div class="role">AI</div><p>明白。先把本地数据可靠性做好，再考虑同步能力。</p></div></div>
-
-  <div class="prompt-block">请帮我为桌面应用设计本地数据策略。
-
-应用类型：[工具类型]
-需要保存的数据：[用户数据 / 配置 / 缓存 / 日志]
-数据量大概：[小 / 中 / 大]
-是否需要离线：[是 / 否]
-是否需要多设备同步：[现在不需要 / 未来可能需要]
-
-请输出：
-1. 数据分类；
-2. 推荐保存方案；
-3. 为什么暂时不做或要做云同步；
-4. 数据迁移和备份方案；
-5. 最小验证清单。</div>
-
-  <div class="big-quote">数据策略的底线是：<strong>用户交给你的东西，不能随便丢。</strong><br/>原型可以粗糙，保存数据不能粗心。</div>
-
-  <div class="tasks"><h4>本节打卡</h4><label class="task" data-task="b5t1"><input type="checkbox"/><span class="t-text">能区分用户数据、软件配置、缓存和日志</span></label><label class="task" data-task="b5t2"><input type="checkbox"/><span class="t-text">知道 localStorage、JSON 文件、SQLite 各自适合什么阶段</span></label><label class="task" data-task="b5t3"><input type="checkbox"/><span class="t-text">知道云同步会带来账号、冲突、隐私和成本问题</span></label><label class="task" data-task="b5t4"><input type="checkbox"/><span class="t-text">能说出为什么数据结构升级需要迁移</span></label><label class="task" data-task="b5t5"><input type="checkbox"/><span class="t-text">能让 AI 输出一份本地数据策略和验证清单</span></label></div>
-  <div class="day-foot"><span class="day-progress" data-progress></span><button class="complete-btn" data-complete>完成本节</button></div>
-</article>
+<div class="toc">
+<div class="toc-title">📑 本模块目录</div>
+<div class="toc-track">产品设计与开发</div>
+<div class="toc-list"><a class="toc-item" href="./b1-desktop-vs-web.html">桌面应用 vs 网页</a>
+<a class="toc-item" href="./b2-tauri-electron-flutter.html">技术选型比较</a>
+<a class="toc-item" href="./b3-first-desktop-app.html">搭建第一个桌面应用</a>
+<a class="toc-item" href="./b4-system-features.html">桌面应用的系统能力</a>
+<a class="toc-item active" href="./b5-local-data.html">本地数据与配置</a>
+<a class="toc-item" href="./b6-packaging-release.html">打包发布</a></div>
+<a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a>
 </div>
-<div class="container">
-<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+
+<span class="badge req">DAY · 31</span>
+<h1>本地数据与配置</h1>
+<div class="hero-desc">用户的数据存在哪？小数据用 JSON 文件，大数据用 SQLite 数据库。不要一上来就搞云同步。</div>
+
+<div class="card card-ok">
+<h2>📝 核心要点</h2>
+<ul><li>localStorage → 存小数据（设置、偏好）</li>
+<li>JSON文件 → 结构化数据（可以手动编辑）</li>
+<li>SQLite → 大量数据（需要查询和筛选）</li>
+<li>云同步最后再加，先确保本地工作正常</li>
+<li>定期备份用户数据</li></ul>
 </div>
+
+<div class="card card-warn">
+<h2>✅ 打卡任务</h2>
+<ul><li>搜索"SQLite vs JSON"看一篇对比</li>
+<li>写一个小程序，把一段文字保存到文件</li>
+<li>想想你的应用需要存哪些数据</li></ul>
+</div>
+
+<div class="nav-btns">
+  <a class="btn" href="../vibe-coding.html">📚 课程目录</a>
+</div>
+
 <div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</div>
+
 <script>
-// Mouse-follow glow
 (function(){
   var g = document.getElementById('glowSpot');
   if (!g || 'ontouchstart' in window) return;
-  var x = window.innerWidth/2, y = window.innerHeight/2;
-  var tx = x, ty = y;
+  var x = window.innerWidth/2, y = window.innerHeight/2, tx = x, ty = y;
   document.addEventListener('mousemove', function(e){ tx=e.clientX; ty=e.clientY });
-  function anim(){
-    x += (tx-x)*0.05; y += (ty-y)*0.05;
-    g.style.background = 'radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)';
-    requestAnimationFrame(anim);
-  }
+  function anim(){ x+=(tx-x)*0.05; y+=(ty-y)*0.05; g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)'; requestAnimationFrame(anim); }
   anim();
 })();
 </script>

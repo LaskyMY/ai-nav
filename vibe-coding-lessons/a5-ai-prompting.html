@@ -3,253 +3,109 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>跟 AI 好好说话 · 小K的大神之路</title>
+<title>DAY 06 · 跟 AI 好好说话</title>
 <style>
-:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.8;padding:0;min-height:100vh;-webkit-font-smoothing:antialiased}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
 .bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.4}
 .bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
 .bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
-.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
 @keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
-.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1;transition:background .3s ease}
-.container{max-width:700px;margin:0 auto;padding:18px 20px;position:relative;z-index:1}
-h1{font-size:22px;font-weight:700;letter-spacing:-.03em;margin-bottom:4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
+.wrap{max-width:800px;margin:0 auto;padding:20px;position:relative;z-index:1}
+h1{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:12px 0 4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
-h2{font-size:16px;font-weight:700;color:var(--cyan);margin:24px 0 8px;border-left:3px solid var(--cyan);padding-left:10px}
-h3{font-size:14px;color:rgba(255,255,255,.85);margin:16px 0 6px}
-.breadcrumb{font-size:10px;color:var(--tx3);margin-bottom:16px}
+h2{font-size:16px;font-weight:700;color:var(--cyan);margin:30px 0 10px;border-left:3px solid var(--cyan);padding-left:10px}
+.breadcrumb{font-size:11px;color:var(--tx3);margin-bottom:8px}
 .breadcrumb a{color:var(--tx4);text-decoration:none}
-.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;margin-right:6px}
 .badge.req{background:rgba(99,102,241,.15);color:#818cf8}
-.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;position:relative;overflow:hidden}
-.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
-.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
-.scene-tag{font-size:9px;color:var(--cyan);font-weight:700;margin-bottom:8px;letter-spacing:.5px}
-.who{color:var(--amber);font-weight:600}
-.checklist{list-style:none;padding:0}
-.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
-.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
-.nav-btns{display:flex;gap:8px;margin:20px 0}
+.hero-desc{font-size:14px;color:var(--tx2);margin:8px 0 16px;line-height:1.7}
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:16px;padding:16px 18px;margin-bottom:10px;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.card.card-ok{border-left:3px solid rgba(16,185,129,.4)}
+.card.card-warn{border-left:3px solid rgba(245,158,11,.4)}
+ul{padding-left:20px;margin:6px 0}
+li{margin:4px 0;font-size:14px;color:rgba(255,255,255,.7)}
+li::marker{color:var(--tx4)}
+.nav-btns{display:flex;gap:8px;margin:24px 0}
 .btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;text-align:center;transition:all .25s var(--ease);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .btn:hover{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.08);color:var(--tx)}
 .btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:var(--cyan)}
-pre{background:rgba(0,0,0,.4);padding:14px;border-radius:10px;overflow-x:auto;font-size:11px;line-height:1.6;margin:10px 0;border:1px solid rgba(255,255,255,.05)}
-code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
-.tip{border-left:2px solid var(--amber);padding:8px 14px;margin:10px 0;font-size:12px;color:var(--tx2);background:rgba(245,158,11,.05);border-radius:0 8px 8px 0}
-p{margin:8px 0;font-size:13px;color:rgba(255,255,255,.65)}
 .back{text-align:center;margin-top:28px}
-.back a{color:var(--tx4);font-size:10px;text-decoration:none}
-.lesson-kicker{font-size:10px;color:var(--tx3);margin-bottom:6px}
+.back a{color:var(--tx4);font-size:11px;text-decoration:none}
+
+/* TOC Sidebar */
+.toc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px;margin-bottom:20px}
+.toc-title{font-size:13px;font-weight:700;color:var(--cyan);margin-bottom:8px}
+.toc-track{font-size:10px;color:var(--tx4);margin-bottom:6px}
+.toc-list{display:flex;flex-direction:column;gap:2px}
+.toc-item{display:block;padding:5px 10px;border-radius:6px;font-size:11px;color:var(--tx3);text-decoration:none;transition:all .15s}
+.toc-item:hover{background:rgba(255,255,255,.05);color:var(--tx2)}
+.toc-item.active{background:rgba(99,102,241,.1);color:var(--a1);font-weight:600}
+.toc-all{display:block;margin-top:8px;font-size:10px;color:var(--tx4);text-decoration:none}
+.toc-all:hover{color:var(--tx2)}
+
+@media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
 </style>
 </head>
 <body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot" id="glowSpot"></div>
-<div class="container">
-<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / UE 工具开发 / DAY · 06</div>
-<div class="lesson-kicker"><span class="badge elective">选修 A</span><span class="lesson-index">第 18 / 33 节</span></div><h1>跟 AI 好好说话</h1><p>小K 试着自己写代码——写不出来。G哥说你试试问 AI。 结果问出来的代码要么跑不起来、要么完全不对。不是 AI 没用，是小K 还不会&quot;问&quot;。</p>
-<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
-<article><div class="scene">
-    <div class="scene-tag">SCENE 6 · 第六天下午</div>
-    <p><span class="who">小K</span>（把脸埋在手里）：
-    "G哥，我在网上抄了一段代码放到项目里，编译都不通过。然后我去问 AI，
-    它给我写了 200 行，更跑不起来——我是不是不适合写代码？"</p>
-    <p><span class="who">G 哥</span>（把椅子拉过来）：
-    "不是你不行，是你还不会'使唤'AI。你把 AI 当搜索引擎用——问一句，要一个答案。
-    但 AI 的用法是：它像一个很聪明但<strong>完全不了解你项目上下文</strong>的新同事。
-    你得先给他讲清楚背景，他才能给你有用的东西。"</p>
-    <p><span class="who">G 哥</span>（敲了几下键盘）：
-    "来，我给你看同样一个需求，'不会问的人'和'会问的人'问出来的差别有多大。"</p>
-  </div>
 
-  <div class="why">
-    <div class="why-tag">为什么要懂这个</div>
-    <h4>Vibe Coding 时代，写代码的能力正在从"记忆语法"变成"准确描述需求"。
-    你今后写代码的流程大概率是：想清楚要什么 → 描述给 AI → 读 AI 的输出 → 改到能跑。
-    这个流程里最值钱的能力不是背语法，是<strong>把模糊需求翻译成清晰指令</strong>。</h4>
-    <p>作为一个刚入行的工具开发者，你不会独立从零写一个复杂功能。
-    但你如果能准确地告诉 AI "我在做什么项目、用的是 UE5.4、要加一个 Editor Plugin、
-    这个 Plugin 要提供一个右键菜单按钮、点了之后弹一个窗口"——
-    你就已经比 80% 的新人强了。</p>
-  </div>
+<div class="wrap">
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / AI 协作 / DAY 06</div>
 
-  <h3>先看两组对话——差距在哪，一眼就懂</h3>
-
-  <h4>❌ 不会问的人</h4>
-
-  <div class="callout warn">
-    <div class="callout-title">小K 的第一版提问</div>
-    <p>"给我写一个 UE 工具，能批量改资产的名字。"</p>
-  </div>
-
-  <p>AI 回了一堆——但写的是 Runtime Actor 的代码，
-  用的是 C++ 标准库的文件操作，完全不知道 UE 有 AssetTools。——
-  <strong>根本用不了</strong>。</p>
-
-  <h4>✅ 会问的人</h4>
-
-  <div class="callout tip">
-    <div class="callout-title">G哥 的提问版本</div>
-    <p>"我在做一个 UE5.4 的 Editor Plugin（不是 Runtime）。想加一个功能：
-    在 Content Browser 里选中多个资产（贴图/材质），右键菜单出现一个按钮
-    '批量改名'，点了之后弹出一个 Editor Utility Widget 窗口，
-    窗口里可以输入前缀和后缀，点确认后批量重命名选中的资产。</p>
-    <p>请用 C++ 写，告诉我需要建哪些文件、每个文件放哪个目录、
-    以及 Build.cs 里要加什么依赖。"</p>
-  </div>
-
-  <p>AI 回的代码直接就能放进项目里，改几行就能跑。——<strong>差的是一个"上下文"</strong>。</p>
-
-  <p>这两段提问的差距在哪？</p>
-  <ul>
-    <li>第一个只说了<strong>"要什么结果"</strong>——"批量改名"。</li>
-    <li>第二个说了<strong>"在什么环境、给谁用、触发方式、交互流程、技术要求"</strong>。</li>
-  </ul>
-
-  <p>AI 就像一个<strong>能力极强但完全不了解你项目的新同事</strong>。
-  你给他越多的上下文，他给你的东西越能直接用。
-  你什么都不说，他就靠猜——猜错就是你的成本。</p>
-
-  <h3>Vibe Coding 的四个核心原则</h3>
-
-  <div class="why">
-    <div class="why-tag">为什么要懂这个</div>
-    <h4>这四个原则不是"技巧"，是你跟 AI 协作的底层逻辑。
-    掌握了它们，你今后跟任何 AI 工具（Claude、ChatGPT、Copilot）协作的效率都会翻几倍。</h4>
-  </div>
-
-  <h4>原则一：先给环境，再提需求</h4>
-
-  <p>在说"我要什么"之前，先说"我在哪"：</p>
-  <ul>
-    <li>引擎版本：UE5.4 还是 5.3？</li>
-    <li>项目类型：源码版还是启动器版？</li>
-    <li>插件类型：Editor Plugin 还是 Runtime Plugin？</li>
-    <li>已有基础设施：你项目里已经有某个框架了吗？</li>
-  </ul>
-
-  <p>比如："我用的 UE5.4 源码版，在做一个 Editor Plugin，
-  插件名叫 MyTool，已经有一个 Editor Utility Widget 的基础框架。"</p>
-
-  <h4>原则二：说清楚"触发方式"和"交互流程"</h4>
-
-  <p>不要只说"做一个功能"，要说清楚——</p>
-  <ul>
-    <li>用户从哪触发？（Content Browser 右键？编辑器工具栏按钮？独立窗口？）</li>
-    <li>触发之后发生什么？（弹窗？直接执行？多步向导？）</li>
-    <li>输入是什么？输出是什么？</li>
-  </ul>
-
-  <h4>原则三：把大需求拆成小块，一次只问一个</h4>
-
-  <p>❌ "给我做一个完整的资产管理系统"<br/>
-  ✅ "先帮我写一个函数，输入一个资产路径，返回这个资产的所有引用者列表"</p>
-
-  <p>AI 在处理"大而全"的需求时容易遗漏和幻觉。
-  你拆成小块，每一步验证过了再问下一步，效率反而更高。</p>
-
-  <h4>原则四：让 AI 告诉你"他还需要什么信息"</h4>
-
-  <p>在你的提问最后加一句：
-  <em>"如果你还需要更多信息才能给出准确的代码，请先问我。"</em></p>
-
-  <p>这句话会让 AI 在"猜"之前先反问你——避免它基于错误假设写一堆废代码。</p>
-
-  <h3>AI 给你的代码，你该怎么看？</h3>
-
-  <div class="why">
-    <div class="why-tag">为什么要懂这个</div>
-    <h4>AI 写的代码不是"拿来就能用"——它可能有小错误、可能不符合你项目的规范、
-    可能用了过时的 API。你得学会"读 AI 的输出"——而读代码的能力，
-    正是你前面 5 天在慢慢建立的东西。</h4>
-  </div>
-
-  <p>拿到 AI 给的代码后，你的标准流程应该是：</p>
-
-  <ol>
-    <li><strong>读一遍</strong>——不要求全懂，但至少要认出"哦，这里在定义一个类，
-    这里在调一个函数，这里在处理错误"。Day 0 的"四个基本元素"就是干这个的。</li>
-    <li><strong>检查依赖</strong>——AI 用了哪些 UE 模块？你的 Build.cs 里有没有这些模块？
-    如果没有，加上。忘了加依赖是编译失败的第一大原因。</li>
-    <li><strong>放到对的目录</strong>——.h 放 Public/，.cpp 放 Private/。放错了 UBT 找不到。</li>
-    <li><strong>编译</strong>——如果能编译过，你已经跑通了 80% 的路。</li>
-    <li><strong>跑一遍试试</strong>——启动编辑器，触发你的工具，看行为对不对。</li>
-    <li><strong>把报错贴回给 AI</strong>——如果编译报错或运行不对，把<strong>完整的错误信息</strong>贴回给 AI，
-    加上"我刚才让你写的代码编译报了下面这个错，请帮我修正"。</li>
-  </ol>
-
-  <div class="callout key">
-    <div class="callout-title">🔑 Vibe Coding 的核心循环</div>
-    <p>描述需求 → AI 给代码 → 你读+编译 → 如果报错，贴回给 AI → AI 修正 → 再编译 →
-    跑通了，你再去理解它到底干了什么。</p>
-    <p>这个循环跑几遍，你不仅得到了能用的代码，还<strong>顺便学会了写代码</strong>。
-    因为你在读、在改、在调试——这些正好就是学编程最高效的方式。</p>
-  </div>
-
-  <h3>给你的"万能提问模板"</h3>
-
-  <p>保存下面这个模板。前半年每次问 AI，就照着填：</p>
-
-<pre><code>【环境】
-- UE 版本：
-- 项目类型：源码版 / 启动器版
-- 插件类型：Editor Plugin / Runtime Plugin
-- 插件名：
-- 使用的 IDE：Visual Studio 2022
-
-【需求】
-- 我要实现什么功能：
-- 用户从哪里触发：
-- 触发后发生什么：
-
-【约束】
-- 只需要 C++ 代码 / 需要蓝图配合
-- 如果有代码规范要求，写在这里
-- 如果有特殊限制（不能用某模块等），写在这里
-
-【输出要求】
-- 请列出需要新建/修改的所有文件，以及每个文件的完整路径
-- 请在代码的关键位置加上注释
-- 如果你需要更多信息，请先问我</code></pre>
-
-  <div class="big-quote">
-    不会写代码不是问题。<br/>不会<strong>描述</strong>你要什么，才是问题。
-  </div>
-
-  <div class="tasks">
-    <h4>今日打卡</h4>
-    <label class="task" data-task="d6t1"><input type="checkbox"/><span class="t-text">理解"AI 像一个不了解你项目的新同事"——给它上下文是第一要务</span></label>
-    <label class="task" data-task="d6t2"><input type="checkbox"/><span class="t-text">能说出 Vibe Coding 四个核心原则</span></label>
-    <label class="task" data-task="d6t3"><input type="checkbox"/><span class="t-text">知道拿到 AI 代码后的六步标准流程</span></label>
-    <label class="task" data-task="d6t4"><input type="checkbox"/><span class="t-text">保存了"万能提问模板"，准备下次真的用它问一次 AI</span></label>
-    <label class="task" data-task="d6t5"><input type="checkbox"/><span class="t-text">理解 Vibe Coding 的核心循环：描述→生成→读→编译→报错→贴回→修正→再编译→跑通→理解</span></label>
-  </div>
-  <div class="day-foot">
-    <span class="day-progress" data-progress></span>
-    <button class="complete-btn" data-complete>完成今日 ✓</button>
-  </div>
-</article>
+<div class="toc">
+<div class="toc-title">📑 本模块目录</div>
+<div class="toc-track">AI 协作</div>
+<div class="toc-list"><a class="toc-item" href="./a1-toolbox.html">装好你的工具箱</a>
+<a class="toc-item" href="./a2-project-town.html">项目是一座小镇</a>
+<a class="toc-item" href="./a3-engine-plugin-extension.html">引擎、插件、扩展</a>
+<a class="toc-item" href="./a4-ue-project.html">走进 UE 项目</a>
+<a class="toc-item active" href="./a5-ai-prompting.html">跟 AI 好好说话</a>
+<a class="toc-item" href="./a6-errors.html">读懂报错</a>
+<a class="toc-item" href="./a7-editor-tool.html">第一个 Editor 工具</a>
+<a class="toc-item" href="./a8-version-collaboration.html">提交、版本、协作</a></div>
+<a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a>
 </div>
-<div class="container">
-<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+
+<span class="badge req">DAY · 06</span>
+<h1>跟 AI 好好说话</h1>
+<div class="hero-desc">不是 AI 没用，是你说的话不够具体。问"帮我写代码"和问"帮我用 Python 写一个能读取 CSV 文件并画图表的程序"，结果差十倍。</div>
+
+<div class="card card-ok">
+<h2>📝 核心要点</h2>
+<ul><li>具体 > 模糊：说清楚输入、输出、限制条件</li>
+<li>给范例：给AI看你想要的结果长什么样</li>
+<li>分步走：先让AI理解需求→再让它写代码→最后让它测试</li>
+<li>不满意就说："不对，我要的是XXX，请重新做"</li>
+<li>AI是你的助手，不是算命先生——你要交代清楚</li></ul>
 </div>
+
+<div class="card card-warn">
+<h2>✅ 打卡任务</h2>
+<ul><li>写一个具体的需求发给AI（要包含：做什么、用什么语言、输入什么、输出什么）</li>
+<li>看看AI给你的代码，如果不满意，告诉它哪里不对</li>
+<li>试试分步法：先让AI讨论方案，再让它写代码</li></ul>
+</div>
+
+<div class="nav-btns">
+  <a class="btn" href="../vibe-coding.html">📚 课程目录</a>
+</div>
+
 <div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</div>
+
 <script>
-// Mouse-follow glow
 (function(){
   var g = document.getElementById('glowSpot');
   if (!g || 'ontouchstart' in window) return;
-  var x = window.innerWidth/2, y = window.innerHeight/2;
-  var tx = x, ty = y;
+  var x = window.innerWidth/2, y = window.innerHeight/2, tx = x, ty = y;
   document.addEventListener('mousemove', function(e){ tx=e.clientX; ty=e.clientY });
-  function anim(){
-    x += (tx-x)*0.05; y += (ty-y)*0.05;
-    g.style.background = 'radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)';
-    requestAnimationFrame(anim);
-  }
+  function anim(){ x+=(tx-x)*0.05; y+=(ty-y)*0.05; g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)'; requestAnimationFrame(anim); }
   anim();
 })();
 </script>

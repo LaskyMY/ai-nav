@@ -3,480 +3,108 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>代码到底是个什么东西 · 小K的大神之路</title>
+<title>DAY 00 · 代码到底是个什么东西</title>
 <style>
-:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.8;padding:0;min-height:100vh;-webkit-font-smoothing:antialiased}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
 .bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.4}
 .bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
 .bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
-.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
 @keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
-.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1;transition:background .3s ease}
-.container{max-width:700px;margin:0 auto;padding:18px 20px;position:relative;z-index:1}
-h1{font-size:22px;font-weight:700;letter-spacing:-.03em;margin-bottom:4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
+.wrap{max-width:800px;margin:0 auto;padding:20px;position:relative;z-index:1}
+h1{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:12px 0 4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
-h2{font-size:16px;font-weight:700;color:var(--cyan);margin:24px 0 8px;border-left:3px solid var(--cyan);padding-left:10px}
-h3{font-size:14px;color:rgba(255,255,255,.85);margin:16px 0 6px}
-.breadcrumb{font-size:10px;color:var(--tx3);margin-bottom:16px}
+h2{font-size:16px;font-weight:700;color:var(--cyan);margin:30px 0 10px;border-left:3px solid var(--cyan);padding-left:10px}
+.breadcrumb{font-size:11px;color:var(--tx3);margin-bottom:8px}
 .breadcrumb a{color:var(--tx4);text-decoration:none}
-.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;margin-right:6px}
 .badge.req{background:rgba(99,102,241,.15);color:#818cf8}
-.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;position:relative;overflow:hidden}
-.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
-.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
-.scene-tag{font-size:9px;color:var(--cyan);font-weight:700;margin-bottom:8px;letter-spacing:.5px}
-.who{color:var(--amber);font-weight:600}
-.checklist{list-style:none;padding:0}
-.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
-.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
-.nav-btns{display:flex;gap:8px;margin:20px 0}
+.hero-desc{font-size:14px;color:var(--tx2);margin:8px 0 16px;line-height:1.7}
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:16px;padding:16px 18px;margin-bottom:10px;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.card.card-ok{border-left:3px solid rgba(16,185,129,.4)}
+.card.card-warn{border-left:3px solid rgba(245,158,11,.4)}
+ul{padding-left:20px;margin:6px 0}
+li{margin:4px 0;font-size:14px;color:rgba(255,255,255,.7)}
+li::marker{color:var(--tx4)}
+.nav-btns{display:flex;gap:8px;margin:24px 0}
 .btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;text-align:center;transition:all .25s var(--ease);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .btn:hover{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.08);color:var(--tx)}
 .btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:var(--cyan)}
-pre{background:rgba(0,0,0,.4);padding:14px;border-radius:10px;overflow-x:auto;font-size:11px;line-height:1.6;margin:10px 0;border:1px solid rgba(255,255,255,.05)}
-code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
-.tip{border-left:2px solid var(--amber);padding:8px 14px;margin:10px 0;font-size:12px;color:var(--tx2);background:rgba(245,158,11,.05);border-radius:0 8px 8px 0}
-p{margin:8px 0;font-size:13px;color:rgba(255,255,255,.65)}
 .back{text-align:center;margin-top:28px}
-.back a{color:var(--tx4);font-size:10px;text-decoration:none}
-.lesson-kicker{font-size:10px;color:var(--tx3);margin-bottom:6px}
+.back a{color:var(--tx4);font-size:11px;text-decoration:none}
+
+/* TOC Sidebar */
+.toc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px;margin-bottom:20px}
+.toc-title{font-size:13px;font-weight:700;color:var(--cyan);margin-bottom:8px}
+.toc-track{font-size:10px;color:var(--tx4);margin-bottom:6px}
+.toc-list{display:flex;flex-direction:column;gap:2px}
+.toc-item{display:block;padding:5px 10px;border-radius:6px;font-size:11px;color:var(--tx3);text-decoration:none;transition:all .15s}
+.toc-item:hover{background:rgba(255,255,255,.05);color:var(--tx2)}
+.toc-item.active{background:rgba(99,102,241,.1);color:var(--a1);font-weight:600}
+.toc-all{display:block;margin-top:8px;font-size:10px;color:var(--tx4);text-decoration:none}
+.toc-all:hover{color:var(--tx2)}
+
+@media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
 </style>
 </head>
 <body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot" id="glowSpot"></div>
-<div class="container">
-<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / 编程基础 / DAY · 00</div>
-<div class="lesson-kicker"><span class="badge required">必修</span><span class="lesson-index">第 1 / 33 节</span></div><h1>代码到底是个什么东西</h1><p>入职第一天，小K 盯着屏幕上一堆奇怪字符， 突然意识到——他不是看不懂代码，他是连&quot;代码&quot;这两个字在脑子里都没有具体形状。</p>
-<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
-<article><div class="scene">
-    <div class="scene-tag">SCENE 0 · 入职第一天</div>
-    <p><span class="who">G 哥</span>（小K的导师，工龄十年的 UE 程序员，喝美式不加糖）：
-    "欢迎欢迎，先把这个文件打开瞅瞅，下午我带你看代码。"</p>
-    <p>小K 双击打开，屏幕上出现了下面这一坨——</p>
-    <p>"……G哥，这是英文吗？"</p>
-  </div>
 
-<pre><code>void UMyTool::PrintHello(int32 Times)
-{
-    for (int32 i = 0; i &lt; Times; ++i)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Hello from K"));
-    }
-}</code></pre>
-
-  <p>如果你和小K一样，看到上面这段东西第一反应是"<em>这玩意能看懂的人是不是大脑构造和我不一样</em>"——
-  我猜你看到的不是难，是<strong>陌生</strong>。</p>
-
-  <p>"代码"这两个字，对一个从来没接触过编程的人来说，是一个<strong>完全没有具体形状</strong>的词。
-  你听过它，但说不出它"长什么样"、"在哪儿"、"是不是文件"、"用什么打开"。
-  就像你从没去过北极，"北极"这个词在你脑子里就是一团模糊的白色。</p>
-
-  <p>所以今天我们不学怎么写代码——你今天的目标只有一个：</p>
-
-  <div class="big-quote">
-    让"代码"这个词，<br/>在你脑子里长出具体的形状。
-  </div>
-
-  <h3>为什么我们需要"代码"这种东西？</h3>
-
-  <div class="why">
-    <div class="why-tag">为什么要懂这个</div>
-    <h4>不先弄清"我们为什么需要代码"，后面所有概念都飘着。</h4>
-    <p>很多新人学了一年还是觉得编程"很玄"，根本原因是：
-    他从一开始就跳过了这个问题，直接去背 "if 怎么写"、"for 怎么写"。
-    技巧学了一堆，但底座是空的——脑子里没有一根"代码为什么会存在"的主轴。</p>
-  </div>
-
-  <p>来想象一个画面：你面前有一台电脑。这台电脑的本质是一块 CPU + 一些内存 + 一块硬盘。
-  CPU 就是它的"大脑"，但这个大脑特别原始——
-  <strong>它一辈子只会做一件事：从内存里读一条指令，照着干一下，再读下一条</strong>。</p>
-
-  <p>这些"指令"是什么呢？是一串数字，比如：</p>
-
-<pre><code>10110000 01100001    ← 把数字 97 放到 AL 寄存器
-01001000 10001001    ← 把它复制到另一个寄存器
-...</code></pre>
-
-  <p>每一串 0 和 1，对 CPU 来说都对应一个非常小的动作——加一下、减一下、搬一下、跳一下。
-  一台电脑一秒钟执行几十亿条这种小动作，最终拼出来"打开微信"、"渲染一帧画面"、
-  "处理一次按键"这些复杂行为。</p>
-
-  <p>问题来了：<strong>没有人能直接写这种 0/1 串</strong>。</p>
-
-  <p>不是不能，是写出来人会疯。一个简单的"打印 Hello"可能要几百条这种指令。
-  写一个微信级别的软件需要几十亿条。手写？睡觉都没时间。</p>
-
-  <div class="callout key">
-    <div class="callout-title">🔑 代码诞生的根本原因</div>
-    <p>电脑只懂 0 和 1，但人类受不了 0 和 1。
-    所以人类发明了一种<strong>中间形态</strong>——
-    用看起来像英文的字符，按某种规则写下"我要电脑做的事"，
-    然后再用一个"翻译机"把它转成 CPU 能吃的 0 和 1。</p>
-    <p>那串看起来像英文的字符，就叫<strong>代码</strong>。</p>
-    <p>那个翻译机，就叫<strong>编译器</strong>（明天讲）。</p>
-  </div>
-
-  <p>所以代码从根本上是一个<strong>翻译问题</strong>的产物：
-  人类需要一种能看懂、写得动、又能精确翻译成机器指令的中间语言。
-  这种"中间语言"就是<strong>编程语言</strong>——C++、Python、Java、JavaScript……
-  全都是同一个目的的不同方言。</p>
-
-  <h3>那代码这东西，到底"在哪里"？</h3>
-
-  <div class="why">
-    <div class="why-tag">为什么要懂这个</div>
-    <h4>很多新人不敢碰代码，是因为觉得它"特殊"——其实它就是个文本文件而已。</h4>
-    <p>当你知道"代码就是一个能用记事本打开的文件"，
-    心理压力会立刻小一半。你今后在文件资源管理器里看到的所有 .cpp / .py / .h，
-    都不再是"魔法符文"，就是普通文本。</p>
-  </div>
-
-  <p>来做个小实验。打开 Windows 资源管理器，新建一个文本文档，
-  里面写一句"今天天气真好"，保存成 <code>weather.txt</code>。
-  这个文件是什么？</p>
-
-  <p>就是硬盘上的一段字节，按"文本"的方式存起来。
-  你双击它，记事本会打开，显示出"今天天气真好"。</p>
-
-  <p>现在再做一次：新建文件，里面写：</p>
-
-<pre><code>void PrintHello()
-{
-    UE_LOG(LogTemp, Warning, TEXT("Hello"));
-}</code></pre>
-
-  <p>保存成 <code>hello.cpp</code>。</p>
-
-  <p>这个 .cpp 文件，<strong>本质上和那个 .txt 没有任何区别</strong>。
-  都是硬盘上的一段字符串，都能用记事本打开，都能用 Word 打开，都能复制粘贴。
-  操作系统不会觉得它"是代码"——
-  它只是一个扩展名叫 cpp 的普通文本文件。</p>
-
-  <p>那它"特殊"在哪？只在<strong>内容</strong>——
-  里面写的字符串遵循 C++ 这门语言的语法规则。
-  如果你把内容随便改一下、加几个中文字符，
-  从"文件"角度它还是个文件，但从"代码"角度它就坏了。</p>
-
-  <div class="callout tip">
-    <div class="callout-title">💡 一个让你心理压力骤降的事实</div>
-    <p>UE 整个引擎那么庞大，背后其实就是<strong>几万个普通文本文件</strong>。
-    你打开 UE 的源码目录，能看到一堆 .h 和 .cpp，
-    每一个都能用记事本打开。整个游戏引擎的"魔法"，就藏在这些文本里。</p>
-  </div>
-
-  <h3>代码 vs 程序 vs 软件 vs 应用：搞清楚谁是谁</h3>
-
-  <div class="why">
-    <div class="why-tag">为什么要懂这个</div>
-    <h4>这几个词新人天天听，但 80% 的人说不清区别。说不清就用不准——
-    后面在和 G哥 沟通时，会经常被一句话绕进去。</h4>
-  </div>
-
-  <p>来一个一个拆：</p>
-
-  <ul>
-    <li><strong>代码（Code / Source Code）</strong>：
-      你写的那一坨文本。在硬盘上是 .cpp / .py 这种文本文件。<strong>给人看的</strong>。</li>
-    <li><strong>程序（Program / Executable）</strong>：
-      代码经过编译翻译之后，得到的"机器指令"文件。在 Windows 上一般是 .exe。<strong>给 CPU 吃的</strong>。</li>
-    <li><strong>软件（Software）</strong>：
-      一个程序、或一组程序、加上它的资源文件（图标、配置、图片等）打包后给用户使用的成品。
-      微信、QQ、UE 编辑器都是软件。</li>
-    <li><strong>应用（App / Application）</strong>：
-      和"软件"基本同义，更口语。手机上一般叫 App，电脑上一般叫软件。</li>
-  </ul>
-
-  <p>所以这几个词其实有清晰的层级关系——</p>
-
-  <figure>
-    <svg viewBox="0 0 720 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="代码到软件的层级关系">
-      <defs>
-        <marker id="arrA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#7c5cff"/></marker>
-      </defs>
-      <g font-size="13" fill="#cdd6e3" font-family="ui-sans-serif,system-ui">
-        <rect x="20"  y="80" width="140" height="80" rx="10" fill="#1d222d" stroke="#22d3ee" stroke-width="1.5"/>
-        <text x="90" y="108" text-anchor="middle" fill="#e8ecf3" font-weight="700">代码</text>
-        <text x="90" y="128" text-anchor="middle" font-size="12" fill="#9aa3b2">.cpp / .h / .py</text>
-        <text x="90" y="146" text-anchor="middle" font-size="11" fill="#9aa3b2">人类写的文本</text>
-
-        <line x1="160" y1="120" x2="195" y2="120" stroke="#7c5cff" stroke-width="2" marker-end="url(#arrA)"/>
-        <text x="178" y="110" text-anchor="middle" font-size="11" fill="#7c5cff">编译</text>
-
-        <rect x="200" y="80" width="140" height="80" rx="10" fill="#1d222d" stroke="#22d3ee" stroke-width="1.5"/>
-        <text x="270" y="108" text-anchor="middle" fill="#e8ecf3" font-weight="700">程序</text>
-        <text x="270" y="128" text-anchor="middle" font-size="12" fill="#9aa3b2">.exe / .dll</text>
-        <text x="270" y="146" text-anchor="middle" font-size="11" fill="#9aa3b2">CPU 能直接吃</text>
-
-        <line x1="340" y1="120" x2="375" y2="120" stroke="#7c5cff" stroke-width="2" marker-end="url(#arrA)"/>
-        <text x="358" y="110" text-anchor="middle" font-size="11" fill="#7c5cff">+资源</text>
-
-        <rect x="380" y="80" width="140" height="80" rx="10" fill="#1d222d" stroke="#22d3ee" stroke-width="1.5"/>
-        <text x="450" y="108" text-anchor="middle" fill="#e8ecf3" font-weight="700">软件</text>
-        <text x="450" y="128" text-anchor="middle" font-size="12" fill="#9aa3b2">+图标+配置+音频</text>
-        <text x="450" y="146" text-anchor="middle" font-size="11" fill="#9aa3b2">能交付给用户</text>
-
-        <line x1="520" y1="120" x2="555" y2="120" stroke="#7c5cff" stroke-width="2" marker-end="url(#arrA)"/>
-        <text x="538" y="110" text-anchor="middle" font-size="11" fill="#7c5cff">+包装</text>
-
-        <rect x="560" y="80" width="140" height="80" rx="10" fill="#1d222d" stroke="#22c55e" stroke-width="1.5"/>
-        <text x="630" y="108" text-anchor="middle" fill="#22c55e" font-weight="700">应用</text>
-        <text x="630" y="128" text-anchor="middle" font-size="12" fill="#9aa3b2">微信 / QQ / UE</text>
-        <text x="630" y="146" text-anchor="middle" font-size="11" fill="#9aa3b2">用户看到的</text>
-
-        <text x="360" y="40" text-anchor="middle" fill="#e8ecf3" font-size="14" font-weight="600">从一坨文本，到用户用的应用</text>
-        <text x="360" y="200" text-anchor="middle" fill="#9aa3b2" font-size="12">"程序员"做的就是把左边的东西，一层层加工成右边</text>
-      </g>
-    </svg>
-    <figcaption>代码 → 程序 → 软件 → 应用：四个词其实是同一个东西的不同加工阶段</figcaption>
-  </figure>
-
-  <p>下次有人说"我开发了一个软件"，你脑子里应该自动想：
-  <em>哦，他写了一些代码，编译成了程序，加上了资源文件，
-  做成了能交付给用户用的成品。</em></p>
-
-  <h3>为什么编程语言有几百种？</h3>
-
-  <div class="why">
-    <div class="why-tag">为什么要懂这个</div>
-    <h4>新人最容易陷入"我该学哪一门"的焦虑。理解了"为什么有这么多"，焦虑就消了一半。</h4>
-  </div>
-
-  <p>语言这么多，根本原因是<strong>人类没法用一种语言适配所有场景</strong>。
-  比如：</p>
-
-  <div class="compare">
-    <div>
-      <b>性能极致的场景</b>
-      游戏引擎、操作系统、数据库底层，每一毫秒都重要。
-      → <code>C++</code> 这种"贴近机器"的语言。
-      手动管内存、写得累，但跑得飞快。UE 选 C++ 就是这个原因。
-    </div>
-    <div>
-      <b>开发速度优先的场景</b>
-      数据分析、AI 训练、自动化脚本，写起来要快、改起来要灵活。
-      → <code>Python</code> 这种"贴近人类"的语言。
-      不用关心内存、几行就能出活，但跑得慢。
-    </div>
-    <div>
-      <b>浏览器里跑的</b>
-      网页前端，因为浏览器只支持一种语言——
-      → <code>JavaScript</code>。被迫的"垄断"。
-    </div>
-    <div>
-      <b>大型企业项目</b>
-      银行系统、电信系统，要求稳定、严格、好维护。
-      → <code>Java</code> / <code>C#</code>。规则多、写起来啰嗦，但出错少。
-    </div>
-  </div>
-
-  <p>每一种语言都是某个团队为了某个特定场景设计出来的。
-  没有"最好"的语言，只有"最合适"的语言。</p>
-
-  <p><strong>对小K（也就是你）来说</strong>，UE 工具开发主要会接触三种"语言"：</p>
-
-  <ul>
-    <li><strong>C++</strong>——写引擎/插件的核心逻辑。占你工作的 60%+。</li>
-    <li><strong>Python</strong>——写编辑器自动化脚本（批量改资产、生成代码、跑流水线）。占 20%。</li>
-    <li><strong>蓝图（Blueprint）</strong>——UE 自己的"可视化编程"，连线就能写逻辑。占 20%。</li>
-  </ul>
-
-  <p>这三个里，C++ 是地基。蓝图和 Python 都是"长在 C++ 之上"的——
-  它们能用的所有功能，归根到底都是 C++ 实现的，再"露出来"给你调用。
-  这个关系后面 Day 4 会画清楚。</p>
-
-  <h3>现在终于可以认真看那段"天书"了</h3>
-
-  <div class="why">
-    <div class="why-tag">为什么要懂这个</div>
-    <h4>现在你脑子里"代码"已经有形状了——它是文件，是文本，是给电脑写的指令。
-    带着这个认知再看那段代码，会有完全不同的感觉。</h4>
-  </div>
-
-  <p>真实的代码里要做的事，再复杂也是从<strong>四种最基本的元素</strong>拼起来的。
-  我们用最朴素的话过一遍。</p>
-
-  <h4>① 变量——给一个东西起个名字</h4>
-
-  <p>你跟同事说："今天的糖度是三分糖。"——这句话其实做了两件事：
-  起了个名字叫"今天的糖度"，往里装了"三分糖"这个值。</p>
-
-  <p>代码里这事叫"<strong>变量</strong>"：</p>
-
-<pre><code>int32 SugarLevel = 3;</code></pre>
-
-  <p>意思是：<em>声明一个名为 SugarLevel 的盒子，里面装整数，把 3 放进去</em>。
-  <code>int32</code> 是盒子的类型（只能装整数），
-  <code>=</code> 不是数学里的"等于"，是"<strong>把右边塞进左边</strong>"。
-  这是新人最常误读的符号之一。</p>
-
-  <p>有了变量，代码就有了"记忆"。后面任何地方写 <code>SugarLevel</code>，
-  电脑都知道你说的是 3。</p>
-
-  <h4>② 函数——把一串动作打包成一个动作</h4>
-
-  <p>你不会每次想喝奶茶都从"煮水→泡茶→加糖→加奶→加波霸"重新报一遍，
-  你只会说："给我做一杯奶茶。"</p>
-
-  <p>"做奶茶"这三个字背后藏着十几个步骤——把那十几步打包，起一个名字，
-  下次直接喊名字。代码里这叫<strong>函数</strong>：</p>
-
-<pre><code>void MakeMilkTea(int32 SugarLevel)
-{
-    BoilWater();
-    BrewTea();
-    AddSugar(SugarLevel);
-    AddMilk();
-    AddBoba();
-}
-
-// 用的时候只要喊一句：
-MakeMilkTea(3);
-MakeMilkTea(7);</code></pre>
-
-  <p>函数名后面的括号 <code>()</code> 里写的是<strong>参数</strong>——
-  调用时传给函数的输入。这里 <code>SugarLevel</code> 让"做奶茶"每次可以用不一样的糖度。</p>
-
-  <p>开头那个 <code>void</code> 是"返回值类型"，
-  void = "做完不还东西"。
-  如果写成 <code>int32 MakeMilkTea(...)</code>，
-  就是说"做完还要还给我一个整数"。</p>
-
-  <div class="callout key">
-    <div class="callout-title">🔑 一句话记住</div>
-    <p>变量 = <strong>有名字的盒子</strong>，存数据用。<br/>
-    函数 = <strong>有名字的动作包</strong>，存"一串步骤"用。<br/>
-    任何代码再复杂，往下扒都是这两样东西的组合。</p>
-  </div>
-
-  <h4>③ 条件——让程序"看情况办事"</h4>
-
-  <p>同样收到"做杯奶茶"的纸条，店员要根据糖度做不同动作——
-  这种"看情况办"在代码里叫 <code>if / else</code>：</p>
-
-<pre><code>if (SugarLevel &lt; 5)
-{
-    AddSugar(1);   // 糖度小于 5，加 1 勺
-}
-else
-{
-    AddSugar(2);   // 否则，加 2 勺
-}</code></pre>
-
-  <p>读起来：<em>如果 SugarLevel 小于 5，做第一段；否则，做第二段</em>。</p>
-
-  <p>常用的几个比较符号：</p>
-  <ul>
-    <li><code>==</code> 等于（<strong>两个</strong>等号；一个等号是赋值）</li>
-    <li><code>!=</code> 不等于</li>
-    <li><code>&gt;</code> <code>&gt;=</code> <code>&lt;</code> <code>&lt;=</code> 大于、大于等于、小于、小于等于</li>
-    <li><code>&amp;&amp;</code> 并且 · <code>||</code> 或者</li>
-  </ul>
-
-  <h4>④ 循环——让程序"重复做 N 次"</h4>
-
-  <p>"给我来 5 杯一样的"——你不会写 5 张一样的纸条，你会说"做 5 次"。
-  代码里叫<strong>循环</strong>：</p>
-
-<pre><code>for (int32 i = 0; i &lt; 5; ++i)
-{
-    MakeMilkTea(3);
-}</code></pre>
-
-  <p>这一行密度有点高，拆开看：</p>
-  <ul>
-    <li><code>int32 i = 0</code>——准备一个计数器，从 0 开始</li>
-    <li><code>i &lt; 5</code>——只要 i 还小于 5，就继续</li>
-    <li><code>++i</code>——每做完一遍，i 加 1</li>
-  </ul>
-
-  <p>所以这段代码是说："i 从 0 数到 4（一共 5 次），每次都做一杯三分糖奶茶。"</p>
-
-  <p>循环存在的根本原因：电脑做重复劳动比人快几亿倍。
-  人写 5 次"做奶茶"还行，写 100 万次会崩溃。
-  对电脑来说 100 万次循环只要 0.01 秒。</p>
-
-  <h3>把四件事拼起来，回看那段"天书"</h3>
-
-  <p>现在我们回到一开始让小K崩溃的代码：</p>
-
-<pre><code>void UMyTool::PrintHello(int32 Times)
-{
-    for (int32 i = 0; i &lt; Times; ++i)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Hello from K"));
-    }
-}</code></pre>
-
-  <p>从上往下逐行翻译：</p>
-  <ul>
-    <li><code>void UMyTool::PrintHello(int32 Times)</code>——
-    定义一个叫 <strong>PrintHello</strong> 的<em>函数</em>，
-    它属于一个叫 <strong>UMyTool</strong> 的"类"（类先不管，就当是个分类标签），
-    它接受一个整数<em>参数</em>叫 <strong>Times</strong>。
-    干完不返回东西（void）。</li>
-    <li><code>for (int32 i = 0; i &lt; Times; ++i)</code>——
-    一个<em>循环</em>，从 0 数到 Times-1，循环 Times 次。</li>
-    <li><code>UE_LOG(...)</code>——这是 UE 提供的"打印一行字到日志"的<em>函数</em>。
-    每次循环都打印一句 <em>"Hello from K"</em>。</li>
-  </ul>
-
-  <p>整段翻译成人话：
-  <strong>"定义一个叫 PrintHello 的工具，调用它时告诉我做几次，
-  它就在日志里打几次 Hello from K。"</strong></p>
-
-  <p>这一刻你应该感觉到一些东西在脑子里"咔哒"了一下——
-  那段一开始像天书的代码，其实只是<em>函数</em>+<em>循环</em>+<em>函数调用</em>的拼接。
-  <strong>看代码不是认字，是把每一行翻译成"它在干嘛"的过程。</strong></p>
-
-  <div class="callout tip">
-    <div class="callout-title">💡 顿悟时刻</div>
-    <p>编程语言的语法乍看吓人，是因为同时有<strong>类型声明</strong>（int32, void）+
-    <strong>结构关键字</strong>（for, if）+ <strong>名字</strong>（你自己起的）+
-    <strong>符号</strong>（;, {}, ()）+ <strong>引号字符串</strong>（"Hello"）混在一起。</p>
-    <p>但语义上，最多就是"声明个变量"、"定义个函数"、"判断一下"、"循环一下"、"调一下别的函数"。
-    五件事，全在了。</p>
-  </div>
-
-  <div class="big-quote">
-    今天你不需要会写。<br/>你只需要相信"这东西其实没那么神秘"。
-  </div>
-
-  <div class="tasks">
-    <h4>今日打卡</h4>
-    <label class="task" data-task="d0t1"><input type="checkbox"/><span class="t-text">能用自己的话说清楚"为什么会有'代码'这种东西"</span></label>
-    <label class="task" data-task="d0t2"><input type="checkbox"/><span class="t-text">理解 .cpp 文件本质上就是个能用记事本打开的普通文本</span></label>
-    <label class="task" data-task="d0t3"><input type="checkbox"/><span class="t-text">能区分 代码 / 程序 / 软件 / 应用 这四个词</span></label>
-    <label class="task" data-task="d0t4"><input type="checkbox"/><span class="t-text">看那段 PrintHello 代码，能逐行翻译成人话</span></label>
-    <label class="task" data-task="d0t5"><input type="checkbox"/><span class="t-text">知道 UE 工具开发主要用 C++ / Python / 蓝图</span></label>
-  </div>
-  <div class="day-foot">
-    <span class="day-progress" data-progress></span>
-    <button class="complete-btn" data-complete>完成今日 ✓</button>
-  </div>
-</article>
+<div class="wrap">
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 编程基础 / DAY 00</div>
+
+<div class="toc">
+<div class="toc-title">📑 本模块目录</div>
+<div class="toc-track">编程基础</div>
+<div class="toc-list"><a class="toc-item active" href="./00-code.html">代码到底是个什么东西</a>
+<a class="toc-item" href="./01-program-run.html">程序是怎么跑起来的</a>
+<a class="toc-item" href="./02-languages.html">编程语言大观园</a>
+<a class="toc-item" href="./03-algorithm.html">算法是个什么东西</a>
+<a class="toc-item" href="./04-framework.html">框架是个什么东西</a>
+<a class="toc-item" href="./05-programming-jargon.html">编程黑话扫盲</a>
+<a class="toc-item" href="./06-git-basics.html">Git 给代码做存档</a></div>
+<a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a>
 </div>
-<div class="container">
-<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+
+<span class="badge req">DAY · 00</span>
+<h1>代码到底是个什么东西</h1>
+<div class="hero-desc">代码就是写给电脑的指令清单。就像菜谱告诉厨师怎么做菜，代码告诉电脑做什么事。你看到的那些英文和符号，其实就是一行一行的"先做这个，再做那个"。</div>
+
+<div class="card card-ok">
+<h2>📝 核心要点</h2>
+<ul><li>代码 = 指令清单，一行一行执行</li>
+<li>就像写菜谱：先洗菜→再切菜→最后炒</li>
+<li>电脑只认识0和1，编程语言是翻译官</li>
+<li>不需要数学好，需要逻辑清楚</li>
+<li>你手机上的每个APP都是代码写出来的</li></ul>
 </div>
+
+<div class="card card-warn">
+<h2>✅ 打卡任务</h2>
+<ul><li>打开一个网页，按 F12 看看背后的代码长什么样</li>
+<li>想一个你每天重复做的事，用"第1步→第2步→第3步"写下来</li>
+<li>搜索"Hello World 程序"看看最简单的代码</li></ul>
+</div>
+
+<div class="nav-btns">
+  <a class="btn" href="../vibe-coding.html">📚 课程目录</a>
+</div>
+
 <div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</div>
+
 <script>
-// Mouse-follow glow
 (function(){
   var g = document.getElementById('glowSpot');
   if (!g || 'ontouchstart' in window) return;
-  var x = window.innerWidth/2, y = window.innerHeight/2;
-  var tx = x, ty = y;
+  var x = window.innerWidth/2, y = window.innerHeight/2, tx = x, ty = y;
   document.addEventListener('mousemove', function(e){ tx=e.clientX; ty=e.clientY });
-  function anim(){
-    x += (tx-x)*0.05; y += (ty-y)*0.05;
-    g.style.background = 'radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)';
-    requestAnimationFrame(anim);
-  }
+  function anim(){ x+=(tx-x)*0.05; y+=(ty-y)*0.05; g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)'; requestAnimationFrame(anim); }
   anim();
 })();
 </script>

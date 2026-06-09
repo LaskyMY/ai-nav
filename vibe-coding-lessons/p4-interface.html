@@ -3,99 +3,107 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>UI 打磨：用 UI UX Pro 和 Codex 做出产品感 · 小K的大神之路</title>
+<title>DAY 19 · UI 打磨</title>
 <style>
-:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.8;padding:0;min-height:100vh;-webkit-font-smoothing:antialiased}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
 .bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.4}
 .bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
 .bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
-.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
 @keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
-.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1;transition:background .3s ease}
-.container{max-width:700px;margin:0 auto;padding:18px 20px;position:relative;z-index:1}
-h1{font-size:22px;font-weight:700;letter-spacing:-.03em;margin-bottom:4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
+.wrap{max-width:800px;margin:0 auto;padding:20px;position:relative;z-index:1}
+h1{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:12px 0 4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
-h2{font-size:16px;font-weight:700;color:var(--cyan);margin:24px 0 8px;border-left:3px solid var(--cyan);padding-left:10px}
-h3{font-size:14px;color:rgba(255,255,255,.85);margin:16px 0 6px}
-.breadcrumb{font-size:10px;color:var(--tx3);margin-bottom:16px}
+h2{font-size:16px;font-weight:700;color:var(--cyan);margin:30px 0 10px;border-left:3px solid var(--cyan);padding-left:10px}
+.breadcrumb{font-size:11px;color:var(--tx3);margin-bottom:8px}
 .breadcrumb a{color:var(--tx4);text-decoration:none}
-.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;margin-right:6px}
 .badge.req{background:rgba(99,102,241,.15);color:#818cf8}
-.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;position:relative;overflow:hidden}
-.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
-.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
-.scene-tag{font-size:9px;color:var(--cyan);font-weight:700;margin-bottom:8px;letter-spacing:.5px}
-.who{color:var(--amber);font-weight:600}
-.checklist{list-style:none;padding:0}
-.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
-.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
-.nav-btns{display:flex;gap:8px;margin:20px 0}
+.hero-desc{font-size:14px;color:var(--tx2);margin:8px 0 16px;line-height:1.7}
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:16px;padding:16px 18px;margin-bottom:10px;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.card.card-ok{border-left:3px solid rgba(16,185,129,.4)}
+.card.card-warn{border-left:3px solid rgba(245,158,11,.4)}
+ul{padding-left:20px;margin:6px 0}
+li{margin:4px 0;font-size:14px;color:rgba(255,255,255,.7)}
+li::marker{color:var(--tx4)}
+.nav-btns{display:flex;gap:8px;margin:24px 0}
 .btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;text-align:center;transition:all .25s var(--ease);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .btn:hover{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.08);color:var(--tx)}
 .btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:var(--cyan)}
-pre{background:rgba(0,0,0,.4);padding:14px;border-radius:10px;overflow-x:auto;font-size:11px;line-height:1.6;margin:10px 0;border:1px solid rgba(255,255,255,.05)}
-code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
-.tip{border-left:2px solid var(--amber);padding:8px 14px;margin:10px 0;font-size:12px;color:var(--tx2);background:rgba(245,158,11,.05);border-radius:0 8px 8px 0}
-p{margin:8px 0;font-size:13px;color:rgba(255,255,255,.65)}
 .back{text-align:center;margin-top:28px}
-.back a{color:var(--tx4);font-size:10px;text-decoration:none}
-.lesson-kicker{font-size:10px;color:var(--tx3);margin-bottom:6px}
+.back a{color:var(--tx4);font-size:11px;text-decoration:none}
+
+/* TOC Sidebar */
+.toc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px;margin-bottom:20px}
+.toc-title{font-size:13px;font-weight:700;color:var(--cyan);margin-bottom:8px}
+.toc-track{font-size:10px;color:var(--tx4);margin-bottom:6px}
+.toc-list{display:flex;flex-direction:column;gap:2px}
+.toc-item{display:block;padding:5px 10px;border-radius:6px;font-size:11px;color:var(--tx3);text-decoration:none;transition:all .15s}
+.toc-item:hover{background:rgba(255,255,255,.05);color:var(--tx2)}
+.toc-item.active{background:rgba(99,102,241,.1);color:var(--a1);font-weight:600}
+.toc-all{display:block;margin-top:8px;font-size:10px;color:var(--tx4);text-decoration:none}
+.toc-all:hover{color:var(--tx2)}
+
+@media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
 </style>
 </head>
 <body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot" id="glowSpot"></div>
-<div class="container">
-<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / AI 协作开发实战 - 做一款代办工具 / 实践课 · §P4</div>
-<div class="lesson-kicker"><span class="badge practice">实践课</span><span class="lesson-index">第 31 / 33 节</span></div><h1>UI 打磨：用 UI UX Pro 和 Codex 做出产品感</h1><p>原型能跑只是 60 分。真正让别人“哇”的，是你能把 UI 审查、视觉标准和实现迭代变成一套可复制流程。</p>
-<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
-<article><div class="scene"><div class="scene-tag">SCENE · 从能用到想用</div><p><span class="who">小K</span>：“原型功能都通了，但看起来像课程作业。”</p><p><span class="who">G 哥</span>：“这时候不要凭感觉改。让 UI UX Pro 做审查，让 Codex 按审查结果落地。你负责定方向和验收。”</p></div><div class="why"><div class="why-tag">这一节为什么显得高级</div><h4>UI 打磨不是“换颜色”，而是把审美变成可执行的检查清单。</h4><p>你用了 UI UX Pro，不是为了说“我用了一个工具”，而是为了让设计判断从主观喜好变成结构化标准：层级、密度、触控目标、颜色对比、状态反馈、响应式。</p></div>
-<h3>第一步：先让 UI UX Pro 做审查，而不是直接美化</h3><div class="prompt-block">请以 UI/UX Pro Max 的标准审查这个待办工具原型。
 
-重点看：
-1. 信息层级是否清楚；
-2. 主要操作是否一眼能找到；
-3. 颜色对比和可读性是否达标；
-4. 卡片、按钮、输入框的触控目标是否足够；
-5. 深色/浅色主题是否风格统一；
-6. 动画和状态反馈是否有意义；
-7. 移动/小窗口下是否会挤压或溢出。
+<div class="wrap">
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 发布与迭代 / DAY 19</div>
 
-请输出：问题清单、优先级、修改建议、验收标准。</div>
-<div class="ai-chat"><div class="ai-chat-title">AI 互动现场：美化不是加氛围感</div><div class="chat-turn user"><div class="role">你</div><p>请用 UI UX Pro 的标准审查一下这个原型。</p></div><div class="chat-turn ai"><div class="role">UI UX Pro</div><p>主要问题不是颜色不够炫，而是主操作层级弱、卡片密度不稳定、状态反馈不清楚、窄屏阅读压力偏大。</p></div><div class="chat-turn user"><div class="role">你</div><p>把这些审查意见翻译成 Codex 能执行的任务，不要写“更高级一点”这种模糊要求。</p></div><div class="chat-turn ai"><div class="role">AI</div><p>可以拆成四条：统一按钮层级；固定卡片间距和状态区；建立语义色 token；为完成、删除、主题切换补明确反馈。</p></div></div><div class="ai-moment"><b>有意思的转折</b><p>这一段会让观众意识到：你不是让 AI 随便“美化一下”，而是先让设计审查变成验收标准，再让 Codex 按标准执行。</p></div><figure class="product-figure product-figure-wide"><img src="http://www.baoxiaoxing.com/vibecoding/assets/product/floatthings-main.svg" width="1200" height="820" loading="lazy" alt="UI 打磨后的 FloatThings 主界面截图"><figcaption>UI 打磨后的目标画面：颜色、层级、操作区和列表状态都变成可以验收的视觉标准。</figcaption></figure><h3>第二步：把审查结果翻译成 Codex 可执行任务</h3><p>设计审查如果只是“更高级一点”，AI 很容易乱改。要把审查结果改写成明确任务。</p><table class="decision-table"><tr><th>审查发现</th><th>给 Codex 的任务</th><th>验收方式</th></tr><tr><td>主按钮不突出</td><td>统一按钮层级：主要操作使用 primary，次要操作使用 outline。</td><td>第一眼能看出“添加事项”是主操作。</td></tr><tr><td>卡片信息密度不稳</td><td>固定卡片内边距、行高和状态区域，避免内容跳动。</td><td>多条不同长度事项排列仍然整齐。</td></tr><tr><td>主题切换割裂</td><td>整理设计 token：surface、text、muted、accent、danger、success。</td><td>深色/浅色都保持品牌感和可读性。</td></tr><tr><td>反馈不够明确</td><td>完成、删除、拖拽、切换主题都要有视觉状态。</td><td>用户不用猜操作是否生效。</td></tr></table>
-<h3>第三步：把“漂亮”拆成四类证据</h3><div class="artifact-grid"><div class="artifact"><h4>层级证据</h4><p>标题、标签、卡片、按钮各有明确权重，用户知道先看哪里、再点哪里。</p></div><div class="artifact"><h4>一致性证据</h4><p>颜色、圆角、阴影、间距来自同一套 token，而不是每个组件随手写。</p></div><div class="artifact"><h4>交互证据</h4><p>点击、滑动、拖拽、完成都有状态反馈，动作不是“瞬移”。</p></div><div class="artifact"><h4>可访问性证据</h4><p>文字对比度、按钮尺寸、键盘焦点、减少动效偏好都被考虑到。</p></div></div>
-<h3>第四步：让 AI 负责实现，但你负责品控</h3><p>高质量 Vibe Coding 不是“AI 改完我就收”。你要让 Codex 每次改完都报告：改了什么、为什么、怎么验证、还有什么风险。</p><div class="prompt-block">请根据 UI UX Pro 的审查结果优化界面。
-
-要求：
-- 不要改变核心业务逻辑；
-- 优先使用现有组件和 CSS token；
-- 每次修改后说明：改动点、影响范围、验证方式；
-- 如果某个建议会增加复杂度，请先提出取舍，不要直接实现。
-
-最后请给我一份 UI 验收清单。</div>
-<div class="big-quote">别人看到的是“界面变好看了”。<br/>真正值得学的是：你把审美、工具和工程实现组织成了一条<strong>可审查、可复现、可验证</strong>的流水线。</div>
-<div class="tasks"><h4>本节打卡</h4><label class="task" data-task="p4v2t1"><input type="checkbox"/><span class="t-text">能用 UI UX Pro 产出问题清单、优先级和验收标准</span></label><label class="task" data-task="p4v2t2"><input type="checkbox"/><span class="t-text">能把设计建议改写成 Codex 可执行任务</span></label><label class="task" data-task="p4v2t3"><input type="checkbox"/><span class="t-text">知道如何从层级、一致性、交互、可访问性四类证据判断 UI 质量</span></label><label class="task" data-task="p4v2t4"><input type="checkbox"/><span class="t-text">让 Codex 在 UI 修改后说明影响范围和验证方式</span></label></div><div class="day-foot"><span class="day-progress" data-progress></span><button class="complete-btn" data-complete>完成本节</button></div></article>
+<div class="toc">
+<div class="toc-title">📑 本模块目录</div>
+<div class="toc-track">发布与迭代</div>
+<div class="toc-list"><a class="toc-item" href="./p1-requirements.html">需求脑暴</a>
+<a class="toc-item" href="./p2-architecture.html">技术选型</a>
+<a class="toc-item" href="./p3-data-model.html">最小原型</a>
+<a class="toc-item active" href="./p4-interface.html">UI 打磨</a>
+<a class="toc-item" href="./p5-interactions.html">验证闭环</a>
+<a class="toc-item" href="./p6-polish-release.html">复盘包装</a></div>
+<a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a>
 </div>
-<div class="container">
-<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+
+<span class="badge req">DAY · 19</span>
+<h1>UI 打磨</h1>
+<div class="hero-desc">原型能跑只是60分。真正让别人"哇"的，是你把界面打磨得好看、好用。</div>
+
+<div class="card card-ok">
+<h2>📝 核心要点</h2>
+<ul><li>让AI审查你的UI："请指出3个可以改进的地方"</li>
+<li>参考优秀设计（Apple/Notion/Linear）</li>
+<li>统一颜色、字体、间距</li>
+<li>加过渡动画（0.3秒的淡入淡出就很加分）</li>
+<li>让朋友试用，记录他们卡住的地方</li></ul>
 </div>
+
+<div class="card card-warn">
+<h2>✅ 打卡任务</h2>
+<ul><li>让AI审查你的项目UI并给改进建议</li>
+<li>选一个App，分析它为什么好看</li>
+<li>给你的项目加一个动画效果</li></ul>
+</div>
+
+<div class="nav-btns">
+  <a class="btn" href="../vibe-coding.html">📚 课程目录</a>
+</div>
+
 <div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</div>
+
 <script>
-// Mouse-follow glow
 (function(){
   var g = document.getElementById('glowSpot');
   if (!g || 'ontouchstart' in window) return;
-  var x = window.innerWidth/2, y = window.innerHeight/2;
-  var tx = x, ty = y;
+  var x = window.innerWidth/2, y = window.innerHeight/2, tx = x, ty = y;
   document.addEventListener('mousemove', function(e){ tx=e.clientX; ty=e.clientY });
-  function anim(){
-    x += (tx-x)*0.05; y += (ty-y)*0.05;
-    g.style.background = 'radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)';
-    requestAnimationFrame(anim);
-  }
+  function anim(){ x+=(tx-x)*0.05; y+=(ty-y)*0.05; g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)'; requestAnimationFrame(anim); }
   anim();
 })();
 </script>

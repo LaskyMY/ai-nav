@@ -3,317 +3,109 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>走进 UE 项目 · 小K的大神之路</title>
+<title>DAY 05 · 走进 UE 项目</title>
 <style>
-:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.8;padding:0;min-height:100vh;-webkit-font-smoothing:antialiased}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
 .bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.4}
 .bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
 .bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
-.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
 @keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
-.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1;transition:background .3s ease}
-.container{max-width:700px;margin:0 auto;padding:18px 20px;position:relative;z-index:1}
-h1{font-size:22px;font-weight:700;letter-spacing:-.03em;margin-bottom:4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
+.wrap{max-width:800px;margin:0 auto;padding:20px;position:relative;z-index:1}
+h1{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:12px 0 4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
-h2{font-size:16px;font-weight:700;color:var(--cyan);margin:24px 0 8px;border-left:3px solid var(--cyan);padding-left:10px}
-h3{font-size:14px;color:rgba(255,255,255,.85);margin:16px 0 6px}
-.breadcrumb{font-size:10px;color:var(--tx3);margin-bottom:16px}
+h2{font-size:16px;font-weight:700;color:var(--cyan);margin:30px 0 10px;border-left:3px solid var(--cyan);padding-left:10px}
+.breadcrumb{font-size:11px;color:var(--tx3);margin-bottom:8px}
 .breadcrumb a{color:var(--tx4);text-decoration:none}
-.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;margin-right:6px}
 .badge.req{background:rgba(99,102,241,.15);color:#818cf8}
-.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;position:relative;overflow:hidden}
-.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
-.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
-.scene-tag{font-size:9px;color:var(--cyan);font-weight:700;margin-bottom:8px;letter-spacing:.5px}
-.who{color:var(--amber);font-weight:600}
-.checklist{list-style:none;padding:0}
-.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
-.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
-.nav-btns{display:flex;gap:8px;margin:20px 0}
+.hero-desc{font-size:14px;color:var(--tx2);margin:8px 0 16px;line-height:1.7}
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:16px;padding:16px 18px;margin-bottom:10px;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.card.card-ok{border-left:3px solid rgba(16,185,129,.4)}
+.card.card-warn{border-left:3px solid rgba(245,158,11,.4)}
+ul{padding-left:20px;margin:6px 0}
+li{margin:4px 0;font-size:14px;color:rgba(255,255,255,.7)}
+li::marker{color:var(--tx4)}
+.nav-btns{display:flex;gap:8px;margin:24px 0}
 .btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;text-align:center;transition:all .25s var(--ease);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .btn:hover{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.08);color:var(--tx)}
 .btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:var(--cyan)}
-pre{background:rgba(0,0,0,.4);padding:14px;border-radius:10px;overflow-x:auto;font-size:11px;line-height:1.6;margin:10px 0;border:1px solid rgba(255,255,255,.05)}
-code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
-.tip{border-left:2px solid var(--amber);padding:8px 14px;margin:10px 0;font-size:12px;color:var(--tx2);background:rgba(245,158,11,.05);border-radius:0 8px 8px 0}
-p{margin:8px 0;font-size:13px;color:rgba(255,255,255,.65)}
 .back{text-align:center;margin-top:28px}
-.back a{color:var(--tx4);font-size:10px;text-decoration:none}
-.lesson-kicker{font-size:10px;color:var(--tx3);margin-bottom:6px}
+.back a{color:var(--tx4);font-size:11px;text-decoration:none}
+
+/* TOC Sidebar */
+.toc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px;margin-bottom:20px}
+.toc-title{font-size:13px;font-weight:700;color:var(--cyan);margin-bottom:8px}
+.toc-track{font-size:10px;color:var(--tx4);margin-bottom:6px}
+.toc-list{display:flex;flex-direction:column;gap:2px}
+.toc-item{display:block;padding:5px 10px;border-radius:6px;font-size:11px;color:var(--tx3);text-decoration:none;transition:all .15s}
+.toc-item:hover{background:rgba(255,255,255,.05);color:var(--tx2)}
+.toc-item.active{background:rgba(99,102,241,.1);color:var(--a1);font-weight:600}
+.toc-all{display:block;margin-top:8px;font-size:10px;color:var(--tx4);text-decoration:none}
+.toc-all:hover{color:var(--tx2)}
+
+@media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
 </style>
 </head>
 <body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot" id="glowSpot"></div>
-<div class="container">
-<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / UE 工具开发 / DAY · 05</div>
-<div class="lesson-kicker"><span class="badge elective">选修 A</span><span class="lesson-index">第 17 / 33 节</span></div><h1>走进 UE 项目</h1><p>小K 终于要真正打开一个 UE 项目了。.uproject 文件是什么？Module 是什么？ Build.cs 是什么？C++ 代码在 UE 里是怎么被&quot;找到&quot;并编译的？</p>
-<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
-<article><div class="scene">
-    <div class="scene-tag">SCENE 5 · 第五天早上</div>
-    <p><span class="who">小K</span>：
-    "G哥，我打开项目文件夹，看到 .uproject 右键能'生成 VS 项目文件'——
-    然后 VS 里出现了几千个文件。这些文件是怎么'出现'的？
-    为什么我写的 .cpp 能被 UE 找到？"</p>
-    <p><span class="who">G 哥</span>：
-    "你问到了 UE 最核心的一个机制——UBT。今天把 .uproject → Module → Build.cs →
-    UBT → 编译这条链路走一遍。走完之后，你看任何 UE C++ 项目的目录，
-    脑子里都会自动浮现一张'编译管线图'。"</p>
-  </div>
 
-  <div class="why">
-    <div class="why-tag">为什么要懂这个</div>
-    <h4>这一天的内容是你今后每天改代码时，背后的"游戏规则"。
-    如果你不理解 .uproject / Module / Build.cs 的关系，
-    你加一个新文件、改一个依赖、甚至只是给插件改个名字，都会莫名其妙地编译失败。</h4>
-    <p>而且——这些知识网上几乎没有"给人话"写的版本。你今天花 30 分钟看懂这套规则，
-    后面永远不用再被"为什么找不到我的文件"困住。</p>
-  </div>
+<div class="wrap">
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / AI 协作 / DAY 05</div>
 
-  <h3>.uproject —— 项目的"身份证"</h3>
-
-  <p>打开一个 .uproject 文件（用记事本就行），你会看到类似这样的内容：</p>
-
-<pre><code>{
-    "FileVersion": 3,
-    "EngineAssociation": "5.4",
-    "Category": "Games",
-    "Description": "我的 UE 项目",
-    "Modules": [
-        {
-            "Name": "MyProject",
-            "Type": "Runtime",
-            "LoadingPhase": "Default"
-        }
-    ],
-    "Plugins": [
-        {
-            "Name": "MyTool",
-            "Enabled": true
-        }
-    ]
-}</code></pre>
-
-  <p>这是一个 <strong>JSON 文件</strong>——一种人类和机器都能读的数据格式。
-  里面最重要的几项：</p>
-
-  <ul>
-    <li><code>"EngineAssociation"</code>：告诉 UE"我绑定哪个版本的引擎"</li>
-    <li><code>"Modules"</code>：列出这个项目自己的 C++ 模块</li>
-    <li><code>"Plugins"</code>：列出这个项目启用了哪些插件</li>
-  </ul>
-
-  <p>UE 编辑器启动时读这个文件，就知道"该加载哪些东西"。
-  你右键 .uproject → "Generate Visual Studio project files" 的时候，
-  UE 也读这个文件，然后去找到所有相关的 .cpp / .h，
-  生成一个 VS 能打开的 .sln 解决方案。</p>
-
-  <h3>Module —— 代码的"集装箱"</h3>
-
-  <div class="why">
-    <div class="why-tag">为什么要懂这个</div>
-    <h4>Module 是 UE 组织 C++ 代码的基本单位。你的每一个插件至少包含一个 Module。
-    搞清楚"模块"的概念，你才知道为什么有时候加了 .cpp 却编译不到——
-    因为它没有被任何模块包含。</h4>
-  </div>
-
-  <p>UE 项目的 C++ 代码不是散装的——它们被组织成一个个 <strong>Module（模块）</strong>。
-  一个 Module 就是一个"代码集装箱"：一套相关的 .cpp / .h 打包在一起，
-  有共同的编译规则，有明确的依赖关系。</p>
-
-  <p>UE 引擎本身就由几百个 Module 组成。比如：</p>
-
-  <ul>
-    <li><strong>Core</strong>——最底层的基础设施（字符串、容器、数学库）</li>
-    <li><strong>CoreUObject</strong>——UObject 系统（UCLASS 那套机制的实现）</li>
-    <li><strong>Engine</strong>——引擎核心功能（Actor、Component、Level）</li>
-    <li><strong>UnrealEd</strong>——编辑器框架（你写 Editor Plugin 时最重要的依赖）</li>
-    <li><strong>Slate</strong>——UI 框架</li>
-  </ul>
-
-  <p>你的插件也至少有一个 Module（在 Plugins/MyTool/Source/ 下）。
-  如果你想让某些代码只在编辑器里跑、另一些在游戏里也跑，
-  你可以把插件分成两个 Module——一个 Editor、一个 Runtime。</p>
-
-  <h3>Build.cs —— 模块的"说明书"</h3>
-
-  <p>每个 Module 文件夹下都有一个 <code>xxx.Build.cs</code> 文件。
-  这是一个 C# 文件（不是 C++），它是给你的模块写"说明书"的地方：</p>
-
-<pre><code>// MyTool.Build.cs
-using UnrealBuildTool;
-
-public class MyTool : ModuleRules
-{
-    public MyTool(ReadOnlyTargetRules Target) : base(Target)
-    {
-        PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-
-        // 这个模块依赖哪些其他模块
-        PublicDependencyModuleNames.AddRange(new string[] {
-            "Core",
-            "CoreUObject",
-            "Engine",
-            "UnrealEd",       // ← 编辑器模块，写 Editor Plugin 必备
-            "Slate",
-            "SlateCore"
-        });
-
-        // 只在编辑器环境需要的依赖
-        if (Target.bBuildEditor)
-        {
-            PrivateDependencyModuleNames.Add("EditorStyle");
-        }
-    }
-}</code></pre>
-
-  <p>这个文件告诉了 UBT 几件关键的事：</p>
-  <ul>
-    <li><strong>依赖列表</strong>：这个模块要调用哪些其他模块的功能。
-    比如你调了 Slate UI 的函数，就必须在这里写上 "Slate"。</li>
-    <li><strong>编译选项</strong>：预编译头怎么处理、是否有第三方库等。</li>
-  </ul>
-
-  <div class="callout warn">
-    <div class="callout-title">⚠️ 新人最容易漏的一步</div>
-    <p>你在代码里写了 <code>#include "SlateCore.h"</code>，
-    但忘了在 Build.cs 的依赖列表里加 <code>"SlateCore"</code>。
-    编译器会告诉你：<strong>找不到这个头文件</strong>。</p>
-    <p>规则：你在 .cpp 里 #include 了谁，
-    就要在 Build.cs 的依赖里加上对应的模块名。
-    <strong>两者必须同步</strong>。漏一个就编译不过。</p>
-  </div>
-
-  <h3>UBT —— 编译背后真正的大管家</h3>
-
-  <div class="why">
-    <div class="why-tag">为什么要懂这个</div>
-    <h4>你在 VS 里点"生成"，背后不是 VS 在编译——是 UBT。
-    理解了 UBT 的角色，你才能理解为什么 UE 编译跟普通 C++ 项目编译行为不一样。</h4>
-  </div>
-
-  <p>UBT = <strong>Unreal Build Tool</strong>。它是 UE 自己的编译管理程序。</p>
-
-  <p>普通 C++ 项目：你写 .cpp → VS 调 MSVC 编译 → 链接 → 出 .exe。</p>
-
-  <p>UE C++ 项目：你写 .cpp → <strong>UBT 先扫描</strong>所有 .uproject / .uplugin / Build.cs →
-  生成一个"编译计划"（哪些文件属于哪些模块、依赖关系是怎样的）→
-  然后调 MSVC 按计划编译 → 链接 → 出 .dll / .exe。</p>
-
-  <p>UBT 多出来的这一步"扫描+计划"非常关键，因为：</p>
-  <ul>
-    <li>它<strong>自动发现</strong>你的 .cpp 文件——你不需要手动加到什么列表里。
-    只要 .cpp 放在正确的 Source 目录下，UBT 就会找到它。</li>
-    <li>它<strong>解析依赖</strong>——读 Build.cs 搞清楚"谁依赖谁"，
-    然后决定编译顺序。</li>
-    <li>它做<strong>增量判断</strong>——知道哪些文件你改过了，只编译那些。</li>
-  </ul>
-
-  <figure>
-    <svg viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="UBT编译流程">
-      <defs>
-        <marker id="arr5a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#22d3ee"/></marker>
-      </defs>
-      <g font-size="12" fill="#cdd6e3" font-family="ui-sans-serif,system-ui">
-        <rect x="20" y="60" width="130" height="80" rx="10" fill="#1d222d" stroke="#7c5cff" stroke-width="1.5"/>
-        <text x="85" y="88" text-anchor="middle" fill="#e8ecf3" font-weight="700">.uproject</text>
-        <text x="85" y="106" text-anchor="middle" font-size="10" fill="#9aa3b2">项目入口</text>
-        <text x="85" y="122" text-anchor="middle" font-size="10" fill="#9aa3b2">哪些模块/插件</text>
-
-        <line x1="150" y1="100" x2="185" y2="100" stroke="#22d3ee" stroke-width="2" marker-end="url(#arr5a)"/>
-
-        <rect x="190" y="60" width="150" height="80" rx="10" fill="#1d222d" stroke="#22d3ee" stroke-width="1.8"/>
-        <text x="265" y="84" text-anchor="middle" fill="#22d3ee" font-weight="700" font-size="15">UBT</text>
-        <text x="265" y="104" text-anchor="middle" font-size="10" fill="#9aa3b2">扫描 Build.cs</text>
-        <text x="265" y="120" text-anchor="middle" font-size="10" fill="#9aa3b2">生成编译计划</text>
-
-        <line x1="340" y1="100" x2="375" y2="100" stroke="#22d3ee" stroke-width="2" marker-end="url(#arr5a)"/>
-
-        <rect x="380" y="60" width="130" height="80" rx="10" fill="#1d222d" stroke="#f59e0b" stroke-width="1.5"/>
-        <text x="445" y="88" text-anchor="middle" fill="#e8ecf3" font-weight="700">MSVC / Clang</text>
-        <text x="445" y="106" text-anchor="middle" font-size="10" fill="#9aa3b2">实际编译</text>
-        <text x="445" y="122" text-anchor="middle" font-size="10" fill="#9aa3b2">你等的那 30 分钟</text>
-
-        <line x1="510" y1="100" x2="545" y2="100" stroke="#22d3ee" stroke-width="2" marker-end="url(#arr5a)"/>
-
-        <rect x="550" y="60" width="150" height="80" rx="10" fill="#1d222d" stroke="#22c55e" stroke-width="1.8"/>
-        <text x="625" y="88" text-anchor="middle" fill="#22c55e" font-weight="700">.dll / .exe</text>
-        <text x="625" y="106" text-anchor="middle" font-size="10" fill="#9aa3b2">在 Binaries/ 下</text>
-        <text x="625" y="122" text-anchor="middle" font-size="10" fill="#9aa3b2">编辑器加载跑起来</text>
-
-        <text x="360" y="40" text-anchor="middle" fill="#e8ecf3" font-size="13" font-weight="600">UBT 是"编译大脑"，MSVC 是"编译双手"</text>
-        <text x="360" y="175" text-anchor="middle" fill="#9aa3b2" font-size="11">UBT 决定"谁先编译、谁后编译、哪些不用重编译"，然后叫 MSVC 动手。</text>
-      </g>
-    </svg>
-    <figcaption>UBT 是总指挥，MSVC/Clang 是执行者。你在 VS 里点的那一下"生成"，其实是先到 UBT 再转到编译器。</figcaption>
-  </figure>
-
-  <h3>一条完整的"代码被发现"链路</h3>
-
-  <p>现在我们把整条链路串起来。你新建了一个 .cpp，里面写了一些代码——UE 是怎么"发现"它的？</p>
-
-  <ol>
-    <li>你把 <code>my_tool.cpp</code> 放在 <code>Plugins/MyTool/Source/MyTool/Private/</code> 下</li>
-    <li>UBT 扫描 <code>.uproject</code> 时发现了 <code>MyTool</code> 插件</li>
-    <li>UBT 接着读 <code>MyTool.uplugin</code>，发现它有一个 Module 叫 <code>MyTool</code></li>
-    <li>UBT 去 <code>Source/MyTool/</code> 下找，读 <code>MyTool.Build.cs</code>，知道了依赖关系</li>
-    <li>UBT 自动把 <code>Private/</code> 和 <code>Public/</code> 下的所有 .cpp 纳入编译列表</li>
-    <li>UBT 把编译列表交给 MSVC，MSVC 开始干活</li>
-    <li>编译完后，生成 <code>MyTool.dll</code>，放在 <code>Binaries/</code> 下</li>
-    <li>UE 编辑器启动时加载 <code>MyTool.dll</code>，你的代码"活了"</li>
-  </ol>
-
-  <div class="callout tip">
-    <div class="callout-title">💡 这就是 UE 比普通 C++ 项目"智能"的地方</div>
-    <p>你不需要手动把 .cpp 加到什么"项目文件列表"里。
-    UBT 会<strong>自动扫描 Source 目录下的所有 .cpp</strong>。
-    你只要把文件放在对的文件夹里，UBT 就会找到它。</p>
-    <p>这就是"Convention over Configuration"（约定大于配置）——UE 用"文件放在哪"
-    来决定"它属于哪个模块"，而不是让你在一堆配置菜单里选。</p>
-  </div>
-
-  <div class="big-quote">
-    .uproject 告诉引擎"有哪些模块"，<br/>
-    Build.cs 告诉 UBT "这个模块依赖谁"，<br/>
-    UBT 自动扫 Source 目录下的所有 .cpp，<br/>
-    然后交给 MSVC 一个个翻译。
-  </div>
-
-  <div class="tasks">
-    <h4>今日打卡</h4>
-    <label class="task" data-task="d5t1"><input type="checkbox"/><span class="t-text">能看懂 .uproject 文件里最重要的三个部分：引擎版本、模块列表、插件列表</span></label>
-    <label class="task" data-task="d5t2"><input type="checkbox"/><span class="t-text">理解 Module 是 UE 组织 C++ 代码的基本单位</span></label>
-    <label class="task" data-task="d5t3"><input type="checkbox"/><span class="t-text">知道 Build.cs 是写模块依赖的地方——用了谁的 #include，就要在这里加上谁</span></label>
-    <label class="task" data-task="d5t4"><input type="checkbox"/><span class="t-text">理解 UBT 的角色：扫描→生成编译计划→调 MSVC/Clang 执行</span></label>
-    <label class="task" data-task="d5t5"><input type="checkbox"/><span class="t-text">能说出 .cpp 从"放在文件夹里"到"编辑器加载 .dll 跑起来"的完整链路</span></label>
-  </div>
-  <div class="day-foot">
-    <span class="day-progress" data-progress></span>
-    <button class="complete-btn" data-complete>完成今日 ✓</button>
-  </div>
-</article>
+<div class="toc">
+<div class="toc-title">📑 本模块目录</div>
+<div class="toc-track">AI 协作</div>
+<div class="toc-list"><a class="toc-item" href="./a1-toolbox.html">装好你的工具箱</a>
+<a class="toc-item" href="./a2-project-town.html">项目是一座小镇</a>
+<a class="toc-item" href="./a3-engine-plugin-extension.html">引擎、插件、扩展</a>
+<a class="toc-item active" href="./a4-ue-project.html">走进 UE 项目</a>
+<a class="toc-item" href="./a5-ai-prompting.html">跟 AI 好好说话</a>
+<a class="toc-item" href="./a6-errors.html">读懂报错</a>
+<a class="toc-item" href="./a7-editor-tool.html">第一个 Editor 工具</a>
+<a class="toc-item" href="./a8-version-collaboration.html">提交、版本、协作</a></div>
+<a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a>
 </div>
-<div class="container">
-<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+
+<span class="badge req">DAY · 05</span>
+<h1>走进 UE 项目</h1>
+<div class="hero-desc">Unreal Engine 项目有自己的文件格式。.uproject 是项目文件，Module 是功能模块，Build.cs 控制怎么编译。</div>
+
+<div class="card card-ok">
+<h2>📝 核心要点</h2>
+<ul><li>.uproject = 项目的身份证</li>
+<li>Module = 一个功能模块（可以有很多个）</li>
+<li>Build.cs = 告诉编译器：要用哪些库、怎么编译</li>
+<li>Content/ = 项目资源（模型、贴图、声音）</li>
+<li>Config/ = 项目设置</li></ul>
 </div>
+
+<div class="card card-warn">
+<h2>✅ 打卡任务</h2>
+<ul><li>创建一个空 UE 项目，看看生成了哪些文件</li>
+<li>打开 .uproject 文件看看里面写的什么</li>
+<li>搜索"UE Module 是什么"深入了解</li></ul>
+</div>
+
+<div class="nav-btns">
+  <a class="btn" href="../vibe-coding.html">📚 课程目录</a>
+</div>
+
 <div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</div>
+
 <script>
-// Mouse-follow glow
 (function(){
   var g = document.getElementById('glowSpot');
   if (!g || 'ontouchstart' in window) return;
-  var x = window.innerWidth/2, y = window.innerHeight/2;
-  var tx = x, ty = y;
+  var x = window.innerWidth/2, y = window.innerHeight/2, tx = x, ty = y;
   document.addEventListener('mousemove', function(e){ tx=e.clientX; ty=e.clientY });
-  function anim(){
-    x += (tx-x)*0.05; y += (ty-y)*0.05;
-    g.style.background = 'radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)';
-    requestAnimationFrame(anim);
-  }
+  function anim(){ x+=(tx-x)*0.05; y+=(ty-y)*0.05; g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)'; requestAnimationFrame(anim); }
   anim();
 })();
 </script>

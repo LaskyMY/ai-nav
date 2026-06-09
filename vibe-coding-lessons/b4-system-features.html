@@ -3,126 +3,107 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>桌面应用的系统能力：文件、窗口、托盘和快捷键 · 小K的大神之路</title>
+<title>DAY 30 · 桌面应用的系统能力</title>
 <style>
-:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.8;padding:0;min-height:100vh;-webkit-font-smoothing:antialiased}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
 .bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.4}
 .bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
 .bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
-.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
 @keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
-.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1;transition:background .3s ease}
-.container{max-width:700px;margin:0 auto;padding:18px 20px;position:relative;z-index:1}
-h1{font-size:22px;font-weight:700;letter-spacing:-.03em;margin-bottom:4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
+.wrap{max-width:800px;margin:0 auto;padding:20px;position:relative;z-index:1}
+h1{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:12px 0 4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
-h2{font-size:16px;font-weight:700;color:var(--cyan);margin:24px 0 8px;border-left:3px solid var(--cyan);padding-left:10px}
-h3{font-size:14px;color:rgba(255,255,255,.85);margin:16px 0 6px}
-.breadcrumb{font-size:10px;color:var(--tx3);margin-bottom:16px}
+h2{font-size:16px;font-weight:700;color:var(--cyan);margin:30px 0 10px;border-left:3px solid var(--cyan);padding-left:10px}
+.breadcrumb{font-size:11px;color:var(--tx3);margin-bottom:8px}
 .breadcrumb a{color:var(--tx4);text-decoration:none}
-.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;margin-right:6px}
 .badge.req{background:rgba(99,102,241,.15);color:#818cf8}
-.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;position:relative;overflow:hidden}
-.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
-.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
-.scene-tag{font-size:9px;color:var(--cyan);font-weight:700;margin-bottom:8px;letter-spacing:.5px}
-.who{color:var(--amber);font-weight:600}
-.checklist{list-style:none;padding:0}
-.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
-.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
-.nav-btns{display:flex;gap:8px;margin:20px 0}
+.hero-desc{font-size:14px;color:var(--tx2);margin:8px 0 16px;line-height:1.7}
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:16px;padding:16px 18px;margin-bottom:10px;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.card.card-ok{border-left:3px solid rgba(16,185,129,.4)}
+.card.card-warn{border-left:3px solid rgba(245,158,11,.4)}
+ul{padding-left:20px;margin:6px 0}
+li{margin:4px 0;font-size:14px;color:rgba(255,255,255,.7)}
+li::marker{color:var(--tx4)}
+.nav-btns{display:flex;gap:8px;margin:24px 0}
 .btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;text-align:center;transition:all .25s var(--ease);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .btn:hover{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.08);color:var(--tx)}
 .btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:var(--cyan)}
-pre{background:rgba(0,0,0,.4);padding:14px;border-radius:10px;overflow-x:auto;font-size:11px;line-height:1.6;margin:10px 0;border:1px solid rgba(255,255,255,.05)}
-code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
-.tip{border-left:2px solid var(--amber);padding:8px 14px;margin:10px 0;font-size:12px;color:var(--tx2);background:rgba(245,158,11,.05);border-radius:0 8px 8px 0}
-p{margin:8px 0;font-size:13px;color:rgba(255,255,255,.65)}
 .back{text-align:center;margin-top:28px}
-.back a{color:var(--tx4);font-size:10px;text-decoration:none}
-.lesson-kicker{font-size:10px;color:var(--tx3);margin-bottom:6px}
+.back a{color:var(--tx4);font-size:11px;text-decoration:none}
+
+/* TOC Sidebar */
+.toc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px;margin-bottom:20px}
+.toc-title{font-size:13px;font-weight:700;color:var(--cyan);margin-bottom:8px}
+.toc-track{font-size:10px;color:var(--tx4);margin-bottom:6px}
+.toc-list{display:flex;flex-direction:column;gap:2px}
+.toc-item{display:block;padding:5px 10px;border-radius:6px;font-size:11px;color:var(--tx3);text-decoration:none;transition:all .15s}
+.toc-item:hover{background:rgba(255,255,255,.05);color:var(--tx2)}
+.toc-item.active{background:rgba(99,102,241,.1);color:var(--a1);font-weight:600}
+.toc-all{display:block;margin-top:8px;font-size:10px;color:var(--tx4);text-decoration:none}
+.toc-all:hover{color:var(--tx2)}
+
+@media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
 </style>
 </head>
 <body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot" id="glowSpot"></div>
-<div class="container">
-<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / 独立桌面应用开发 / 选修 B · §4</div>
-<div class="lesson-kicker"><span class="badge elective">选修 B</span><span class="lesson-index">第 25 / 33 节</span></div><h1>桌面应用的系统能力：文件、窗口、托盘和快捷键</h1><p>网页像住在浏览器里的小房间，桌面应用则直接住进操作系统。它能读写文件、控制窗口、挂到托盘、监听快捷键，也因此更容易踩权限和安全的坑。</p>
-<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
-<article><div class="scene">
-    <div class="scene-tag">SCENE · 桌面软件不是网页套壳而已</div>
-    <p><span class="who">小K</span>：“我用 Tauri + React 搭了个窗口，那它是不是本质上就是网页？”</p>
-    <p><span class="who">G 哥</span>：“界面可以像网页，但桌面应用真正值钱的地方，是它能和操作系统打交道。能不能读文件、开托盘、记窗口位置、绑定快捷键，才是桌面体验的分水岭。”</p>
-  </div>
 
-  <div class="why">
-    <div class="why-tag">为什么要懂这个</div>
-    <h4>桌面应用不是“能打开一个窗口”就结束了。用户期待它像本机软件一样工作。</h4>
-    <p>游戏工具、美术辅助工具、截图整理器、批处理小工具，都经常需要访问本地资源。你要知道哪些能力属于前端界面，哪些能力必须交给桌面壳或后端层处理。</p>
-  </div>
+<div class="wrap">
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 产品设计与开发 / DAY 30</div>
 
-  <h3>第一步：桌面应用比网页多了哪些能力</h3>
-  <table class="decision-table"><tr><th>能力</th><th>用户感受到什么</th><th>开发时要注意什么</th><th>适合问 AI 的方式</th></tr><tr><td>文件读写</td><td>打开本地图片、读取配置、导出文件</td><td>权限、路径、编码、覆盖风险</td><td>“这一步应该在前端做，还是通过 Tauri command 做？”</td></tr><tr><td>窗口控制</td><td>记住窗口大小、置顶、最小化到托盘</td><td>不同系统行为不完全一样</td><td>“如何保存窗口状态并在下次启动恢复？”</td></tr><tr><td>系统托盘</td><td>关窗口后程序还在后台</td><td>退出和隐藏要分清楚</td><td>“托盘菜单需要哪些最小功能？”</td></tr><tr><td>全局快捷键</td><td>不聚焦窗口也能触发操作</td><td>快捷键冲突、权限、安全风险</td><td>“这个快捷键是否应该做成可配置？”</td></tr><tr><td>系统通知</td><td>任务完成后弹出提示</td><td>通知权限、频率、打扰感</td><td>“哪些事件值得通知，哪些只在界面内提示？”</td></tr></table>
-
-  <h3>第二步：前端、桌面壳、系统之间怎么分工</h3>
-  <p>用 Tauri 或 Electron 做桌面应用时，经常会有两层：一层负责界面，一层负责系统能力。新手最容易把“按钮点击”和“文件系统操作”揉成一团。</p>
-  <div class="artifact-grid"><div class="artifact"><h4>前端界面</h4><p>负责按钮、列表、表单、状态展示。它回答“用户看见什么、点哪里”。</p></div><div class="artifact"><h4>桌面壳能力</h4><p>负责窗口、菜单、托盘、文件对话框、系统通知。它回答“怎么和系统说话”。</p></div><div class="artifact"><h4>业务逻辑</h4><p>负责整理数据、判断流程、处理错误。它回答“这件事的规则是什么”。</p></div><div class="artifact"><h4>系统资源</h4><p>文件、目录、剪贴板、网络、权限。它回答“真实资源在哪里，是否允许访问”。</p></div></div>
-
-  <div class="callout key">
-    <div class="callout-title">一句话记住</div>
-    <p><strong>按钮在前端，能力在系统层。</strong>前端发起请求，桌面壳去碰文件、窗口、托盘和系统 API，最后把结果安全地交回界面。</p>
-  </div>
-
-  <h3>第三步：最小桌面体验清单</h3>
-  <p>做一个能展示的桌面工具，至少要想清楚这些基础体验，否则它会像“网页临时包了一层壳”。</p>
-  <ul>
-    <li>窗口关闭时，是退出程序，还是隐藏到托盘？</li>
-    <li>用户上次的窗口大小和位置，要不要记住？</li>
-    <li>文件保存失败时，错误提示放在哪里？</li>
-    <li>用户选择的路径，下次启动要不要记住？</li>
-    <li>快捷键是否可配置？冲突时怎么提示？</li>
-    <li>后台任务完成后，是系统通知还是界面内提示？</li>
-  </ul>
-
-  <h3>第四步：不要让 AI 一口气接系统权限</h3>
-  <div class="ai-chat"><div class="ai-chat-title">AI 互动现场：先做假能力，再接真系统</div><div class="chat-turn user"><div class="role">你</div><p>给我的工具加一个“选择文件夹并批量处理图片”的功能。</p></div><div class="chat-turn ai"><div class="role">AI</div><p>我可以直接接文件系统、遍历目录、写入结果……</p></div><div class="chat-turn user"><div class="role">你</div><p>先不要碰真实文件。请先做一个假数据原型：模拟选择 5 个文件，展示处理进度和错误状态。等界面流程确认后，再接真实文件 API。</p></div><div class="chat-turn ai"><div class="role">AI</div><p>明白。先验证交互闭环，再接系统能力，可以降低误删和权限风险。</p></div></div>
-
-  <div class="prompt-block">我想给桌面应用添加一个系统能力：[文件选择 / 托盘 / 快捷键 / 通知 / 窗口状态]。
-
-请先不要直接实现。
-请你先输出：
-1. 这个能力涉及前端、桌面壳、系统权限中的哪几层；
-2. 最小原型怎么用假数据验证；
-3. 真接系统 API 时有哪些风险；
-4. 需要哪些用户提示和错误处理；
-5. 建议分几步实现，每一步怎么验证。</div>
-
-  <div class="big-quote">桌面应用的质感，来自它尊重操作系统。<br/>能接系统能力不难，难的是<strong>接得克制、可控、可解释。</strong></div>
-
-  <div class="tasks"><h4>本节打卡</h4><label class="task" data-task="b4t1"><input type="checkbox"/><span class="t-text">能说出桌面应用比网页多出的 5 类系统能力</span></label><label class="task" data-task="b4t2"><input type="checkbox"/><span class="t-text">能区分前端界面和桌面壳能力的分工</span></label><label class="task" data-task="b4t3"><input type="checkbox"/><span class="t-text">知道文件读写、快捷键、通知都可能涉及权限和风险</span></label><label class="task" data-task="b4t4"><input type="checkbox"/><span class="t-text">能先用假数据验证桌面系统能力的交互流程</span></label><label class="task" data-task="b4t5"><input type="checkbox"/><span class="t-text">能写出让 AI 分层设计系统能力的提示词</span></label></div>
-  <div class="day-foot"><span class="day-progress" data-progress></span><button class="complete-btn" data-complete>完成本节</button></div>
-</article>
+<div class="toc">
+<div class="toc-title">📑 本模块目录</div>
+<div class="toc-track">产品设计与开发</div>
+<div class="toc-list"><a class="toc-item" href="./b1-desktop-vs-web.html">桌面应用 vs 网页</a>
+<a class="toc-item" href="./b2-tauri-electron-flutter.html">技术选型比较</a>
+<a class="toc-item" href="./b3-first-desktop-app.html">搭建第一个桌面应用</a>
+<a class="toc-item active" href="./b4-system-features.html">桌面应用的系统能力</a>
+<a class="toc-item" href="./b5-local-data.html">本地数据与配置</a>
+<a class="toc-item" href="./b6-packaging-release.html">打包发布</a></div>
+<a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a>
 </div>
-<div class="container">
-<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+
+<span class="badge req">DAY · 30</span>
+<h1>桌面应用的系统能力</h1>
+<div class="hero-desc">桌面工具不只是网页套壳。它可以读写文件、控制系统托盘、注册全局快捷键——这些是网页做不到的。</div>
+
+<div class="card card-ok">
+<h2>📝 核心要点</h2>
+<ul><li>文件读写：保存用户数据到本地</li>
+<li>窗口状态：记住窗口位置和大小</li>
+<li>托盘菜单：最小化到系统托盘</li>
+<li>全局快捷键：按 Ctrl+Shift+K 呼出</li>
+<li>系统通知：发一条系统通知给用户</li></ul>
 </div>
+
+<div class="card card-warn">
+<h2>✅ 打卡任务</h2>
+<ul><li>搜索"Tauri 文件读写"看文档</li>
+<li>搜索"Tauri 系统托盘"看例子</li>
+<li>想想你的应用需要哪些系统能力</li></ul>
+</div>
+
+<div class="nav-btns">
+  <a class="btn" href="../vibe-coding.html">📚 课程目录</a>
+</div>
+
 <div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</div>
+
 <script>
-// Mouse-follow glow
 (function(){
   var g = document.getElementById('glowSpot');
   if (!g || 'ontouchstart' in window) return;
-  var x = window.innerWidth/2, y = window.innerHeight/2;
-  var tx = x, ty = y;
+  var x = window.innerWidth/2, y = window.innerHeight/2, tx = x, ty = y;
   document.addEventListener('mousemove', function(e){ tx=e.clientX; ty=e.clientY });
-  function anim(){
-    x += (tx-x)*0.05; y += (ty-y)*0.05;
-    g.style.background = 'radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)';
-    requestAnimationFrame(anim);
-  }
+  function anim(){ x+=(tx-x)*0.05; y+=(ty-y)*0.05; g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)'; requestAnimationFrame(anim); }
   anim();
 })();
 </script>

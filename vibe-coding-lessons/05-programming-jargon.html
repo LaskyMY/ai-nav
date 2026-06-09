@@ -3,136 +3,110 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>编程黑话扫盲：IDE、终端和环境变量 · 小K的大神之路</title>
+<title>DAY 25 · 编程黑话扫盲</title>
 <style>
-:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.8;padding:0;min-height:100vh;-webkit-font-smoothing:antialiased}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
 .bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.4}
 .bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
 .bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
-.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
 @keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
-.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1;transition:background .3s ease}
-.container{max-width:700px;margin:0 auto;padding:18px 20px;position:relative;z-index:1}
-h1{font-size:22px;font-weight:700;letter-spacing:-.03em;margin-bottom:4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
+.wrap{max-width:800px;margin:0 auto;padding:20px;position:relative;z-index:1}
+h1{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:12px 0 4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
-h2{font-size:16px;font-weight:700;color:var(--cyan);margin:24px 0 8px;border-left:3px solid var(--cyan);padding-left:10px}
-h3{font-size:14px;color:rgba(255,255,255,.85);margin:16px 0 6px}
-.breadcrumb{font-size:10px;color:var(--tx3);margin-bottom:16px}
+h2{font-size:16px;font-weight:700;color:var(--cyan);margin:30px 0 10px;border-left:3px solid var(--cyan);padding-left:10px}
+.breadcrumb{font-size:11px;color:var(--tx3);margin-bottom:8px}
 .breadcrumb a{color:var(--tx4);text-decoration:none}
-.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;margin-right:6px}
 .badge.req{background:rgba(99,102,241,.15);color:#818cf8}
-.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;position:relative;overflow:hidden}
-.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
-.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
-.scene-tag{font-size:9px;color:var(--cyan);font-weight:700;margin-bottom:8px;letter-spacing:.5px}
-.who{color:var(--amber);font-weight:600}
-.checklist{list-style:none;padding:0}
-.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
-.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
-.nav-btns{display:flex;gap:8px;margin:20px 0}
+.hero-desc{font-size:14px;color:var(--tx2);margin:8px 0 16px;line-height:1.7}
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:16px;padding:16px 18px;margin-bottom:10px;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.card.card-ok{border-left:3px solid rgba(16,185,129,.4)}
+.card.card-warn{border-left:3px solid rgba(245,158,11,.4)}
+ul{padding-left:20px;margin:6px 0}
+li{margin:4px 0;font-size:14px;color:rgba(255,255,255,.7)}
+li::marker{color:var(--tx4)}
+.nav-btns{display:flex;gap:8px;margin:24px 0}
 .btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;text-align:center;transition:all .25s var(--ease);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .btn:hover{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.08);color:var(--tx)}
 .btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:var(--cyan)}
-pre{background:rgba(0,0,0,.4);padding:14px;border-radius:10px;overflow-x:auto;font-size:11px;line-height:1.6;margin:10px 0;border:1px solid rgba(255,255,255,.05)}
-code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
-.tip{border-left:2px solid var(--amber);padding:8px 14px;margin:10px 0;font-size:12px;color:var(--tx2);background:rgba(245,158,11,.05);border-radius:0 8px 8px 0}
-p{margin:8px 0;font-size:13px;color:rgba(255,255,255,.65)}
 .back{text-align:center;margin-top:28px}
-.back a{color:var(--tx4);font-size:10px;text-decoration:none}
-.lesson-kicker{font-size:10px;color:var(--tx3);margin-bottom:6px}
+.back a{color:var(--tx4);font-size:11px;text-decoration:none}
+
+/* TOC Sidebar */
+.toc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px;margin-bottom:20px}
+.toc-title{font-size:13px;font-weight:700;color:var(--cyan);margin-bottom:8px}
+.toc-track{font-size:10px;color:var(--tx4);margin-bottom:6px}
+.toc-list{display:flex;flex-direction:column;gap:2px}
+.toc-item{display:block;padding:5px 10px;border-radius:6px;font-size:11px;color:var(--tx3);text-decoration:none;transition:all .15s}
+.toc-item:hover{background:rgba(255,255,255,.05);color:var(--tx2)}
+.toc-item.active{background:rgba(99,102,241,.1);color:var(--a1);font-weight:600}
+.toc-all{display:block;margin-top:8px;font-size:10px;color:var(--tx4);text-decoration:none}
+.toc-all:hover{color:var(--tx2)}
+
+@media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
 </style>
 </head>
 <body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot" id="glowSpot"></div>
-<div class="container">
-<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / 编程基础 / 必修课 · §5</div>
-<div class="lesson-kicker"><span class="badge required">必修</span><span class="lesson-index">第 6 / 33 节</span></div><h1>编程黑话扫盲：IDE、终端和环境变量</h1><p>小K 看别人排查问题时，一会儿说 IDE，一会儿说 PowerShell、CMD、PATH、环境变量、依赖、构建、工作目录。明明每个字都认识，连起来却像暗号。</p>
-<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
-<article><div class="scene">
-    <div class="scene-tag">SCENE · 明明是中文，怎么听不懂</div>
-    <p><span class="who">小K</span>：“G哥，别人说‘你在 PowerShell 里看一下 PATH，确认 node 在环境变量里，然后从项目根目录跑 build’。我每个字都认识，但我完全不知道该点哪里。”</p>
-    <p><span class="who">G 哥</span>：“这就是编程黑话。它们不是高深概念，但如果没人翻译，新人会卡在最基础的门口。”</p>
-  </div>
 
-  <div class="why">
-    <div class="why-tag">为什么要懂这个</div>
-    <h4>很多开发问题不是代码错了，而是“你在哪个工具里、哪个目录下、用哪个命令、带着哪些环境变量”错了。</h4>
-    <p>黑话的价值不是拿来装懂，而是帮你定位问题。你一旦听懂 IDE、终端、Shell、PATH、工作目录、依赖、构建这些词，就能更准确地和同事、AI、报错信息沟通。</p>
-  </div>
+<div class="wrap">
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 编程基础 / DAY 25</div>
 
-  <h3>第一组：你正在用什么工具</h3>
-  <table class="decision-table"><tr><th>黑话</th><th>全称/常见说法</th><th>它到底是什么</th><th>小白最常误会什么</th></tr><tr><td>IDE</td><td>Integrated Development Environment</td><td>集成开发环境。它不只是编辑文字，还能补全、跳转、调试、运行、看项目结构。</td><td>以为 IDE 只是“高级记事本”。Visual Studio、Rider、WebStorm、VS Code 加插件都可能承担 IDE 的角色。</td></tr><tr><td>Editor</td><td>编辑器</td><td>更偏向写文本和改文件的工具，例如 VS Code、Sublime。</td><td>把 Editor 和 IDE 完全等同。编辑器可以很强，但 IDE 通常集成更多项目理解能力。</td></tr><tr><td>Terminal</td><td>终端</td><td>一个输入命令、查看输出的窗口。它像“和电脑文字对话”的界面。</td><td>以为终端就是黑框本身。其实终端窗口里还会运行不同 Shell。</td></tr><tr><td>Shell</td><td>命令解释器</td><td>负责理解你输入的命令。PowerShell、CMD、Bash 都是 Shell。</td><td>以为所有命令窗口语法都一样。PowerShell 和 CMD 的变量写法、引号规则、管道对象都不一样。</td></tr></table>
-
-  <div class="callout key">
-    <div class="callout-title">一句话记住</div>
-    <p><strong>IDE 是你写代码的办公室；终端是你发命令的窗口；Shell 是听懂命令的人。</strong>你看到的黑框只是窗口，真正解释命令的是里面运行的 Shell。</p>
-  </div>
-
-  <h3>第二组：PowerShell、CMD、Git Bash 到底差在哪</h3>
-  <p>Windows 上最容易混乱的就是这几个命令行工具。很多教程复制失败，不是命令错，而是你把 Bash 命令粘进了 PowerShell。</p>
-  <table class="decision-table"><tr><th>工具</th><th>常见位置</th><th>适合做什么</th><th>注意点</th></tr><tr><td>CMD</td><td>Windows 老命令提示符</td><td>跑一些传统 Windows 命令、批处理 <code>.bat</code>。</td><td>语法老，功能少，但很多旧教程还在用。</td></tr><tr><td>PowerShell</td><td>Windows 现代 Shell</td><td>系统管理、文件操作、脚本、开发命令。现在 Windows 上很常用。</td><td>变量写法是 <code>$env:PATH</code>，很多 Linux 命令不能原样用。</td></tr><tr><td>Git Bash</td><td>安装 Git 后常见</td><td>在 Windows 上模拟 Linux/Bash 风格命令。</td><td>路径、引号、环境变量写法和 PowerShell 不一样。</td></tr><tr><td>Terminal App</td><td>Windows Terminal</td><td>它只是承载多个 Shell 的外壳，可以开 PowerShell、CMD、WSL。</td><td>不要把 Terminal App 和 Shell 混为一谈。</td></tr></table>
-
-  <div class="compare"><div><b>PowerShell 例子</b><pre><code>$env:Path
-Get-ChildItem
-Set-Location D:\www\baoxiaoxing</code></pre></div><div><b>CMD 例子</b><pre><code>echo %PATH%
-dir
-cd /d D:\www\baoxiaoxing</code></pre></div></div>
-
-  <h3>第三组：路径、工作目录、环境变量</h3>
-  <p>很多“命令找不到”“文件不存在”都和这组词有关。</p>
-  <div class="jargon-grid"><div class="jargon-card"><b>Path / 路径</b><p>文件或文件夹的位置。<code>D:\www\baoxiaoxing</code> 是绝对路径，<code>assets/site.css</code> 是相对路径。</p></div><div class="jargon-card"><b>Working Directory / 工作目录</b><p>你当前命令所在的文件夹。命令里的相对路径，会从这里开始找。</p></div><div class="jargon-card"><b>Environment Variable / 环境变量</b><p>系统或程序运行时能读到的一组配置，比如工具安装位置、密钥、运行模式。</p></div><div class="jargon-card"><b>PATH</b><p>最重要的环境变量之一。它告诉系统：你输入 <code>node</code>、<code>git</code>、<code>python</code> 时，去哪些文件夹里找可执行程序。</p></div></div>
-
-  <div class="callout warn">
-    <div class="callout-title">最常见的坑</div>
-    <p><strong>“我安装了”不等于“命令能找到”。</strong>你装了 Python，但如果它不在 PATH 里，终端输入 <code>python</code> 仍然可能提示找不到。改完环境变量后，也经常需要重新打开终端。</p>
-  </div>
-
-  <h3>第四组：运行项目时经常出现的词</h3>
-  <table class="decision-table"><tr><th>黑话</th><th>什么意思</th><th>常见例子</th><th>遇到时怎么问 AI</th></tr><tr><td>Runtime</td><td>运行环境。你的代码需要某个程序来执行。</td><td>Node.js 跑 JavaScript，Python 跑 .py，JRE 跑 Java。</td><td>“这个项目需要什么 runtime？版本要求是多少？”</td></tr><tr><td>SDK</td><td>软件开发工具包。</td><td>Android SDK、Windows SDK、Unreal Engine SDK。</td><td>“这个报错是不是 SDK 没装或版本不匹配？”</td></tr><tr><td>Dependency</td><td>依赖。项目需要别人写好的包或库才能运行。</td><td><code>node_modules</code>、Python 包、NuGet 包。</td><td>“请先解释这个依赖是做什么的，不要盲目升级。”</td></tr><tr><td>Package Manager</td><td>包管理器。负责下载、安装、锁定依赖。</td><td>npm、pnpm、pip、NuGet。</td><td>“这个项目应该用 npm 还是 pnpm？从哪里判断？”</td></tr><tr><td>Build</td><td>构建。把源码处理成可运行/可发布的结果。</td><td><code>npm run build</code>、UE 编译、打包桌面程序。</td><td>“build 失败前最后一个有效错误是什么？”</td></tr><tr><td>Dev Server</td><td>开发服务器。边改边预览的本地服务。</td><td><code>localhost:3000</code>、<code>localhost:5173</code>。</td><td>“这个端口是谁启动的？如何停止或换端口？”</td></tr></table>
-
-  <h3>第五组：排查问题时经常出现的词</h3>
-  <div class="artifact-grid"><div class="artifact"><h4>Log / 日志</h4><p>程序留下的运行记录。不要只截图最后一行，关键是找到第一条真正的错误。</p></div><div class="artifact"><h4>Error / Warning</h4><p>Error 通常会阻止继续运行；Warning 是提醒你有风险，但不一定马上崩。</p></div><div class="artifact"><h4>Cache / 缓存</h4><p>为了加速保留的旧数据。缓存能提升速度，也会让你看到旧页面、旧配置、旧依赖。</p></div><div class="artifact"><h4>Permission / 权限</h4><p>没有权限写文件、开端口、执行脚本时会报错。Windows 上可能需要管理员权限，Linux 上可能需要 sudo。</p></div></div>
-
-  <h3>第六组：协作时常见的词</h3>
-  <table class="decision-table"><tr><th>黑话</th><th>人话解释</th><th>你该注意什么</th></tr><tr><td>Repo / Repository</td><td>代码仓库，项目的版本历史和文件集合。</td><td>不要随便在不确定的仓库里大改。</td></tr><tr><td>Commit</td><td>一次保存到版本历史里的改动。</td><td>提交信息要说明改了什么，不要全写“update”。</td></tr><tr><td>Branch</td><td>分支，一条独立的修改路线。</td><td>做功能前先确认自己在哪个分支。</td></tr><tr><td>Merge</td><td>合并，把一条分支的改动合到另一条。</td><td>冲突时不要乱点接受全部。</td></tr><tr><td>PR / Pull Request</td><td>请求别人审核并合并你的代码。</td><td>PR 里要写清目的、改动、验证方式。</td></tr><tr><td>Diff / Patch</td><td>展示“改了哪些行”。</td><td>让 AI 给 diff，能帮你确认它没有乱改。</td></tr></table>
-
-  <div class="ai-chat"><div class="ai-chat-title">AI 互动现场：把黑话翻译成排查步骤</div><div class="chat-turn user"><div class="role">你</div><p>终端提示 node 不是内部或外部命令，我是不是代码写错了？</p></div><div class="chat-turn ai"><div class="role">AI</div><p>不一定。这个错误通常说明系统找不到 node 命令，可能是 Node.js 没安装，或者 PATH 没配置。</p></div><div class="chat-turn user"><div class="role">你</div><p>请按 Windows PowerShell 给我排查，不要给 Linux 命令。每一步告诉我要看到什么才算正常。</p></div><div class="chat-turn ai"><div class="role">AI</div><p>第一步运行 <code>node -v</code>；第二步运行 <code>where.exe node</code>；第三步检查 <code>$env:Path</code> 是否包含 Node 安装目录。改完后重新打开 PowerShell。</p></div></div>
-
-  <div class="prompt-block">以后遇到编程黑话或命令行报错，可以这样问 AI：
-
-请你把下面的报错翻译成新手能懂的话。
-我的系统是 Windows，我现在用的是 PowerShell。
-请区分：这是代码问题、依赖问题、路径问题、环境变量问题，还是权限问题。
-每一步只给一个检查命令，并告诉我正常输出应该长什么样。
-不要直接让我重装全部工具。</div>
-
-  <div class="big-quote">黑话不是拿来背的。<br/>它的价值是让你听懂一句话：<strong>问题到底发生在哪一层。</strong><br/>是代码、工具、路径、环境，还是人的操作流程。</div>
-
-  <div class="tasks"><h4>本节打卡</h4><label class="task" data-task="jargon-t1"><input type="checkbox"/><span class="t-text">能区分 IDE、编辑器、终端、Shell</span></label><label class="task" data-task="jargon-t2"><input type="checkbox"/><span class="t-text">知道 PowerShell、CMD、Git Bash 的命令语法可能不一样</span></label><label class="task" data-task="jargon-t3"><input type="checkbox"/><span class="t-text">能解释路径、工作目录、环境变量、PATH 的关系</span></label><label class="task" data-task="jargon-t4"><input type="checkbox"/><span class="t-text">知道“安装了工具”和“命令能被找到”不是一回事</span></label><label class="task" data-task="jargon-t5"><input type="checkbox"/><span class="t-text">能看懂 runtime、SDK、dependency、build、dev server</span></label><label class="task" data-task="jargon-t6"><input type="checkbox"/><span class="t-text">能让 AI 按系统和 Shell 给出正确排查命令</span></label></div>
-  <div class="day-foot"><span class="day-progress" data-progress></span><button class="complete-btn" data-complete>完成本节</button></div>
-</article>
+<div class="toc">
+<div class="toc-title">📑 本模块目录</div>
+<div class="toc-track">编程基础</div>
+<div class="toc-list"><a class="toc-item" href="./00-code.html">代码到底是个什么东西</a>
+<a class="toc-item" href="./01-program-run.html">程序是怎么跑起来的</a>
+<a class="toc-item" href="./02-languages.html">编程语言大观园</a>
+<a class="toc-item" href="./03-algorithm.html">算法是个什么东西</a>
+<a class="toc-item" href="./04-framework.html">框架是个什么东西</a>
+<a class="toc-item active" href="./05-programming-jargon.html">编程黑话扫盲</a>
+<a class="toc-item" href="./06-git-basics.html">Git 给代码做存档</a></div>
+<a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a>
 </div>
-<div class="container">
-<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+
+<span class="badge req">DAY · 25</span>
+<h1>编程黑话扫盲</h1>
+<div class="hero-desc">IDE、终端、环境变量...这些词听着吓人，其实都是很简单的东西。这篇文章用大白话把常见黑话翻译一遍。</div>
+
+<div class="card card-ok">
+<h2>📝 核心要点</h2>
+<ul><li>IDE = 写代码的Word（Visual Studio / VS Code）</li>
+<li>终端 = 用文字操控电脑的黑窗口</li>
+<li>环境变量 = 系统的"设置→关于手机"页面</li>
+<li>PATH = 告诉终端"去哪个文件夹找程序"</li>
+<li>依赖 = 你的项目用了别人的代码，不装就跑不起来</li>
+<li>构建 = 把代码变成能跑的程序的过程</li>
+<li>日志 = 程序运行时的"行车记录仪"</li></ul>
 </div>
+
+<div class="card card-warn">
+<h2>✅ 打卡任务</h2>
+<ul><li>打开VS Code（或下载安装它）</li>
+<li>打开终端，输入 ls（Mac）或 dir（Windows）看看有什么</li>
+<li>搜索"环境变量是什么"看一篇图解</li></ul>
+</div>
+
+<div class="nav-btns">
+  <a class="btn" href="../vibe-coding.html">📚 课程目录</a>
+</div>
+
 <div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</div>
+
 <script>
-// Mouse-follow glow
 (function(){
   var g = document.getElementById('glowSpot');
   if (!g || 'ontouchstart' in window) return;
-  var x = window.innerWidth/2, y = window.innerHeight/2;
-  var tx = x, ty = y;
+  var x = window.innerWidth/2, y = window.innerHeight/2, tx = x, ty = y;
   document.addEventListener('mousemove', function(e){ tx=e.clientX; ty=e.clientY });
-  function anim(){
-    x += (tx-x)*0.05; y += (ty-y)*0.05;
-    g.style.background = 'radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)';
-    requestAnimationFrame(anim);
-  }
+  function anim(){ x+=(tx-x)*0.05; y+=(ty-y)*0.05; g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)'; requestAnimationFrame(anim); }
   anim();
 })();
 </script>

@@ -3,94 +3,107 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>验证闭环：冒烟测试、边界清单和回归检查 · 小K的大神之路</title>
+<title>DAY 20 · 验证闭环</title>
 <style>
-:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.8;padding:0;min-height:100vh;-webkit-font-smoothing:antialiased}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
 .bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.4}
 .bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
 .bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
-.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
 @keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
-.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1;transition:background .3s ease}
-.container{max-width:700px;margin:0 auto;padding:18px 20px;position:relative;z-index:1}
-h1{font-size:22px;font-weight:700;letter-spacing:-.03em;margin-bottom:4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
+.wrap{max-width:800px;margin:0 auto;padding:20px;position:relative;z-index:1}
+h1{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:12px 0 4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
-h2{font-size:16px;font-weight:700;color:var(--cyan);margin:24px 0 8px;border-left:3px solid var(--cyan);padding-left:10px}
-h3{font-size:14px;color:rgba(255,255,255,.85);margin:16px 0 6px}
-.breadcrumb{font-size:10px;color:var(--tx3);margin-bottom:16px}
+h2{font-size:16px;font-weight:700;color:var(--cyan);margin:30px 0 10px;border-left:3px solid var(--cyan);padding-left:10px}
+.breadcrumb{font-size:11px;color:var(--tx3);margin-bottom:8px}
 .breadcrumb a{color:var(--tx4);text-decoration:none}
-.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;margin-right:6px}
 .badge.req{background:rgba(99,102,241,.15);color:#818cf8}
-.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;position:relative;overflow:hidden}
-.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
-.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
-.scene-tag{font-size:9px;color:var(--cyan);font-weight:700;margin-bottom:8px;letter-spacing:.5px}
-.who{color:var(--amber);font-weight:600}
-.checklist{list-style:none;padding:0}
-.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
-.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
-.nav-btns{display:flex;gap:8px;margin:20px 0}
+.hero-desc{font-size:14px;color:var(--tx2);margin:8px 0 16px;line-height:1.7}
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:16px;padding:16px 18px;margin-bottom:10px;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.card.card-ok{border-left:3px solid rgba(16,185,129,.4)}
+.card.card-warn{border-left:3px solid rgba(245,158,11,.4)}
+ul{padding-left:20px;margin:6px 0}
+li{margin:4px 0;font-size:14px;color:rgba(255,255,255,.7)}
+li::marker{color:var(--tx4)}
+.nav-btns{display:flex;gap:8px;margin:24px 0}
 .btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;text-align:center;transition:all .25s var(--ease);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .btn:hover{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.08);color:var(--tx)}
 .btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:var(--cyan)}
-pre{background:rgba(0,0,0,.4);padding:14px;border-radius:10px;overflow-x:auto;font-size:11px;line-height:1.6;margin:10px 0;border:1px solid rgba(255,255,255,.05)}
-code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
-.tip{border-left:2px solid var(--amber);padding:8px 14px;margin:10px 0;font-size:12px;color:var(--tx2);background:rgba(245,158,11,.05);border-radius:0 8px 8px 0}
-p{margin:8px 0;font-size:13px;color:rgba(255,255,255,.65)}
 .back{text-align:center;margin-top:28px}
-.back a{color:var(--tx4);font-size:10px;text-decoration:none}
-.lesson-kicker{font-size:10px;color:var(--tx3);margin-bottom:6px}
+.back a{color:var(--tx4);font-size:11px;text-decoration:none}
+
+/* TOC Sidebar */
+.toc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px;margin-bottom:20px}
+.toc-title{font-size:13px;font-weight:700;color:var(--cyan);margin-bottom:8px}
+.toc-track{font-size:10px;color:var(--tx4);margin-bottom:6px}
+.toc-list{display:flex;flex-direction:column;gap:2px}
+.toc-item{display:block;padding:5px 10px;border-radius:6px;font-size:11px;color:var(--tx3);text-decoration:none;transition:all .15s}
+.toc-item:hover{background:rgba(255,255,255,.05);color:var(--tx2)}
+.toc-item.active{background:rgba(99,102,241,.1);color:var(--a1);font-weight:600}
+.toc-all{display:block;margin-top:8px;font-size:10px;color:var(--tx4);text-decoration:none}
+.toc-all:hover{color:var(--tx2)}
+
+@media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
 </style>
 </head>
 <body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot" id="glowSpot"></div>
-<div class="container">
-<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / AI 协作开发实战 - 做一款代办工具 / 实践课 · §P5</div>
-<div class="lesson-kicker"><span class="badge practice">实践课</span><span class="lesson-index">第 32 / 33 节</span></div><h1>验证闭环：冒烟测试、边界清单和回归检查</h1><p>AI 能很快把功能做出来，也可能很快把旧功能改坏。专业感来自验证：手动冒烟、自动测试、截图检查、边界条件和回归记录。</p>
-<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
-<article><div class="scene"><div class="scene-tag">SCENE · 不相信“应该可以”</div><p><span class="who">小K</span>：“Codex 说它改好了。”</p><p><span class="who">G 哥</span>：“很好，但我们不以‘它说好了’为准。我们以验证结果为准。”</p></div><div class="why"><div class="why-tag">为什么验证是 Vibe Coding 的灵魂</div><h4>AI 协作越快，越需要验证刹车。否则你只是更快地产生不确定性。</h4><p>专业开发流程看起来“牛”，不是因为没有错误，而是因为每一步都有发现错误的机制。冒烟测试、边界清单、回归检查，就是你给 AI 协作装上的仪表盘。</p></div>
-<h3>第一步：先写冒烟测试，不追求覆盖率神话</h3><p>冒烟测试的目标是确认主链路没有断。对 FloatThings 来说，就是从打开应用到完成一条任务的最短路径。</p><div class="prompt-block">请为这个待办工具写一份冒烟测试方案。
 
-要求：
-1. 不要追求全面覆盖，只验证核心链路；
-2. 每个测试都写清楚前置条件、操作步骤、预期结果；
-3. 同时给出手动测试版和自动化测试版；
-4. 标出哪些测试适合每次改 UI 后都跑。</div><table class="decision-table"><tr><th>测试名</th><th>步骤</th><th>预期结果</th></tr><tr><td>创建事项</td><td>输入文本，点击添加。</td><td>列表出现新事项，输入框清空。</td></tr><tr><td>完成事项</td><td>点击完成或右滑。</td><td>事项进入完成状态，数量和样式更新。</td></tr><tr><td>本地保存</td><td>添加事项后刷新。</td><td>数据仍然存在。</td></tr><tr><td>主题切换</td><td>切换深色/浅色。</td><td>颜色切换正确，文字仍可读。</td></tr></table>
-<div class="ai-chat"><div class="ai-chat-title">AI 互动现场：测试发现了一个小事故</div><div class="chat-turn user"><div class="role">你</div><p>请写冒烟测试，不要只说“功能正常”，要给出能复现的步骤。</p></div><div class="chat-turn ai"><div class="role">AI</div><p>冒烟路径：打开应用，新增“写课程大纲”，勾选完成，删除任务，刷新页面，确认删除后的状态仍然正确。</p></div><div class="chat-turn user"><div class="role">你</div><p>我按这条跑了一遍，刷新后删除的任务又回来了。请不要新增功能，只定位这个回归。</p></div><div class="chat-turn ai"><div class="role">Codex</div><p>原因是删除后只更新了界面状态，没有同步写回 localStorage。我会把删除操作统一走 saveTasks，并补一条回归验证。</p></div></div><div class="ai-moment"><b>有意思的转折</b><p>这个小事故很适合讲课：它说明 AI 写出来不等于产品可信。你用冒烟路径把“感觉能用”变成了“证据能证明”。</p></div><div class="product-shot-grid" aria-label="代办工具交互验证截图"><figure class="product-shot"><img src="http://www.baoxiaoxing.com/vibecoding/assets/product/floatthings-delete.svg" width="920" height="620" loading="lazy" alt="删除条目截图：待办事项向左滑动后露出红色删除区域"><h4>删除条目</h4><p>危险操作要有明确反馈，测试时重点看删除后是否同步保存。</p></figure><figure class="product-shot"><img src="http://www.baoxiaoxing.com/vibecoding/assets/product/floatthings-complete.svg" width="920" height="620" loading="lazy" alt="完成条目截图：待办事项向右滑动后露出绿色完成区域"><h4>完成条目</h4><p>完成状态不是改个数据就结束，还要检查数量、样式和持久化。</p></figure><figure class="product-shot"><img src="http://www.baoxiaoxing.com/vibecoding/assets/product/floatthings-trash.svg" width="920" height="620" loading="lazy" alt="废纸篓截图：显示已删除事项、恢复入口和彻底删除入口"><h4>废纸篓</h4><p>删除之后要验证恢复、彻底删除和清空状态，避免只测顺风路径。</p></figure></div><div class="product-evidence-note"><b>验证证据</b><p>把这三张交互图放在这里，是为了让课程从“我做了功能”升级成“我知道怎么证明功能可信”。这也是 Vibe Coding 最容易显得专业的地方。</p></div><h3>第二步：让 AI 主动寻找边界条件</h3><p>新手只测“正常输入”。更专业的做法是让 AI 列出边界情况，然后按风险排序。</p><ul class="evidence-list"><li>空文本、全空格、超长文本、重复事项。</li><li>快速连续点击添加按钮。</li><li>完成后再删除，删除后撤销是否需要。</li><li>本地存储损坏或为空时，应用是否能正常启动。</li><li>窗口很窄、字体放大、系统深色模式切换时是否溢出。</li></ul>
-<h3>第三步：给 Codex 一个“验证任务”，不是只让它改代码</h3><div class="prompt-block">请你不要新增功能，专门做验证加固。
+<div class="wrap">
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 发布与迭代 / DAY 20</div>
 
-请完成：
-1. 为核心状态逻辑补单元测试；
-2. 为添加、完成、删除、本地保存写冒烟测试；
-3. 检查 UI 在 375px、768px、1280px 下是否溢出；
-4. 输出测试命令、测试结果和仍然无法覆盖的风险。
-
-如果测试失败，先解释失败原因，再修复。</div>
-<h3>第四步：把验证结果包装成项目可信度</h3><p>“我写了测试”这句话不够有说服力。你要能说清楚验证层次。</p><div class="artifact-grid"><div class="artifact"><h4>手动冒烟</h4><p>每次大改后亲手跑一遍主流程，确认产品还能用。</p></div><div class="artifact"><h4>自动测试</h4><p>状态逻辑、数据持久化、核心交互有测试兜底。</p></div><div class="artifact"><h4>视觉检查</h4><p>用浏览器截图看桌面和窄屏，确认没有遮挡和溢出。</p></div><div class="artifact"><h4>风险记录</h4><p>明确哪些地方还没覆盖，例如真实系统托盘、不同 DPI、极端输入。</p></div></div>
-<div class="big-quote">AI 开发不是“信任 AI”。<br/>是你建立一套机制，让 AI 的输出不断被<strong>验证、约束、修正</strong>。</div>
-<div class="tasks"><h4>本节打卡</h4><label class="task" data-task="p5v2t1"><input type="checkbox"/><span class="t-text">写出 FloatThings 的核心冒烟测试路径</span></label><label class="task" data-task="p5v2t2"><input type="checkbox"/><span class="t-text">能让 AI 主动列出边界条件并按风险排序</span></label><label class="task" data-task="p5v2t3"><input type="checkbox"/><span class="t-text">能区分手动冒烟、自动测试、视觉检查和风险记录</span></label><label class="task" data-task="p5v2t4"><input type="checkbox"/><span class="t-text">让 Codex 输出测试命令、结果和未覆盖风险</span></label></div><div class="day-foot"><span class="day-progress" data-progress></span><button class="complete-btn" data-complete>完成本节</button></div></article>
+<div class="toc">
+<div class="toc-title">📑 本模块目录</div>
+<div class="toc-track">发布与迭代</div>
+<div class="toc-list"><a class="toc-item" href="./p1-requirements.html">需求脑暴</a>
+<a class="toc-item" href="./p2-architecture.html">技术选型</a>
+<a class="toc-item" href="./p3-data-model.html">最小原型</a>
+<a class="toc-item" href="./p4-interface.html">UI 打磨</a>
+<a class="toc-item active" href="./p5-interactions.html">验证闭环</a>
+<a class="toc-item" href="./p6-polish-release.html">复盘包装</a></div>
+<a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a>
 </div>
-<div class="container">
-<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+
+<span class="badge req">DAY · 20</span>
+<h1>验证闭环</h1>
+<div class="hero-desc">AI 能很快做出来功能，也能很快把旧功能改坏。专业感来自验证：每次改完都要测试。</div>
+
+<div class="card card-ok">
+<h2>📝 核心要点</h2>
+<ul><li>手动冒烟测试：点一点每个按钮</li>
+<li>边界测试：输入空值、超长文本、特殊符号</li>
+<li>回归测试：改完新功能，回头测旧功能</li>
+<li>截图对比：改之前截图，改之后截图对比</li>
+<li>让AI帮你写测试用例</li></ul>
 </div>
+
+<div class="card card-warn">
+<h2>✅ 打卡任务</h2>
+<ul><li>给你项目的所有功能做一次手动测试</li>
+<li>写出5个边界条件（最极端的情况）</li>
+<li>让AI帮你写自动化测试</li></ul>
+</div>
+
+<div class="nav-btns">
+  <a class="btn" href="../vibe-coding.html">📚 课程目录</a>
+</div>
+
 <div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</div>
+
 <script>
-// Mouse-follow glow
 (function(){
   var g = document.getElementById('glowSpot');
   if (!g || 'ontouchstart' in window) return;
-  var x = window.innerWidth/2, y = window.innerHeight/2;
-  var tx = x, ty = y;
+  var x = window.innerWidth/2, y = window.innerHeight/2, tx = x, ty = y;
   document.addEventListener('mousemove', function(e){ tx=e.clientX; ty=e.clientY });
-  function anim(){
-    x += (tx-x)*0.05; y += (ty-y)*0.05;
-    g.style.background = 'radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)';
-    requestAnimationFrame(anim);
-  }
+  function anim(){ x+=(tx-x)*0.05; y+=(ty-y)*0.05; g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)'; requestAnimationFrame(anim); }
   anim();
 })();
 </script>

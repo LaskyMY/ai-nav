@@ -3,80 +3,107 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>复盘包装：把一次 AI 开发变成可复用方法论 · 小K的大神之路</title>
+<title>DAY 21 · 复盘包装</title>
 <style>
-:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--a2:#10B981;--a3:#EF4444;--pink:#ec4899;--amber:#F59E0B;--cyan:#06B6D4;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:24px;--ease:cubic-bezier(.22,1,.36,1)}
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.8;padding:0;min-height:100vh;-webkit-font-smoothing:antialiased}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
 .bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.4}
 .bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
 .bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
-.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--vio) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:floatOrb 20s ease-in-out infinite;animation-delay:-7s}
 @keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
-.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1;transition:background .3s ease}
-.container{max-width:700px;margin:0 auto;padding:18px 20px;position:relative;z-index:1}
-h1{font-size:22px;font-weight:700;letter-spacing:-.03em;margin-bottom:4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
+.wrap{max-width:800px;margin:0 auto;padding:20px;position:relative;z-index:1}
+h1{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:12px 0 4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
-h2{font-size:16px;font-weight:700;color:var(--cyan);margin:24px 0 8px;border-left:3px solid var(--cyan);padding-left:10px}
-h3{font-size:14px;color:rgba(255,255,255,.85);margin:16px 0 6px}
-.breadcrumb{font-size:10px;color:var(--tx3);margin-bottom:16px}
+h2{font-size:16px;font-weight:700;color:var(--cyan);margin:30px 0 10px;border-left:3px solid var(--cyan);padding-left:10px}
+.breadcrumb{font-size:11px;color:var(--tx3);margin-bottom:8px}
 .breadcrumb a{color:var(--tx4);text-decoration:none}
-.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;margin-right:6px}
 .badge.req{background:rgba(99,102,241,.15);color:#818cf8}
-.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;position:relative;overflow:hidden}
-.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 35%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
-.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
-.scene-tag{font-size:9px;color:var(--cyan);font-weight:700;margin-bottom:8px;letter-spacing:.5px}
-.who{color:var(--amber);font-weight:600}
-.checklist{list-style:none;padding:0}
-.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
-.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
-.nav-btns{display:flex;gap:8px;margin:20px 0}
+.hero-desc{font-size:14px;color:var(--tx2);margin:8px 0 16px;line-height:1.7}
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:16px;padding:16px 18px;margin-bottom:10px;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.card.card-ok{border-left:3px solid rgba(16,185,129,.4)}
+.card.card-warn{border-left:3px solid rgba(245,158,11,.4)}
+ul{padding-left:20px;margin:6px 0}
+li{margin:4px 0;font-size:14px;color:rgba(255,255,255,.7)}
+li::marker{color:var(--tx4)}
+.nav-btns{display:flex;gap:8px;margin:24px 0}
 .btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;text-align:center;transition:all .25s var(--ease);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .btn:hover{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.08);color:var(--tx)}
 .btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:var(--cyan)}
-pre{background:rgba(0,0,0,.4);padding:14px;border-radius:10px;overflow-x:auto;font-size:11px;line-height:1.6;margin:10px 0;border:1px solid rgba(255,255,255,.05)}
-code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
-.tip{border-left:2px solid var(--amber);padding:8px 14px;margin:10px 0;font-size:12px;color:var(--tx2);background:rgba(245,158,11,.05);border-radius:0 8px 8px 0}
-p{margin:8px 0;font-size:13px;color:rgba(255,255,255,.65)}
 .back{text-align:center;margin-top:28px}
-.back a{color:var(--tx4);font-size:10px;text-decoration:none}
-.lesson-kicker{font-size:10px;color:var(--tx3);margin-bottom:6px}
+.back a{color:var(--tx4);font-size:11px;text-decoration:none}
+
+/* TOC Sidebar */
+.toc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px;margin-bottom:20px}
+.toc-title{font-size:13px;font-weight:700;color:var(--cyan);margin-bottom:8px}
+.toc-track{font-size:10px;color:var(--tx4);margin-bottom:6px}
+.toc-list{display:flex;flex-direction:column;gap:2px}
+.toc-item{display:block;padding:5px 10px;border-radius:6px;font-size:11px;color:var(--tx3);text-decoration:none;transition:all .15s}
+.toc-item:hover{background:rgba(255,255,255,.05);color:var(--tx2)}
+.toc-item.active{background:rgba(99,102,241,.1);color:var(--a1);font-weight:600}
+.toc-all{display:block;margin-top:8px;font-size:10px;color:var(--tx4);text-decoration:none}
+.toc-all:hover{color:var(--tx2)}
+
+@media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
 </style>
 </head>
 <body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot" id="glowSpot"></div>
-<div class="container">
-<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / AI 协作开发实战 - 做一款代办工具 / 实践课 · §P6</div>
-<div class="lesson-kicker"><span class="badge practice">实践课</span><span class="lesson-index">第 33 / 33 节</span></div><h1>复盘包装：把一次 AI 开发变成可复用方法论</h1><p>最后一步不是“打包发布”而已，而是把整个 AI 协作过程讲清楚：为什么这样做、每一步产出了什么、别人能学走什么。</p>
-<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
-<article><div class="scene"><div class="scene-tag">SCENE · 让别人看懂你的厉害</div><p><span class="who">小K</span>：“这个项目是不是有点马后炮？我其实也是一路改出来的。”</p><p><span class="who">G 哥</span>：“所有复盘都有马后炮成分。关键是你能不能把混乱过程整理成别人能学习的结构。”</p></div><div class="why"><div class="why-tag">为什么要包装过程</div><h4>高级感不是装出来的，是从混乱里提炼出方法论。</h4><p>你真正想展示的不是“我做了一个待办工具”，而是“我用自然语言、AI 工具、设计审查和验证体系，把一个模糊想法推进成一个可演示产品”。这比单纯贴代码更有价值。</p></div>
-<div class="ai-chat"><div class="ai-chat-title">AI 互动现场：把流水账改成方法论</div><div class="chat-turn user"><div class="role">你</div><p>请帮我总结这个待办工具开发过程，写得厉害一点。</p></div><div class="chat-turn ai"><div class="role">AI</div><p>我们先做了需求，然后选技术，再开发功能，之后优化 UI，最后测试并发布。</p></div><div class="chat-turn user"><div class="role">你</div><p>这太像流水账。请按“冲突、决策、产物、验证、别人能学到什么”重写，每一段都要体现我和 AI 的互动。</p></div><div class="chat-turn ai"><div class="role">AI</div><p>可以包装成六段闭环：需求从发散到收敛，选型从建议到反驳，原型从跑偏到最小闭环，UI 从主观审美到检查清单，测试从口头确认到证据链，复盘从过程记录到可复用模板。</p></div></div><div class="ai-moment"><b>有意思的转折</b><p>“马后炮”并不可怕。可怕的是只留下流水账。你让 AI 按冲突和证据重写之后，整个项目就从作品展示变成了开发方法展示。</p></div><h3>第一步：把开发过程讲成六段闭环</h3><div class="vibe-timeline"><div class="vibe-step"><b>1 需求脑暴</b><p>用 AI 追问和收敛，把想法变成项目简报。</p></div><div class="vibe-step"><b>2 技术选型</b><p>让 AI 给方案和取舍，人做最终决策。</p></div><div class="vibe-step"><b>3 最小原型</b><p>用 Codex 实现最薄主链路，先证明项目能跑。</p></div><div class="vibe-step"><b>4 UI 打磨</b><p>用 UI UX Pro 审查，再让 Codex 按清单落地。</p></div><div class="vibe-step"><b>5 验证加固</b><p>补冒烟测试、边界清单、视觉检查和回归记录。</p></div><div class="vibe-step"><b>6 复盘沉淀</b><p>把整个流程写成别人能复用的协作模板。</p></div></div>
-<h3>第二步：把每一段都配一个“产物证据”</h3><table class="decision-table"><tr><th>阶段</th><th>产物</th><th>别人能学到什么</th></tr><tr><td>需求脑暴</td><td>项目简报、MVP 边界、验收标准</td><td>如何把模糊想法变成 AI 可理解上下文</td></tr><tr><td>技术选型</td><td>方案矩阵、取舍记录、不做清单</td><td>如何让 AI 给论据，而不是替你拍脑袋</td></tr><tr><td>最小原型</td><td>可运行主链路、冒烟路径</td><td>如何先证明项目成立，再追求完整</td></tr><tr><td>UI 打磨</td><td>UI UX Pro 审查清单、Codex 修改记录</td><td>如何把“好看”变成可执行标准</td></tr><tr><td>验证加固</td><td>测试命令、截图、边界清单、风险记录</td><td>如何控制 AI 开发的不确定性</td></tr></table>
-<h3>第三步：用一句话讲出这套方法的价值</h3><div class="callout key"><div class="callout-title">最终包装话术</div><p><strong>我不是让 AI 随机写代码，而是把 AI 当成产品顾问、架构评审、实现助手、设计审查员和测试工程师来调度。整个过程从需求、选型、原型、UI、测试到复盘都有明确产物，所以开发不是玄学，而是一套可复制流程。</strong></p></div>
-<h3>第四步：把“马后炮”变成复盘能力</h3><p>很多真实项目都是边做边想。厉害的人不是从第一天就全知全能，而是会在事后把关键决策、失败尝试和验证手段整理出来，让下一次更快、更稳。</p><ul class="evidence-list"><li>承认过程不是线性的，但输出要是结构化的。</li><li>把 AI 的每次关键建议都变成可复用模板。</li><li>把“为什么不做”写出来，比只写“做了什么”更专业。</li><li>把截图、测试、验收标准放进复盘，增强可信度。</li></ul>
-<div class="big-quote">最终别人惊讶的不是“你用了 AI”。<br/>而是：<strong>原来 AI 开发可以被组织得这么清楚、这么有章法、这么可复用。</strong></div>
-<div class="tasks"><h4>本节打卡</h4><label class="task" data-task="p6v2t1"><input type="checkbox"/><span class="t-text">能用六段闭环讲清楚 FloatThings 的 AI 协作开发过程</span></label><label class="task" data-task="p6v2t2"><input type="checkbox"/><span class="t-text">为每个阶段列出一个可展示的产物证据</span></label><label class="task" data-task="p6v2t3"><input type="checkbox"/><span class="t-text">能说出“AI 给论据，人做决策，验证来兜底”的核心方法</span></label><label class="task" data-task="p6v2t4"><input type="checkbox"/><span class="t-text">把一次项目经历整理成别人能学走的 Vibe Coding 模板</span></label></div><div class="day-foot"><span class="day-progress" data-progress></span><button class="complete-btn" data-complete>完成本节</button></div></article>
+
+<div class="wrap">
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 发布与迭代 / DAY 21</div>
+
+<div class="toc">
+<div class="toc-title">📑 本模块目录</div>
+<div class="toc-track">发布与迭代</div>
+<div class="toc-list"><a class="toc-item" href="./p1-requirements.html">需求脑暴</a>
+<a class="toc-item" href="./p2-architecture.html">技术选型</a>
+<a class="toc-item" href="./p3-data-model.html">最小原型</a>
+<a class="toc-item" href="./p4-interface.html">UI 打磨</a>
+<a class="toc-item" href="./p5-interactions.html">验证闭环</a>
+<a class="toc-item active" href="./p6-polish-release.html">复盘包装</a></div>
+<a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a>
 </div>
-<div class="container">
-<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+
+<span class="badge req">DAY · 21</span>
+<h1>复盘包装</h1>
+<div class="hero-desc">最后一步不是"打包发布"就完了，而是把整个 AI 协作过程讲清楚：为什么这样做、每一步产出了什么、别人能学到什么。</div>
+
+<div class="card card-ok">
+<h2>📝 核心要点</h2>
+<ul><li>写一篇项目复盘：背景→方案→过程→结果→教训</li>
+<li>列出和AI协作的心得（什么好用、什么坑）</li>
+<li>录一段演示视频（1-3分钟）</li>
+<li>把代码传到 GitHub（别忘了README）</li>
+<li>分享给社区，接受反馈</li></ul>
 </div>
+
+<div class="card card-warn">
+<h2>✅ 打卡任务</h2>
+<ul><li>写一篇500字的项目复盘</li>
+<li>把你的项目传到GitHub</li>
+<li>录一段屏幕录制的演示视频</li></ul>
+</div>
+
+<div class="nav-btns">
+  <a class="btn" href="../vibe-coding.html">📚 课程目录</a>
+</div>
+
 <div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</div>
+
 <script>
-// Mouse-follow glow
 (function(){
   var g = document.getElementById('glowSpot');
   if (!g || 'ontouchstart' in window) return;
-  var x = window.innerWidth/2, y = window.innerHeight/2;
-  var tx = x, ty = y;
+  var x = window.innerWidth/2, y = window.innerHeight/2, tx = x, ty = y;
   document.addEventListener('mousemove', function(e){ tx=e.clientX; ty=e.clientY });
-  function anim(){
-    x += (tx-x)*0.05; y += (ty-y)*0.05;
-    g.style.background = 'radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)';
-    requestAnimationFrame(anim);
-  }
+  function anim(){ x+=(tx-x)*0.05; y+=(ty-y)*0.05; g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)'; requestAnimationFrame(anim); }
   anim();
 })();
 </script>
