@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>DAY 30 · 桌面应用能做网页做不到的事</title>
-<style>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>让人看到，不是解释</title><style>
 :root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
@@ -32,7 +26,6 @@ li::marker{color:rgba(255,255,255,.15)}
 .nav-btns{display:flex;gap:8px;margin:24px 0}
 .btn{display:inline-block;padding:10px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;transition:all .25s var(--ease);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .btn:hover{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.08);color:var(--tx)}
-.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:var(--cyan)}
 .back{text-align:center;margin-top:28px}
 .back a{color:var(--tx4);font-size:11px;text-decoration:none}
 .toc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px 16px;margin-bottom:20px}
@@ -45,42 +38,23 @@ li::marker{color:rgba(255,255,255,.15)}
 .toc-all{display:block;margin-top:8px;font-size:10px;color:var(--tx4);text-decoration:none}
 .toc-all:hover{color:var(--tx2)}
 @media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
-</style>
-</head>
-<body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
-<div class="glow-spot" id="glowSpot"></div>
-<div class="wrap">
-<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 产品设计与开发 / DAY 30</div>
-<div class="toc"><div class="toc-title">📑 本模块目录</div><div class="toc-track">产品设计与开发</div><div class="toc-list"><a class="toc-item" href="./b1-desktop-vs-web.html">桌面和网页的区别</a>
-<a class="toc-item" href="./b2-tauri-electron-flutter.html">选哪个框架做桌面应用</a>
-<a class="toc-item" href="./b3-first-desktop-app.html">跑通你的第一个桌面应用</a>
-<a class="toc-item active" href="./b4-system-features.html">桌面应用能做网页做不到的事</a>
-<a class="toc-item" href="./b5-local-data.html">数据存哪里</a>
-<a class="toc-item" href="./b6-packaging-release.html">把你的应用发给别人用</a></div><a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a></div>
-<span class="badge">DAY · 30</span>
-<h1>桌面应用能做网页做不到的事</h1>
-<div class="hero-desc">桌面应用可以读写你电脑上的文件、在系统托盘里显示图标、注册全局快捷键（比如按Ctrl+Space呼出搜索框）、发系统通知。这些网页都做不到。这也是为什么你要做桌面应用而不是网页的原因。</div>
-<div class="card card-ok"><h2>核心要点</h2><ul><li>读写本地文件（保存用户数据）</li>
-<li>系统托盘（后台运行不占屏幕）</li>
-<li>全局快捷键（一键呼出）</li>
-<li>系统通知（消息推送）</li>
-<li>记住窗口位置和大小</li></ul></div>
-<div class="card card-warn"><h2>动手练习</h2><ul><li>搜索"Tauri 文件读写"看文档</li>
-<li>搜索"Tauri 系统托盘"看例子</li>
-<li>想想你的应用需要哪些系统能力</li></ul></div>
+</style></head>
+<body><div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div><div class="glow-spot" id="glowSpot"></div><div class="wrap">
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 实战心法</div>
+<div class="toc"><div class="toc-title">📑 实战心法</div><div class="toc-list"><a class="toc-item" href="./reading-errors.html">三秒定位问题</a>
+<a class="toc-item" href="./not-your-fault.html">不是你的问题</a>
+<a class="toc-item" href="./dont-read-docs.html">不要从头读文档</a>
+<a class="toc-item" href="./one-thing.html">一次只做一件事</a>
+<a class="toc-item active" href="./show-dont-tell.html">让人看到，不是解释</a></div><a class="toc-all" href="../vibe-coding.html">查看全部 →</a></div>
+<span class="badge">实战心法 · #19</span><h1>让人看到，不是解释</h1><div class="hero-desc">你做完了项目。你想展示给别人看。最差的展示方式是"我给你讲讲"。最好的展示方式是一个链接、一段演示视频、一个能点开的东西。人类是视觉动物——看到一个能用的东西，比听你解释十分钟管用得多。花半小时录个屏，花半小时写个介绍——这两个投资回报率比你想象的高一百倍。</div>
+<div class="card card-ok"><h2>核心要点</h2><ul><li>展示 > 解释。一个能跑的链接 > 一千字的描述</li>
+<li>录屏工具：Mac用QuickTime，Win用OBS——都免费</li>
+<li>GitHub Pages：免费托管你的项目网页</li>
+<li>README写清楚：这个项目做什么、怎么安装、怎么运行</li>
+<li>你的GitHub就是你的简历——比任何Word文档都有说服力</li></ul></div>
+<div class="card card-warn"><h2>动手练习</h2><ul><li>给你的项目录一个30秒的演示视频</li>
+<li>用GitHub Pages把你的项目部署上线</li>
+<li>写一个清晰的README（让AI帮你写第一版）</li></ul></div>
 <div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 全部课程</a></div>
-<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
-</div>
-<script>
-(function(){
-  var g=document.getElementById('glowSpot');
-  if(!g||'ontouchstart' in window)return;
-  var x=window.innerWidth/2,y=window.innerHeight/2,tx=x,ty=y;
-  document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});
-  function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}
-  anim();
-})();
-</script>
-</body>
-</html>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div></div>
+<script>(function(){var g=document.getElementById('glowSpot');if(!g||'ontouchstart' in window)return;var x=window.innerWidth/2,y=window.innerHeight/2,tx=x,ty=y;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}anim()})()</script></body></html>

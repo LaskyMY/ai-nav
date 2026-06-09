@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>DAY 25 · 黑话翻译器</title>
-<style>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>三秒定位问题</title><style>
 :root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
@@ -32,7 +26,6 @@ li::marker{color:rgba(255,255,255,.15)}
 .nav-btns{display:flex;gap:8px;margin:24px 0}
 .btn{display:inline-block;padding:10px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;transition:all .25s var(--ease);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .btn:hover{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.08);color:var(--tx)}
-.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:var(--cyan)}
 .back{text-align:center;margin-top:28px}
 .back a{color:var(--tx4);font-size:11px;text-decoration:none}
 .toc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px 16px;margin-bottom:20px}
@@ -45,44 +38,23 @@ li::marker{color:rgba(255,255,255,.15)}
 .toc-all{display:block;margin-top:8px;font-size:10px;color:var(--tx4);text-decoration:none}
 .toc-all:hover{color:var(--tx2)}
 @media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
-</style>
-</head>
-<body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
-<div class="glow-spot" id="glowSpot"></div>
-<div class="wrap">
-<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 编程基础 / DAY 25</div>
-<div class="toc"><div class="toc-title">📑 本模块目录</div><div class="toc-track">编程基础</div><div class="toc-list"><a class="toc-item" href="./00-code.html">代码是什么</a>
-<a class="toc-item" href="./01-program-run.html">程序怎么跑起来</a>
-<a class="toc-item" href="./02-languages.html">语言怎么选</a>
-<a class="toc-item" href="./03-algorithm.html">算法没那么玄</a>
-<a class="toc-item" href="./04-framework.html">框架是干嘛的</a>
-<a class="toc-item active" href="./05-programming-jargon.html">黑话翻译器</a>
-<a class="toc-item" href="./06-git-basics.html">Git让你不再害怕改代码</a></div><a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a></div>
-<span class="badge">DAY · 25</span>
-<h1>黑话翻译器</h1>
-<div class="hero-desc">API就是别人写好的功能，你直接调用就好。就像你去餐厅点菜，不需要进厨房自己做。Bug就是程序出错。Debug就是找错。Refactor就是优化代码结构但不改功能。这些词听着吓人，理解了其实很简单。</div>
-<div class="card card-ok"><h2>核心要点</h2><ul><li>API = 别人写好的功能接口</li>
-<li>Bug = 程序出错；Debug = 找错修错</li>
-<li>Refactor = 整理代码结构，不改功能</li>
-<li>IDE = 写代码的专用编辑器</li>
-<li>服务器 = 24小时开机的电脑</li>
-<li>客户端 = 你的手机/电脑</li></ul></div>
-<div class="card card-warn"><h2>动手练习</h2><ul><li>打开 VS Code（或下载安装它）</li>
-<li>打开终端，输入 ls（Mac）或 dir（Win）看看</li>
-<li>搜索"编程术语对照表"找一张图看看</li></ul></div>
+</style></head>
+<body><div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div><div class="glow-spot" id="glowSpot"></div><div class="wrap">
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 实战心法</div>
+<div class="toc"><div class="toc-title">📑 实战心法</div><div class="toc-list"><a class="toc-item active" href="./reading-errors.html">三秒定位问题</a>
+<a class="toc-item" href="./not-your-fault.html">不是你的问题</a>
+<a class="toc-item" href="./dont-read-docs.html">不要从头读文档</a>
+<a class="toc-item" href="./one-thing.html">一次只做一件事</a>
+<a class="toc-item" href="./show-dont-tell.html">让人看到，不是解释</a></div><a class="toc-all" href="../vibe-coding.html">查看全部 →</a></div>
+<span class="badge">实战心法 · #15</span><h1>三秒定位问题</h1><div class="hero-desc">你看到报错会慌。这很正常。但报错信息其实写得一清二楚：哪一行、什么类型、什么原因。先看最后一行——那是总结。再看中间——那是详细原因。最后看第一行附近——那是位置。三秒找到位置，五秒理解原因，十秒修好。平均下来，一个bug从发现到修复，你只需要十八秒。</div>
+<div class="card card-ok"><h2>核心要点</h2><ul><li>先看最后一行：错误类型的总结</li>
+<li>再看中间：详细原因和堆栈</li>
+<li>最后看第一行附近：位置（哪个文件，第几行）</li>
+<li>80%的bug是拼写错误、少了括号、路径写错</li>
+<li>剩下20%贴给AI，十秒给你答案</li></ul></div>
+<div class="card card-warn"><h2>动手练习</h2><ul><li>故意写三个不同类型的错误，练习"三秒定位"</li>
+<li>用一个真实的报错，试试"先最后→再中间→再开头"的顺序读</li>
+<li>把修复前后的代码截图对比——下次遇到类似的你就认识它了</li></ul></div>
 <div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 全部课程</a></div>
-<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
-</div>
-<script>
-(function(){
-  var g=document.getElementById('glowSpot');
-  if(!g||'ontouchstart' in window)return;
-  var x=window.innerWidth/2,y=window.innerHeight/2,tx=x,ty=y;
-  document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});
-  function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}
-  anim();
-})();
-</script>
-</body>
-</html>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div></div>
+<script>(function(){var g=document.getElementById('glowSpot');if(!g||'ontouchstart' in window)return;var x=window.innerWidth/2,y=window.innerHeight/2,tx=x,ty=y;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}anim()})()</script></body></html>

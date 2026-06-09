@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>DAY 00 · 代码是什么</title><style>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>先想清楚，再动手</title><style>
 :root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
@@ -26,7 +26,6 @@ li::marker{color:rgba(255,255,255,.15)}
 .nav-btns{display:flex;gap:8px;margin:24px 0}
 .btn{display:inline-block;padding:10px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;transition:all .25s var(--ease);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .btn:hover{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.08);color:var(--tx)}
-.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:var(--cyan)}
 .back{text-align:center;margin-top:28px}
 .back a{color:var(--tx4);font-size:11px;text-decoration:none}
 .toc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px 16px;margin-bottom:20px}
@@ -41,23 +40,19 @@ li::marker{color:rgba(255,255,255,.15)}
 @media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
 </style></head>
 <body><div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div><div class="glow-spot" id="glowSpot"></div><div class="wrap">
-<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 编程基础 / DAY 00</div>
-<div class="toc"><div class="toc-title">📑 本模块目录</div><div class="toc-track">编程基础</div><div class="toc-list"><a class="toc-item active" href="./00-code.html">代码是什么</a>
-<a class="toc-item" href="./01-program-run.html">程序怎么跑起来的</a>
-<a class="toc-item" href="./02-languages.html">02-languages.html</a>
-<a class="toc-item" href="./03-algorithm.html">03-algorithm.html</a>
-<a class="toc-item" href="./04-framework.html">04-framework.html</a>
-<a class="toc-item" href="./05-programming-jargon.html">05-programming-jargon.html</a>
-<a class="toc-item" href="./06-git-basics.html">06-git-basics.html</a></div><a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a></div>
-<span class="badge">DAY · 00</span><h1>代码是什么</h1><div class="hero-desc">我帮过很多人从零开始。大部分人卡在同一个地方：他们以为代码是什么高深的数学。不是。代码就是你给电脑写的便签——"把这个按钮放左边"、"用户点了这里就跳转"、"每天晚上12点自动备份"。你不需要理解电脑怎么执行这些指令，你只需要把话说清楚。剩下的交给翻译官（编程语言）和跑腿的（电脑）。</div>
-<div class="card card-ok"><h2>核心要点</h2><ul><li>把代码想象成你给助理的便签：越具体越好</li>
-<li>你不需要数学好。我见过最好的程序员数学只及格</li>
-<li>编程语言只是翻译官——Python翻译得更像英语，C++翻译得更接近机器</li>
-<li>每行代码只做一件事。一万行代码就是一万个简单的指令堆起来的</li>
-<li>你手机上每个App背后就是一堆这样的便签</li></ul></div>
-<div class="card card-warn"><h2>动手练习</h2><ul><li>打开手机备忘录，用"先...再...然后..."格式写一个"早上去公司"的流程</li>
-<li>把这段流程想象成代码——如果中间某步失败了怎么办？加一个条件</li>
-<li>搜索"Hello World Python"，看看最简单的代码长什么样</li></ul></div>
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 从想法到产品</div>
+<div class="toc"><div class="toc-title">📑 从想法到产品</div><div class="toc-list"><a class="toc-item active" href="./think-first.html">先想清楚，再动手</a>
+<a class="toc-item" href="./small-first.html">先做最小最丑的版本</a>
+<a class="toc-item" href="./trust-nobody.html">永远验证，永远怀疑</a></div><a class="toc-all" href="../vibe-coding.html">查看全部 →</a></div>
+<span class="badge">从想法到产品 · #08</span><h1>先想清楚，再动手</h1><div class="hero-desc">最常犯的错误：上来就让AI写代码。你肯定这么干过。我也经常收到"帮我写个网站"这种一句话需求。结果呢？AI猜你的意思，猜错了，你改，它还猜错，你再改。来来去去浪费一小时。多花两分钟把需求想清楚——写给谁用、核心功能是啥、长什么样子——能省下十个小时的返工。</div>
+<div class="card card-ok"><h2>核心要点</h2><ul><li>在让AI干活之前，先用三句话回答：谁用？干嘛？长啥样？</li>
+<li>写需求不是写论文——手机上备忘录打几行字就行</li>
+<li>好的需求描述：用户角色 + 核心操作 + 期望结果</li>
+<li>让AI复述你的需求："你理解我要做什么了吗？"——它说对再让它动手</li>
+<li>两分钟想清楚需求，省十小时返工——这笔账你会算</li></ul></div>
+<div class="card card-warn"><h2>动手练习</h2><ul><li>想一个你想做的项目，用三句话描述：谁用、干嘛、长啥样</li>
+<li>把这三句话发给AI，问它"你理解了吗？请复述一遍"</li>
+<li>让AI给你补充三个你没考虑到的细节</li></ul></div>
 <div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 全部课程</a></div>
 <div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div></div>
 <script>(function(){var g=document.getElementById('glowSpot');if(!g||'ontouchstart' in window)return;var x=window.innerWidth/2,y=window.innerHeight/2,tx=x,ty=y;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}anim()})()</script></body></html>

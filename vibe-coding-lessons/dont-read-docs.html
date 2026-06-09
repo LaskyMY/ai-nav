@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>DAY 15 · 跑通你的第一个桌面应用</title>
-<style>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>不要从头读文档</title><style>
 :root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
@@ -32,7 +26,6 @@ li::marker{color:rgba(255,255,255,.15)}
 .nav-btns{display:flex;gap:8px;margin:24px 0}
 .btn{display:inline-block;padding:10px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;transition:all .25s var(--ease);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .btn:hover{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.08);color:var(--tx)}
-.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:var(--cyan)}
 .back{text-align:center;margin-top:28px}
 .back a{color:var(--tx4);font-size:11px;text-decoration:none}
 .toc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px 16px;margin-bottom:20px}
@@ -45,42 +38,23 @@ li::marker{color:rgba(255,255,255,.15)}
 .toc-all{display:block;margin-top:8px;font-size:10px;color:var(--tx4);text-decoration:none}
 .toc-all:hover{color:var(--tx2)}
 @media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
-</style>
-</head>
-<body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
-<div class="glow-spot" id="glowSpot"></div>
-<div class="wrap">
-<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 产品设计与开发 / DAY 15</div>
-<div class="toc"><div class="toc-title">📑 本模块目录</div><div class="toc-track">产品设计与开发</div><div class="toc-list"><a class="toc-item" href="./b1-desktop-vs-web.html">桌面和网页的区别</a>
-<a class="toc-item" href="./b2-tauri-electron-flutter.html">选哪个框架做桌面应用</a>
-<a class="toc-item active" href="./b3-first-desktop-app.html">跑通你的第一个桌面应用</a>
-<a class="toc-item" href="./b4-system-features.html">桌面应用能做网页做不到的事</a>
-<a class="toc-item" href="./b5-local-data.html">数据存哪里</a>
-<a class="toc-item" href="./b6-packaging-release.html">把你的应用发给别人用</a></div><a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a></div>
-<span class="badge">DAY · 15</span>
-<h1>跑通你的第一个桌面应用</h1>
-<div class="hero-desc">装好Node.js和Rust，运行npx create-tauri-app，跟着提示选配置。几分钟后一个桌面窗口就弹出来了——这就是你的第一个桌面应用。虽然里面是空的，但骨架已经搭好了。接下来就是往里面填HTML。</div>
-<div class="card card-ok"><h2>核心要点</h2><ul><li>先装 Node.js 和 Rust</li>
-<li>终端运行：npx create-tauri-app</li>
-<li>选 JavaScript + React 作为模板</li>
-<li>npm run tauri dev 看到窗口</li>
-<li>修改 src/App.jsx，窗口里会实时变化</li></ul></div>
-<div class="card card-warn"><h2>动手练习</h2><ul><li>按教程创建一个 Tauri 项目</li>
-<li>运行 npm run tauri dev 看到窗口</li>
-<li>修改 index.html 里的文字，看看窗口里的变化</li></ul></div>
+</style></head>
+<body><div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div><div class="glow-spot" id="glowSpot"></div><div class="wrap">
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 实战心法</div>
+<div class="toc"><div class="toc-title">📑 实战心法</div><div class="toc-list"><a class="toc-item" href="./reading-errors.html">三秒定位问题</a>
+<a class="toc-item" href="./not-your-fault.html">不是你的问题</a>
+<a class="toc-item active" href="./dont-read-docs.html">不要从头读文档</a>
+<a class="toc-item" href="./one-thing.html">一次只做一件事</a>
+<a class="toc-item" href="./show-dont-tell.html">让人看到，不是解释</a></div><a class="toc-all" href="../vibe-coding.html">查看全部 →</a></div>
+<span class="badge">实战心法 · #17</span><h1>不要从头读文档</h1><div class="hero-desc">新手喜欢从头到尾读文档。这是最慢的学习方式。正确做法：你要做什么→搜"怎么做"→找到对应的那段文档→只看那段。剩下的以后用到再看。就像你不需要把整本字典背下来才能写文章——你需要哪个字就查哪个字。编程也是一样。</div>
+<div class="card card-ok"><h2>核心要点</h2><ul><li>不要从头读文档——用到什么查什么</li>
+<li>搜"XX怎么做"比读完整API文档快十倍</li>
+<li>看文档的正确姿势：找Examples部分→复制→改→跑通</li>
+<li>官方文档是最好的参考资料，但不是最好的教程</li>
+<li>让AI帮你总结："这个库怎么用，给我三个例子"</li></ul></div>
+<div class="card card-warn"><h2>动手练习</h2><ul><li>搜"Python怎么读文件"，只看你需要的那个函数</li>
+<li>打开一个你常用工具的文档，找到Examples部分</li>
+<li>让AI用三个例子教你用一个新的库</li></ul></div>
 <div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 全部课程</a></div>
-<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
-</div>
-<script>
-(function(){
-  var g=document.getElementById('glowSpot');
-  if(!g||'ontouchstart' in window)return;
-  var x=window.innerWidth/2,y=window.innerHeight/2,tx=x,ty=y;
-  document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});
-  function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}
-  anim();
-})();
-</script>
-</body>
-</html>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div></div>
+<script>(function(){var g=document.getElementById('glowSpot');if(!g||'ontouchstart' in window)return;var x=window.innerWidth/2,y=window.innerHeight/2,tx=x,ty=y;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}anim()})()</script></body></html>

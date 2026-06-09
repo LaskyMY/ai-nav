@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>DAY 01 · 程序怎么跑起来的</title><style>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>编程不是什么高科技</title><style>
 :root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
@@ -26,7 +26,6 @@ li::marker{color:rgba(255,255,255,.15)}
 .nav-btns{display:flex;gap:8px;margin:24px 0}
 .btn{display:inline-block;padding:10px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;transition:all .25s var(--ease);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .btn:hover{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.08);color:var(--tx)}
-.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:var(--cyan)}
 .back{text-align:center;margin-top:28px}
 .back a{color:var(--tx4);font-size:11px;text-decoration:none}
 .toc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px 16px;margin-bottom:20px}
@@ -41,23 +40,20 @@ li::marker{color:rgba(255,255,255,.15)}
 @media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
 </style></head>
 <body><div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div><div class="glow-spot" id="glowSpot"></div><div class="wrap">
-<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 编程基础 / DAY 01</div>
-<div class="toc"><div class="toc-title">📑 本模块目录</div><div class="toc-track">编程基础</div><div class="toc-list"><a class="toc-item" href="./00-code.html">代码是什么</a>
-<a class="toc-item active" href="./01-program-run.html">程序怎么跑起来的</a>
-<a class="toc-item" href="./02-languages.html">02-languages.html</a>
-<a class="toc-item" href="./03-algorithm.html">03-algorithm.html</a>
-<a class="toc-item" href="./04-framework.html">04-framework.html</a>
-<a class="toc-item" href="./05-programming-jargon.html">05-programming-jargon.html</a>
-<a class="toc-item" href="./06-git-basics.html">06-git-basics.html</a></div><a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a></div>
-<span class="badge">DAY · 01</span><h1>程序怎么跑起来的</h1><div class="hero-desc">你写的是人话，电脑只认识0和1。这中间需要一个翻译——叫编译器或解释器。编译器像提前录好的广播：一次翻译完，反复播放。解释器像同声传译：边听边翻译。Python用的是解释器，所以你可以一行一行地试。C++用的是编译器，所以改一个字也得重新编译。选Python入门是对的——错了就改，不用等编译。</div>
-<div class="card card-ok"><h2>核心要点</h2><ul><li>编译器=录播（C++/Rust），解释器=直播（Python/JS）</li>
-<li>Python的优势：写一行跑一行，错了马上知道</li>
-<li>C++的优势：翻译完跑得飞快，适合游戏引擎</li>
-<li>你双击App的瞬间，操作系统在背后做了几十件事——加载、分配内存、启动</li>
-<li>了解这个过程不是为了考试，是为了以后debug时知道去哪找问题</li></ul></div>
-<div class="card card-warn"><h2>动手练习</h2><ul><li>打开终端，输入python3，一行一行输入print('hello')——这就是解释执行</li>
-<li>搜索"编译型 vs 解释型语言"看一张对比图</li>
-<li>写一句故意拼错的代码，看看Python怎么报错</li></ul></div>
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 思维方式</div>
+<div class="toc"><div class="toc-title">📑 思维方式</div><div class="toc-list"><a class="toc-item active" href="./real-talk.html">编程不是什么高科技</a>
+<a class="toc-item" href="./copy-paste.html">抄，使劲抄</a>
+<a class="toc-item" href="./rubber-duck.html">跟橡皮鸭说话</a>
+<a class="toc-item" href="./feeling-lucky.html">你敢不敢试试</a></div><a class="toc-all" href="../vibe-coding.html">查看全部 →</a></div>
+<span class="badge">思维方式 · #11</span><h1>编程不是什么高科技</h1><div class="hero-desc">社会把程序员神化了。好像写代码需要智商180、数学竞赛金牌、从六岁开始编程。全错。编程就是用一种特定的格式，把你想做的事情写下来。跟写菜谱、写装修清单、写旅行计划没有本质区别。你不需要聪明，你需要耐心。你不需要数学，你需要逻辑。你不需要天赋，你需要开始。</div>
+<div class="card card-ok"><h2>核心要点</h2><ul><li>编程≠数学——我见过数学不及格的优秀程序员</li>
+<li>编程=把你的想法用电脑能懂的方式写下来</li>
+<li>你不需要智商180——你需要的是：耐心+逻辑+愿意犯错</li>
+<li>最好的程序员不是最聪明的——是最擅长Google和问AI的</li>
+<li>你已经在编程了：你做菜有步骤、你旅行有计划——只是格式不同</li></ul></div>
+<div class="card card-warn"><h2>动手练习</h2><ul><li>把"早上去公司"用 if/else 的格式写一遍（如果下雨就打车，否则坐地铁）</li>
+<li>找一个你觉得很厉害的App，想想它背后最简单版本的逻辑</li>
+<li>告诉自己：我不是学不会，我只是还没开始</li></ul></div>
 <div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 全部课程</a></div>
 <div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div></div>
 <script>(function(){var g=document.getElementById('glowSpot');if(!g||'ontouchstart' in window)return;var x=window.innerWidth/2,y=window.innerHeight/2,tx=x,ty=y;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}anim()})()</script></body></html>

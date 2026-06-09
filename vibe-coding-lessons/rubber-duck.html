@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>DAY 06 · 跟AI聊天的正确姿势</title>
-<style>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>跟橡皮鸭说话</title><style>
 :root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
@@ -32,7 +26,6 @@ li::marker{color:rgba(255,255,255,.15)}
 .nav-btns{display:flex;gap:8px;margin:24px 0}
 .btn{display:inline-block;padding:10px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;transition:all .25s var(--ease);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .btn:hover{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.08);color:var(--tx)}
-.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:var(--cyan)}
 .back{text-align:center;margin-top:28px}
 .back a{color:var(--tx4);font-size:11px;text-decoration:none}
 .toc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px 16px;margin-bottom:20px}
@@ -45,44 +38,22 @@ li::marker{color:rgba(255,255,255,.15)}
 .toc-all{display:block;margin-top:8px;font-size:10px;color:var(--tx4);text-decoration:none}
 .toc-all:hover{color:var(--tx2)}
 @media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
-</style>
-</head>
-<body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
-<div class="glow-spot" id="glowSpot"></div>
-<div class="wrap">
-<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / AI 协作 / DAY 06</div>
-<div class="toc"><div class="toc-title">📑 本模块目录</div><div class="toc-track">AI 协作</div><div class="toc-list"><a class="toc-item" href="./a1-toolbox.html">装好你的开发工具</a>
-<a class="toc-item" href="./a2-project-town.html">项目文件夹像一座城市</a>
-<a class="toc-item" href="./a3-engine-plugin-extension.html">插件让软件更强大</a>
-<a class="toc-item" href="./a4-ue-project.html">理解UE项目文件</a>
-<a class="toc-item active" href="./a5-ai-prompting.html">跟AI聊天的正确姿势</a>
-<a class="toc-item" href="./a6-errors.html">报错不是敌人</a>
-<a class="toc-item" href="./a7-editor-tool.html">你的第一个工具</a>
-<a class="toc-item" href="./a8-version-collaboration.html">代码要给队友用</a></div><a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a></div>
-<span class="badge">DAY · 06</span>
-<h1>跟AI聊天的正确姿势</h1>
-<div class="hero-desc">很多人觉得AI不好用，其实是Prompt写法不对。好的Prompt包含四要素：你是谁（角色）、做什么（任务）、怎么判断成功（标准）、有什么限制（约束）。给齐这四个信息，AI的输出质量能翻倍。</div>
-<div class="card card-ok"><h2>核心要点</h2><ul><li>要素1：设定角色——"你是一个前端工程师"</li>
-<li>要素2：明确任务——"帮我写一个登录页面"</li>
-<li>要素3：成功标准——"包含邮箱和密码输入框，有错误提示"</li>
-<li>要素4：限制条件——"用纯HTML+CSS，不要框架"</li>
-<li>这四个要素写齐了，AI基本不会跑偏</li></ul></div>
-<div class="card card-warn"><h2>动手练习</h2><ul><li>用四要素法写一个Prompt，发给AI</li>
-<li>对比"帮我写个网页"vs带四要素的版本，看结果差异</li>
-<li>问问AI"你需要我补充什么信息才能做得更好"</li></ul></div>
+</style></head>
+<body><div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div><div class="glow-spot" id="glowSpot"></div><div class="wrap">
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 思维方式</div>
+<div class="toc"><div class="toc-title">📑 思维方式</div><div class="toc-list"><a class="toc-item" href="./real-talk.html">编程不是什么高科技</a>
+<a class="toc-item" href="./copy-paste.html">抄，使劲抄</a>
+<a class="toc-item active" href="./rubber-duck.html">跟橡皮鸭说话</a>
+<a class="toc-item" href="./feeling-lucky.html">你敢不敢试试</a></div><a class="toc-all" href="../vibe-coding.html">查看全部 →</a></div>
+<span class="badge">思维方式 · #13</span><h1>跟橡皮鸭说话</h1><div class="hero-desc">编程里有个著名的技巧叫"橡皮鸭调试法"：在桌上放一只橡皮鸭，当你遇到bug时，就向鸭子一行一行解释你的代码。往往解释到一半，你自己就发现问题了。AI就是你的超级橡皮鸭——你跟它解释你遇到的问题，它不仅听，还会帮你分析。把问题说出来这个动作本身，就已经在解决一半问题了。</div>
+<div class="card card-ok"><h2>核心要点</h2><ul><li>把问题说出来 = 问题解决了一半</li>
+<li>不要只在脑子里想——打出来，给AI看</li>
+<li>描述问题时自然会被迫理清思路：是哪里卡住了？期望什么？实际是什么？</li>
+<li>AI是超级橡皮鸭：它不仅听，还会给你分析和建议</li>
+<li>最好的提问格式：我在做XX→遇到了YY→期望ZZ→实际是AA</li></ul></div>
+<div class="card card-warn"><h2>动手练习</h2><ul><li>下次遇到bug，先不要问AI，先自己用文字把问题写一遍</li>
+<li>用"我在做→遇到了→期望→实际"格式描述一个问题</li>
+<li>找一个橡皮鸭放在桌上——或者直接把问题念出来给AI听</li></ul></div>
 <div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 全部课程</a></div>
-<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
-</div>
-<script>
-(function(){
-  var g=document.getElementById('glowSpot');
-  if(!g||'ontouchstart' in window)return;
-  var x=window.innerWidth/2,y=window.innerHeight/2,tx=x,ty=y;
-  document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});
-  function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}
-  anim();
-})();
-</script>
-</body>
-</html>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div></div>
+<script>(function(){var g=document.getElementById('glowSpot');if(!g||'ontouchstart' in window)return;var x=window.innerWidth/2,y=window.innerHeight/2,tx=x,ty=y;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}anim()})()</script></body></html>

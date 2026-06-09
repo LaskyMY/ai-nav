@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>DAY 04 · 插件让软件更强大</title>
-<style>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>你要会用的三个工具</title><style>
 :root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
@@ -32,7 +26,6 @@ li::marker{color:rgba(255,255,255,.15)}
 .nav-btns{display:flex;gap:8px;margin:24px 0}
 .btn{display:inline-block;padding:10px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;transition:all .25s var(--ease);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .btn:hover{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.08);color:var(--tx)}
-.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:var(--cyan)}
 .back{text-align:center;margin-top:28px}
 .back a{color:var(--tx4);font-size:11px;text-decoration:none}
 .toc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px 16px;margin-bottom:20px}
@@ -45,44 +38,20 @@ li::marker{color:rgba(255,255,255,.15)}
 .toc-all{display:block;margin-top:8px;font-size:10px;color:var(--tx4);text-decoration:none}
 .toc-all:hover{color:var(--tx2)}
 @media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
-</style>
-</head>
-<body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
-<div class="glow-spot" id="glowSpot"></div>
-<div class="wrap">
-<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / AI 协作 / DAY 04</div>
-<div class="toc"><div class="toc-title">📑 本模块目录</div><div class="toc-track">AI 协作</div><div class="toc-list"><a class="toc-item" href="./a1-toolbox.html">装好你的开发工具</a>
-<a class="toc-item" href="./a2-project-town.html">项目文件夹像一座城市</a>
-<a class="toc-item active" href="./a3-engine-plugin-extension.html">插件让软件更强大</a>
-<a class="toc-item" href="./a4-ue-project.html">理解UE项目文件</a>
-<a class="toc-item" href="./a5-ai-prompting.html">跟AI聊天的正确姿势</a>
-<a class="toc-item" href="./a6-errors.html">报错不是敌人</a>
-<a class="toc-item" href="./a7-editor-tool.html">你的第一个工具</a>
-<a class="toc-item" href="./a8-version-collaboration.html">代码要给队友用</a></div><a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a></div>
-<span class="badge">DAY · 04</span>
-<h1>插件让软件更强大</h1>
-<div class="hero-desc">Chrome能装扩展，VS Code能装插件，UE编辑器能加工具。本质上都是同一件事：在已有软件上加新功能。你不用修改软件本身，只要按照它给的接口（API）写一个小程序就行。</div>
-<div class="card card-ok"><h2>核心要点</h2><ul><li>插件/扩展 = 给软件加功能的小程序</li>
-<li>Chrome扩展用HTML+JS写</li>
-<li>VS Code扩展也用JS写</li>
-<li>UE工具用C++写</li>
-<li>你不需要理解整个软件，只需要知道怎么给它"挂"东西</li></ul></div>
-<div class="card card-warn"><h2>动手练习</h2><ul><li>打开 VS Code 的扩展商店，看看有哪些扩展</li>
-<li>装一个你感兴趣的扩展试试</li>
-<li>搜索"如何写一个Chrome扩展"了解基本结构</li></ul></div>
+</style></head>
+<body><div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div><div class="glow-spot" id="glowSpot"></div><div class="wrap">
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 装备起来</div>
+<div class="toc"><div class="toc-title">📑 装备起来</div><div class="toc-list"><a class="toc-item active" href="./best-tools.html">你要会用的三个工具</a>
+<a class="toc-item" href="./safe-to-change.html">随便改，改不坏的</a></div><a class="toc-all" href="../vibe-coding.html">查看全部 →</a></div>
+<span class="badge">装备起来 · #06</span><h1>你要会用的三个工具</h1><div class="hero-desc">不需要装一百个软件。核心就三个：一个写代码的地方（VS Code）、一个打命令的地方（终端）、一个存代码的地方（Git）。VS Code是免费的，终端电脑自带，Git五分钟就能学会最基本的操作。这三个工具就像笔、纸和文件夹——你不需要先学一年书法才开始写字。</div>
+<div class="card card-ok"><h2>核心要点</h2><ul><li>VS Code：下载→安装→打开文件夹→开始写。就这么简单</li>
+<li>终端：一个黑色的窗口，你打字，电脑执行。不可怕</li>
+<li>Git：存档→修改→不满意就回档。游戏里的存档读档</li>
+<li>先装VS Code和Git，终端学会了再用</li>
+<li>每个工具只需要学会一个操作：VS Code打开文件，终端ls看目录，Git commit存档</li></ul></div>
+<div class="card card-warn"><h2>动手练习</h2><ul><li>下载并安装 VS Code</li>
+<li>打开终端，输入 ls（Mac）或 dir（Windows），看看有什么</li>
+<li>在GitHub上创建一个账号——哪怕你现在不用</li></ul></div>
 <div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 全部课程</a></div>
-<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
-</div>
-<script>
-(function(){
-  var g=document.getElementById('glowSpot');
-  if(!g||'ontouchstart' in window)return;
-  var x=window.innerWidth/2,y=window.innerHeight/2,tx=x,ty=y;
-  document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});
-  function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}
-  anim();
-})();
-</script>
-</body>
-</html>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div></div>
+<script>(function(){var g=document.getElementById('glowSpot');if(!g||'ontouchstart' in window)return;var x=window.innerWidth/2,y=window.innerHeight/2,tx=x,ty=y;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}anim()})()</script></body></html>
