@@ -37,4 +37,20 @@ body{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;backgroun
 h1{background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:tFlow 5s ease-in-out infinite}
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
 .container{max-width:800px;margin:0 auto;padding:20px;position:relative;z-index:1}
-@media(max-width:500px){.container{padding:14px}h1{font-size:22px}.header{padding:6px 10px}}
+@media(max-width:600px){
+  .container{padding:12px;max-width:100%}
+  h1{font-size:20px;letter-spacing:-.01em}
+  h2{font-size:15px}
+  .header{padding:8px 12px;border-radius:0 0 16px 16px}
+  .header-logo{font-size:13px}
+  .header-clock{font-size:10px}
+  .card{padding:12px 14px;border-radius:12px}
+  .btn{padding:10px 14px;font-size:11px;min-height:44px}
+  .bottom-nav{padding:5px 10px;gap:3px;bottom:8px}
+  .bottom-nav a{font-size:10px;padding:5px 8px}
+  .fab-top{width:36px;height:36px;bottom:60px;right:10px}
+  .game-box canvas{height:auto!important}
+  body{padding-bottom:70px;font-size:14px}
+  input,select,textarea{font-size:16px!important}
+  .grid2,.grid3{grid-template-columns:1fr}
+}

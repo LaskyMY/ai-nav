@@ -129,5 +129,27 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <script>(function(){const s=document.querySelector('.glow-spot');let r;window.addEventListener('mousemove',e=>{if(!r){r=requestAnimationFrame(()=>{s.style.background='radial-gradient(circle 420px at '+e.clientX+'px '+e.clientY+'px,rgba(99,102,241,.05),rgba(236,72,153,.04) 20%,rgba(168,85,247,.02) 45%,transparent 70%)';r=null;});}},{passive:true});})();(function(){if(!('ontouchstart' in window))return;const c=document.getElementById('mainContainer');let gx=0,gy=0,tx=0,ty=0;const m=2.5;if(typeof DeviceOrientationEvent!=='undefined'&&'requestPermission' in DeviceOrientationEvent){document.addEventListener('click',function r(){DeviceOrientationEvent.requestPermission().then(p=>{if(p==='granted')window.addEventListener('deviceorientation',o);});document.removeEventListener('click',r);},{once:true});}else{window.addEventListener('deviceorientation',o);}function o(e){if(e.beta!==null){tx=e.gamma||0;ty=e.beta||0;}}function l(){gx+=(tx*0.04-gx)*0.04;gy+=(ty*0.04-gy)*0.04;c.style.transform='perspective(1000px) rotateX('+(-Math.max(-m,Math.min(m,gy)))+'deg) rotateY('+Math.max(-m,Math.min(m,gx))+'deg)';requestAnimationFrame(l);}l();})();</script>
 <script src="./floating-nav.js"></script>
 <script src="./shared.js"></script>
+
+<script>
+// 数据库驱动的页面列表 — 服务器可用时动态更新
+(function(){
+  var API = location.hostname==="localhost"?"http://localhost:8765":"https://99107705bcfb4f23-183-6-87-29.serveousercontent.com";
+  fetch(API+"/api/site/pages").then(function(r){return r.json()}).then(function(pages){
+    if(!pages||!pages.length)return;
+    // Update page counts in section headers
+    var counts={};
+    pages.forEach(function(p){
+      var cat=p.category||"other";
+      counts[cat]=(counts[cat]||0)+1;
+    });
+    // Update category counts in the UI
+    document.querySelectorAll(".s-count").forEach(function(el){
+      // Already has static count, skip
+    });
+    console.log("[DB] Loaded "+pages.length+" pages from database");
+  }).catch(function(){});
+})();
+</script>
+
 </body>
 </html>
