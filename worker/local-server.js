@@ -89,13 +89,14 @@ async function handle(req) {
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: cors() });
 
   try {
-    // ── Static pages ──
+    // ── Static pages (serve all files from BASE) ──
     const BASE = "/Users/lasky_my/ai-nav";
-    const staticFiles = {"/clock.html":`${BASE}/clock.html`,"/clock":`${BASE}/clock.html`,"/clock-old.html":`${BASE}/clock-old.html`,"/clock-old":`${BASE}/clock-old.html`,"/clock-proj.html":`${BASE}/clock-proj.html`,"/clock-proj":`${BASE}/clock-proj.html`,"/usage.html":`${BASE}/usage.html`};
-    if (staticFiles[path]) {
+    if (path.endsWith(".html") || path.endsWith(".json") || path.endsWith(".js") || path.endsWith(".svg") || path.endsWith(".ico") || path.endsWith(".css")) {
+      const safePath = path.replace(/\.\./g, "").replace(/\/\//g, "/");
       try {
-        const html = await Deno.readTextFile(staticFiles[path]);
-        return new Response(html, { headers: { ...cors(), "Content-Type": "text/html; charset=utf-8" } });
+        const content = await Deno.readTextFile(BASE + safePath);
+        const ct = path.endsWith(".json") ? "application/json" : path.endsWith(".js") ? "application/javascript" : path.endsWith(".svg") ? "image/svg+xml" : path.endsWith(".css") ? "text/css" : "text/html; charset=utf-8";
+        return new Response(content, { headers: { ...cors(), "Content-Type": ct } });
       } catch (_) { return err("page not found", 404); }
     }
 
