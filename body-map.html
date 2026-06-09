@@ -1,7 +1,8 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"><meta name="theme-color" content="#0a0a0f"><title>人体肌肉互动图 · 点击部位查看训练</title><link rel="stylesheet" href="./shared.css"><link rel="icon" href="./icon.svg"><style>
-:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--green:#10B981;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18)}
-*,::before,::after{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.7;min-height:100vh;padding-bottom:80px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>人体肌肉互动图</title>
+<style>
+:root{--bg:#0a0a0f;--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--green:#10B981;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.6;min-height:100vh;padding-bottom:80px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 .bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.4}
 .bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
@@ -9,206 +10,207 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 .bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--cyan) 0%,transparent 70%);top:50%;left:50%;animation:floatOrb 22s ease-in-out infinite;animation-delay:-7s}
 @keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
 .glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
-.wrap{max-width:900px;margin:0 auto;padding:20px;position:relative;z-index:1}
-h1{font-size:24px;font-weight:700;margin:12px 0 4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:tFlow 5s ease-in-out infinite}
+.wrap{max-width:500px;margin:0 auto;padding:16px;position:relative;z-index:1}
+h1{font-size:22px;font-weight:700;margin:8px 0 4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:tFlow 5s ease-in-out infinite}
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
-
-/* View toggle */
-.view-toggle{display:flex;gap:8px;margin:16px 0}
-.toggle-btn{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:var(--tx3);font-size:13px;cursor:pointer;text-align:center;transition:all .2s;font-family:inherit}
-.toggle-btn.active{border-color:rgba(99,102,241,.4);background:rgba(99,102,241,.1);color:var(--a1);font-weight:600}
-.toggle-btn:hover{border-color:rgba(99,102,241,.2);color:var(--tx2)}
-
-/* Canvas */
-.canvas-wrap{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.06);border-radius:16px;overflow:hidden;margin:16px 0;cursor:crosshair;position:relative}
-.canvas-wrap canvas{width:100%;display:block}
-.canvas-label{position:absolute;top:10px;left:14px;font-size:10px;color:var(--tx4);pointer-events:none}
-
-/* Info panel */
-.info-panel{background:rgba(255,255,255,.04);border:1px solid rgba(99,102,241,.2);border-radius:14px;padding:18px;margin:12px 0;min-height:80px;transition:all .3s;backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px)}
-.info-panel .muscle-title{font-size:18px;font-weight:700;color:var(--cyan);margin-bottom:6px}
-.info-panel .muscle-desc{font-size:13px;color:var(--tx2);margin-bottom:10px}
-.info-panel .exercise-tag{display:inline-block;padding:4px 12px;border-radius:6px;background:rgba(0,229,255,.08);color:var(--cyan);font-size:11px;margin:3px}
-.info-placeholder{text-align:center;color:var(--tx4);padding:20px;font-size:14px}
-.info-placeholder .emoji{font-size:40px;display:block;margin-bottom:8px}
-
-.back{text-align:center;margin-top:24px}.back a{color:var(--tx4);font-size:11px;text-decoration:none}
-@media(max-width:600px){.wrap{padding:12px}h1{font-size:20px}}
+.sub{font-size:11px;color:var(--tx3);margin-bottom:12px}
+.view-toggle{display:flex;gap:6px;margin:10px 0}
+.toggle-btn{flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:var(--tx3);font-size:12px;cursor:pointer;text-align:center;font-family:inherit}
+.toggle-btn.active{border-color:rgba(99,102,241,.4);background:rgba(99,102,241,.12);color:var(--a1);font-weight:600}
+.canvas-box{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;margin:10px 0;position:relative}
+.canvas-box canvas{display:block;width:100%;height:auto;cursor:crosshair}
+.info-card{background:rgba(255,255,255,.04);border:1px solid rgba(99,102,241,.2);border-radius:14px;padding:16px;margin:10px 0;min-height:60px;backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px)}
+.info-card .mt{font-size:16px;font-weight:700;color:var(--cyan);margin-bottom:4px}
+.info-card .md{font-size:12px;color:var(--tx2);margin-bottom:8px}
+.info-card .tag{display:inline-block;padding:3px 10px;border-radius:6px;background:rgba(0,229,255,.08);color:var(--cyan);font-size:10px;margin:2px}
+.info-card .ph{text-align:center;color:var(--tx4);padding:8px;font-size:13px}
+.back-link{text-align:center;margin-top:20px}.back-link a{color:var(--tx4);font-size:11px;text-decoration:none}
 </style></head><body>
 <div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot" id="glowSpot"></div>
 
 <div class="wrap">
-<div class="breadcrumb"><a href="./knowledge.html">百科</a> / 健身</div>
-<h1>人体肌肉互动图</h1>
-<p style="font-size:13px;color:var(--tx2);margin:6px 0 16px">鼠标悬停任意部位 → 显示肌肉名称和训练动作。点击正/背面切换视角</p>
+<h1>🗺️ 人体肌肉互动图</h1>
+<p class="sub">手指点一下你想练的部位 → 显示肌肉名称和训练动作</p>
 
 <div class="view-toggle">
-  <button class="toggle-btn active" onclick="switchView('front')" id="btnFront">🧍 正面</button>
-  <button class="toggle-btn" onclick="switchView('back')" id="btnBack">🧎 背面</button>
+  <button class="toggle-btn active" onclick="setView('front')" id="btnF">🧍 正面</button>
+  <button class="toggle-btn" onclick="setView('back')" id="btnB">🧎 背面</button>
 </div>
 
-<div class="canvas-wrap"><canvas id="body"></canvas><span class="canvas-label">🖱 悬停肌肉区域查看详情</span></div>
+<div class="canvas-box"><canvas id="c"></canvas></div>
 
-<div class="info-panel" id="infoPanel">
-  <div class="info-placeholder"><span class="emoji">👆</span>悬停上方人体图任意部位查看训练动作</div>
+<div class="info-card" id="info">
+  <div class="ph">👆 点击上方人体图查看训练动作</div>
 </div>
 
-<div class="back"><a href="./knowledge.html">← 返回百科</a></div>
+<div class="back-link"><a href="./knowledge.html">← 返回百科</a></div>
 </div>
 
 <script>
-// ═══ Muscle Data ═══
-var muscles={
-  front:[
-    {id:"chest", label:"胸大肌", desc:"卧推是最好的胸部动作。上斜练上胸，下斜练下胸。", ex:["杠铃卧推","哑铃飞鸟","绳索夹胸","俯卧撑"], zone:{x:150,y:80,w:90,h:120}, color:"#f87171"},
-    {id:"front_delt", label:"三角肌前束", desc:"肩膀前面的部分。推举类动作主要刺激这里。", ex:["哑铃推举","前平举","阿诺德推举"], zone:{x:100,y:50,w:70,h:70}, color:"#fb923c"},
-    {id:"biceps", label:"肱二头肌", desc:"手臂前面的肌肉。弯举类动作刺激。", ex:["杠铃弯举","哑铃锤式弯举","集中弯举"], zone:{x:90,y:140,w:50,h:90}, color:"#fbbf24"},
-    {id:"abs", label:"腹直肌", desc:"六块腹肌。卷腹+悬垂举腿。体脂够低才能看见。", ex:["卷腹","悬垂举腿","平板支撑","健腹轮"], zone:{x:150,y:200,w:90,h:120}, color:"#a78bfa"},
-    {id:"quads", label:"股四头肌", desc:"大腿前面的肌肉。深蹲是最好的动作。", ex:["杠铃深蹲","腿举","箭步蹲","腿屈伸"], zone:{x:140,y:320,w:50,h:110}, color:"#34d399"},
-    {id:"calves_f", label:"胫骨前肌", desc:"小腿前面的肌肉。提踵练小腿。", ex:["站姿提踵","坐姿提踵"], zone:{x:140,y:430,w:50,h:60}, color:"#60a5fa"},
-    {id:"forearms_f", label:"前臂屈肌", desc:"手臂末端的肌肉。腕弯举专门练这里。", ex:["腕弯举","反握腕弯举","抓握训练"], zone:{x:85,y:225,w:45,h:60}, color:"#f472b6"},
+// ═══ Muscle Data — proportional coordinates (0-1 within body bounding box) ═══
+var M = {
+  front: [
+    {n:"胸大肌",d:"卧推+飞鸟+俯卧撑。上斜练上胸。",e:["杠铃卧推","哑铃飞鸟","绳索夹胸"],x:.30,y:.16,w:.40,h:.22,c:"#f87171"},
+    {n:"三角肌前束",d:"推举类动作刺激。肩膀前面。",e:["哑铃推举","前平举"],x:.18,y:.08,w:.28,h:.12,c:"#fb923c"},
+    {n:"肱二头肌",d:"弯举类。手臂前侧。",e:["杠铃弯举","锤式弯举"],x:.15,y:.24,w:.18,h:.18,c:"#fbbf24"},
+    {n:"腹直肌",d:"六块腹肌。卷腹+举腿。体脂低才能看见。",e:["卷腹","悬垂举腿","平板支撑"],x:.30,y:.38,w:.38,h:.22,c:"#a78bfa"},
+    {n:"股四头肌",d:"大腿前面。深蹲+腿举。",e:["杠铃深蹲","腿举","箭步蹲"],x:.28,y:.60,w:.18,h:.22,c:"#34d399"},
+    {n:"前臂屈肌",d:"腕弯举专门练。小臂末端。",e:["腕弯举","反握弯举"],x:.05,y:.38,w:.14,h:.12,c:"#f472b6"},
+    {n:"小腿前侧",d:"提踵练小腿。",e:["站姿提踵","坐姿提踵"],x:.28,y:.82,w:.18,h:.10,c:"#60a5fa"},
   ],
-  back:[
-    {id:"rear_delt", label:"三角肌后束", desc:"肩膀后面。反向飞鸟+面拉。没它肩膀是平的。", ex:["反向飞鸟","绳索面拉","蝴蝶机反向"], zone:{x:300,y:50,w:80,h:60}, color:"#818cf8"},
-    {id:"traps", label:"斜方肌", desc:"脖子到肩膀的肌肉。耸肩是最直接的动作。", ex:["哑铃耸肩","农夫行走","杠铃划船"], zone:{x:250,y:10,w:120,h:80}, color:"#ec4899"},
-    {id:"lats", label:"背阔肌", desc:"背部最大的肌肉。引体向上+划船。倒三角的关键。", ex:["引体向上","杠铃划船","高位下拉","哑铃划船"], zone:{x:300,y:90,w:120,h:190}, color:"#6366f1"},
-    {id:"triceps", label:"肱三头肌", desc:"手臂后面的肌肉，占手臂体积的2/3。", ex:["窄距卧推","绳索下压","臂屈伸"], zone:{x:410,y:120,w:50,h:100}, color:"#f59e0b"},
-    {id:"glutes", label:"臀大肌", desc:"人体最大的肌肉。臀推+硬拉。", ex:["杠铃臀推","罗马尼亚硬拉","保加利亚蹲"], zone:{x:340,y:280,w:100,h:70}, color:"#10b981"},
-    {id:"hamstrings", label:"腘绳肌", desc:"大腿后面的肌肉。硬拉+腿弯举。", ex:["罗马尼亚硬拉","腿弯举","北欧弯举"], zone:{x:340,y:350,w:80,h:100}, color:"#14b8a6"},
-    {id:"calves_b", label:"腓肠肌", desc:"小腿后面的肌肉。提踵训练。", ex:["站姿提踵","驴式提踵"], zone:{x:340,y:450,w:70,h:60}, color:"#0ea5e9"},
-    {id:"spinal", label:"竖脊肌", desc:"脊柱两边的肌肉。硬拉+山羊挺身。", ex:["硬拉","山羊挺身","超人式"], zone:{x:380,y:90,w:30,h:200}, color:"#8b5cf6"},
+  back: [
+    {n:"三角肌后束",d:"肩膀后面。反向飞鸟+面拉。没它肩是平的。",e:["反向飞鸟","绳索面拉"],x:.30,y:.08,w:.40,h:.12,c:"#818cf8"},
+    {n:"斜方肌",d:"脖子到肩膀。耸肩。穿衣撑起来。",e:["哑铃耸肩","农夫行走"],x:.25,y:.00,w:.50,h:.12,c:"#ec4899"},
+    {n:"背阔肌",d:"背部最大肌肉。引体+划船。倒三角关键。",e:["引体向上","杠铃划船","高位下拉"],x:.30,y:.14,w:.40,h:.34,c:"#6366f1"},
+    {n:"肱三头肌",d:"手臂后侧。占手臂2/3体积。",e:["窄距卧推","绳索下压"],x:.72,y:.20,w:.16,h:.20,c:"#f59e0b"},
+    {n:"臀大肌",d:"人体最大肌肉。臀推+硬拉。",e:["杠铃臀推","硬拉"],x:.30,y:.48,w:.40,h:.14,c:"#10b981"},
+    {n:"腘绳肌",d:"大腿后面。硬拉+腿弯举。",e:["罗马尼亚硬拉","腿弯举"],x:.30,y:.62,w:.40,h:.20,c:"#14b8a6"},
+    {n:"腓肠肌",d:"小腿后面。提踵。",e:["站姿提踵","驴式提踵"],x:.30,y:.82,w:.40,h:.10,c:"#0ea5e9"},
+    {n:"竖脊肌",d:"脊柱两边。硬拉+山羊挺身。",e:["硬拉","山羊挺身"],x:.42,y:.12,w:.16,h:.38,c:"#8b5cf6"},
   ]
 };
-var currentView='front',hovered=null,mx=0,my=0;
 
-// ═══ Canvas Rendering ═══
-var c=document.getElementById('body'),ctx=c.getContext('2d');
-c.width=900;c.height=520;
-var W=c.width,H=c.height;
+var view='front',hover=null;
+var c=document.getElementById('c'),ctx=c.getContext('2d');
+var W=500,H=550; // 固定画布尺寸
+
+function resizeCanvas(){
+  var box=c.parentElement;
+  var w=box.clientWidth;
+  // Keep aspect ratio
+  c.width=W;c.height=H;
+}
+
+function bodyBounds(){ return {x:50,y:30,w:W-100,h:H-80}; }
 
 function draw(){
   ctx.clearRect(0,0,W,H);
+  var bb=bodyBounds();
+  var zones=M[view];
 
-  // Background outline
-  drawBodyOutline();
+  // Body silhouette
+  var bx=bb.x,by=bb.y,bw=bb.w,bh=bb.h;
+  if(view==='front'){
+    // Head
+    var hx=bx+bw*.35,hy=by-10,hr=bw*.14;
+    ctx.fillStyle='rgba(255,255,255,.03)';ctx.beginPath();ctx.arc(hx+hr,by+hr*.3,hr,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(hx+hr,by+hr*.3,hr,0,Math.PI*2);ctx.stroke();
+    // Neck
+    ctx.fillStyle='rgba(255,255,255,.02)';ctx.fillRect(bx+bw*.38,by+hr*.6,bw*.24,hr*.8);
+    // Torso
+    ctx.beginPath();ctx.moveTo(bx,by+hr*1.2);ctx.lineTo(bx+bw,by+hr*1.2);ctx.lineTo(bx+bw*.9,by+bh*.6);ctx.lineTo(bx+bw*.1,by+bh*.6);ctx.closePath();ctx.fill();ctx.stroke();
+    // Arms
+    ctx.fillRect(bx-bw*.08,by+hr*1.5,bw*.2,bh*.35);
+    ctx.fillRect(bx+bw*.88,by+hr*1.5,bw*.2,bh*.35);
+    // Legs
+    ctx.fillRect(bx+bw*.2,by+bh*.58,bw*.28,bh*.38);
+    ctx.fillRect(bx+bw*.52,by+bh*.58,bw*.28,bh*.38);
+  } else {
+    // Head
+    var hx=bx+bw*.35,hy=by-10,hr=bw*.14;
+    ctx.beginPath();ctx.arc(hx+hr,by+hr*.3,hr,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.fillRect(bx+bw*.38,by+hr*.6,bw*.24,hr*.8);
+    // Torso (wider at top for back)
+    ctx.beginPath();ctx.moveTo(bx-bw*.05,by+hr*1.2);ctx.lineTo(bx+bw*1.05,by+hr*1.2);ctx.lineTo(bx+bw*.9,by+bh*.6);ctx.lineTo(bx+bw*.1,by+bh*.6);ctx.closePath();ctx.fill();ctx.stroke();
+    // Arms
+    ctx.fillRect(bx+bw*.9,by+hr*1.5,bw*.2,bh*.35);
+    ctx.fillRect(bx-bw*.1,by+hr*1.5,bw*.2,bh*.35);
+    // Legs
+    ctx.fillRect(bx+bw*.2,by+bh*.58,bw*.28,bh*.38);
+    ctx.fillRect(bx+bw*.52,by+bh*.58,bw*.28,bh*.38);
+  }
 
-  // Draw muscle zones
-  var zones=muscles[currentView];
-  var hoveredZone=null;
-
+  // Muscle zones
+  var hovered=null;
   for(var i=0;i<zones.length;i++){
-    var z=zones[i],zx=z.zone.x,zy=z.zone.y,zw=z.zone.w,zh=z.zone.h;
-    var isHovered=mx>zx&&mx<zx+zw&&my>zy&&my<zy+zh;
-    if(isHovered)hoveredZone=z;
+    var z=zones[i];
+    var zx=bx+z.x*bw,zy=by+z.y*bh,zw=z.w*bw,zh=z.h*bh;
+    var isHover=hover&&hover.x>zx&&hover.x<zx+zw&&hover.y>zy&&hover.y<zy+zh;
+    if(isHover)hovered=z;
 
-    // Glow
-    if(isHovered){
-      var grd=ctx.createRadialGradient(zx+zw/2,zy+zh/2,0,zx+zw/2,zy+zh/2,Math.max(zw,zh));
-      grd.addColorStop(0,z.color.replace(")","")+",0.3)");grd.addColorStop(1,"transparent");
-      ctx.fillStyle=grd;ctx.fillRect(zx-20,zy-20,zw+40,zh+40);
-    }
-
-    // Zone fill
-    ctx.fillStyle=isHovered?z.color.replace(")","")+",0.4)":z.color.replace(")","")+",0.12)";
-    ctx.strokeStyle=isHovered?z.color.replace(")","")+",0.8)":z.color.replace(")","")+",0.2)";
-    ctx.lineWidth=isHovered?2:1;
+    var alpha=isHover?0.5:0.15;
+    ctx.fillStyle=z.c.replace(")","")+","+alpha+")";
+    ctx.strokeStyle=isHover?z.c:z.c.replace(")","")+",0.25)";
+    ctx.lineWidth=isHover?2.5:1;
 
     // Rounded rect
-    var r=10;
+    var r=6;
     ctx.beginPath();ctx.moveTo(zx+r,zy);ctx.lineTo(zx+zw-r,zy);ctx.arcTo(zx+zw,zy,zx+zw,zy+r,r);ctx.lineTo(zx+zw,zy+zh-r);ctx.arcTo(zx+zw,zy+zh,zx+zw-r,zy+zh,r);ctx.lineTo(zx+r,zy+zh);ctx.arcTo(zx,zy+zh,zx,zy+zh-r,r);ctx.lineTo(zx,zy+r);ctx.arcTo(zx,zy,zx+r,zy,r);ctx.closePath();
     ctx.fill();ctx.stroke();
 
+    // Glow on hover
+    if(isHover){
+      var grd=ctx.createRadialGradient(zx+zw/2,zy+zh/2,0,zx+zw/2,zy+zh/2,Math.max(zw,zh)*1.2);
+      grd.addColorStop(0,z.c.replace(")","")+",0.25)");grd.addColorStop(1,"transparent");
+      ctx.fillStyle=grd;ctx.fillRect(zx-15,zy-15,zw+30,zh+30);
+      // Redraw zone on top
+      ctx.fillStyle=z.c.replace(")","")+",0.5)";ctx.strokeStyle=z.c;ctx.lineWidth=2.5;
+      ctx.beginPath();ctx.moveTo(zx+r,zy);ctx.lineTo(zx+zw-r,zy);ctx.arcTo(zx+zw,zy,zx+zw,zy+r,r);ctx.lineTo(zx+zw,zy+zh-r);ctx.arcTo(zx+zw,zy+zh,zx+zw-r,zy+zh,r);ctx.lineTo(zx+r,zy+zh);ctx.arcTo(zx,zy+zh,zx,zy+zh-r,r);ctx.lineTo(zx,zy+r);ctx.arcTo(zx,zy,zx+r,zy,r);ctx.closePath();
+      ctx.fill();ctx.stroke();
+    }
+
     // Label
-    ctx.fillStyle=isHovered?"#fff":"rgba(255,255,255,.6)";
-    ctx.font=isHovered?"bold 13px system-ui":"11px system-ui";
-    ctx.textAlign="center";
-    ctx.fillText(z.label,zx+zw/2,zy+zh/2+4);
+    ctx.font=isHover?"bold 12px system-ui":"10px system-ui";
+    ctx.fillStyle=isHover?"#fff":"rgba(255,255,255,.5)";
+    ctx.textAlign="center";ctx.textBaseline="middle";
+    ctx.fillText(z.n,zx+zw/2,zy+zh/2);
   }
 
   // Update info panel
-  if(hoveredZone!==hovered){
-    hovered=hoveredZone;
-    updateInfo(hoveredZone);
-  }
-
-  // Cursor highlight
-  if(hoveredZone){
-    ctx.strokeStyle="rgba(0,229,255,.4)";ctx.lineWidth=2;ctx.setLineDash([4,4]);
-    ctx.strokeRect(hoveredZone.zone.x-3,hoveredZone.zone.y-3,hoveredZone.zone.w+6,hoveredZone.zone.h+6);
-    ctx.setLineDash([]);
+  if(hovered!==hover){
+    hover=hovered;
+    updateInfo(hovered);
   }
 
   requestAnimationFrame(draw);
 }
 
-function drawBodyOutline(){
-  ctx.fillStyle="rgba(255,255,255,.02)";
-  ctx.strokeStyle="rgba(255,255,255,.06)";ctx.lineWidth=2;
-
-  if(currentView==="front"){
-    // Head
-    ctx.beginPath();ctx.arc(185,45,30,0,Math.PI*2);ctx.fill();ctx.stroke();
-    // Neck
-    ctx.fillRect(170,72,30,25);
-    // Torso
-    ctx.beginPath();ctx.moveTo(130,95);ctx.lineTo(240,95);ctx.lineTo(250,280);ctx.lineTo(120,280);ctx.closePath();ctx.fill();ctx.stroke();
-    // Arms
-    ctx.fillRect(95,95,45,170);ctx.fillRect(230,95,45,170);
-    // Legs
-    ctx.fillRect(130,280,55,180);ctx.fillRect(185,280,55,180);
-
-    // midline
-    ctx.strokeStyle="rgba(255,255,255,.04)";ctx.lineWidth=1;ctx.setLineDash([4,8]);
-    ctx.beginPath();ctx.moveTo(185,98);ctx.lineTo(185,278);ctx.stroke();ctx.setLineDash([]);
-  } else {
-    // Head
-    ctx.beginPath();ctx.arc(380,45,30,0,Math.PI*2);ctx.fill();ctx.stroke();
-    // Neck
-    ctx.fillRect(365,72,30,25);
-    // Torso
-    ctx.beginPath();ctx.moveTo(320,95);ctx.lineTo(440,95);ctx.lineTo(450,280);ctx.lineTo(310,280);ctx.closePath();ctx.fill();ctx.stroke();
-    // Arms
-    ctx.fillRect(440,95,45,170);ctx.fillRect(275,95,45,170);
-    // Legs
-    ctx.fillRect(320,280,60,180);ctx.fillRect(385,280,60,180);
-
-    // Spine line
-    ctx.strokeStyle="rgba(255,255,255,.04)";ctx.lineWidth=1;ctx.setLineDash([4,8]);
-    ctx.beginPath();ctx.moveTo(380,98);ctx.lineTo(380,278);ctx.stroke();ctx.setLineDash([]);
-  }
-}
-
 function updateInfo(z){
-  var panel=document.getElementById("infoPanel");
-  if(!z){
-    panel.innerHTML='<div class="info-placeholder"><span class="emoji">👆</span>悬停上方人体图任意部位查看训练动作</div>';
-    return;
-  }
-  var tags=z.ex.map(function(e){return '<span class="exercise-tag">'+e+'</span>'}).join(" ");
-  panel.innerHTML='<div class="muscle-title">'+z.label+'</div><div class="muscle-desc">'+z.desc+'</div><div>'+tags+'</div>';
+  var el=document.getElementById("info");
+  if(!z){el.innerHTML='<div class="ph">👆 点击上方人体图查看训练动作</div>';return}
+  var tags=z.e.map(function(x){return'<span class="tag">'+x+'</span>'}).join(" ");
+  el.innerHTML='<div class="mt">'+z.n+'</div><div class="md">'+z.d+'</div><div>'+tags+'</div>';
 }
 
-// ═══ Events ═══
+// Mouse/touch tracking
+var mx=0,my=0,tracking=false;
 c.addEventListener('mousemove',function(e){
   var r=c.getBoundingClientRect();
-  mx=(e.clientX-r.left)*(W/r.width);
-  my=(e.clientY-r.top)*(H/r.height);
+  var scaleX=W/r.width,scaleY=H/r.height;
+  mx=(e.clientX-r.left)*scaleX;
+  my=(e.clientY-r.top)*scaleY;
+  tracking=true;
 });
+c.addEventListener('mouseleave',function(){tracking=false;hover=null;updateInfo(null)});
 c.addEventListener('touchmove',function(e){
   e.preventDefault();
   var r=c.getBoundingClientRect();
-  mx=(e.touches[0].clientX-r.left)*(W/r.width);
-  my=(e.touches[0].clientY-r.top)*(H/r.height);
+  var scaleX=W/r.width,scaleY=H/r.height;
+  mx=(e.touches[0].clientX-r.left)*scaleX;
+  my=(e.touches[0].clientY-r.top)*scaleY;
+  tracking=true;
 },{passive:false});
+c.addEventListener('touchend',function(){tracking=false;hover=null;updateInfo(null)});
 
-function switchView(view){
-  currentView=view;hovered=null;
-  document.getElementById("btnFront").classList.toggle("active",view==="front");
-  document.getElementById("btnBack").classList.toggle("active",view==="back");
+function setView(v){
+  view=v;hover=null;
+  document.getElementById('btnF').classList.toggle('active',v==='front');
+  document.getElementById('btnB').classList.toggle('active',v==='back');
   updateInfo(null);
 }
-draw();
+
+// Main loop
+function loop(){
+  if(tracking){
+    var bb=bodyBounds();
+    hover={x:mx,y:my};
+  } else {hover=null}
+  draw();
+}
+loop();
+
+// Glow script
+(function(){var g=document.getElementById('glowSpot');if(!g||'ontouchstart' in window)return;var x=innerWidth/2,y=innerHeight/2,tx=x,ty=y;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}anim()})();
 </script>
-<script src="./shared.js"></script>
 </body></html>
