@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>DAY 06 · 跟 AI 好好说话</title>
+<title>DAY 06 · 跟AI聊天的正确姿势</title>
 <style>
-:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--vio:#a855f7;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
 .bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
@@ -17,95 +17,70 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 .wrap{max-width:800px;margin:0 auto;padding:20px;position:relative;z-index:1}
 h1{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:12px 0 4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
-h2{font-size:16px;font-weight:700;color:var(--cyan);margin:30px 0 10px;border-left:3px solid var(--cyan);padding-left:10px}
+h2{font-size:16px;font-weight:700;color:var(--cyan);margin:0 0 10px}
 .breadcrumb{font-size:11px;color:var(--tx3);margin-bottom:8px}
 .breadcrumb a{color:var(--tx4);text-decoration:none}
-.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;margin-right:6px}
-.badge.req{background:rgba(99,102,241,.15);color:#818cf8}
-.hero-desc{font-size:14px;color:var(--tx2);margin:8px 0 16px;line-height:1.7}
-.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:16px;padding:16px 18px;margin-bottom:10px;position:relative;overflow:hidden}
+.badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:10px;font-weight:600;margin-bottom:8px;background:rgba(99,102,241,.15);color:#818cf8}
+.hero-desc{font-size:14px;color:var(--tx2);margin:10px 0 20px;line-height:1.8}
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:16px;padding:18px 20px;margin-bottom:12px;position:relative;overflow:hidden}
 .card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
-.card.card-ok{border-left:3px solid rgba(16,185,129,.4)}
-.card.card-warn{border-left:3px solid rgba(245,158,11,.4)}
+.card-ok{border-left:3px solid rgba(16,185,129,.4)}
+.card-warn{border-left:3px solid rgba(245,158,11,.4)}
 ul{padding-left:20px;margin:6px 0}
-li{margin:4px 0;font-size:14px;color:rgba(255,255,255,.7)}
-li::marker{color:var(--tx4)}
+li{margin:5px 0;font-size:14px;color:rgba(255,255,255,.7)}
+li::marker{color:rgba(255,255,255,.15)}
 .nav-btns{display:flex;gap:8px;margin:24px 0}
-.btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;text-align:center;transition:all .25s var(--ease);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.btn{display:inline-block;padding:10px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;transition:all .25s var(--ease);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .btn:hover{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.08);color:var(--tx)}
 .btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:var(--cyan)}
 .back{text-align:center;margin-top:28px}
 .back a{color:var(--tx4);font-size:11px;text-decoration:none}
-
-/* TOC Sidebar */
-.toc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px;margin-bottom:20px}
-.toc-title{font-size:13px;font-weight:700;color:var(--cyan);margin-bottom:8px}
+.toc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px 16px;margin-bottom:20px}
+.toc-title{font-size:12px;font-weight:700;color:var(--cyan);margin-bottom:6px}
 .toc-track{font-size:10px;color:var(--tx4);margin-bottom:6px}
-.toc-list{display:flex;flex-direction:column;gap:2px}
+.toc-list{display:flex;flex-direction:column;gap:1px}
 .toc-item{display:block;padding:5px 10px;border-radius:6px;font-size:11px;color:var(--tx3);text-decoration:none;transition:all .15s}
 .toc-item:hover{background:rgba(255,255,255,.05);color:var(--tx2)}
 .toc-item.active{background:rgba(99,102,241,.1);color:var(--a1);font-weight:600}
 .toc-all{display:block;margin-top:8px;font-size:10px;color:var(--tx4);text-decoration:none}
 .toc-all:hover{color:var(--tx2)}
-
 @media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
 </style>
 </head>
 <body>
 <div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot" id="glowSpot"></div>
-
 <div class="wrap">
 <div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / AI 协作 / DAY 06</div>
-
-<div class="toc">
-<div class="toc-title">📑 本模块目录</div>
-<div class="toc-track">AI 协作</div>
-<div class="toc-list"><a class="toc-item" href="./a1-toolbox.html">装好你的工具箱</a>
-<a class="toc-item" href="./a2-project-town.html">项目是一座小镇</a>
-<a class="toc-item" href="./a3-engine-plugin-extension.html">引擎、插件、扩展</a>
-<a class="toc-item" href="./a4-ue-project.html">走进 UE 项目</a>
-<a class="toc-item active" href="./a5-ai-prompting.html">跟 AI 好好说话</a>
-<a class="toc-item" href="./a6-errors.html">读懂报错</a>
-<a class="toc-item" href="./a7-editor-tool.html">第一个 Editor 工具</a>
-<a class="toc-item" href="./a8-version-collaboration.html">提交、版本、协作</a></div>
-<a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a>
-</div>
-
-<span class="badge req">DAY · 06</span>
-<h1>跟 AI 好好说话</h1>
-<div class="hero-desc">不是 AI 没用，是你说的话不够具体。问"帮我写代码"和问"帮我用 Python 写一个能读取 CSV 文件并画图表的程序"，结果差十倍。</div>
-
-<div class="card card-ok">
-<h2>📝 核心要点</h2>
-<ul><li>具体 > 模糊：说清楚输入、输出、限制条件</li>
-<li>给范例：给AI看你想要的结果长什么样</li>
-<li>分步走：先让AI理解需求→再让它写代码→最后让它测试</li>
-<li>不满意就说："不对，我要的是XXX，请重新做"</li>
-<li>AI是你的助手，不是算命先生——你要交代清楚</li></ul>
-</div>
-
-<div class="card card-warn">
-<h2>✅ 打卡任务</h2>
-<ul><li>写一个具体的需求发给AI（要包含：做什么、用什么语言、输入什么、输出什么）</li>
-<li>看看AI给你的代码，如果不满意，告诉它哪里不对</li>
-<li>试试分步法：先让AI讨论方案，再让它写代码</li></ul>
-</div>
-
-<div class="nav-btns">
-  <a class="btn" href="../vibe-coding.html">📚 课程目录</a>
-</div>
-
+<div class="toc"><div class="toc-title">📑 本模块目录</div><div class="toc-track">AI 协作</div><div class="toc-list"><a class="toc-item" href="./a1-toolbox.html">装好你的开发工具</a>
+<a class="toc-item" href="./a2-project-town.html">项目文件夹像一座城市</a>
+<a class="toc-item" href="./a3-engine-plugin-extension.html">插件让软件更强大</a>
+<a class="toc-item" href="./a4-ue-project.html">理解UE项目文件</a>
+<a class="toc-item active" href="./a5-ai-prompting.html">跟AI聊天的正确姿势</a>
+<a class="toc-item" href="./a6-errors.html">报错不是敌人</a>
+<a class="toc-item" href="./a7-editor-tool.html">你的第一个工具</a>
+<a class="toc-item" href="./a8-version-collaboration.html">代码要给队友用</a></div><a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a></div>
+<span class="badge">DAY · 06</span>
+<h1>跟AI聊天的正确姿势</h1>
+<div class="hero-desc">很多人觉得AI不好用，其实是Prompt写法不对。好的Prompt包含四要素：你是谁（角色）、做什么（任务）、怎么判断成功（标准）、有什么限制（约束）。给齐这四个信息，AI的输出质量能翻倍。</div>
+<div class="card card-ok"><h2>核心要点</h2><ul><li>要素1：设定角色——"你是一个前端工程师"</li>
+<li>要素2：明确任务——"帮我写一个登录页面"</li>
+<li>要素3：成功标准——"包含邮箱和密码输入框，有错误提示"</li>
+<li>要素4：限制条件——"用纯HTML+CSS，不要框架"</li>
+<li>这四个要素写齐了，AI基本不会跑偏</li></ul></div>
+<div class="card card-warn"><h2>动手练习</h2><ul><li>用四要素法写一个Prompt，发给AI</li>
+<li>对比"帮我写个网页"vs带四要素的版本，看结果差异</li>
+<li>问问AI"你需要我补充什么信息才能做得更好"</li></ul></div>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 全部课程</a></div>
 <div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
 </div>
-
 <script>
 (function(){
-  var g = document.getElementById('glowSpot');
-  if (!g || 'ontouchstart' in window) return;
-  var x = window.innerWidth/2, y = window.innerHeight/2, tx = x, ty = y;
-  document.addEventListener('mousemove', function(e){ tx=e.clientX; ty=e.clientY });
-  function anim(){ x+=(tx-x)*0.05; y+=(ty-y)*0.05; g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px, rgba(99,102,241,.06) 0%, rgba(236,72,153,.035) 18%, rgba(6,182,212,.02) 42%, transparent 70%)'; requestAnimationFrame(anim); }
+  var g=document.getElementById('glowSpot');
+  if(!g||'ontouchstart' in window)return;
+  var x=window.innerWidth/2,y=window.innerHeight/2,tx=x,ty=y;
+  document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});
+  function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}
   anim();
 })();
 </script>
