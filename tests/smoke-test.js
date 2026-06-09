@@ -182,6 +182,29 @@ for (const p of designPages) {
     check(p + " 设计规范", true);
   }
 }
+// 课程子页面
+const lessonPages = ["restart","fear","prompt","errors","tools","think","mvp","verify","safe","copy","duck","try","spot","env","docs","small","show"];
+for (const l of lessonPages) {
+  const r = await httpGet("/vibe-coding-lessons/" + l + ".html");
+  const h = r.body;
+  const checks = {
+    DOCTYPE: h.startsWith("<!DOCTYPE"),
+    viewport: h.includes("viewport"),
+    bg_0a0a0f: h.includes("0a0a0f") || h.includes("--bg"),
+    glowSpot: h.includes("glowSpot"),
+    system_ui: h.includes("system-ui"),
+    antialiased: h.includes("antialiased"),
+    backdrop_filter: h.includes("backdrop-filter"),
+    return_link: h.includes("返回"),
+  };
+  let failed = [];
+  for (const [k, v] of Object.entries(checks)) { if (!v) failed.push(k); }
+  if (failed.length > 0) {
+    check("课程:"+l+" 设计规范", false, "缺: " + failed.join(", "));
+  } else {
+    check("课程:"+l+" 设计规范", true);
+  }
+}
 for (const c of ["clock.html","clock-old.html","clock-proj.html"]) {
   check(c + " 时钟豁免", true);
 }
