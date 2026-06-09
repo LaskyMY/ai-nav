@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>版本管理与回滚意识：别让 AI 一次改炸 · 小K的大神之路</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.8;padding:16px;max-width:700px;margin:0 auto;padding-bottom:32px}
+h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:4px}
+h2{font-size:16px;font-weight:700;color:#818cf8;margin:20px 0 8px;border-left:3px solid #818cf8;padding-left:10px}
+h3{font-size:14px;color:rgba(255,255,255,.85);margin:14px 0 6px}
+.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:16px}
+.breadcrumb{font-size:10px;color:rgba(255,255,255,.25);margin-bottom:12px}
+.breadcrumb a{color:rgba(255,255,255,.35);text-decoration:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge.req{background:rgba(99,102,241,.15);color:#818cf8}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
+.scene-tag{font-size:9px;color:#00e5ff;font-weight:700;margin-bottom:8px;letter-spacing:.5px}
+.who{color:#fbbf24;font-weight:600}
+.checklist{list-style:none;padding:0}
+.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
+.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
+.nav-btns{display:flex;gap:8px;margin:20px 0}
+.btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:12px;text-decoration:none;text-align:center}
+.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:#00e5ff}
+pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.5;margin:8px 0}
+code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
+.tip{border-left:2px solid #fbbf24;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(245,158,11,.04)}
+p{margin:8px 0;font-size:12px;color:rgba(255,255,255,.65)}
+.back{text-align:center;margin-top:24px}
+.back a{color:rgba(255,255,255,.2);font-size:10px;text-decoration:none}
+.lesson-kicker{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / AI 工具入门 / 必修课 · §12</div>
+<div class="lesson-kicker"><span class="badge required">必修</span><span class="lesson-index">第 13 / 33 节</span></div><h1>版本管理与回滚意识：别让 AI 一次改炸</h1><p>AI 能在一分钟里改十个文件，也能在一分钟里把十个文件都改坏。真正的 VibeCoding 不是更猛地冲，而是每一步都留得住、退得回。</p>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<article><div class="scene">
+    <div class="scene-tag">SCENE · 越改越乱</div>
+    <p><span class="who">小K</span>：“AI 第一次改错了，我又让它修。它修完更乱。我再让它修，它又动了更多文件。现在我不知道坏在哪里了。”</p>
+    <p><span class="who">G 哥</span>：“这就是没有回滚意识的典型事故。你不能让错误叠错误，应该先停下来，回到最近一个能跑的状态。”</p>
+  </div>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>AI 协作的专业感，来自你能控制修改半径，而不是让 AI 一直补锅。</h4>
+    <p>版本管理是工具，回滚意识是习惯。你要在每次开工前就想好：如果这次改坏了，我怎么知道坏在哪里？我怎么退回去？我怎么让下一轮 AI 不继续扩大伤口？</p>
+  </div>
+
+  <h3>第一步：不要把一次对话变成无限连环修</h3>
+  <p>新手常见的灾难流程是：AI 改错了，让 AI 修；修坏了，再让 AI 修；越修越大，最后连最初的问题都看不清。</p>
+  <div class="compare"><div><b>危险流程</b><p>一个大需求，一次改十几个文件，报错后继续追加修复，没看 diff，没做存档。</p></div><div><b>健康流程</b><p>一个小目标，一次改少量文件，改完先验证，通过后提交，不通过就回到上一个稳定点。</p></div></div>
+
+  <h3>第二步：AI 修改前的安全检查</h3>
+  <table class="decision-table"><tr><th>检查项</th><th>为什么重要</th><th>可以怎么问 AI</th></tr><tr><td>当前状态能跑吗</td><td>如果起点就是坏的，后面很难判断是谁改坏的。</td><td>“先确认当前页面/功能的最小可用状态。”</td></tr><tr><td>这次只改什么</td><td>避免 AI 顺手重构、换框架、改无关样式。</td><td>“这次只允许修改 A 和 B，不要碰其他文件。”</td></tr><tr><td>验收标准是什么</td><td>避免“看起来可以”这种含糊结论。</td><td>“完成后必须通过哪些检查？”</td></tr><tr><td>回滚点在哪里</td><td>失败时知道退到哪。</td><td>“如果失败，应该回滚哪些文件？”</td></tr></table>
+
+  <h3>第三步：把 AI 开发切成小步</h3>
+  <div class="vibe-timeline"><div class="vibe-step"><b>Step 1</b><p>先让 AI 给方案，不让它马上改。</p></div><div class="vibe-step"><b>Step 2</b><p>确认方案范围：这次改哪些文件，不改哪些文件。</p></div><div class="vibe-step"><b>Step 3</b><p>让 AI 执行最小改动，不要顺手优化。</p></div><div class="vibe-step"><b>Step 4</b><p>看 diff，检查是否出现无关改动。</p></div><div class="vibe-step"><b>Step 5</b><p>做冒烟测试：能打开、能点击、核心路径能跑。</p></div><div class="vibe-step"><b>Step 6</b><p>通过后保存版本；失败时回滚，不继续叠加修复。</p></div></div>
+
+  <div class="callout key">
+    <div class="callout-title">核心原则</div>
+    <p><strong>不要在坏状态上继续堆新改动。</strong>先定位、先回滚、先恢复一个干净起点，再重新让 AI 做更小的修改。</p>
+  </div>
+
+  <h3>第四步：回滚不是丢脸，是专业</h3>
+  <p>很多新人觉得回滚像失败，其实回滚是开发里非常正常的动作。尤其在 AI 协作里，快速尝试和快速撤回是一对能力。</p>
+  <table class="decision-table"><tr><th>情况</th><th>应该怎么处理</th><th>不要怎么做</th></tr><tr><td>页面视觉变差</td><td>先回退样式相关文件，再重新拆小任务</td><td>继续让 AI “再美化一点”</td></tr><tr><td>功能跑不起来</td><td>看第一条错误，恢复到上个能跑点</td><td>把全部报错一次性丢给 AI 乱修</td></tr><tr><td>AI 改了无关文件</td><td>撤回无关文件，只保留目标改动</td><td>因为“也许有用”就全收下</td></tr><tr><td>改动范围看不懂</td><td>停下来让 AI 按文件解释 diff</td><td>不看直接提交</td></tr></table>
+
+  <h3>第五步：让 AI 帮你做回滚预案</h3>
+  <div class="prompt-block">在你开始修改前，请先给我一个回滚预案。
+
+本次目标：[目标]
+允许修改的文件：[文件列表]
+禁止修改的文件：[文件列表]
+
+请输出：
+1. 预期会修改哪些文件；
+2. 每个文件的修改目的；
+3. 如果失败，哪些文件需要回滚；
+4. 最小验证清单；
+5. 不要执行修改，等我确认。</div>
+
+  <div class="ai-chat"><div class="ai-chat-title">AI 互动现场：阻止越修越坏</div><div class="chat-turn user"><div class="role">你</div><p>页面坏了，你再帮我修一下。</p></div><div class="chat-turn ai"><div class="role">AI</div><p>我可以继续修改 CSS 和 JS……</p></div><div class="chat-turn user"><div class="role">你</div><p>先不要改。请先列出上一次修改了哪些文件，判断最可能导致问题的文件，并给我一个最小回滚方案。</p></div><div class="chat-turn ai"><div class="role">AI</div><p>明白。我会先定位改动范围，再建议回滚路径，而不是继续扩大修改。</p></div></div>
+
+  <div class="big-quote">真正会用 AI 的人，不是每次都让它往前冲。<br/>而是知道什么时候该说：<strong>停，回到上一个能跑的版本。</strong></div>
+
+  <div class="tasks"><h4>本节打卡</h4><label class="task" data-task="rollback-t1"><input type="checkbox"/><span class="t-text">知道为什么不能在坏状态上继续堆修复</span></label><label class="task" data-task="rollback-t2"><input type="checkbox"/><span class="t-text">能在 AI 修改前写出允许修改和禁止修改的文件范围</span></label><label class="task" data-task="rollback-t3"><input type="checkbox"/><span class="t-text">能说出小步修改、看 diff、冒烟测试、保存版本的流程</span></label><label class="task" data-task="rollback-t4"><input type="checkbox"/><span class="t-text">知道回滚不是失败，而是控制风险</span></label><label class="task" data-task="rollback-t5"><input type="checkbox"/><span class="t-text">能让 AI 给出回滚预案再开始改</span></label><label class="task" data-task="rollback-t6"><input type="checkbox"/><span class="t-text">能在出问题时先定位改动范围，而不是继续让 AI 乱修</span></label></div>
+  <div class="day-foot"><span class="day-progress" data-progress></span><button class="complete-btn" data-complete>完成本节</button></div>
+</article>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</body>
+</html>

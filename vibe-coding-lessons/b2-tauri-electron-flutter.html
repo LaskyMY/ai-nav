@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>技术选型：Tauri / Electron / Flutter · 小K的大神之路</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.8;padding:16px;max-width:700px;margin:0 auto;padding-bottom:32px}
+h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:4px}
+h2{font-size:16px;font-weight:700;color:#818cf8;margin:20px 0 8px;border-left:3px solid #818cf8;padding-left:10px}
+h3{font-size:14px;color:rgba(255,255,255,.85);margin:14px 0 6px}
+.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:16px}
+.breadcrumb{font-size:10px;color:rgba(255,255,255,.25);margin-bottom:12px}
+.breadcrumb a{color:rgba(255,255,255,.35);text-decoration:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge.req{background:rgba(99,102,241,.15);color:#818cf8}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
+.scene-tag{font-size:9px;color:#00e5ff;font-weight:700;margin-bottom:8px;letter-spacing:.5px}
+.who{color:#fbbf24;font-weight:600}
+.checklist{list-style:none;padding:0}
+.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
+.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
+.nav-btns{display:flex;gap:8px;margin:20px 0}
+.btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:12px;text-decoration:none;text-align:center}
+.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:#00e5ff}
+pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.5;margin:8px 0}
+code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
+.tip{border-left:2px solid #fbbf24;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(245,158,11,.04)}
+p{margin:8px 0;font-size:12px;color:rgba(255,255,255,.65)}
+.back{text-align:center;margin-top:24px}
+.back a{color:rgba(255,255,255,.2);font-size:10px;text-decoration:none}
+.lesson-kicker{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / 独立桌面应用开发 / 选修 B · §2</div>
+<div class="lesson-kicker"><span class="badge elective">选修 B</span><span class="lesson-index">第 23 / 33 节</span></div><h1>技术选型：Tauri / Electron / Flutter</h1><p>小K 想写一个桌面应用，但不知道从哪开始。网上搜索&quot;桌面应用开发&quot; 会蹦出来一堆名字——Tauri、Electron、Flutter、Qt、WPF……它们分别是什么？</p>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<article><div class="scene">
+    <div class="scene-tag">SCENE · 周末咖啡馆</div>
+    <p><span class="who">小K</span> 打开笔记本电脑，搜索"怎么用 Web 技术写桌面应用"。</p>
+    <p>第一条结果是 Electron——"用 JS 写桌面应用"。他点进去看了看，又看到有人
+    在评论区说"Electron 太吃内存了，Tauri 才是未来"。又有人推荐 Flutter……</p>
+    <p><span class="who">小K</span>："……所以到底用哪个？"</p>
+  </div>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>技术选型是新项目的第一道坎。选错了不是不能改——是改起来成本很高。</h4>
+    <p>你不知道每个选项的优劣，就容易被网上"XXX 是最好的"这类话带着走。
+    实际上没有最好的框架，只有最适合当前项目的框架。理解各家的 trade-off，你就能自己做判断。</p>
+  </div>
+
+  <h3>三大主流方案对比</h3>
+
+  <div class="callout key">
+    <div class="callout-title">🔑 Electron —— 最成熟，最"重"</div>
+    <p><strong>原理：</strong>每个 Electron 应用都自带一个完整的 Chromium 浏览器（就是你桌面上 Chrome 的核心）。
+    你的 HTML/CSS/JS 就渲染在这个内置浏览器里。
+    <strong>优点：</strong>生态非常成熟——VS Code、Slack、Discord、飞书、Notion 全是 Electron 写的。
+    社区大、插件多、遇到问题搜得到答案。<br/>
+    <strong>缺点：</strong>内存占用大（每个应用自带一个浏览器，能不吃内存吗？），安装包大（100MB+ 起步）。<br/>
+    <strong>适合：</strong>功能复杂、团队大、需要快速迭代的商业产品。</p>
+  </div>
+
+  <div class="callout tip">
+    <div class="callout-title">⚡ Tauri —— 轻量级新秀（我们的选择）</div>
+    <p><strong>原理：</strong>Tauri 不打包浏览器。它直接复用操作系统自带的 WebView
+    （Windows 用 WebView2，Mac 用 WKWebView，Linux 用 WebKitGTK）。
+    底层用 <strong>Rust</strong> 代替了 Node.js，性能更高、更安全。<br/>
+    <strong>优点：</strong>安装包极小（可以小到 3MB），内存占用极低。
+    安全模型更好——默认情况下前端代码无法随意访问系统。<br/>
+    <strong>缺点：</strong>比较新（v2 2024年才稳定），有些边缘场景的生态还不够丰富。
+    需要写一些 Rust 代码来做原生操作。<br/>
+    <strong>适合：</strong>工具型应用、需要小体积和低内存占用的项目。<br/>
+    <strong>我们的 FloatThings 就是用 Tauri v2 做的。</strong></p>
+  </div>
+
+  <div class="callout key">
+    <div class="callout-title">🎨 Flutter —— Google 的跨平台方案</div>
+    <p><strong>原理：</strong>Flutter 不用 Web 技术。它用自己的渲染引擎 Skia 画界面，
+    用一种叫 Dart 的语言写逻辑。界面不经过浏览器，直接画到屏幕上。<br/>
+    <strong>优点：</strong>界面性能好，跨平台统一（一套代码跑 iOS、Android、Web、桌面）。
+    组件库丰富，UI 一致性好。<br/>
+    <strong>缺点：</strong>要学 Dart（小众语言），桌面端支持相对新。
+    界面上不像"原生"应用（有时看起来怪怪的）。<br/>
+    <strong>适合：</strong>同时需要移动端和桌面端的项目，重视 UI 一致性的产品。</p>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 620 180" xmlns="http://www.w3.org/2000/svg">
+      <rect x="10" y="10" width="190" height="70" rx="10" fill="#1d222d" stroke="#22c55e" stroke-width="1.5"/>
+      <text x="105" y="38" text-anchor="middle" fill="#22c55e" font-size="13" font-weight="700">Tauri</text>
+      <text x="105" y="55" text-anchor="middle" fill="#9aa3b2" font-size="11">最小包 3MB / 内存 ~20MB</text>
+      <text x="105" y="70" text-anchor="middle" fill="#9aa3b2" font-size="10">Rust 底层 + WebView2</text>
+
+      <rect x="215" y="10" width="190" height="70" rx="10" fill="#1d222d" stroke="#facc15" stroke-width="1.5"/>
+      <text x="310" y="38" text-anchor="middle" fill="#facc15" font-size="13" font-weight="700">Electron</text>
+      <text x="310" y="55" text-anchor="middle" fill="#9aa3b2" font-size="11">最小包 100MB / 内存 ~200MB</text>
+      <text x="310" y="70" text-anchor="middle" fill="#9aa3b2" font-size="10">Node.js + Chromium 完整打包</text>
+
+      <rect x="420" y="10" width="190" height="70" rx="10" fill="#1d222d" stroke="#60a5fa" stroke-width="1.5"/>
+      <text x="515" y="38" text-anchor="middle" fill="#60a5fa" font-size="13" font-weight="700">Flutter</text>
+      <text x="515" y="55" text-anchor="middle" fill="#9aa3b2" font-size="11">最小包 10MB / 内存 ~50MB</text>
+      <text x="515" y="70" text-anchor="middle" fill="#9aa3b2" font-size="10">Dart 语言 + Skia 自绘引擎</text>
+
+      <text x="310" y="110" text-anchor="middle" fill="#9aa3b2" font-size="12">如果你的目标和我们的实践课一样——写一个小巧的桌面工具</text>
+      <text x="310" y="138" text-anchor="middle" fill="#22c55e" font-size="16" font-weight="700">→ Tauri 是最佳选择</text>
+      <text x="310" y="158" text-anchor="middle" fill="#9aa3b2" font-size="11">轻量、安全、现代，而且不需要你提前学 Rust</text>
+    </svg>
+    <figcaption>三大方案的体积和内存对比——Tauri 在工具型应用中优势明显</figcaption>
+  </figure>
+
+  <div class="big-quote">
+    没有银弹。选型就是选 trade-off。<br/>
+    我们的实践课选 Tauri，因为<strong>它恰好解决了"小而美"的需求</strong>。
+  </div>
+
+  <div class="tasks">
+    <h4>本节打卡</h4>
+    <label class="task" data-task="b2t1"><input type="checkbox"/><span class="t-text">能说出 Electron、Tauri、Flutter 各自的核心原理</span></label>
+    <label class="task" data-task="b2t2"><input type="checkbox"/><span class="t-text">理解 Tauri 为什么不打包浏览器——复用操作系统自带 WebView</span></label>
+    <label class="task" data-task="b2t3"><input type="checkbox"/><span class="t-text">知道 Tauri 的底层是 Rust，前端可以用任何 Web 框架（React/Vue/Svelte）</span></label>
+    <label class="task" data-task="b2t4"><input type="checkbox"/><span class="t-text">能说出 Electron 的一个优点（生态成熟）和一个缺点（占用大）</span></label>
+  </div>
+  <div class="day-foot">
+    <span class="day-progress" data-progress></span>
+    <button class="complete-btn" data-complete>完成本节 ✓</button>
+  </div>
+</article>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</body>
+</html>

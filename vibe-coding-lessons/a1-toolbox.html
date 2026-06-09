@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>装好你的工具箱 · 小K的大神之路</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.8;padding:16px;max-width:700px;margin:0 auto;padding-bottom:32px}
+h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:4px}
+h2{font-size:16px;font-weight:700;color:#818cf8;margin:20px 0 8px;border-left:3px solid #818cf8;padding-left:10px}
+h3{font-size:14px;color:rgba(255,255,255,.85);margin:14px 0 6px}
+.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:16px}
+.breadcrumb{font-size:10px;color:rgba(255,255,255,.25);margin-bottom:12px}
+.breadcrumb a{color:rgba(255,255,255,.35);text-decoration:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge.req{background:rgba(99,102,241,.15);color:#818cf8}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
+.scene-tag{font-size:9px;color:#00e5ff;font-weight:700;margin-bottom:8px;letter-spacing:.5px}
+.who{color:#fbbf24;font-weight:600}
+.checklist{list-style:none;padding:0}
+.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
+.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
+.nav-btns{display:flex;gap:8px;margin:20px 0}
+.btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:12px;text-decoration:none;text-align:center}
+.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:#00e5ff}
+pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.5;margin:8px 0}
+code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
+.tip{border-left:2px solid #fbbf24;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(245,158,11,.04)}
+p{margin:8px 0;font-size:12px;color:rgba(255,255,255,.65)}
+.back{text-align:center;margin-top:24px}
+.back a{color:rgba(255,255,255,.2);font-size:10px;text-decoration:none}
+.lesson-kicker{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / UE 工具开发 / DAY · 02</div>
+<div class="lesson-kicker"><span class="badge elective">选修 A</span><span class="lesson-index">第 14 / 33 节</span></div><h1>装好你的工具箱</h1><p>小K 准备开始动手了。但 UE 工具开发的环境比一般程序员还要重—— Visual Studio、UE、Perforce，加起来 200GB 起步。今天把地图画清楚，明天开始装。</p>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<article><div class="scene">
+    <div class="scene-tag">SCENE 2 · 第三天早上</div>
+    <p><span class="who">小K</span>：
+    "G哥，我准备好了。在哪写代码？"</p>
+    <p><span class="who">G 哥</span>（递过来一张便签）：
+    "三个东西要装：Visual Studio、UE 源码版、Perforce。顺序对，一下午；顺序错，搞三天。"</p>
+    <p><span class="who">小K</span>：
+    "……为什么装个软件都这么复杂？"</p>
+    <p><span class="who">G 哥</span>：
+    "因为你不是装一个软件，是装一个<strong>工厂</strong>。编辑代码的、翻译代码的、存代码的、
+    查历史的——每个都是一个独立的大家伙，而且它们之间还得互相认识。"</p>
+  </div>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>环境搭建是新人最容易卡住的第一关。不是因为难——是因为东西太多、名字太像、
+    说明书太散。今天把三个核心工具的角色搞清楚，你明天动手装的时候心里就有地图了。</h4>
+    <p>很多新人花三天装环境不是因为笨，是因为每装一个东西遇到一个陌生术语就停下来查，
+    查到的解释里又有两个陌生术语——然后整条链断掉。</p>
+    <p>今天我们就做一件事：把每个工具是"谁"、为什么"必须装它"、
+    它和别的工具是什么关系，先在脑子里搭好架子。</p>
+  </div>
+
+  <h3>你要装的三样东西，用一句话说清各自是干嘛的</h3>
+
+  <figure>
+    <svg viewBox="0 0 720 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="三件工具关系图">
+      <defs>
+        <marker id="arr2a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#7c5cff"/></marker>
+      </defs>
+      <g font-size="13" fill="#cdd6e3" font-family="ui-sans-serif,system-ui">
+        <!-- VS -->
+        <rect x="250" y="20" width="220" height="90" rx="12" fill="#1d222d" stroke="#7c5cff" stroke-width="1.8"/>
+        <text x="360" y="48" text-anchor="middle" fill="#e8ecf3" font-weight="700" font-size="15">Visual Studio</text>
+        <text x="360" y="70" text-anchor="middle" font-size="12" fill="#9aa3b2">写代码 + 调试</text>
+        <text x="360" y="90" text-anchor="middle" font-size="11" fill="#22d3ee">内置 MSVC 编译器</text>
+
+        <!-- UE -->
+        <rect x="250" y="150" width="220" height="90" rx="12" fill="#1d222d" stroke="#22c55e" stroke-width="1.8"/>
+        <text x="360" y="178" text-anchor="middle" fill="#e8ecf3" font-weight="700" font-size="15">Unreal Engine</text>
+        <text x="360" y="200" text-anchor="middle" font-size="12" fill="#9aa3b2">引擎 + 编辑器 + UBT</text>
+        <text x="360" y="220" text-anchor="middle" font-size="11" fill="#22d3ee">项目运行和编译管理</text>
+
+        <!-- P4 -->
+        <rect x="530" y="85" width="150" height="90" rx="12" fill="#1d222d" stroke="#f59e0b" stroke-width="1.8"/>
+        <text x="605" y="113" text-anchor="middle" fill="#e8ecf3" font-weight="700" font-size="15">Perforce</text>
+        <text x="605" y="135" text-anchor="middle" font-size="12" fill="#9aa3b2">版本控制</text>
+        <text x="605" y="155" text-anchor="middle" font-size="11" fill="#22d3ee">存代码 + 协作</text>
+
+        <!-- Arrows -->
+        <line x1="360" y1="110" x2="360" y2="145" stroke="#7c5cff" stroke-width="1.8" marker-end="url(#arr2a)"/>
+        <text x="395" y="133" font-size="10" fill="#7c5cff">VS 打开 UE 项目</text>
+
+        <line x1="470" y1="65" x2="525" y2="110" stroke="#f59e0b" stroke-width="1.2" marker-end="url(#arr2a)"/>
+        <text x="510" y="80" font-size="10" fill="#f59e0b">P4 插件</text>
+
+        <!-- Left: 你 -->
+        <rect x="30" y="85" width="130" height="90" rx="12" fill="#11151d" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="95" y="113" text-anchor="middle" fill="#22d3ee" font-weight="700" font-size="15">你</text>
+        <text x="95" y="135" text-anchor="middle" font-size="12" fill="#9aa3b2">写代码的人</text>
+        <text x="95" y="155" text-anchor="middle" font-size="11" fill="#22d3ee">操作这三个工具</text>
+
+        <line x1="160" y1="100" x2="245" y2="65" stroke="#7c5cff" stroke-width="1.5" marker-end="url(#arr2a)"/>
+        <line x1="160" y1="145" x2="245" y2="175" stroke="#7c5cff" stroke-width="1.5" marker-end="url(#arr2a)"/>
+
+        <text x="360" y="12" text-anchor="middle" fill="#e8ecf3" font-size="12" font-weight="600">这三个东西，就是你每天打开的三个窗口</text>
+      </g>
+    </svg>
+    <figcaption>VS 负责"写"，UE 负责"跑"，P4 负责"存"。你每天在这三者之间切来切去。</figcaption>
+  </figure>
+
+  <h3>Visual Studio —— 不是"一个软件"，是一整套编译器+编辑器</h3>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>VS 是 UE Windows 开发绕不开的工具。但很多新人装 VS 的时候只装了编辑器，
+    没装 C++ 工作负载——于是打开 UE 项目发现编译不了，卡了三天。</h4>
+  </div>
+
+  <p>Visual Studio 其实是一个<strong>集合</strong>。你装它的时候，它问你要装哪些"工作负载"。
+  这个选择非常重要：</p>
+
+  <ul>
+    <li><strong>必选：使用 C++ 的游戏开发</strong>——这个工作负载会把 MSVC 编译器、
+    Windows SDK、UE 需要的所有底层库一次性装好。</li>
+    <li><strong>必选：使用 C++ 的桌面开发</strong>——给的是标准 C++ 工具链。</li>
+    <li><strong>不用管</strong>：.NET、Python、Node.js 这些工作负载——和 UE 无关。</li>
+  </ul>
+
+  <p>装完之后，你的电脑上就有了<strong>MSVC 编译器</strong>——就是昨天说的那个翻译官。
+  VS 本身是编辑器（给你打字、看代码、调试的界面），
+  MSVC 是编译器（在背后做翻译）。UE 编译的时候，界面可以不打开 VS，
+  但 MSVC 必须在。</p>
+
+  <div class="callout tip">
+    <div class="callout-title">💡 一个新人常见坑</div>
+    <p>装 VS 的时候千万别用默认的"最小安装"——只装编辑器不装编译器。
+    你必须在安装程序的"工作负载"页勾上<strong>"使用 C++ 的游戏开发"</strong>。
+    这个勾不打，整个 UE 开发都走不通。</p>
+    <p>另外，VS 2022 和 VS 2019 都支持 UE，但新项目一般都从最新版开始装。
+    问 G哥 一句"团队用哪个版本"就行。</p>
+  </div>
+
+  <h3>Unreal Engine —— 启动器版 vs 源码版</h3>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>这个选择会影响你后面一切——能不能改引擎代码、编译要多久、
+    出了问题怎么排查，都取决于你用的是哪种版本。</h4>
+  </div>
+
+  <p>UE 有两种方式装到你的电脑上：</p>
+
+  <div class="compare">
+    <div>
+      <b>启动器版（Launcher / 预编译版）</b>
+      从 Epic Games Launcher 下载，点一下安装。
+      引擎的 C++ 代码已经<strong>提前编译好了</strong>，你拿到的是 .dll 和 .exe。
+      <br/><br/>
+      ✅ 装得快，开箱即用<br/>
+      ❌ 不能改引擎代码<br/>
+      ❌ 不能加 Editor Plugin（C++ 插件）
+    </div>
+    <div>
+      <b>源码版（Source Build）</b>
+      从 GitHub 或 Perforce 拉取引擎的完整 C++ 源码，
+      在你的电脑上<strong>自己编译一遍</strong>。
+      <br/><br/>
+      ✅ 可以改引擎任何一行代码<br/>
+      ✅ 完全支持 C++ 插件<br/>
+      ❌ 全量编译要 30min~1h+
+    </div>
+  </div>
+
+  <p><strong>做工具开发，100% 必须用源码版。</strong>
+  因为你要写的 Editor Plugin 是 C++，启动器版不支持编译 C++ 插件。
+  你入职的时候，团队应该已经准备好了引擎源码——直接从 P4 拉就行。</p>
+
+  <h3>Perforce —— 代码界的"网盘+时间机器"</h3>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>Perforce 是 UE 行业事实上的标准版本控制工具。你每天交代码、取同事的更新、
+    回退改坏的代码，都要用它。搞不清 P4 的基本概念，工作第一天就会卡住。</h4>
+  </div>
+
+  <p>Perforce 你可以理解成一个<strong>带历史记录的共享文件夹</strong>：</p>
+
+  <ul>
+    <li>你把代码文件放上去（叫"提交 / Submit"），团队的每个人都能拿到</li>
+    <li>你改了某个文件，P4 帮你记住<strong>每一次改动</strong>——改了什么、谁改的、什么时候改的</li>
+    <li>改坏了想回去？P4 能回到<strong>任何一个历史版本</strong></li>
+    <li>两个人同时改了同一个文件？P4 会告诉你冲突了，让你手动处理</li>
+  </ul>
+
+  <p>为什么 UE 项目用 P4 而不是 Git？
+  因为 UE 项目里有大量<strong>二进制文件</strong>（贴图、模型、音频），
+  一个文件就是几百 MB。Git 存这些非常吃力，P4 天生就是为大规模二进制资产设计的。
+  这个在 Day 9 会展开。</p>
+
+  <p>现在你只需要知道 P4 四个最基本的概念：</p>
+
+  <ul>
+    <li><strong>Depot（仓库）</strong>：服务器上存所有文件的地方。全公司共享一个。</li>
+    <li><strong>Workspace（工作区）</strong>：你本地电脑上"映射"下来的文件夹。
+    你在这个文件夹里改代码，改完提交回 Depot。</li>
+    <li><strong>Checkout（签出）</strong>：告诉 P4 "我要改这个文件了"。</li>
+    <li><strong>Submit（提交）</strong>：改完了，把你的修改打包发送回 Depot。</li>
+  </ul>
+
+  <div class="callout warn">
+    <div class="callout-title">⚠️ P4 和普通网盘最大的区别</div>
+    <p>网盘是你改了文件，它自动同步。P4 是你必须<strong>先 Checkout 再改</strong>。
+    如果你没 Checkout 就直接改了文件，P4 会觉得"这个文件是只读的，
+    你不能改"——然后你的修改就保存不了。</p>
+    <p>这是新人第一天最容易撞的墙。记一句话：<strong>改之前先 Checkout</strong>。</p>
+  </div>
+
+  <h3>整个搭建流程，浓缩成一张"路线图"</h3>
+
+  <figure>
+    <svg viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="环境搭建路线图">
+      <defs>
+        <marker id="arr2b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#22d3ee"/></marker>
+      </defs>
+      <g font-size="12" fill="#cdd6e3" font-family="ui-sans-serif,system-ui">
+        <rect x="20" y="50" width="150" height="70" rx="10" fill="#1d222d" stroke="#7c5cff" stroke-width="1.5"/>
+        <text x="95" y="78" text-anchor="middle" fill="#e8ecf3" font-weight="700">1. 装 Visual Studio</text>
+        <text x="95" y="98" text-anchor="middle" font-size="11" fill="#9aa3b2">勾"使用C++的游戏开发"</text>
+
+        <line x1="170" y1="85" x2="205" y2="85" stroke="#22d3ee" stroke-width="2" marker-end="url(#arr2b)"/>
+
+        <rect x="210" y="50" width="150" height="70" rx="10" fill="#1d222d" stroke="#7c5cff" stroke-width="1.5"/>
+        <text x="285" y="78" text-anchor="middle" fill="#e8ecf3" font-weight="700">2. 装 P4 客户端</text>
+        <text x="285" y="98" text-anchor="middle" font-size="11" fill="#9aa3b2">P4V / P4 命令行</text>
+
+        <line x1="360" y1="85" x2="395" y2="85" stroke="#22d3ee" stroke-width="2" marker-end="url(#arr2b)"/>
+
+        <rect x="400" y="50" width="150" height="70" rx="10" fill="#1d222d" stroke="#7c5cff" stroke-width="1.5"/>
+        <text x="475" y="78" text-anchor="middle" fill="#e8ecf3" font-weight="700">3. 配置 Workspace</text>
+        <text x="475" y="98" text-anchor="middle" font-size="11" fill="#9aa3b2">映射 Depot 到本地</text>
+
+        <line x1="550" y1="85" x2="585" y2="85" stroke="#22d3ee" stroke-width="2" marker-end="url(#arr2b)"/>
+
+        <rect x="590" y="50" width="110" height="70" rx="10" fill="#1d222d" stroke="#22c55e" stroke-width="1.5"/>
+        <text x="645" y="78" text-anchor="middle" fill="#22c55e" font-weight="700">4. 拉代码</text>
+        <text x="645" y="98" text-anchor="middle" font-size="11" fill="#9aa3b2">Sync 引擎+项目</text>
+
+        <text x="360" y="30" text-anchor="middle" fill="#e8ecf3" font-size="13" font-weight="600">安装顺序（顺序对，一下午；顺序错，搞三天）</text>
+
+        <!-- Second row -->
+        <rect x="140" y="180" width="200" height="70" rx="10" fill="#1d222d" stroke="#f59e0b" stroke-width="1.5"/>
+        <text x="240" y="208" text-anchor="middle" fill="#e8ecf3" font-weight="700">5. 等第一次编译</text>
+        <text x="240" y="228" text-anchor="middle" font-size="11" fill="#9aa3b2">跑 Setup + GenerateProjectFiles</text>
+
+        <line x1="340" y1="215" x2="385" y2="215" stroke="#22d3ee" stroke-width="2" marker-end="url(#arr2b)"/>
+
+        <rect x="390" y="180" width="200" height="70" rx="10" fill="#1d222d" stroke="#22c55e" stroke-width="1.5"/>
+        <text x="490" y="208" text-anchor="middle" fill="#22c55e" font-weight="700">6. 打开了！</text>
+        <text x="490" y="228" text-anchor="middle" font-size="11" fill="#9aa3b2">UE 编辑器启动成功</text>
+
+        <text x="360" y="165" text-anchor="middle" fill="#9aa3b2" font-size="11">↓ 接下来是最需要耐心的一步 ↓</text>
+      </g>
+    </svg>
+    <figcaption>六步走完，你的 UE 开发环境就搭好了。第5步"等编译"占掉大部分时间。</figcaption>
+  </figure>
+
+  <h3>为什么第一次编译要那么久？</h3>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>第一次看到"编译中，剩余时间 45 分钟"的时候，如果你不知道电脑在干嘛，
+    你会以为它死机了。知道了，你就会去泡杯咖啡。</h4>
+  </div>
+
+  <p>拉完源码后，你需要跑两个脚本：</p>
+  <ul>
+    <li><code>Setup.bat</code>——下载引擎依赖（一些预编译的第三方库，几个 GB）</li>
+    <li><code>GenerateProjectFiles.bat</code>——生成 VS 的 .sln 项目文件，让 VS 认识 UE</li>
+  </ul>
+
+  <p>然后在 VS 里点"生成解决方案"。这时候编译器开始干活了——
+  它要把 UE 引擎的<strong>所有 .cpp 全翻译一遍</strong>。UE 5 引擎有几万个 .cpp 文件，
+  这就是为什么第一次编译要 30 分钟到 1 小时。</p>
+
+  <p>好消息是：这只是一次性的。<strong>以后你只改自己插件的代码，
+  增量编译通常几十秒到几分钟就完了</strong>。UE 的编译系统（UBT）会智能地
+  只重新编译"你改了的那几个文件 + 依赖了它们的那些文件"。</p>
+
+  <div class="callout key">
+    <div class="callout-title">🔑 记两组数字</div>
+    <p>全量编译 UE 引擎源码：<strong>30 分钟 ~ 1 小时+</strong>（取决于 CPU 核心数）</p>
+    <p>增量编译改一个小插件：<strong>十几秒 ~ 两三分钟</strong></p>
+    <p>编译所需磁盘空间（引擎+项目+中间文件）：<strong>150GB~250GB</strong></p>
+  </div>
+
+  <div class="big-quote">
+    VS 帮你写，MSVC 帮你译，<br/>UE 帮你跑，P4 帮你记。<br/>
+    四个工具，一个工作流。
+  </div>
+
+  <div class="tasks">
+    <h4>今日打卡</h4>
+    <label class="task" data-task="d2t1"><input type="checkbox"/><span class="t-text">能说出 VS / UE / P4 三个工具各自负责什么</span></label>
+    <label class="task" data-task="d2t2"><input type="checkbox"/><span class="t-text">知道装 VS 时必须勾上"使用 C++ 的游戏开发"</span></label>
+    <label class="task" data-task="d2t3"><input type="checkbox"/><span class="t-text">理解启动器版和源码版 UE 的区别，知道做工具开发必须用源码版</span></label>
+    <label class="task" data-task="d2t4"><input type="checkbox"/><span class="t-text">能说清 P4 的四个基本概念：Depot / Workspace / Checkout / Submit</span></label>
+    <label class="task" data-task="d2t5"><input type="checkbox"/><span class="t-text">记住核心数字：全量编译 30min~1h，增量十几秒~几分钟，磁盘 150GB+</span></label>
+  </div>
+  <div class="day-foot">
+    <span class="day-progress" data-progress></span>
+    <button class="complete-btn" data-complete>完成今日 ✓</button>
+  </div>
+</article>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>技术选型：让 AI 先给权衡，再做决定 · 小K的大神之路</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.8;padding:16px;max-width:700px;margin:0 auto;padding-bottom:32px}
+h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:4px}
+h2{font-size:16px;font-weight:700;color:#818cf8;margin:20px 0 8px;border-left:3px solid #818cf8;padding-left:10px}
+h3{font-size:14px;color:rgba(255,255,255,.85);margin:14px 0 6px}
+.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:16px}
+.breadcrumb{font-size:10px;color:rgba(255,255,255,.25);margin-bottom:12px}
+.breadcrumb a{color:rgba(255,255,255,.35);text-decoration:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge.req{background:rgba(99,102,241,.15);color:#818cf8}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
+.scene-tag{font-size:9px;color:#00e5ff;font-weight:700;margin-bottom:8px;letter-spacing:.5px}
+.who{color:#fbbf24;font-weight:600}
+.checklist{list-style:none;padding:0}
+.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
+.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
+.nav-btns{display:flex;gap:8px;margin:20px 0}
+.btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:12px;text-decoration:none;text-align:center}
+.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:#00e5ff}
+pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.5;margin:8px 0}
+code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
+.tip{border-left:2px solid #fbbf24;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(245,158,11,.04)}
+p{margin:8px 0;font-size:12px;color:rgba(255,255,255,.65)}
+.back{text-align:center;margin-top:24px}
+.back a{color:rgba(255,255,255,.2);font-size:10px;text-decoration:none}
+.lesson-kicker{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / AI 协作开发实战 - 做一款代办工具 / 实践课 · §P2</div>
+<div class="lesson-kicker"><span class="badge practice">实践课</span><span class="lesson-index">第 29 / 33 节</span></div><h1>技术选型：让 AI 先给权衡，再做决定</h1><p>真正有条理的 AI 开发，不是让模型直接开写，而是先要求它列方案、讲取舍、给推荐、说明不选什么。</p>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<article><div class="scene"><div class="scene-tag">SCENE · 不急着搭项目</div><p><span class="who">小K</span>：“需求有了，是不是可以让 AI 直接生成项目？”</p><p><span class="who">G 哥</span>：“先别。你要让 AI 把技术路线讲明白。选型不是炫技，是给后面的所有实现减少分叉。”</p></div><div class="why"><div class="why-tag">为什么这一节很关键</div><h4>技术选型的核心不是“选最强”，而是选一个最适合当前目标的约束系统。</h4><p>这次目标是做一个能展示 Vibe Coding 流程的桌面待办工具。所以我们不追求大而全，而是追求：能快速起原型、能用 Web 技术美化、能打包成桌面应用、能被 Codex 稳定修改和验证。</p></div>
+<h3>第一步：让 AI 给出候选方案和评估维度</h3><div class="prompt-block">基于这份项目简报，请你不要直接写代码，先做技术选型。
+
+目标：桌面悬浮待办工具，强调 UI 质感、快速原型、离线本地保存、后续可打包发布。
+
+请比较至少 4 种方案：
+- Tauri + React + TypeScript
+- Electron + React
+- 纯 Web / PWA
+- Flutter Desktop
+
+请按这些维度打分：开发速度、包体积、UI 灵活性、系统能力、学习成本、AI 辅助友好度、后续维护成本。
+最后给出推荐方案，并说明哪些方案不适合当前项目。</div>
+<div class="ai-chat"><div class="ai-chat-title">AI 互动现场：不要只听“最佳方案”</div><div class="chat-turn user"><div class="role">你</div><p>基于这个待办工具，请给我技术选型建议。</p></div><div class="chat-turn ai"><div class="role">AI</div><p>推荐 Electron + React + SQLite，扩展性最好，也方便以后做系统托盘、通知和本地数据库。</p></div><div class="chat-turn user"><div class="role">你</div><p>你现在像在给正式产品做架构。请反过来批判这个方案：对零基础课程、两天原型、演示稳定性来说，它哪里过重？</p></div><div class="chat-turn ai"><div class="role">AI</div><p>确实过重。SQLite、托盘和通知会增加环境复杂度。课程阶段更适合 React + Vite + localStorage，先证明交互闭环，再讨论桌面壳。</p></div></div><div class="ai-moment"><b>有意思的转折</b><p>这里最“高级”的不是 AI 给了答案，而是你要求 AI 反驳自己的答案。这样选型就从“听 AI 拍脑袋”变成了“让 AI 给论据，人做决策”。</p></div><h3>第二步：把 AI 的建议变成选型矩阵</h3><table class="decision-table"><tr><th>方案</th><th>优势</th><th>劣势</th><th>结论</th></tr><tr><td>Tauri + React</td><td>包体小，能调用系统能力，前端生态成熟，AI 很擅长改 React/CSS。</td><td>Rust 和窗口 API 有学习成本。</td><td><strong>主方案</strong>。适合做“像产品”的桌面工具。</td></tr><tr><td>Electron + React</td><td>成熟、资料多、桌面能力强。</td><td>包体和资源占用偏大，展示“轻量悬浮工具”时说服力弱。</td><td>备选，但不是这次最优。</td></tr><tr><td>纯 Web / PWA</td><td>最快，部署简单，验证 UI 方便。</td><td>缺少真实桌面悬浮、托盘、窗口控制能力。</td><td>可做原型，不适合作为最终形态。</td></tr><tr><td>Flutter Desktop</td><td>跨平台 UI 一致，性能好。</td><td>生态和 AI 生成前端 UI 的效率不如 React/CSS。</td><td>不选，偏离本次 Vibe Coding 目标。</td></tr></table>
+<h3>第三步：定义“最小可行技术路线”</h3><p>选型不是终点。真正让开发顺起来的是把技术路线拆成阶段：先证明产品能跑，再证明体验好，再证明质量可控。</p><div class="vibe-timeline"><div class="vibe-step"><b>阶段 1</b><p>用 React 先做 Web 原型：验证信息结构、状态流转和 UI 形态，不急着碰系统托盘。</p></div><div class="vibe-step"><b>阶段 2</b><p>接入 Tauri：把 Web 原型装进桌面壳，补窗口尺寸、悬浮和托盘能力。</p></div><div class="vibe-step"><b>阶段 3</b><p>用 UI UX Pro 做视觉审查：检查层级、触控目标、色彩对比、阅读密度和动效节奏。</p></div><div class="vibe-step"><b>阶段 4</b><p>用 Codex 做工程化收尾：拆组件、补测试、跑冒烟、修边界问题。</p></div></div>
+<h3>第四步：让 AI 解释“不做什么”</h3><p>一个项目看起来专业，不是因为做得多，而是因为知道哪些暂时不做。</p><ul class="evidence-list"><li>不做账号系统：学习项目不需要后端复杂度。</li><li>不做多端同步：同步冲突会吞掉大量时间。</li><li>不做自定义插件：会让 MVP 范围失控。</li><li>不一开始追求完美动画：先让核心流程闭环。</li></ul>
+<div class="big-quote">这一节最“牛”的地方，是你让 AI 先当架构评审。<br/>不是“AI 说用什么我就用什么”，而是<strong>AI 给论据，人做决策</strong>。</div>
+<div class="tasks"><h4>本节打卡</h4><label class="task" data-task="p2v2t1"><input type="checkbox"/><span class="t-text">能让 AI 输出候选方案、评估维度和推荐理由</span></label><label class="task" data-task="p2v2t2"><input type="checkbox"/><span class="t-text">能解释为什么本项目选 Tauri + React，而不是 Electron / PWA / Flutter</span></label><label class="task" data-task="p2v2t3"><input type="checkbox"/><span class="t-text">写出阶段化路线：Web 原型、桌面壳、UI 审查、工程验证</span></label><label class="task" data-task="p2v2t4"><input type="checkbox"/><span class="t-text">明确列出这一版不做什么，并知道为什么不做</span></label></div><div class="day-foot"><span class="day-progress" data-progress></span><button class="complete-btn" data-complete>完成本节</button></div></article>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</body>
+</html>

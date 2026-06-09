@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>第一个 Editor 工具 · 小K的大神之路</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.8;padding:16px;max-width:700px;margin:0 auto;padding-bottom:32px}
+h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:4px}
+h2{font-size:16px;font-weight:700;color:#818cf8;margin:20px 0 8px;border-left:3px solid #818cf8;padding-left:10px}
+h3{font-size:14px;color:rgba(255,255,255,.85);margin:14px 0 6px}
+.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:16px}
+.breadcrumb{font-size:10px;color:rgba(255,255,255,.25);margin-bottom:12px}
+.breadcrumb a{color:rgba(255,255,255,.35);text-decoration:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge.req{background:rgba(99,102,241,.15);color:#818cf8}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
+.scene-tag{font-size:9px;color:#00e5ff;font-weight:700;margin-bottom:8px;letter-spacing:.5px}
+.who{color:#fbbf24;font-weight:600}
+.checklist{list-style:none;padding:0}
+.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
+.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
+.nav-btns{display:flex;gap:8px;margin:20px 0}
+.btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:12px;text-decoration:none;text-align:center}
+.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:#00e5ff}
+pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.5;margin:8px 0}
+code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
+.tip{border-left:2px solid #fbbf24;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(245,158,11,.04)}
+p{margin:8px 0;font-size:12px;color:rgba(255,255,255,.65)}
+.back{text-align:center;margin-top:24px}
+.back a{color:rgba(255,255,255,.2);font-size:10px;text-decoration:none}
+.lesson-kicker{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / UE 工具开发 / DAY · 08</div>
+<div class="lesson-kicker"><span class="badge elective">选修 A</span><span class="lesson-index">第 20 / 33 节</span></div><h1>第一个 Editor 工具</h1><p>小K 在 UE 编辑器里加了一个属于自己的按钮。点一下，弹一个对话框， 对话框里写着&quot;Hello，小K！&quot;。第一次感觉&quot;我做出来了&quot;。</p>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<article><div class="scene">
+    <div class="scene-tag">SCENE 8 · 第八天下午</div>
+    <p><span class="who">小K</span>（盯着编辑器里的按钮，手指悬在鼠标上方，犹豫了三秒，点了下去）</p>
+    <p>一个窗口弹出来，上面写着："Hello，小K！你的第一个工具跑起来了！"</p>
+    <p><span class="who">小K</span>（声音有点抖）：
+    "G哥……它……它出来了。我写的。"</p>
+    <p><span class="who">G 哥</span>（靠过来看了一眼，拍了拍小K肩膀）：
+    "看吧，你从'代码是个啥'到今天，一共八天。后面就是越做越快了。"</p>
+  </div>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>这一天的目标不是"做一个能用的工具"——是让你体验一次"从零到一"的完整过程。
+    从新建插件到看到按钮弹窗，每一步都有具体落脚点。跑通这天的内容，
+    你就有信心了——后面的工具只是在"已经跑通的框架"上叠功能。</h4>
+  </div>
+
+  <h3>我们今天要做什么</h3>
+
+  <p>做一个最最最简化的 Editor 工具，总共就三样东西：</p>
+  <ul>
+    <li>一个<strong>菜单按钮</strong>（在 UE 编辑器的工具栏上）</li>
+    <li>点击按钮后弹出一个<strong>对话框窗口</strong></li>
+    <li>对话框里显示<strong>一行文字</strong></li>
+  </ul>
+
+  <p>就这么多。不操作资产、不改配置、不调复杂 API。
+  纯粹是为了让你看到——"我在 C++ 里加了几行代码，编辑器里就多了一个按钮"。这个感觉非常重要。</p>
+
+  <h3>第一步：新建插件，搭好架子</h3>
+
+  <p>在 UE 编辑器里：Edit → Plugins → 右下角 "New Plugin" → 选 "Editor Toolbar Button" 模板 →
+  起个名字叫 <code>KFirstTool</code>。</p>
+
+  <p>UE 会自动在 <code>Plugins/KFirstTool/</code> 下生成一堆文件。
+  生成完了关掉编辑器。</p>
+
+  <p>生成的目录结构大概长这样：</p>
+
+<pre><code>Plugins/KFirstTool/
+├── KFirstTool.uplugin
+└── Source/
+    └── KFirstTool/
+        ├── KFirstTool.Build.cs
+        ├── Private/
+        │   └── KFirstTool.cpp          ← 我们要改的文件
+        └── Public/
+            └── KFirstTool.h             ← 头文件</code></pre>
+
+  <h3>第二步：看懂自动生成的代码</h3>
+
+  <p>打开 <code>KFirstTool.h</code>，你会看到类似这样：</p>
+
+<pre><code>#pragma once
+#include "CoreMinimal.h"
+#include "Framework/Commands/UIAction.h"  // ← UI 操作支持
+// ... 几个 include ...
+
+class FKFirstToolModule : public IModuleInterface  // ← 一个"模块类"
+{
+public:
+    virtual void StartupModule() override;   // ← 插件被加载时调用
+    virtual void ShutdownModule() override;  // ← 插件被卸载时调用
+
+private:
+    void OnToolbarButtonClicked();          // ← 按钮被点击时的"回调函数"
+    TSharedPtr&lt;FUICommandInfo&gt; Command;     // ← 命令对象
+};</code></pre>
+
+  <p>别看花眼——这里面真正重要的就三行：</p>
+  <ul>
+    <li><code>StartupModule()</code>：插件加载时执行——在这里注册你的按钮</li>
+    <li><code>ShutdownModule()</code>：插件卸载时执行——在这里清理</li>
+    <li><code>OnToolbarButtonClicked()</code>：按钮被点了——在这里写"弹窗"的逻辑</li>
+  </ul>
+
+  <div class="callout tip">
+    <div class="callout-title">💡 如果你不太懂上面这些 C++ 类/继承/override</div>
+    <p>没关系。Day 0 说过——任何代码往上扒都是"变量 + 函数 + 条件 + 循环"的组合。
+    这里的 <code>class</code> 就是一个"大盒子"，里面装着相关的变量和函数。
+    <code>virtual void StartupModule() override</code> 就是在说
+    "这个函数别人已经定义好了名字，我来填具体内容"。</p>
+    <p>你不需要今天全懂。先把代码跑起来，感觉会帮你理解概念。</p>
+  </div>
+
+  <h3>第三步：把弹窗代码加进去</h3>
+
+  <p>打开 <code>KFirstTool.cpp</code>，找到 <code>OnToolbarButtonClicked()</code> 函数。
+  把它的内容改成：</p>
+
+<pre><code>void FKFirstToolModule::OnToolbarButtonClicked()
+{
+    // 弹一个系统消息框
+    FMessageDialog::Open(
+        EAppMsgType::Ok,
+        FText::FromString(TEXT("Hello，小K！你的第一个工具跑起来了！"))
+    );
+}</code></pre>
+
+  <p>就这么几行。<code>FMessageDialog::Open</code> 是 UE 提供的一个函数——
+  弹出一个系统对话框。第一个参数是"对话框有几个按钮"（Ok = 一个确定按钮），
+  第二个参数是"对话框里显示什么文字"。</p>
+
+  <h3>第四步：确认 Build.cs 里有正确的依赖</h3>
+
+  <p>打开 <code>KFirstTool.Build.cs</code>，确保 PrivateDependencyModuleNames 里
+  有 <code>"Slate"</code> 和 <code>"SlateCore"</code>（UI 相关依赖）。
+  如果弹窗需要的模块不在依赖里，链接器会报 LNK2019。</p>
+
+  <p>如果你的依赖列表里有这些，就不用动：</p>
+
+<pre><code>PrivateDependencyModuleNames.AddRange(new string[] {
+    "Slate",
+    "SlateCore",
+    "EditorStyle",
+    "UnrealEd",
+    // ... 其他
+});</code></pre>
+
+  <h3>第五步：编译 + 跑起来</h3>
+
+  <ol>
+    <li>右键 .uproject → "Generate Visual Studio project files"</li>
+    <li>在 VS 里打开 .sln，按 <strong>Ctrl+Shift+B</strong>（生成解决方案）</li>
+    <li>等编译完成（第一次几分钟，以后几十秒）</li>
+    <li>启动 UE 编辑器</li>
+    <li>在编辑器工具栏上找到你插件的按钮（可能是一个带插件名的小图标）</li>
+    <li>点它</li>
+    <li>弹出一个窗口，写着 "Hello，小K！"</li>
+  </ol>
+
+  <p>如果没看到按钮：去 Edit → Plugins 确认你的插件是 Enabled 状态。
+  如果编译报错：用 Day 7 的方法，看第一条 error，定位文件和行号。</p>
+
+  <h3>你做了什么，你什么都没做——但你其实做了很多</h3>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>你刚刚走的这五步，就是 UE 工具开发的标准流程。今后你做任何工具——
+    不管多复杂功能——都是这个流程的放大版。</h4>
+  </div>
+
+  <p>回顾一下你刚刚做了什么：</p>
+
+  <figure>
+    <svg viewBox="0 0 720 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="工具开发标准流程">
+      <defs>
+        <marker id="arr8a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#22d3ee"/></marker>
+      </defs>
+      <g font-size="11" fill="#cdd6e3" font-family="ui-sans-serif,system-ui">
+        <rect x="10" y="50" width="110" height="90" rx="10" fill="#1d222d" stroke="#7c5cff" stroke-width="1.5"/>
+        <text x="65" y="78" text-anchor="middle" fill="#e8ecf3" font-weight="700">① 建插件</text>
+        <text x="65" y="98" text-anchor="middle" font-size="10" fill="#9aa3b2">New Plugin</text>
+        <text x="65" y="114" text-anchor="middle" font-size="10" fill="#9aa3b2">选模板</text>
+
+        <line x1="120" y1="95" x2="145" y2="95" stroke="#22d3ee" stroke-width="2" marker-end="url(#arr8a)"/>
+
+        <rect x="150" y="50" width="110" height="90" rx="10" fill="#1d222d" stroke="#7c5cff" stroke-width="1.5"/>
+        <text x="205" y="78" text-anchor="middle" fill="#e8ecf3" font-weight="700">② 写代码</text>
+        <text x="205" y="98" text-anchor="middle" font-size="10" fill="#9aa3b2">改 .cpp</text>
+        <text x="205" y="114" text-anchor="middle" font-size="10" fill="#9aa3b2">加弹窗逻辑</text>
+
+        <line x1="260" y1="95" x2="285" y2="95" stroke="#22d3ee" stroke-width="2" marker-end="url(#arr8a)"/>
+
+        <rect x="290" y="50" width="110" height="90" rx="10" fill="#1d222d" stroke="#7c5cff" stroke-width="1.5"/>
+        <text x="345" y="78" text-anchor="middle" fill="#e8ecf3" font-weight="700">③ 检查依赖</text>
+        <text x="345" y="98" text-anchor="middle" font-size="10" fill="#9aa3b2">Build.cs</text>
+        <text x="345" y="114" text-anchor="middle" font-size="10" fill="#9aa3b2">确认模块列表</text>
+
+        <line x1="400" y1="95" x2="425" y2="95" stroke="#22d3ee" stroke-width="2" marker-end="url(#arr8a)"/>
+
+        <rect x="430" y="50" width="110" height="90" rx="10" fill="#1d222d" stroke="#22d3ee" stroke-width="1.8"/>
+        <text x="485" y="78" text-anchor="middle" fill="#22d3ee" font-weight="700">④ 编译</text>
+        <text x="485" y="98" text-anchor="middle" font-size="10" fill="#9aa3b2">Ctrl+Shift+B</text>
+        <text x="485" y="114" text-anchor="middle" font-size="10" fill="#9aa3b2">等几十秒</text>
+
+        <line x1="540" y1="95" x2="565" y2="95" stroke="#22d3ee" stroke-width="2" marker-end="url(#arr8a)"/>
+
+        <rect x="570" y="50" width="140" height="90" rx="10" fill="#1d222d" stroke="#22c55e" stroke-width="1.8"/>
+        <text x="640" y="78" text-anchor="middle" fill="#22c55e" font-weight="700">⑤ 跑起来 🎉</text>
+        <text x="640" y="98" text-anchor="middle" font-size="10" fill="#9aa3b2">启动编辑器</text>
+        <text x="640" y="114" text-anchor="middle" font-size="10" fill="#9aa3b2">点按钮 → 弹窗</text>
+
+        <text x="360" y="30" text-anchor="middle" fill="#e8ecf3" font-size="13" font-weight="600">UE 工具开发标准流程</text>
+        <text x="360" y="168" text-anchor="middle" fill="#9aa3b2" font-size="10">这个流程你今天走通了。今后做任何工具，都是这个流程的放大版。</text>
+      </g>
+    </svg>
+    <figcaption>建插件 → 写代码 → 检查依赖 → 编译 → 跑起来。五步循环，每一圈都在加深你的肌肉记忆。</figcaption>
+  </figure>
+
+  <p>你现在可能还不完全懂 <code>FMessageDialog::Open</code> 是什么、
+  <code>FText::FromString</code> 是什么、为什么参数的类型长那样。
+  没关系——Day 0 说过，"看代码是把每一行翻译成'它在干嘛'"。
+  你已经能翻译"哦，这行在弹一个对话框，里面显示一行字"——这就够了。</p>
+
+  <p>今后你想在这个工具上叠加新功能，比如弹窗里多一个输入框、
+  弹窗确认之后批量重命名资产、加一个设置面板……这些都是在
+  <strong>已经跑通的框架</strong>上往 <code>OnToolbarButtonClicked()</code> 这个函数里加更多代码。</p>
+
+  <p>框架一旦跑通了，后面就是堆功能。而堆功能这件事，AI 特别擅长。</p>
+
+  <div class="big-quote">
+    八天前，"代码"在你脑子里没有形状。<br/>
+    八天后，你在 UE 编辑器里点了一下自己写的按钮。<br/>
+    这就是从零到一。
+  </div>
+
+  <div class="tasks">
+    <h4>今日打卡</h4>
+    <label class="task" data-task="d8t1"><input type="checkbox"/><span class="t-text">真的在 UE 编辑器里新建了一个 Editor Plugin</span></label>
+    <label class="task" data-task="d8t2"><input type="checkbox"/><span class="t-text">找到了 OnToolbarButtonClicked 函数，理解了它叫"回调"（按钮被点击时被调用）</span></label>
+    <label class="task" data-task="d8t3"><input type="checkbox"/><span class="t-text">把弹窗代码加进去，编译成功，编辑器里点出了弹窗</span></label>
+    <label class="task" data-task="d8t4"><input type="checkbox"/><span class="t-text">理解了 UE 工具开发的标准流程：建插件→写代码→检查依赖→编译→跑起来</span></label>
+    <label class="task" data-task="d8t5"><input type="checkbox"/><span class="t-text">体验了"从零到一"的感觉——这个感觉比什么都重要</span></label>
+  </div>
+  <div class="day-foot">
+    <span class="day-progress" data-progress></span>
+    <button class="complete-btn" data-complete>完成今日 ✓</button>
+  </div>
+</article>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</body>
+</html>

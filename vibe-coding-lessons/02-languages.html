@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>编程语言大观园 · 小K的大神之路</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.8;padding:16px;max-width:700px;margin:0 auto;padding-bottom:32px}
+h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:4px}
+h2{font-size:16px;font-weight:700;color:#818cf8;margin:20px 0 8px;border-left:3px solid #818cf8;padding-left:10px}
+h3{font-size:14px;color:rgba(255,255,255,.85);margin:14px 0 6px}
+.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:16px}
+.breadcrumb{font-size:10px;color:rgba(255,255,255,.25);margin-bottom:12px}
+.breadcrumb a{color:rgba(255,255,255,.35);text-decoration:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge.req{background:rgba(99,102,241,.15);color:#818cf8}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
+.scene-tag{font-size:9px;color:#00e5ff;font-weight:700;margin-bottom:8px;letter-spacing:.5px}
+.who{color:#fbbf24;font-weight:600}
+.checklist{list-style:none;padding:0}
+.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
+.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
+.nav-btns{display:flex;gap:8px;margin:20px 0}
+.btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:12px;text-decoration:none;text-align:center}
+.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:#00e5ff}
+pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.5;margin:8px 0}
+code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
+.tip{border-left:2px solid #fbbf24;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(245,158,11,.04)}
+p{margin:8px 0;font-size:12px;color:rgba(255,255,255,.65)}
+.back{text-align:center;margin-top:24px}
+.back a{color:rgba(255,255,255,.2);font-size:10px;text-decoration:none}
+.lesson-kicker{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / 编程基础 / 必修课 · §2</div>
+<div class="lesson-kicker"><span class="badge required">必修</span><span class="lesson-index">第 3 / 33 节</span></div><h1>编程语言大观园</h1><p>小K 听说过的编程语言一只手就能数过来——C++、Python、Java。 但网上随便一刷，什么 JavaScript、TypeScript、C#、Rust、Go…… 怎么会有这么多种？哪个才是我该学的？</p>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<article><div class="scene">
+    <div class="scene-tag">SCENE · 第四天午休</div>
+    <p><span class="who">小K</span>："G哥，你写 C++。那隔壁组前端写 React 用的是什么？TypeScript？这是 C++ 的弟弟吗？"</p>
+    <p><span class="who">G 哥</span>（放下咖啡杯）：
+    "好问题。你先记住一句话——
+    <strong>编程语言是人类写给自己的工具，每一种都是为特定场景设计的。</strong>
+    就像你不会用菜刀去拧螺丝，也不会用扳手去切菜。"</p>
+  </div>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>你不了解语言之间的关系，就永远不知道"自己该学什么"。</h4>
+    <p>很多新人上来就问"学哪个语言好找活？"，但这个问题本身就不对——
+    因为不同语言通向完全不同的职业方向。你今天要做的，不是学一门具体语言，
+    而是在脑子里画一张"语言地图"，知道每种语言长什么样、在什么场景下用、彼此之间是什么关系。</p>
+  </div>
+
+  <h3>为什么会有这么多种语言？</h3>
+
+  <p>回到 Day 0 那个核心公式：<strong>代码 = 人类可读的东西 → 翻译 → 机器指令</strong>。</p>
+
+  <p>每一种"翻译方式"和"人怎么描述问题"的组合，就是一门新的编程语言。
+  1972 年诞生的 C 语言，是为了写 Unix 操作系统。1995 年的 Java，是为了"写一次，到处跑"。
+  2009 年的 Go，是为了解决 Google 后院几万台服务器的并发问题。</p>
+
+  <p><strong>每种语言都诞生于一个具体的痛点上。</strong>
+  理解了这一点，你就不会觉得"语言太多"了——就像你不会觉得"螺丝刀种类太多"一样，
+  因为十字、一字、六角，各有各的用场。</p>
+
+  <figure>
+    <svg viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr2a" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6Z" fill="#7c5cff"/></marker>
+      </defs>
+      <!-- Timeline -->
+      <line x1="40" y1="60" x2="40" y2="240" stroke="#2a3140" stroke-width="2"/>
+      <line x1="40" y1="230" x2="680" y2="230" stroke="#2a3140" stroke-width="2"/>
+      <!-- Nodes -->
+      <circle cx="100" cy="230" r="20" fill="#1d222d" stroke="#f87171" stroke-width="2"/>
+      <text x="100" y="233" text-anchor="middle" fill="#f87171" font-size="12" font-weight="700">1972</text>
+      <text x="100" y="250" text-anchor="middle" fill="#9aa3b2" font-size="11">C</text>
+      <text x="100" y="264" text-anchor="middle" fill="#9aa3b2" font-size="9">写操作系统</text>
+
+      <circle cx="230" cy="230" r="20" fill="#1d222d" stroke="#60a5fa" stroke-width="2"/>
+      <text x="230" y="233" text-anchor="middle" fill="#60a5fa" font-size="12" font-weight="700">1983</text>
+      <text x="230" y="250" text-anchor="middle" fill="#9aa3b2" font-size="11">C++</text>
+      <text x="230" y="264" text-anchor="middle" fill="#9aa3b2" font-size="9">游戏/高性能</text>
+
+      <circle cx="350" cy="230" r="20" fill="#1d222d" stroke="#facc15" stroke-width="2"/>
+      <text x="350" y="233" text-anchor="middle" fill="#facc15" font-size="12" font-weight="700">1991</text>
+      <text x="350" y="250" text-anchor="middle" fill="#9aa3b2" font-size="11">Python</text>
+      <text x="350" y="264" text-anchor="middle" fill="#9aa3b2" font-size="9">AI/脚本</text>
+
+      <circle cx="470" cy="230" r="20" fill="#1d222d" stroke="#22c55e" stroke-width="2"/>
+      <text x="470" y="233" text-anchor="middle" fill="#22c55e" font-size="12" font-weight="700">1995</text>
+      <text x="470" y="250" text-anchor="middle" fill="#9aa3b2" font-size="11">JS / Java</text>
+      <text x="470" y="264" text-anchor="middle" fill="#9aa3b2" font-size="9">Web/企业</text>
+
+      <circle cx="600" cy="230" r="20" fill="#1d222d" stroke="#22d3ee" stroke-width="2"/>
+      <text x="600" y="233" text-anchor="middle" fill="#22d3ee" font-size="12" font-weight="700">2010+</text>
+      <text x="600" y="250" text-anchor="middle" fill="#9aa3b2" font-size="11">Rust/TS/Go</text>
+      <text x="600" y="264" text-anchor="middle" fill="#9aa3b2" font-size="9">安全/类型</text>
+    </svg>
+    <figcaption>编程语言的进化史——每种语言都诞生于特定年代的具体需求</figcaption>
+  </figure>
+
+  <h3>七大主流语言速览</h3>
+  <p>下面不用深入学语法，只需要看懂<strong>每种语言"长什么样"</strong>和<strong>"用在什么地方"</strong>。</p>
+
+  <h4>1. C++ —— 性能猛兽，UE 的心脏</h4>
+  <p>UE 引擎本身就是 C++ 写的。C++ 的特点是<strong>极其快、极其精细</strong>——
+  你能控制内存的每一个字节，但这也意味着你一不小心就会把内存写坏（"野指针"、"内存泄漏"是 C++ 新人的噩梦）。
+  游戏引擎、操作系统、数据库、高频交易——凡是需要"每一毫秒都要省"的地方，基本都是 C++。</p>
+<pre><code>// C++ — 静态类型，编译型，手动内存管理
+#include &lt;iostream&gt;
+int main() {
+    std::cout &lt;&lt; "Hello UE!" &lt;&lt; std::endl;
+    return 0;
+}</code></pre>
+
+  <h4>2. Python —— 读起来像英语，AI 时代的通用语</h4>
+  <p>Python 的设计哲学是"代码应该像伪代码一样好读"。它不用编译，写完就直接跑。
+  UE 里用来做编辑器脚本、批量处理资产。AI/机器学习领域几乎默认用 Python。
+  缺点是<strong>慢</strong>——同样一个循环，Python 可能比 C++ 慢几十倍。</p>
+<pre><code># Python — 动态类型，解释型，自动内存管理
+print("Hello from Python!")</code></pre>
+
+  <h4>3. JavaScript —— 网页的语言，浏览器里唯一能跑的</h4>
+  <p>全世界每一台电脑的浏览器都内置了 JavaScript 引擎。你打开的任何一个网页，上面的按钮、动画、
+  表单验证，大概率都是 JS 写的。JS 曾经只是一个"网页小脚本"，但现在它跑到了服务器端（Node.js）、
+  桌面端（Electron）、甚至移动端（React Native）。</p>
+<pre><code>// JavaScript — 动态类型，解释型/JIT
+console.log("Hello from the browser!");</code></pre>
+
+  <h4>4. TypeScript —— JS 穿了盔甲</h4>
+  <p>JS 的变量没有"类型"——一个变量可以先是数字，再变成字符串，再变成对象。
+  这在大型项目里是灾难：你改了一个地方，不知道哪里会炸。
+  TypeScript 给 JS 加上了<strong>类型系统</strong>——写的时候稍微麻烦一点，但编译的时候就能帮你抓出大部分低级错误。
+  我们的 FloatThings 待办事项就是用 TypeScript 写的。</p>
+<pre><code>// TypeScript — JS + 静态类型检查
+function greet(name: string): string {
+    return `Hello, ${name}!`;
+}</code></pre>
+
+  <h4>5. Java —— 企业级的老大哥</h4>
+  <p>Java 的核心卖点是"<strong>写一次，到处跑</strong>"。你的 Java 代码编译成字节码后，
+  可以在任何装了 JVM 的机器上跑——Windows、Mac、Linux、甚至冰箱里的嵌入式系统。
+  银行系统、安卓 App、企业后台，大量使用 Java。但对 UE 开发来说基本用不到。</p>
+
+  <h4>6. C# —— 微软的亲儿子，Unity 的心脏</h4>
+  <p>C# 可以理解为"Java 的表弟，微软的亲儿子"。语法和 Java 很像，但更现代化。
+  如果你用 Unity 做游戏而不是 UE，那你写的就是 C#。UE 开发基本用不到，但值得认识它。</p>
+
+  <h4>7. Rust —— 新来的安全专家</h4>
+  <p>Rust 是 Mozilla 在 2015 年推出的语言，设计目标是<strong>"C++ 的性能，但没有 C++ 的内存陷阱"</strong>。
+  它的编译器极其严格——任何可能的内存错误都会在编译期被拦下，根本不给跑到线上的机会。
+  Windows 内核、Linux 内核、Firefox 浏览器都在逐步引入 Rust。
+  对新人来说学习曲线很陡，但它代表了编程语言未来的方向。</p>
+
+  <h3>两大阵营：编译型 vs 解释型</h3>
+
+  <div class="compare">
+    <div>
+      <b>🔨 编译型（C++, Rust, Go）</b>
+      代码 → 编译器翻译 → 机器码 .exe<br/>
+      跑起来快，但每次改完都要等编译。<br/>
+      UE 里改一行可能要编译几十秒到几分钟。
+    </div>
+    <div>
+      <b>⚡ 解释型（Python, JavaScript）</b>
+      代码 → 直接交给解释器跑<br/>
+      改了就能跑，不需要编译等待。<br/>
+      但跑起来比编译型慢很多。
+    </div>
+  </div>
+
+  <div class="compare">
+    <div>
+      <b>🏷️ 静态类型（C++, Java, TS, Rust, C#）</b>
+      变量的类型在写代码时就定死。<br/>
+      <code>int x = 5;</code> → x 永远是整数。<br/>
+      能提前抓很多错，但写起来啰嗦。
+    </div>
+    <div>
+      <b>🏷️ 动态类型（Python, JS）</b>
+      变量的类型在运行时才确定。<br/>
+      <code>x = 5</code> 然后 <code>x = "hello"</code> 完全合法。<br/>
+      写起来快，但容易埋坑。
+    </div>
+  </div>
+
+  <div class="callout key">
+    <div class="callout-title">🔑 UE 开发者的语言组合</div>
+    <p>对 UE 工具开发来说，你真正需要的是：<strong>C++</strong>（引擎层，写插件核心逻辑）+ <strong>Python</strong>（编辑器脚本，批量操作）+
+    <strong>蓝图</strong>（不是编程语言但能干活）。TypeScript 如果你有兴趣做我们的实践课，也会接触到。</p>
+  </div>
+
+  <h3>你该学哪门？取决于你想做什么</h3>
+
+  <figure>
+    <svg viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="20" width="200" height="80" rx="12" fill="#1d222d" stroke="#f87171" stroke-width="1.5"/>
+      <text x="120" y="52" text-anchor="middle" fill="#f87171" font-size="14" font-weight="700">想做 3A 游戏</text>
+      <text x="120" y="76" text-anchor="middle" fill="#9aa3b2" font-size="12">C++ + UE / Unity(C#)</text>
+      <rect x="240" y="20" width="200" height="80" rx="12" fill="#1d222d" stroke="#22d3ee" stroke-width="1.5"/>
+      <text x="340" y="52" text-anchor="middle" fill="#22d3ee" font-size="14" font-weight="700">想做网页/App</text>
+      <text x="340" y="76" text-anchor="middle" fill="#9aa3b2" font-size="12">TypeScript + React</text>
+      <rect x="460" y="20" width="200" height="80" rx="12" fill="#1d222d" stroke="#4ade80" stroke-width="1.5"/>
+      <text x="560" y="52" text-anchor="middle" fill="#4ade80" font-size="14" font-weight="700">想做 AI / 数据</text>
+      <text x="560" y="76" text-anchor="middle" fill="#9aa3b2" font-size="12">Python + PyTorch</text>
+
+      <rect x="130" y="120" width="200" height="80" rx="12" fill="#1d222d" stroke="#facc15" stroke-width="1.5"/>
+      <text x="230" y="152" text-anchor="middle" fill="#facc15" font-size="14" font-weight="700">想做系统底层</text>
+      <text x="230" y="176" text-anchor="middle" fill="#9aa3b2" font-size="12">C / Rust / C++</text>
+      <rect x="350" y="120" width="200" height="80" rx="12" fill="#1d222d" stroke="#c084fc" stroke-width="1.5"/>
+      <text x="450" y="152" text-anchor="middle" fill="#c084fc" font-size="14" font-weight="700">先学一门入门</text>
+      <text x="450" y="176" text-anchor="middle" fill="#9aa3b2" font-size="12">Python → 最好上手</text>
+    </svg>
+    <figcaption>不同方向对应不同的语言入口。没有"最好"的语言，只有"最对"的语言。</figcaption>
+  </figure>
+
+  <div class="big-quote">
+    如果你现在什么都不会，从 Python 入门最容易。<br/>
+    如果你想做 UE 工具开发，C++ 是绕不开的主线。<br/>
+    两者不矛盾——先 Python 感受"编程是怎么回事"，再啃 C++。
+  </div>
+
+  <div class="tasks">
+    <h4>本节打卡</h4>
+    <label class="task" data-task="req2t1"><input type="checkbox"/><span class="t-text">能说出编译型和解释型的区别，至少各举一门语言</span></label>
+    <label class="task" data-task="req2t2"><input type="checkbox"/><span class="t-text">能说出静态类型和动态类型的区别</span></label>
+    <label class="task" data-task="req2t3"><input type="checkbox"/><span class="t-text">知道 C++ 用在游戏引擎、Python 用在 AI/脚本、JS 用在浏览器</span></label>
+    <label class="task" data-task="req2t4"><input type="checkbox"/><span class="t-text">理解"没有最好的语言，只有最对的场景"这句话</span></label>
+    <label class="task" data-task="req2t5"><input type="checkbox"/><span class="t-text">知道 UE 工具开发主要用 C++ + Python + 蓝图</span></label>
+  </div>
+  <div class="day-foot">
+    <span class="day-progress" data-progress></span>
+    <button class="complete-btn" data-complete>完成本节 ✓</button>
+  </div>
+</article>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</body>
+</html>

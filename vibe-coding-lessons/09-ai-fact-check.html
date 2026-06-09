@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>如何判断 AI 有没有胡说 · 小K的大神之路</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.8;padding:16px;max-width:700px;margin:0 auto;padding-bottom:32px}
+h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:4px}
+h2{font-size:16px;font-weight:700;color:#818cf8;margin:20px 0 8px;border-left:3px solid #818cf8;padding-left:10px}
+h3{font-size:14px;color:rgba(255,255,255,.85);margin:14px 0 6px}
+.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:16px}
+.breadcrumb{font-size:10px;color:rgba(255,255,255,.25);margin-bottom:12px}
+.breadcrumb a{color:rgba(255,255,255,.35);text-decoration:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge.req{background:rgba(99,102,241,.15);color:#818cf8}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
+.scene-tag{font-size:9px;color:#00e5ff;font-weight:700;margin-bottom:8px;letter-spacing:.5px}
+.who{color:#fbbf24;font-weight:600}
+.checklist{list-style:none;padding:0}
+.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
+.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
+.nav-btns{display:flex;gap:8px;margin:20px 0}
+.btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:12px;text-decoration:none;text-align:center}
+.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:#00e5ff}
+pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.5;margin:8px 0}
+code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
+.tip{border-left:2px solid #fbbf24;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(245,158,11,.04)}
+p{margin:8px 0;font-size:12px;color:rgba(255,255,255,.65)}
+.back{text-align:center;margin-top:24px}
+.back a{color:rgba(255,255,255,.2);font-size:10px;text-decoration:none}
+.lesson-kicker{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / AI 工具入门 / 必修课 · §11</div>
+<div class="lesson-kicker"><span class="badge required">必修</span><span class="lesson-index">第 12 / 33 节</span></div><h1>如何判断 AI 有没有胡说</h1><p>AI 最危险的时候，不是它说“不知道”，而是它用特别自信的语气，把不存在的文件、API、参数和解决方案说得像真的。</p>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<article><div class="scene">
+    <div class="scene-tag">SCENE · 自信得像真的</div>
+    <p><span class="who">小K</span>：“AI 说项目里有个 <code>CourseRouter.ts</code>，让我去改它。但我搜不到这个文件。”</p>
+    <p><span class="who">G 哥</span>：“恭喜你遇到 AI 幻觉了。它不是故意骗你，它是在用概率补全一个听起来合理的答案。”</p>
+  </div>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>VibeCoding 不是盲信 AI，而是让 AI 生成候选答案，再用证据筛掉假的。</h4>
+    <p>AI 很擅长把信息组织得像答案，但它不一定真的看过你的项目、不一定知道最新 API、不一定理解你的约束。你要学会把“听起来对”变成“有证据证明对”。</p>
+  </div>
+
+  <h3>第一步：AI 胡说的常见形态</h3>
+  <table class="decision-table"><tr><th>胡说类型</th><th>它看起来像什么</th><th>怎么识别</th><th>怎么追问</th></tr><tr><td>编文件</td><td>提到项目里不存在的文件或目录</td><td>让它列文件路径，然后自己搜索</td><td>“请只基于实际存在的文件回答。”</td></tr><tr><td>编 API</td><td>调用一个库里不存在的方法</td><td>查看官方文档或 IDE 补全</td><td>“这个 API 的出处是什么？如果不确定，请说不确定。”</td></tr><tr><td>乱换框架</td><td>明明是静态站，却建议上 Next、数据库、登录系统</td><td>看它是否先识别现有技术栈</td><td>“不要新增框架，只基于当前结构给最小方案。”</td></tr><tr><td>忽略约束</td><td>你说不要动样式，它还是改了 CSS</td><td>看 diff 是否碰了禁止文件</td><td>“请列出是否违反了我给的约束。”</td></tr><tr><td>过度自信</td><td>没有验证却说“应该没问题”</td><td>看它是否给出测试证据</td><td>“请区分已验证、推测、未验证。”</td></tr></table>
+
+  <h3>第二步：五个证据开关</h3>
+  <p>你不需要变成资深工程师才能识别胡说。你只要让 AI 每次都给证据，问题就会少很多。</p>
+  <div class="artifact-grid"><div class="artifact"><h4>文件证据</h4><p>它说要改哪个文件，就让它说明文件为什么相关。</p></div><div class="artifact"><h4>搜索证据</h4><p>让它用搜索结果说明某个函数、类名、配置项是否真的存在。</p></div><div class="artifact"><h4>运行证据</h4><p>功能是否能跑，不能只靠嘴说，要有命令输出、页面检查或截图。</p></div><div class="artifact"><h4>约束证据</h4><p>让它列出“我没有修改哪些文件、没有新增哪些依赖”。</p></div></div>
+
+  <div class="callout warn">
+    <div class="callout-title">高危信号</div>
+    <p>如果 AI 一上来就给大方案、大重构、大量新依赖，却没有先看项目结构，也没有问你的目标和约束，这时要立刻降速。</p>
+  </div>
+
+  <h3>第三步：让 AI 自己给答案打标签</h3>
+  <p>很多时候 AI 不是完全错，而是把“确定”“推测”“需要验证”混在一起讲。你可以强制它分层。</p>
+  <div class="prompt-block">请把你的回答拆成三类：
+
+1. 已确认：你能从当前项目文件或我提供的信息里直接证明的内容；
+2. 推测：你根据经验判断但还没有证据的内容；
+3. 需要验证：必须通过搜索、运行、截图、文档或测试确认的内容。
+
+请不要把推测写成确定结论。</div>
+
+  <h3>第四步：反向审查 AI 的方案</h3>
+  <p>当 AI 给了一个看似很完整的方案，你可以让另一个回合专门挑错。这个动作会显得非常“有章法”。</p>
+  <div class="prompt-block">请你站在代码审查者的角度，反驳刚才的方案。
+
+重点检查：
+1. 有没有假设不存在的文件、函数、接口；
+2. 有没有违反当前技术栈；
+3. 有没有把简单问题复杂化；
+4. 有没有遗漏验证步骤；
+5. 如果这个方案会失败，最可能失败在哪里。</div>
+
+  <div class="ai-chat"><div class="ai-chat-title">AI 互动现场：把“应该可以”逼成“怎么证明”</div><div class="chat-turn user"><div class="role">你</div><p>这样改应该没问题吧？</p></div><div class="chat-turn ai"><div class="role">AI</div><p>应该没问题，逻辑上是通的。</p></div><div class="chat-turn user"><div class="role">你</div><p>不要用“应该”。请列出你实际验证过的内容、没有验证的内容，以及我应该手动检查的 5 个点。</p></div><div class="chat-turn ai"><div class="role">AI</div><p>好的，我会把结论拆成已验证、未验证和建议检查清单。</p></div></div>
+
+  <h3>第五步：新手可用的真假判断清单</h3>
+  <ul>
+    <li>它提到的文件，在项目里真的存在吗？</li>
+    <li>它建议的命令，适合你的系统和终端吗？</li>
+    <li>它有没有忽略你说过的“不许新增框架”“不许改某个文件”？</li>
+    <li>它有没有把“建议”说成“必须”？</li>
+    <li>它有没有给出验证方式，而不是只说“完成了”？</li>
+    <li>它有没有在出错后继续堆新方案，而不是先回到证据？</li>
+  </ul>
+
+  <div class="big-quote">会用 AI，不是相信它每句话。<br/>而是知道怎么把它的回答拆成：<strong>证据、推测、待验证。</strong></div>
+
+  <div class="tasks"><h4>本节打卡</h4><label class="task" data-task="factcheck-t1"><input type="checkbox"/><span class="t-text">能识别 AI 编文件、编 API、乱换框架这三类问题</span></label><label class="task" data-task="factcheck-t2"><input type="checkbox"/><span class="t-text">会要求 AI 区分已确认、推测、需要验证</span></label><label class="task" data-task="factcheck-t3"><input type="checkbox"/><span class="t-text">知道“应该可以”不是验证结果</span></label><label class="task" data-task="factcheck-t4"><input type="checkbox"/><span class="t-text">会让 AI 按当前项目文件给证据</span></label><label class="task" data-task="factcheck-t5"><input type="checkbox"/><span class="t-text">会让 AI 反向审查自己的方案</span></label><label class="task" data-task="factcheck-t6"><input type="checkbox"/><span class="t-text">能写出一份“真假判断清单”给自己用</span></label></div>
+  <div class="day-foot"><span class="day-progress" data-progress></span><button class="complete-btn" data-complete>完成本节</button></div>
+</article>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</body>
+</html>

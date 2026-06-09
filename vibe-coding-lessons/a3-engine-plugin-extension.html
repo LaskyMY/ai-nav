@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>引擎、插件、扩展 · 小K的大神之路</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.8;padding:16px;max-width:700px;margin:0 auto;padding-bottom:32px}
+h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:4px}
+h2{font-size:16px;font-weight:700;color:#818cf8;margin:20px 0 8px;border-left:3px solid #818cf8;padding-left:10px}
+h3{font-size:14px;color:rgba(255,255,255,.85);margin:14px 0 6px}
+.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:16px}
+.breadcrumb{font-size:10px;color:rgba(255,255,255,.25);margin-bottom:12px}
+.breadcrumb a{color:rgba(255,255,255,.35);text-decoration:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge.req{background:rgba(99,102,241,.15);color:#818cf8}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
+.scene-tag{font-size:9px;color:#00e5ff;font-weight:700;margin-bottom:8px;letter-spacing:.5px}
+.who{color:#fbbf24;font-weight:600}
+.checklist{list-style:none;padding:0}
+.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
+.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
+.nav-btns{display:flex;gap:8px;margin:20px 0}
+.btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:12px;text-decoration:none;text-align:center}
+.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:#00e5ff}
+pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.5;margin:8px 0}
+code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
+.tip{border-left:2px solid #fbbf24;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(245,158,11,.04)}
+p{margin:8px 0;font-size:12px;color:rgba(255,255,255,.65)}
+.back{text-align:center;margin-top:24px}
+.back a{color:rgba(255,255,255,.2);font-size:10px;text-decoration:none}
+.lesson-kicker{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / UE 工具开发 / DAY · 04</div>
+<div class="lesson-kicker"><span class="badge elective">选修 A</span><span class="lesson-index">第 16 / 33 节</span></div><h1>引擎、插件、扩展</h1><p>小K 终于搞清楚了他岗位描述里的&quot;工具开发&quot;——不是改引擎，不是写游戏逻辑， 是给编辑器加&quot;功能按钮&quot;。但要理解这个，得先搞清楚&quot;引擎&quot;和&quot;插件&quot;到底是什么关系。</p>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<article><div class="scene">
+    <div class="scene-tag">SCENE 4 · 第四天下午</div>
+    <p><span class="who">小K</span>：
+    "G哥，咱们办公室有人说'我在改引擎'，有人说'我在写插件'，有人说'我在做工具'——
+    这三个是一回事吗？"</p>
+    <p><span class="who">G 哥</span>（放下咖啡）：
+    "好问题。引擎是底座，插件是积木，工具是你用积木拼出来的东西。
+    你今天把这层关系捋清楚了，岗位描述里每个词就都有落脚点了。"</p>
+  </div>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>"引擎""插件""模块""工具"——这四个词在 UE 开发中天天出现，
+    但很多干了一年的人都说不清它们的确切关系和边界。
+    搞清楚了，你就知道"我能动什么"和"我该在哪写代码"。</h4>
+  </div>
+
+  <h3>游戏引擎到底是什么？</h3>
+
+  <p>把"引擎"两个字从技术上扒开，它就是一个<strong>巨大的代码库</strong>。
+  它在游戏（或编辑器）启动时被加载，然后提供几个核心能力：</p>
+
+  <ul>
+    <li><strong>渲染</strong>——把 3D 场景画到屏幕上</li>
+    <li><strong>物理</strong>——碰撞检测、重力、布料</li>
+    <li><strong>音频</strong>——播放声音、空间音效</li>
+    <li><strong>输入</strong>——键盘、鼠标、手柄</li>
+    <li><strong>网络</strong>——多人联机</li>
+    <li><strong>编辑器框架</strong>——你看到的那个 UE 编辑器界面本身</li>
+  </ul>
+
+  <p>这些东西不是 UE 发明的——每个游戏引擎都有。
+  UE 特别的地方是，它把这些能力包装得很"好用"，
+  并且提供了一个完整的<strong>编辑器</strong>让你在可视化界面里操作它们。</p>
+
+  <div class="callout key">
+    <div class="callout-title">🔑 一句话定义</div>
+    <p><strong>游戏引擎 = 渲染 + 物理 + 音频 + 输入 + 网络 + 编辑器框架 + ……</strong>
+    的一个巨大 C++ 代码库。</p>
+    <p>UE 引擎源码大约有几万个 .cpp 文件。你装源码版 UE 的时候，就是把这堆文件
+    拉到本地、编译一遍。</p>
+  </div>
+
+  <h3>引擎和项目：到底谁"包含"谁？</h3>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>很多人以为"项目包含引擎"——其实反过来。引擎是个大容器，项目是引擎加载的一套配置和资产。</h4>
+  </div>
+
+  <p>一个常见误解："我打开 UE 项目，所以项目里有引擎。"</p>
+
+  <p>实际上：<strong>引擎是主程序，项目是引擎加载的"一套设定"</strong>。</p>
+
+  <p>UE 编辑器（UnrealEditor.exe）启动的时候，会加载你指定的 .uproject 文件，
+  然后根据这个文件里的信息去找——"
+  这个项目有哪些模块？
+  有哪些插件？
+  资产放在哪个 Content 文件夹？
+  配置是什么？"</p>
+
+  <p>所以你的 .uproject 文件（昨天在 Project 文件夹看到过）就是一张"说明书"，
+  告诉引擎："加载这些这些这些。"</p>
+
+  <figure>
+    <svg viewBox="0 0 720 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="引擎与项目关系">
+      <defs>
+        <marker id="arr4a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#22d3ee"/></marker>
+      </defs>
+      <g font-size="13" fill="#cdd6e3" font-family="ui-sans-serif,system-ui">
+        <!-- Engine box (big, containing) -->
+        <rect x="30" y="40" width="660" height="160" rx="14" fill="#11151d" stroke="#7c5cff" stroke-width="2"/>
+        <text x="360" y="65" text-anchor="middle" fill="#7c5cff" font-weight="700" font-size="15">Unreal Engine（引擎本体）</text>
+
+        <!-- Inside: Core subsystems -->
+        <rect x="50" y="80" width="100" height="45" rx="8" fill="#1d222d" stroke="#3a4356" stroke-width="1"/>
+        <text x="100" y="107" text-anchor="middle" font-size="11" fill="#9aa3b2">渲染器</text>
+
+        <rect x="160" y="80" width="100" height="45" rx="8" fill="#1d222d" stroke="#3a4356" stroke-width="1"/>
+        <text x="210" y="107" text-anchor="middle" font-size="11" fill="#9aa3b2">物理引擎</text>
+
+        <rect x="270" y="80" width="100" height="45" rx="8" fill="#1d222d" stroke="#3a4356" stroke-width="1"/>
+        <text x="320" y="107" text-anchor="middle" font-size="11" fill="#9aa3b2">音频系统</text>
+
+        <rect x="380" y="80" width="100" height="45" rx="8" fill="#1d222d" stroke="#3a4356" stroke-width="1"/>
+        <text x="430" y="107" text-anchor="middle" font-size="11" fill="#9aa3b2">编辑器框架</text>
+
+        <rect x="490" y="80" width="100" height="45" rx="8" fill="#1d222d" stroke="#3a4356" stroke-width="1"/>
+        <text x="540" y="107" text-anchor="middle" font-size="11" fill="#9aa3b2">……</text>
+
+        <!-- Project (loaded by engine) -->
+        <rect x="240" y="140" width="240" height="50" rx="10" fill="#1d222d" stroke="#22c55e" stroke-width="1.8"/>
+        <text x="360" y="162" text-anchor="middle" fill="#22c55e" font-weight="700" font-size="13">你的项目（.uproject）</text>
+        <text x="360" y="180" text-anchor="middle" font-size="11" fill="#9aa3b2">引擎加载的一套设定和资产</text>
+
+        <line x1="330" y1="135" x2="300" y2="95" stroke="#22d3ee" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#arr4a)"/>
+        <line x1="430" y1="135" x2="460" y2="95" stroke="#22d3ee" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#arr4a)"/>
+
+        <text x="360" y="17" text-anchor="middle" fill="#e8ecf3" font-size="14" font-weight="600">引擎是一个大框，项目在大框里运行</text>
+      </g>
+    </svg>
+    <figcaption>引擎提供所有核心能力（渲染、物理、音频…），项目告诉引擎"加载哪些插件、用哪些资产"。</figcaption>
+  </figure>
+
+  <h3>Plugin — 往引擎这个"操作系统"里装软件</h3>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>你作为一个"工具开发者"，你的工作不是改引擎，而是<strong>写 Plugin</strong>。
+    理解 Plugin 的机制，就是你理解自己工作的第一步。</h4>
+  </div>
+
+  <p>把 UE 引擎想象成 Windows 操作系统。Windows 本身提供了文件管理、网络、
+  显示这些基础能力。但你要写文档，你得装一个 Word——Word 就是一个"插件"。</p>
+
+  <p>UE 的 Plugin 就是这个概念：<strong>往引擎上加一块独立的功能积木</strong>。
+  引擎提供基础能力（渲染、输入、编辑器框架），
+  Plugin 调用这些能力来实现具体功能（比如"批量重命名资产"、"
+  检查贴图参数是否规范"）。</p>
+
+  <p>Plugin 的好处是<strong>独立</strong>：你写的插件不会影响别人的插件，
+  可以单独启用/禁用，可以单独提交到版本控制。</p>
+
+  <h3>Editor Plugin vs Runtime Plugin —— 工具开发的关键分界线</h3>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>你的岗位是"工具开发"——你写的基本上全是 Editor Plugin。
+    如果这个分不清，你可能会把 Editor 代码写成 Runtime 代码，
+    导致打包出来的游戏带着不该带的代码。</h4>
+  </div>
+
+  <div class="compare">
+    <div>
+      <b>Editor Plugin（编辑器插件）</b>
+      只在 UE 编辑器运行时生效。<strong>游戏打包时不会带进去</strong>。
+      <br/><br/>
+      举例：批量重命名资产、检查贴图规范、一键生成目录结构、可视化调试面板。
+      <br/><br/>
+      ← <strong>这就是你要写的</strong>
+    </div>
+    <div>
+      <b>Runtime Plugin（运行时插件）</b>
+      编辑器和打包后的游戏里都生效。
+      <br/><br/>
+      举例：一个自定义的物理系统、一个新材质类型、一个网络同步方案。
+      <br/><br/>
+      ← 这是 gameplay 程序员写的
+    </div>
+  </div>
+
+  <p>你的插件在 .uplugin 文件里会声明自己的类型：</p>
+  <ul>
+    <li><code>"Type": "Editor"</code> → 只在编辑器里跑</li>
+    <li><code>"Type": "Runtime"</code> → 编辑器+游戏都跑</li>
+    <li><code>"Type": "EditorOnly"</code> → 引擎启动时就有，游戏里没有</li>
+  </ul>
+
+  <p>大多数工具插件写 <code>"Type": "Editor"</code> 就够了。</p>
+
+  <h3>UCLASS / UFUNCTION / UPROPERTY —— C++ 和 UE 编辑器之间的"翻译官"</h3>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>这三个宏是你今后每天都要写的东西。不理解它们的存在意义，
+    你就会觉得是在"背咒语"而非"用工具"。</h4>
+    <p>它们是 C++ 代码"暴露"给 UE 编辑器的桥梁。
+    你在 C++ 里写了一个类、一个函数、一个变量——但编辑器默认<strong>看不到它</strong>。
+    你得用这三个宏告诉引擎"嘿，这个可以给编辑器/蓝图用"。</p>
+  </div>
+
+  <p>用最朴素的话解释这三个：</p>
+
+  <ul>
+    <li><strong><code>UCLASS()</code></strong>：声明"这是一个 UE 认识的类"。
+    不加这个，编辑器根本不知道你的类存在。</li>
+    <li><strong><code>UFUNCTION()</code></strong>：声明"这个函数可以给蓝图/编辑器调用"。
+    不加这个，蓝图里搜不到你的函数。</li>
+    <li><strong><code>UPROPERTY()</code></strong>：声明"这个变量可以在编辑器面板里看到和修改"。
+    不加这个，你的变量在细节面板里不显示。</li>
+  </ul>
+
+  <p>用一段代码感受一下：</p>
+
+<pre><code>// 一个没有 UE 标记的普通 C++ 类
+class NormalClass
+{
+    int32 Value;              // 编辑器看不见
+    void DoSomething();       // 蓝图调不了
+};
+
+// 加了 UE 标记的类
+UCLASS()
+class UMyToolClass : public UObject
+{
+    GENERATED_BODY()
+
+public:
+    UPROPERTY(EditAnywhere)   // ← "这个变量在编辑器面板里可以改"
+    int32 Value;
+
+    UFUNCTION(BlueprintCallable)  // ← "蓝图可以调用这个函数"
+    void DoSomething();
+};</code></pre>
+
+  <p>第一段代码对 UE 编辑器来说<strong>等于不存在</strong>。
+  第二段代码能让编辑器看到 Value 变量，让蓝图能调用 DoSomething 函数。</p>
+
+  <p>这就是三个宏做的事情：<strong>让"C++ 的世界"和"UE 编辑器的世界"能说话</strong>。
+  不加它们，你写再多 C++ 代码，编辑器和蓝图都当你是空气。</p>
+
+  <div class="callout key">
+    <div class="callout-title">🔑 记住这个画面</div>
+    <p>C++ 和 UE 编辑器是两个世界。中间隔了一道玻璃墙。<br/>
+    <code>UCLASS</code> 在墙上开个门，让类能进出。<br/>
+    <code>UFUNCTION</code> 在门上装了个对讲机，让蓝图能"喊"这个函数。<br/>
+    <code>UPROPERTY</code> 在墙上挂了个显示屏，让编辑器能看到和改这个变量。</p>
+    <p>这就是所谓的"反射系统"——UE 引擎能"看到"你的 C++ 代码，
+    全靠这三个宏和背后的代码生成工具（UHT，Unreal Header Tool）。</p>
+  </div>
+
+  <h3>引擎 vs 插件 vs 工具：三者的关系一句话</h3>
+
+  <ul>
+    <li><strong>引擎</strong>：楼。提供水电煤（渲染、物理、音频、编辑器框架）。</li>
+    <li><strong>插件</strong>：房间。在楼里占一块空间，有自己的水电接口。</li>
+    <li><strong>工具</strong>：房间里的家具和电器。你每天做的具体功能。</li>
+  </ul>
+
+  <p>你作为工具开发者，做的事是：在 Plugins 里开一间房（Editor Plugin），
+  往里面摆各种家具（用 UFUNCTION 暴露给编辑器调用的功能），
+  让美术/策划/其他程序能通过编辑器界面使用这些家具。</p>
+
+  <div class="big-quote">
+    引擎是底座，插件是积木，<br/>UCLASS / UFUNCTION / UPROPERTY 是积木之间的接口。
+  </div>
+
+  <div class="tasks">
+    <h4>今日打卡</h4>
+    <label class="task" data-task="d4t1"><input type="checkbox"/><span class="t-text">能用自己的话说清楚"引擎"和"项目"的关系</span></label>
+    <label class="task" data-task="d4t2"><input type="checkbox"/><span class="t-text">理解 Plugin 是什么——往引擎上加的独立功能积木</span></label>
+    <label class="task" data-task="d4t3"><input type="checkbox"/><span class="t-text">能区分 Editor Plugin（你的主战场）和 Runtime Plugin</span></label>
+    <label class="task" data-task="d4t4"><input type="checkbox"/><span class="t-text">知道 UCLASS / UFUNCTION / UPROPERTY 各自是干嘛的：让 C++ 能跟 UE 编辑器对话</span></label>
+    <label class="task" data-task="d4t5"><input type="checkbox"/><span class="t-text">理解你作为一个"工具开发"，干的就是"写 Editor Plugin"</span></label>
+  </div>
+  <div class="day-foot">
+    <span class="day-progress" data-progress></span>
+    <button class="complete-btn" data-complete>完成今日 ✓</button>
+  </div>
+</article>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</body>
+</html>

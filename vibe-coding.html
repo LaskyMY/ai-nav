@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>VibeCoding 从零开始</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.6;padding:16px;max-width:700px;margin:0 auto;padding-bottom:32px}
+h1{font-size:22px;font-weight:700;color:#00e5ff;margin-bottom:2px}
+.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:6px}
+.hero{background:linear-gradient(135deg,rgba(0,229,255,.06),rgba(99,102,241,.06));border:1px solid rgba(0,229,255,.1);border-radius:14px;padding:20px 22px;margin-bottom:20px}
+.hero p{font-size:12px;color:rgba(255,255,255,.6);line-height:1.8;margin-top:8px}
+.stats{display:flex;gap:12px;margin-top:12px}
+.stat{background:rgba(255,255,255,.03);border-radius:8px;padding:8px 14px;text-align:center}
+.stat b{display:block;font-size:18px;color:#00e5ff}.stat span{font-size:9px;color:rgba(255,255,255,.3)}
+.track{margin-bottom:24px}
+.track-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:10px;padding:6px 10px;border-left:3px solid #00e5ff;display:flex;align-items:center;gap:8px}
+.track-title .count{font-size:10px;color:rgba(255,255,255,.3);font-weight:400}
+.card{display:block;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:12px 14px;margin-bottom:6px;text-decoration:none;color:inherit;transition:all .15s}
+.card:hover{border-color:rgba(0,229,255,.15);background:rgba(0,229,255,.03)}
+.card .day{font-size:9px;color:rgba(255,255,255,.25);margin-bottom:3px}
+.card h3{font-size:13px;font-weight:600;color:rgba(255,255,255,.85);margin-bottom:3px}
+.card p{font-size:11px;color:rgba(255,255,255,.4);line-height:1.5}
+.card .meta{font-size:9px;color:rgba(255,255,255,.2);margin-top:4px}
+.back{text-align:center;margin-top:24px}
+.back a{color:rgba(255,255,255,.2);font-size:10px;text-decoration:none}
+</style>
+</head>
+<body>
+
+<h1>VibeCoding 从零开始</h1>
+<div class="sub">小K的大神之路 · 33节零基础课程 · 5大模块 · 165个打卡任务</div>
+
+<div class="hero">
+  <p>这是一套写给零基础学习者的 Vibe Coding 入门课程：先建立编程和 AI 工具的基本认知，再学习如何用自然语言提出需求、和 AI 讨论方案、验证原型、打磨界面，最后把一个想法推进成能展示的作品。</p>
+  <div class="stats">
+    <div class="stat"><b>33</b><span>独立课程</span></div>
+    <div class="stat"><b>5</b><span>学习模块</span></div>
+    <div class="stat"><b>165</b><span>打卡任务</span></div>
+  </div>
+</div>
+
+<div class="track">
+  <div class="track-title">📚 编程基础 <span class="count">7节课</span></div>
+  <a class="card" href="vibe-coding-lessons/00-code.html"><div class="day">DAY 00</div><h3>代码到底是个什么东西</h3><p>入职第一天，小K 盯着屏幕上一堆奇怪字符，突然意识到——他不是看不懂代码，他是连"代码"这两个字在脑子里都没有具体形状。</p><div class="meta">5 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/01-program-run.html"><div class="day">DAY 01</div><h3>程序是怎么跑起来的</h3><p>小K 写好的"纸条"电脑根本不认识。从"一行行字"到"双击能跑的程序"，中间发生了什么？</p><div class="meta">6 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/02-languages.html"><div class="day">DAY 10</div><h3>编程语言大观园</h3><p>小K 听说过的编程语言一只手就能数过来。怎么会有这么多种？哪个才是我该学的？</p><div class="meta">5 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/03-algorithm.html"><div class="day">DAY 11</div><h3>算法是个什么东西</h3><p>小K 听到"算法"两个字就开始紧张——其实算法一点也不神秘，你每天都在用算法。</p><div class="meta">5 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/04-framework.html"><div class="day">DAY 12</div><h3>框架是个什么东西</h3><p>把 React、Vue、Next、Tauri、Electron 这些词讲成人话：框架不是另一门语言，而是一套工程骨架。</p><div class="meta">5 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/05-programming-jargon.html"><div class="day">DAY 25</div><h3>编程黑话扫盲：IDE、终端和环境变量</h3><p>把 IDE、PowerShell、CMD、PATH、环境变量这些常见黑话翻译成能立刻排查问题的人话。</p><div class="meta">6 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/06-git-basics.html"><div class="day">DAY 26</div><h3>Git 是什么：给代码做存档和回滚</h3><p>从 Git 和 GitHub 的区别讲起，理解仓库、提交、分支、diff、冲突和回滚。</p><div class="meta">6 项任务</div></a>
+</div>
+
+<div class="track">
+  <div class="track-title">🤖 概念与工具 <span class="count">6节课</span></div>
+  <a class="card" href="vibe-coding-lessons/05-ai-basics.html"><div class="day">DAY 22</div><h3>AI 黑话扫盲：美术和游戏制作常用词</h3><p>从 LLM、Token、Prompt 到 Seed、LoRA、ControlNet——把 AI 术语翻译成人话。</p><div class="meta">8 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/06-claude-code.html"><div class="day">DAY 23</div><h3>Claude Code 入门</h3><p>那个传说中"能帮你写代码"的 Claude Code，到底是什么？怎么装？怎么用？</p><div class="meta">5 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/07-codex.html"><div class="day">DAY 24</div><h3>Codex 入门——另一个选择</h3><p>Claude Code 和 Codex 到底什么区别？什么时候该用哪个？</p><div class="meta">4 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/08-prompt-templates.html"><div class="day">DAY 27</div><h3>Prompt 模板库：把需求说到 AI 能干活</h3><p>把需求脑暴、技术选型、报错排查整理成可复用模板，让 AI 更像靠谱协作者。</p><div class="meta">6 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/09-ai-fact-check.html"><div class="day">DAY 28</div><h3>如何判断 AI 有没有胡说</h3><p>识别 AI 编文件、编 API、乱换框架、忽略约束和过度自信。</p><div class="meta">6 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/10-ai-rollback.html"><div class="day">DAY 29</div><h3>版本管理与回滚意识</h3><p>学会把 AI 修改切成小步，看 diff、做冒烟测试、保存版本、准备回滚预案。</p><div class="meta">6 项任务</div></a>
+</div>
+
+<div class="track">
+  <div class="track-title">🛠 AI协作 <span class="count">8节课</span></div>
+  <a class="card" href="vibe-coding-lessons/a1-toolbox.html"><div class="day">DAY 02</div><h3>装好你的工具箱</h3><p>Visual Studio、UE、Perforce——工具开发的环境比一般程序员还要重。</p><div class="meta">5 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/a2-project-town.html"><div class="day">DAY 03</div><h3>项目是一座小镇</h3><p>打开项目根目录——50多个文件夹，当场愣住了。这些文件夹都干嘛的？</p><div class="meta">5 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/a3-engine-plugin-extension.html"><div class="day">DAY 04</div><h3>引擎、插件、扩展</h3><p>工具开发不是改引擎，不是写游戏逻辑，是给编辑器加"小工具"。</p><div class="meta">5 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/a4-ue-project.html"><div class="day">DAY 05</div><h3>走进 UE 项目</h3><p>.uproject 文件是什么？Module 是什么？Build.cs 是什么？</p><div class="meta">5 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/a5-ai-prompting.html"><div class="day">DAY 06</div><h3>跟 AI 好好说话</h3><p>不是 AI 没用，是你问的方式不对。</p><div class="meta">5 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/a6-errors.html"><div class="day">DAY 07</div><h3>读懂报错</h3><p>红字一片，心跳加速——这是最常见的报错，编译器已经告诉你答案了。</p><div class="meta">6 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/a7-editor-tool.html"><div class="day">DAY 08</div><h3>第一个 Editor 工具</h3><p>在 UE 编辑器里加了一个属于自己的按钮——Hello，小K！</p><div class="meta">5 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/a8-version-collaboration.html"><div class="day">DAY 09</div><h3>提交、版本、协作</h3><p>代码写完了不代表结束了——要让团队用上、不影响别人、出问题能回退。</p><div class="meta">6 项任务</div></a>
+</div>
+
+<div class="track">
+  <div class="track-title">🎨 产品设计与开发 <span class="count">6节课</span></div>
+  <a class="card" href="vibe-coding-lessons/b1-desktop-vs-web.html"><div class="day">DAY 13</div><h3>桌面应用 vs 网页：区别在哪</h3><p>从 Chrome、微信、UE 编辑器讲清网页、桌面应用和本地软件的本质区别。</p><div class="meta">3 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/b2-tauri-electron-flutter.html"><div class="day">DAY 14</div><h3>技术选型：Tauri / Electron / Flutter</h3><p>放到真实场景里比较：体积、性能、生态、开发体验和新手风险。</p><div class="meta">4 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/b3-first-desktop-app.html"><div class="day">DAY 15</div><h3>搭建第一个桌面应用项目</h3><p>真的动手搭一个 Tauri + React 桌面窗口，先跑通最小项目。</p><div class="meta">4 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/b4-system-features.html"><div class="day">DAY 30</div><h3>桌面应用的系统能力</h3><p>文件读写、窗口状态、托盘菜单、全局快捷键和系统通知。</p><div class="meta">5 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/b5-local-data.html"><div class="day">DAY 31</div><h3>本地数据与配置：保存、缓存和同步</h3><p>localStorage、JSON、SQLite 和云同步各自适合什么阶段。</p><div class="meta">5 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/b6-packaging-release.html"><div class="day">DAY 32</div><h3>打包发布：图标、安装包、签名和自动更新</h3><p>从能跑到能发：图标、安装包、版本号、签名、自动更新。</p><div class="meta">5 项任务</div></a>
+</div>
+
+<div class="track">
+  <div class="track-title">🚀 发布与迭代 <span class="count">6节课</span></div>
+  <a class="card" href="vibe-coding-lessons/p1-requirements.html"><div class="day">DAY 16</div><h3>需求脑暴：把一句想法聊成产品定义</h3><p>通过和 AI 的追问，变成可执行、可验证、可取舍的产品需求。</p><div class="meta">4 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/p2-architecture.html"><div class="day">DAY 17</div><h3>技术选型：让 AI 先给权衡，再做决定</h3><p>不要直接让模型开写——先要求它列方案、讲取舍、给推荐。</p><div class="meta">4 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/p3-data-model.html"><div class="day">DAY 18</div><h3>最小原型：先让 AI 做出一条能跑的闭环</h3><p>能添加、能显示、能完成、能保存——只要闭环跑通，项目就活了。</p><div class="meta">4 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/p4-interface.html"><div class="day">DAY 19</div><h3>UI 打磨：做出产品感</h3><p>把 UI 审查、视觉标准和实现迭代变成一套可复制流程。</p><div class="meta">4 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/p5-interactions.html"><div class="day">DAY 20</div><h3>验证闭环：冒烟测试、边界清单和回归</h3><p>AI 能很快把功能做出来，也可能很快把旧功能改坏。专业感来自验证。</p><div class="meta">4 项任务</div></a>
+  <a class="card" href="vibe-coding-lessons/p6-polish-release.html"><div class="day">DAY 21</div><h3>复盘包装：把 AI 开发变成可复用方法论</h3><p>把整个 AI 协作过程讲清楚：为什么这样做、每一步产出了什么。</p><div class="meta">4 项任务</div></a>
+</div>
+
+<div class="back"><a href="./knowledge.html">← 返回百科</a></div>
+</body>
+</html>

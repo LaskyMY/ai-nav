@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>算法是个什么东西 · 小K的大神之路</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.8;padding:16px;max-width:700px;margin:0 auto;padding-bottom:32px}
+h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:4px}
+h2{font-size:16px;font-weight:700;color:#818cf8;margin:20px 0 8px;border-left:3px solid #818cf8;padding-left:10px}
+h3{font-size:14px;color:rgba(255,255,255,.85);margin:14px 0 6px}
+.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:16px}
+.breadcrumb{font-size:10px;color:rgba(255,255,255,.25);margin-bottom:12px}
+.breadcrumb a{color:rgba(255,255,255,.35);text-decoration:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge.req{background:rgba(99,102,241,.15);color:#818cf8}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
+.scene-tag{font-size:9px;color:#00e5ff;font-weight:700;margin-bottom:8px;letter-spacing:.5px}
+.who{color:#fbbf24;font-weight:600}
+.checklist{list-style:none;padding:0}
+.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
+.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
+.nav-btns{display:flex;gap:8px;margin:20px 0}
+.btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:12px;text-decoration:none;text-align:center}
+.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:#00e5ff}
+pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.5;margin:8px 0}
+code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
+.tip{border-left:2px solid #fbbf24;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(245,158,11,.04)}
+p{margin:8px 0;font-size:12px;color:rgba(255,255,255,.65)}
+.back{text-align:center;margin-top:24px}
+.back a{color:rgba(255,255,255,.2);font-size:10px;text-decoration:none}
+.lesson-kicker{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / 编程基础 / 必修课 · §3</div>
+<div class="lesson-kicker"><span class="badge required">必修</span><span class="lesson-index">第 4 / 33 节</span></div><h1>算法是个什么东西</h1><p>小K 听到&quot;算法&quot;两个字就开始紧张——&quot;是不是要学数学？是不是要背一大堆公式？&quot; 其实算法一点也不神秘，你每天都在用算法，只是没意识到。</p>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<article><div class="scene">
+    <div class="scene-tag">SCENE · 第五天早上</div>
+    <p><span class="who">小K</span>："G哥，我在网上看面经，全是'手撕算法'、'动态规划'、'红黑树'……
+    我一个做工具的程序员，我真的需要这些吗？"</p>
+    <p><span class="who">G 哥</span>："先别被名词吓到。你今早怎么找到我的工位的？"</p>
+    <p><span class="who">小K</span>："就……走过来啊？"</p>
+    <p><span class="who">G 哥</span>："具体点。你的大脑做了什么？——从电梯出来，左转，判断哪个是走廊，
+    看门牌号，找到 42 号，停住。<strong>这个过程就是算法</strong>。别把算法想成什么高深的东西，
+    算法就是<strong>做一件事的完整步骤</strong>。"</p>
+  </div>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>你不会写出好的代码，如果你不知道怎么"思考一个问题的解法"。</h4>
+    <p>语法是"怎么写"，算法是"怎么想"。很多人语法背得很熟，但一遇到新问题就不知道怎么拆——
+    这就是算法思维没练过。你不需要背一百个算法，但你至少要知道：
+    "遇到这种问题，有没有标准解法？"</p>
+  </div>
+
+  <h3>算法 = 做一件事的步骤清单</h3>
+
+  <p>你妈让你去买菜。你脑子里会形成一套步骤：</p>
+  <ol>
+    <li>先想好要买什么——土豆、青椒、猪肉</li>
+    <li>去菜市场，先去肉摊（因为肉摊收摊最早）</li>
+    <li>再买菜摊的土豆和青椒</li>
+    <li>对比三家价格，挑性价比最高的</li>
+    <li>付钱、提回家</li>
+  </ol>
+  <p>这就是<strong>买菜算法</strong>。每一步都明确、可执行、有顺序。计算机算法唯一的区别是：
+  它不是"人脑执行"，而是"CPU 执行"。CPU 执行什么？还记得 Day 0 吗——
+  就是从内存读一条指令、干一下、再读下一条。</p>
+
+  <h3>三个你在生活中每天都在用的算法</h3>
+
+  <h4>1. 查字典 → 二分查找</h4>
+  <p>你要在字典里查"编译"这个词。你不会从第一页开始一页一页翻——
+  你会从中间打开，看这个字是在前面还是后面，然后把范围<strong>每次砍掉一半</strong>。
+  一本 1000 页的字典，最多翻 <strong>10 次</strong>就能找到任何一个字——因为 2¹⁰ ≈ 1000。</p>
+
+  <figure>
+    <svg viewBox="0 0 600 160" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="40" width="560" height="40" rx="6" fill="#1d222d" stroke="#2a3140"/>
+      <text x="300" y="65" text-anchor="middle" fill="#9aa3b2" font-size="12">第 1 页 ……………………… 第 300 页 ……………………… 第 600 页 ……………………… 第 1000 页</text>
+      <line x1="300" y1="30" x2="300" y2="40" stroke="#22d3ee" stroke-width="2"/>
+      <text x="300" y="24" text-anchor="middle" fill="#22d3ee" font-size="11" font-weight="600">先翻到这里（中间）</text>
+      <line x1="150" y1="88" x2="150" y2="100" stroke="#f87171" stroke-width="2"/>
+      <text x="150" y="114" text-anchor="middle" fill="#f87171" font-size="11">在前面 → 砍掉右半边</text>
+      <line x1="450" y1="88" x2="450" y2="100" stroke="#f87171" stroke-width="2"/>
+      <text x="450" y="114" text-anchor="middle" fill="#f87171" font-size="11">在后面 → 砍掉左半边</text>
+      <text x="300" y="145" text-anchor="middle" fill="#9aa3b2" font-size="12">每次砍掉一半 → O(log n) → 速度极快</text>
+    </svg>
+    <figcaption>二分查找：每次把搜索范围砍半，1000 条数据只需要 10 次判断</figcaption>
+  </figure>
+
+  <div class="callout tip">
+    <div class="callout-title">💡 对新人来说"二分查找"就够了</div>
+    <p>你初学阶段不需要知道红黑树、动态规划、图算法——那是后面的事。
+    你现在只需要记住：<strong>算法就是做事的步骤，有些步骤比另一些步骤快得多</strong>。
+    "快多少"这件事，才是算法课的核心。</p>
+  </div>
+
+  <h4>2. 整理扑克牌 → 插入排序</h4>
+  <p>你抓了一把扑克牌，要按数字从小到大排好。你大概率会这么做：
+  先拿第一张，再拿第二张，插到第一张前面或后面；
+  再拿第三张，插到前两张里正确的位置……每一张新牌，
+  都<strong>插入</strong>到已经排好的序列里正确的位置。
+  这就是插入排序——也许你没听过这名字，但你一直在用它。</p>
+
+  <h4>3. 走迷宫 → 回溯</h4>
+  <p>你在迷宫里走到一个死胡同——你会怎么做？退回去，在墙上做个记号（"此处不通"），
+  然后换一条路。继续走，又遇到死胡同，再退回去做记号，再换。
+  CPU 也一样：试一条路 → 不行 → 退回上一步 → 标记 → 换一条。
+  这就是<strong>回溯算法</strong>。</p>
+
+  <h3>为什么写代码需要懂算法？</h3>
+
+  <p>想象你要处理 10 万条数据——UE 项目里 10 万个 Actor，你想找出所有名字包含 "Wall" 的。</p>
+
+  <div class="compare">
+    <div>
+      <b>🐢 笨办法（遍历）</b>
+      从第 1 条检查到第 10 万条。<br/>
+      每条都要看一遍。<br/>
+      最坏情况：10 万次。<br/>
+      <em>O(n) ——还行</em>
+    </div>
+    <div>
+      <b>🐇 如果有索引（Hash）</b>
+      按名字的首字母建一个索引表。<br/>
+      直接跳到 "Wall" 的位置。<br/>
+      最多查几次就找到了。<br/>
+      <em>O(1) ——相当于瞬间</em>
+    </div>
+  </div>
+
+  <p>同样是"找出所有 Wall"，差了几万倍。这就是为什么<strong>选对算法比升级硬件有用得多</strong>。
+  UE 引擎源码里到处都是精细选择的数据结构——Hash Map、数组、链表、树——
+  不是作者炫技，而是<strong>写引擎的人如果选错数据结构，游戏就跑不到 60 帧</strong>。</p>
+
+  <div class="callout key">
+    <div class="callout-title">🔑 你不是要"学算法"，你是要建立"算法意识"</div>
+    <p>记住三件事就够了：</p>
+    <ol>
+      <li><strong>任何问题都有多种解法</strong>——不同解法的速度可能差几千倍</li>
+      <li><strong>不是所有解法都需要手写</strong>——UE 的 TArray、TMap、TSet 已经帮你封装好了最常用算法</li>
+      <li><strong>遇到慢的地方，先问"数据结构对不对"</strong>——用 TMap（Hash）替代 TArray（遍历查找），经常就能从慢变快</li>
+    </ol>
+  </div>
+
+  <div class="big-quote">
+    背一百个算法名字没有意义。<br/>
+    真正重要的是：遇到一个问题时，<br/>
+    你能意识到<strong>"这不是没有标准答案——只是我还没去找"</strong>。
+  </div>
+
+  <div class="tasks">
+    <h4>本节打卡</h4>
+    <label class="task" data-task="req3t1"><input type="checkbox"/><span class="t-text">能用自己的话解释"算法就是做一件事的步骤清单"</span></label>
+    <label class="task" data-task="req3t2"><input type="checkbox"/><span class="t-text">理解二分查找的核心思想——每次砍半</span></label>
+    <label class="task" data-task="req3t3"><input type="checkbox"/><span class="t-text">知道不同方案速度可能差几千倍，选对算法比升级硬件有用</span></label>
+    <label class="task" data-task="req3t4"><input type="checkbox"/><span class="t-text">记住"数据结构"和"算法"是搭档——UE 里用 TMap 做快速查找</span></label>
+    <label class="task" data-task="req3t5"><input type="checkbox"/><span class="t-text">克服了"算法恐惧症"——知道自己不需要背算法，需要的是"算法意识"</span></label>
+  </div>
+  <div class="day-foot">
+    <span class="day-progress" data-progress></span>
+    <button class="complete-btn" data-complete>完成本节 ✓</button>
+  </div>
+</article>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</body>
+</html>

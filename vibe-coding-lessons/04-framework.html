@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>框架是个什么东西 · 小K的大神之路</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.8;padding:16px;max-width:700px;margin:0 auto;padding-bottom:32px}
+h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:4px}
+h2{font-size:16px;font-weight:700;color:#818cf8;margin:20px 0 8px;border-left:3px solid #818cf8;padding-left:10px}
+h3{font-size:14px;color:rgba(255,255,255,.85);margin:14px 0 6px}
+.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:16px}
+.breadcrumb{font-size:10px;color:rgba(255,255,255,.25);margin-bottom:12px}
+.breadcrumb a{color:rgba(255,255,255,.35);text-decoration:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge.req{background:rgba(99,102,241,.15);color:#818cf8}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
+.scene-tag{font-size:9px;color:#00e5ff;font-weight:700;margin-bottom:8px;letter-spacing:.5px}
+.who{color:#fbbf24;font-weight:600}
+.checklist{list-style:none;padding:0}
+.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
+.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
+.nav-btns{display:flex;gap:8px;margin:20px 0}
+.btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:12px;text-decoration:none;text-align:center}
+.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:#00e5ff}
+pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.5;margin:8px 0}
+code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
+.tip{border-left:2px solid #fbbf24;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(245,158,11,.04)}
+p{margin:8px 0;font-size:12px;color:rgba(255,255,255,.65)}
+.back{text-align:center;margin-top:24px}
+.back a{color:rgba(255,255,255,.2);font-size:10px;text-decoration:none}
+.lesson-kicker{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / 编程基础 / 必修课 · §4</div>
+<div class="lesson-kicker"><span class="badge required">必修</span><span class="lesson-index">第 5 / 33 节</span></div><h1>框架是个什么东西</h1><p>小K 刷教程时总看到 React、Vue、Next、Tauri、Electron、UE Gameplay Framework。它们听起来都很厉害，但到底和“编程语言”“库”“引擎”有什么区别？</p>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<article><div class="scene">
+    <div class="scene-tag">SCENE · 又一个新名词</div>
+    <p><span class="who">小K</span>：“我刚搞懂 Python、C++、JavaScript，结果教程又说要学 React 框架、Next 框架、Tauri 框架。框架到底是不是另一门语言？”</p>
+    <p><span class="who">G 哥</span>：“不是。语言像你会说中文，框架像公司给你的工作流程、文件夹模板和办事规矩。你还是用中文说话，但不能想怎么写就怎么写。”</p>
+  </div>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>新手经常把语言、库、框架、引擎混成一团。分不清这些词，就很容易问错 AI、学错路线、装错工具。</h4>
+    <p>框架不是“更高级的语法”，而是一套<strong>已经搭好的项目骨架、运行规则和常用工具组合</strong>。你使用框架，其实是在接受它的约定：文件放哪里、页面怎么跳转、数据怎么更新、命令怎么启动、打包怎么发布。</p>
+  </div>
+
+  <h3>第一步：框架不是语言，而是“半成品工程骨架”</h3>
+  <p>如果只用编程语言，你可以从零写任何东西，但也意味着每次都要从零处理大量重复问题。框架会提前帮你把常见问题安排好。</p>
+  <table class="decision-table"><tr><th>概念</th><th>像什么</th><th>真实例子</th><th>小白怎么理解</th></tr><tr><td>编程语言</td><td>说话用的语言和语法</td><td>JavaScript、Python、C++、C#</td><td>你用它表达“让电脑做什么”。</td></tr><tr><td>库 Library</td><td>工具箱里的一把工具</td><td>lodash、axios、date-fns</td><td>你主动调用它：我要请求网络、我要处理日期。</td></tr><tr><td>框架 Framework</td><td>半装修好的房子和入住规则</td><td>React、Vue、Next.js、Tauri、Electron</td><td>它规定项目结构，你把自己的代码填进去。</td></tr><tr><td>引擎 Engine</td><td>大型生产基地</td><td>Unreal Engine、Unity</td><td>它不只是代码骨架，还包含编辑器、渲染、资源、物理、打包等整套系统。</td></tr></table>
+
+  <div class="callout key">
+    <div class="callout-title">一句话记住</div>
+    <p><strong>库是你调用它；框架是它调用你。</strong>你用库时比较自由，想在哪里调用就在哪里调用。你用框架时，要把代码写在它规定的位置，然后框架在合适的时机帮你运行。</p>
+  </div>
+
+  <h3>第二步：框架到底帮你做了什么</h3>
+  <p>一个框架通常不只是一包代码，它经常同时包含目录规范、命令工具、运行方式和最佳实践。</p>
+  <div class="artifact-grid"><div class="artifact"><h4>项目结构</h4><p>告诉你页面、组件、样式、配置、资源应该放在哪些文件夹里。</p></div><div class="artifact"><h4>运行入口</h4><p>告诉电脑从哪里启动项目，例如 Web 项目的 <code>main.tsx</code> 或 UE 模块入口。</p></div><div class="artifact"><h4>常见能力</h4><p>提供路由、状态、组件、构建、热更新、打包等常用能力。</p></div><div class="artifact"><h4>开发命令</h4><p>通常会有 <code>dev</code>、<code>build</code>、<code>test</code> 这类命令，让你不用自己拼流程。</p></div></div>
+
+  <h3>第三步：为什么框架既省事，也会限制你</h3>
+  <p>框架的好处是让你不用从零造轮子；框架的代价是你要遵守它的规则。越成熟的框架，越像一个团队内部的工作流。</p>
+  <div class="compare"><div><b>省事的地方</b><p>不用每次重写页面切换、状态更新、打包发布、热更新、目录组织。团队里的人也更容易看懂彼此项目。</p></div><div><b>限制的地方</b><p>你不能随便乱放文件，不能随便跳过生命周期，也不能把另一个框架的写法硬塞进来。框架有自己的脾气。</p></div></div>
+
+  <h3>第四步：常见框架放在什么场景里</h3>
+  <table class="decision-table"><tr><th>场景</th><th>常见框架/体系</th><th>适合做什么</th><th>小K该怎么问 AI</th></tr><tr><td>网页界面</td><td>React、Vue、Svelte</td><td>后台、课程页、工具页面、交互组件。</td><td>“请基于 React 的组件思路解释这个页面怎么拆。”</td></tr><tr><td>完整网站</td><td>Next.js、Nuxt</td><td>带路由、服务端渲染、接口、部署的网站。</td><td>“这个项目是 Next 还是普通 React？目录约定是什么？”</td></tr><tr><td>桌面应用</td><td>Tauri、Electron</td><td>把网页技术包装成桌面窗口。</td><td>“前端、后端、打包配置分别在哪里？”</td></tr><tr><td>游戏/编辑器</td><td>UE、Unity 里的框架体系</td><td>角色、关卡、编辑器扩展、资源流程。</td><td>“这段代码属于 UE 哪个系统？是 Editor、Runtime 还是 Module？”</td></tr></table>
+
+  <div class="ai-chat"><div class="ai-chat-title">AI 互动现场：不要让 AI 乱换框架</div><div class="chat-turn user"><div class="role">你</div><p>我想在这个项目里加一个待办列表，你看用什么框架最好？</p></div><div class="chat-turn ai"><div class="role">AI</div><p>可以用 React + Tailwind + Next.js + Prisma + Supabase……</p></div><div class="chat-turn user"><div class="role">你</div><p>先停。请先识别当前项目已经用了什么框架，不要新增大框架。只基于现有结构给方案，并说明为什么不换技术栈。</p></div><div class="chat-turn ai"><div class="role">AI</div><p>明白。我会先检查 package.json、目录结构和入口文件，确认当前框架，再给最小改动方案。</p></div></div>
+
+  <div class="callout warn">
+    <div class="callout-title">新手高危误区</div>
+    <p>不要一看到新框架就想“是不是必须学”。真正的问题是：<strong>我现在要做的东西，用这个框架能不能更快、更稳、更容易维护？</strong>如果答案不清楚，就先别换。</p>
+  </div>
+
+  <h3>第五步：让 AI 解释框架时，要问到“项目里的位置”</h3>
+  <p>只问“React 是什么”太泛了。更有用的问法是让 AI 结合当前项目解释：入口在哪里、组件在哪里、状态在哪里、命令在哪里。</p>
+  <div class="prompt-block">请先阅读当前项目结构，解释这个项目使用了什么框架。
+
+要求：
+1. 不要讲百科式定义，要结合项目文件说明；
+2. 指出入口文件、页面文件、组件文件、配置文件；
+3. 用“语言 / 库 / 框架 / 构建工具”分类；
+4. 告诉我新增一个小功能时，应该优先改哪些文件，不应该乱动哪些文件。</div>
+
+  <div class="big-quote">框架不是神秘技术。<br/>它就是一套<strong>别人已经总结好的工程规矩</strong>。<br/>会用框架，不是背 API，而是知道自己该把代码放在哪里。</div>
+
+  <div class="tasks"><h4>本节打卡</h4><label class="task" data-task="framework-t1"><input type="checkbox"/><span class="t-text">能说清楚语言、库、框架、引擎的区别</span></label><label class="task" data-task="framework-t2"><input type="checkbox"/><span class="t-text">知道“库是你调用它，框架是它调用你”是什么意思</span></label><label class="task" data-task="framework-t3"><input type="checkbox"/><span class="t-text">能举出 React / Next / Tauri / UE 分别适合什么场景</span></label><label class="task" data-task="framework-t4"><input type="checkbox"/><span class="t-text">能让 AI 先识别当前项目框架，而不是直接换框架</span></label><label class="task" data-task="framework-t5"><input type="checkbox"/><span class="t-text">能写出一个“解释当前项目框架”的提问模板</span></label></div>
+  <div class="day-foot"><span class="day-progress" data-progress></span><button class="complete-btn" data-complete>完成本节</button></div>
+</article>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</body>
+</html>

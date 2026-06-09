@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Claude Code 入门 · 小K的大神之路</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.8;padding:16px;max-width:700px;margin:0 auto;padding-bottom:32px}
+h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:4px}
+h2{font-size:16px;font-weight:700;color:#818cf8;margin:20px 0 8px;border-left:3px solid #818cf8;padding-left:10px}
+h3{font-size:14px;color:rgba(255,255,255,.85);margin:14px 0 6px}
+.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:16px}
+.breadcrumb{font-size:10px;color:rgba(255,255,255,.25);margin-bottom:12px}
+.breadcrumb a{color:rgba(255,255,255,.35);text-decoration:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge.req{background:rgba(99,102,241,.15);color:#818cf8}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
+.scene-tag{font-size:9px;color:#00e5ff;font-weight:700;margin-bottom:8px;letter-spacing:.5px}
+.who{color:#fbbf24;font-weight:600}
+.checklist{list-style:none;padding:0}
+.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
+.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
+.nav-btns{display:flex;gap:8px;margin:20px 0}
+.btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:12px;text-decoration:none;text-align:center}
+.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:#00e5ff}
+pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.5;margin:8px 0}
+code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
+.tip{border-left:2px solid #fbbf24;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(245,158,11,.04)}
+p{margin:8px 0;font-size:12px;color:rgba(255,255,255,.65)}
+.back{text-align:center;margin-top:24px}
+.back a{color:rgba(255,255,255,.2);font-size:10px;text-decoration:none}
+.lesson-kicker{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / AI 工具入门 / 必修课 · §8</div>
+<div class="lesson-kicker"><span class="badge required">必修</span><span class="lesson-index">第 9 / 33 节</span></div><h1>Claude Code 入门</h1><p>概念扫盲完了。现在小K 想知道：那个传说中&quot;能帮你写代码&quot;的 Claude Code， 到底是什么？和网页版 Claude 有什么区别？我能不能用它来帮我学 UE？</p>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<article><div class="scene">
+    <div class="scene-tag">SCENE · 下午茶歇</div>
+    <p><span class="who">小K</span>："G哥，你上次说 Vibe Coding 就是跟 AI 对话来写代码。
+    那具体用什么工具呢？网页版 Claude 能行吗？"</p>
+    <p><span class="who">G 哥</span>："网页版可以聊，但它<strong>碰不到你的项目文件</strong>。
+    你得把代码复制粘贴过去，它回答了你再粘贴回来——效率极低。
+    真正好用的方式是用 Claude Code。来，我帮你把它装好。"</p>
+  </div>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂 Claude Code</div>
+    <h4>网页版 AI = 你在跟一个人打电话描述你的房间。Claude Code = 那个人直接站在你房间里。</h4>
+    <p>Claude Code 能<strong>直接读你的项目代码</strong>——整个文件夹、Git 历史、
+    甚至你的 CLAUDE.md 项目说明文件。它不是"你告诉他你的代码长什么样"，
+    而是"它自己去看"。这带来的效率差距，不是 1.5 倍，是 10 倍。</p>
+  </div>
+
+  <h3>Claude Code 到底是什么？</h3>
+
+  <p>Claude Code 是 Anthropic 公司出的<strong>终端里的 AI 编程 Agent</strong>。
+    注意两个关键词："终端里"和"Agent"。</p>
+
+  <div class="compare">
+    <div>
+      <b>🌐 网页版 Claude</b>
+      你在浏览器里打字问问题。<br/>
+      不能自己读文件、不能跑命令。<br/>
+      你复制代码给它 → 它回复文本 → 你粘贴回去。<br/>
+      <em>适合：聊天、咨询、解释概念</em>
+    </div>
+    <div>
+      <b>⌨️ Claude Code（终端版）</b>
+      你在终端里输入指令。<br/>
+      它能<strong>自己读你的项目、创建/修改文件、执行 Shell 命令、运行测试</strong>。<br/>
+      你说"帮我修这个 bug" → 它自己找原因 → 自己改代码 → 自己验证。<br/>
+      <em>适合：实际的编码工作</em>
+    </div>
+  </div>
+
+  <p>一句话概括：<strong>网页版是"跟 AI 聊代码"，Claude Code 是"让 AI 帮你写代码"。</strong></p>
+
+  <h3>怎么装？</h3>
+
+<pre><code># 在终端里执行（任选一种）
+npm install -g @anthropic-ai/claude-code     # npm 全局安装
+# 或
+brew install claude-code                      # macOS Homebrew
+# 或
+scoop install claude-code                     # Windows Scoop</code></pre>
+
+  <p>装好之后，在你的项目文件夹里打开终端，输入：</p>
+<pre><code>claude</code></pre>
+  <p>然后 Claude Code 就启动了——它会自动读取你当前文件夹里的所有代码，然后等你下指令。</p>
+
+  <div class="callout tip">
+    <div class="callout-title">💡 第一次使用的小建议</div>
+    <p>不要一上来就让它写复杂的功能。先试试这些简单的：<br/>
+    1. "帮我解释一下这个项目是干什么的"——看它能不能正确理解<br/>
+    2. "这个文件里的 xxx 函数做了什么？"——测试代码理解<br/>
+    3. "帮我把这个变量的命名改成更清晰的"——测试代码修改能力<br/>
+    做完这三步，你心里就有数它能干什么了。</p>
+  </div>
+
+  <h3>CLAUDE.md —— 给 AI 的"项目说明书"</h3>
+
+  <p>Claude Code 会优先读取你项目根目录下的 <code>CLAUDE.md</code> 文件。
+  这个文件就像你给新同事写的"项目入门指南"——只不过新同事是 AI。</p>
+
+<pre><code># CLAUDE.md 示例
+# 这是一个 UE 编辑器插件项目
+
+## 项目概述
+- 为 UE 5.5 开发编辑器工具
+- 主要功能：批量处理静态网格体资产
+
+## 编码规范
+- 必须用大括号，即使 if 只有一行
+- UObject 指针用 IsValid() 检查
+- 所有新类加 KUROTOOLS_API 导出宏
+
+## 关键文件
+- MyPlugin.Build.cs：模块依赖配置
+- MyToolCommands.cpp：编辑器命令入口</code></pre>
+
+  <p>有了 CLAUDE.md，AI 就<strong>不需要每次都重新理解你的项目</strong>——它会记住你的编码习惯、
+  你的项目结构、你的特殊规则。这是 Claude Code 最强大的功能之一。</p>
+
+  <h3>它还支持什么？快速过一遍</h3>
+
+  <table style="width:100%;border-collapse:collapse;color:var(--read);font-size:14px;margin:24px 0">
+    <tr style="border-bottom:1px solid var(--line)">
+      <th style="padding:10px 12px;text-align:left;color:#fff;font-size:13px;width:100px">功能</th>
+      <th style="padding:10px 12px;text-align:left;color:#fff;font-size:13px">一句话解释</th>
+    </tr>
+    <tr style="border-bottom:1px solid var(--line)">
+      <td style="padding:10px 12px;font-weight:700;color:#22d3ee">MCP</td>
+      <td style="padding:10px 12px">还记得 §5 的"万能遥控器"吗？Claude Code 支持 MCP，能连接外部工具和数据库</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--line)">
+      <td style="padding:10px 12px;font-weight:700;color:#22d3ee">子代理</td>
+      <td style="padding:10px 12px">把大任务拆成小任务，派给多个"分身"同时干活——比如一个分身查文档，另一个分身改代码</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--line)">
+      <td style="padding:10px 12px;font-weight:700;color:#22d3ee">钩子(Hooks)</td>
+      <td style="padding:10px 12px">在特定时机自动触发自定义操作——比如"每次修改完代码后自动运行测试"</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--line)">
+      <td style="padding:10px 12px;font-weight:700;color:#22d3ee">斜杠命令</td>
+      <td style="padding:10px 12px">快捷指令如 /review（代码审查）、/plan（制定计划）、/clear（清空对话）</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--line)">
+      <td style="padding:10px 12px;font-weight:700;color:#22d3ee">Git 集成</td>
+      <td style="padding:10px 12px">自动写 commit message、生成 PR 描述、在 GitHub Actions 中运行</td>
+    </tr>
+    <tr>
+      <td style="padding:10px 12px;font-weight:700;color:#22d3ee">IDE 插件</td>
+      <td style="padding:10px 12px">可以装在 VS Code 或 JetBrains 里，不用切到终端</td>
+    </tr>
+  </table>
+
+  <div class="callout key">
+    <div class="callout-title">🔑 最重要的一条建议</div>
+    <p><strong>先建 CLAUDE.md，再开始用 Claude Code。</strong><br/>
+    这就像你带一个新同事入职——先给他看部门手册，再让他上手干活。
+    没有 CLAUDE.md 的 Claude Code，就像没有项目背景的新人，能做但做不快。
+    有了 CLAUDE.md，它干活的速度和准确度会明显提升。</p>
+  </div>
+
+  <div class="big-quote">
+    Claude Code 不是替代你写代码的机器。<br/>
+    它是一个<strong>随时待命的编程搭档</strong>——<br/>
+    你看得懂的地方让它帮你写，你看不懂的地方让它帮你解释。<br/>
+    用得好，你的学习速度能快十倍。
+  </div>
+
+  <div class="tasks">
+    <h4>本节打卡</h4>
+    <label class="task" data-task="req6t1"><input type="checkbox"/><span class="t-text">能说出 Claude Code（终端Agent）和网页版 Claude 的核心区别</span></label>
+    <label class="task" data-task="req6t2"><input type="checkbox"/><span class="t-text">（有条件的）安装了 Claude Code，在自己的项目里跑了一次</span></label>
+    <label class="task" data-task="req6t3"><input type="checkbox"/><span class="t-text">理解 CLAUDE.md 的作用——给 AI 的"项目说明书"</span></label>
+    <label class="task" data-task="req6t4"><input type="checkbox"/><span class="t-text">知道 Claude Code 有 MCP、子代理、钩子、Git 集成等扩展能力</span></label>
+    <label class="task" data-task="req6t5"><input type="checkbox"/><span class="t-text">（可选）在自己的项目根目录创建一个 CLAUDE.md，哪怕只写 3 行</span></label>
+  </div>
+  <div class="day-foot">
+    <span class="day-progress" data-progress></span>
+    <button class="complete-btn" data-complete>完成本节 ✓</button>
+  </div>
+</article>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>打包发布：图标、安装包、签名和自动更新 · 小K的大神之路</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.8;padding:16px;max-width:700px;margin:0 auto;padding-bottom:32px}
+h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:4px}
+h2{font-size:16px;font-weight:700;color:#818cf8;margin:20px 0 8px;border-left:3px solid #818cf8;padding-left:10px}
+h3{font-size:14px;color:rgba(255,255,255,.85);margin:14px 0 6px}
+.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:16px}
+.breadcrumb{font-size:10px;color:rgba(255,255,255,.25);margin-bottom:12px}
+.breadcrumb a{color:rgba(255,255,255,.35);text-decoration:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge.req{background:rgba(99,102,241,.15);color:#818cf8}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
+.scene-tag{font-size:9px;color:#00e5ff;font-weight:700;margin-bottom:8px;letter-spacing:.5px}
+.who{color:#fbbf24;font-weight:600}
+.checklist{list-style:none;padding:0}
+.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
+.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
+.nav-btns{display:flex;gap:8px;margin:20px 0}
+.btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:12px;text-decoration:none;text-align:center}
+.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:#00e5ff}
+pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.5;margin:8px 0}
+code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
+.tip{border-left:2px solid #fbbf24;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(245,158,11,.04)}
+p{margin:8px 0;font-size:12px;color:rgba(255,255,255,.65)}
+.back{text-align:center;margin-top:24px}
+.back a{color:rgba(255,255,255,.2);font-size:10px;text-decoration:none}
+.lesson-kicker{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / 独立桌面应用开发 / 选修 B · §6</div>
+<div class="lesson-kicker"><span class="badge elective">选修 B</span><span class="lesson-index">第 27 / 33 节</span></div><h1>打包发布：图标、安装包、签名和自动更新</h1><p>项目在自己电脑上能跑，只是开发完成的第一步。真正交给别人用时，还要面对图标、安装包、系统安全提示、版本号、更新和卸载。</p>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<article><div class="scene">
+    <div class="scene-tag">SCENE · 能跑不等于能发</div>
+    <p><span class="who">小K</span>：“我把项目文件夹压缩发给同事，让他自己 npm install 然后 npm run tauri dev，可以吗？”</p>
+    <p><span class="who">G 哥</span>：“那叫发源码，不叫发布软件。用户期待的是双击安装、打开就用、坏了能更新。”</p>
+  </div>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>桌面应用的最后 20%，经常是最容易被新手低估的 80% 麻烦。</h4>
+    <p>打包发布不是简单点一个 build。你要让系统信任它，让用户知道版本，让别人能安装、能卸载、能更新，还要在不同机器上验证它不是只在你电脑能跑。</p>
+  </div>
+
+  <h3>第一步：发布桌面软件到底要交付什么</h3>
+  <table class="decision-table"><tr><th>交付物</th><th>用户看到什么</th><th>开发者要准备什么</th><th>常见坑</th></tr><tr><td>应用图标</td><td>桌面、任务栏、安装器里的图标</td><td>多尺寸图标、透明背景、平台格式</td><td>只准备一张 PNG，打包后糊掉或缺失</td></tr><tr><td>安装包</td><td>.exe、.msi、.dmg、.app、.deb 等</td><td>构建配置、安装路径、卸载逻辑</td><td>自己机器能打开，别人机器缺依赖</td></tr><tr><td>版本号</td><td>v1.0.0、v1.0.1</td><td>语义化版本、更新说明</td><td>改了很多但版本号不变，用户不知道装的是哪版</td></tr><tr><td>签名</td><td>系统更少弹安全警告</td><td>代码签名证书、发布流程</td><td>未签名软件被拦截或显示未知发布者</td></tr><tr><td>更新机制</td><td>提示有新版本、下载更新</td><td>更新服务器、版本清单、回滚策略</td><td>第一版就做自动更新，复杂度爆炸</td></tr></table>
+
+  <h3>第二步：先分清内部演示版和正式发布版</h3>
+  <p>不是所有软件第一天都要签名、自动更新、官网下载安装。你可以先做内部演示版，再做小范围试用版，最后才做正式发布。</p>
+  <div class="vibe-timeline"><div class="vibe-step"><b>演示版</b><p>能在自己电脑和同事电脑打开，主要验证功能和流程。</p></div><div class="vibe-step"><b>试用版</b><p>有基本图标、版本号、打包说明、已知问题列表。</p></div><div class="vibe-step"><b>正式版</b><p>考虑签名、安装器、更新、崩溃日志和回滚策略。</p></div></div>
+
+  <div class="callout key">
+    <div class="callout-title">一句话记住</div>
+    <p><strong>发布不是把代码发出去，而是把使用风险降下来。</strong>用户不应该懂 npm、Rust、依赖和构建命令，用户只应该知道怎么安装、怎么打开、怎么更新。</p>
+  </div>
+
+  <h3>第三步：发布前检查清单</h3>
+  <div class="artifact-grid"><div class="artifact"><h4>干净机器测试</h4><p>找一台没装开发环境的机器测试安装和启动。</p></div><div class="artifact"><h4>首次启动体验</h4><p>默认配置、空状态、权限提示是否清楚。</p></div><div class="artifact"><h4>升级测试</h4><p>从旧版本安装到新版本，数据是否还在。</p></div><div class="artifact"><h4>卸载测试</h4><p>卸载后哪些数据保留，哪些缓存清理。</p></div></div>
+
+  <h3>第四步：让 AI 帮你做发布计划，而不是直接 build</h3>
+  <div class="ai-chat"><div class="ai-chat-title">AI 互动现场：把“打包一下”变成发布流程</div><div class="chat-turn user"><div class="role">你</div><p>帮我把这个桌面应用打包。</p></div><div class="chat-turn ai"><div class="role">AI</div><p>可以，运行 build 命令即可……</p></div><div class="chat-turn user"><div class="role">你</div><p>先不要打包。请先根据当前项目识别打包工具、目标平台、图标配置、版本号位置和产物目录，然后给我一份发布前检查清单。</p></div><div class="chat-turn ai"><div class="role">AI</div><p>明白。我会先查配置，再给可验证的发布步骤。</p></div></div>
+
+  <h3>第五步：自动更新要晚一点再做</h3>
+  <p>自动更新听起来很高级，但它会引入签名、服务器、版本清单、下载失败、更新失败回滚等问题。新手项目可以先用“手动下载新版本 + 更新说明”的方式，等用户真的需要频繁更新，再考虑自动更新。</p>
+  <div class="compare"><div><b>先做手动发布</b><p>产物清楚、版本号清楚、更新说明清楚、用户知道去哪下载。</p></div><div><b>以后再做自动更新</b><p>稳定后再加更新通道、签名验证、回滚机制和灰度策略。</p></div></div>
+
+  <div class="prompt-block">请帮我为桌面应用制定发布计划。
+
+项目技术栈：[Tauri / Electron / Flutter / 其他]
+目标平台：[Windows / macOS / Linux]
+发布阶段：[内部演示 / 小范围试用 / 正式发布]
+
+请输出：
+1. 当前需要准备哪些发布材料；
+2. 图标、版本号、应用名分别在哪里配置；
+3. 打包产物会在哪里生成；
+4. 发布前必须验证哪些场景；
+5. 哪些高级能力现在先不要做，比如自动更新、签名、云同步。</div>
+
+  <div class="big-quote">能跑，是开发者视角。<br/>能安装、能升级、能卸载、能被信任，才是<strong>用户视角的完成。</strong></div>
+
+  <div class="tasks"><h4>本节打卡</h4><label class="task" data-task="b6t1"><input type="checkbox"/><span class="t-text">能说出桌面发布需要图标、安装包、版本号、签名和更新策略</span></label><label class="task" data-task="b6t2"><input type="checkbox"/><span class="t-text">能区分内部演示版、试用版和正式发布版</span></label><label class="task" data-task="b6t3"><input type="checkbox"/><span class="t-text">知道要在干净机器上测试安装和启动</span></label><label class="task" data-task="b6t4"><input type="checkbox"/><span class="t-text">知道自动更新不适合第一天就做</span></label><label class="task" data-task="b6t5"><input type="checkbox"/><span class="t-text">能让 AI 先制定发布计划，再执行打包</span></label></div>
+  <div class="day-foot"><span class="day-progress" data-progress></span><button class="complete-btn" data-complete>完成本节</button></div>
+</article>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</body>
+</html>

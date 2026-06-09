@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>项目是一座小镇 · 小K的大神之路</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.8;padding:16px;max-width:700px;margin:0 auto;padding-bottom:32px}
+h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:4px}
+h2{font-size:16px;font-weight:700;color:#818cf8;margin:20px 0 8px;border-left:3px solid #818cf8;padding-left:10px}
+h3{font-size:14px;color:rgba(255,255,255,.85);margin:14px 0 6px}
+.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:16px}
+.breadcrumb{font-size:10px;color:rgba(255,255,255,.25);margin-bottom:12px}
+.breadcrumb a{color:rgba(255,255,255,.35);text-decoration:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge.req{background:rgba(99,102,241,.15);color:#818cf8}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
+.scene-tag{font-size:9px;color:#00e5ff;font-weight:700;margin-bottom:8px;letter-spacing:.5px}
+.who{color:#fbbf24;font-weight:600}
+.checklist{list-style:none;padding:0}
+.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
+.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
+.nav-btns{display:flex;gap:8px;margin:20px 0}
+.btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:12px;text-decoration:none;text-align:center}
+.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:#00e5ff}
+pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.5;margin:8px 0}
+code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
+.tip{border-left:2px solid #fbbf24;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(245,158,11,.04)}
+p{margin:8px 0;font-size:12px;color:rgba(255,255,255,.65)}
+.back{text-align:center;margin-top:24px}
+.back a{color:rgba(255,255,255,.2);font-size:10px;text-decoration:none}
+.lesson-kicker{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / UE 工具开发 / DAY · 03</div>
+<div class="lesson-kicker"><span class="badge elective">选修 A</span><span class="lesson-index">第 15 / 33 节</span></div><h1>项目是一座小镇</h1><p>小K 终于把环境搭好了，激动地打开项目根目录—— 然后看到 50 多个文件夹，当场愣住了。&quot;这么多文件夹……都是干嘛的？我该碰哪些？哪些碰了会出事？&quot;</p>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<article><div class="scene">
+    <div class="scene-tag">SCENE 3 · 第四天上午</div>
+    <p><span class="who">小K</span>（盯着文件资源管理器，呆滞）：
+    "G哥……这个项目文件夹里有 Engine、Project、Plugins、Source、Content、Config、
+    Saved、Intermediate、Binaries……我连目录都看不懂。"</p>
+    <p><span class="who">G 哥</span>（拉过一张白纸，画了几个圈）：
+    "你把项目想象成一座小镇。每个文件夹是一个街区，每个街区有固定的功能。
+    你不需要知道每栋房子是谁的，但你要知道——想去买菜去哪条街，想看病去哪条街，
+    想拆房子千万不能去哪条街。"</p>
+  </div>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>文件夹结构是你每天在文件资源管理器里看到的东西。如果不认识它，
+    你找一个文件要翻 10 分钟；改错了一个地方的代码，编译会莫名其妙地坏掉。</h4>
+    <p>而且，同事跟你沟通时会一直说"在 Source 目录下"、"去 Intermediate 删一下缓存"、
+    "Config 里改个参数"——这些是团队的日常用语。
+    你今天花 20 分钟把这套地图记住，今后每一天都在省钱。</p>
+  </div>
+
+  <h3>小镇地图：九个核心街区</h3>
+
+  <figure>
+    <svg viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="UE项目文件夹小镇地图">
+      <g font-size="12" fill="#cdd6e3" font-family="ui-sans-serif,system-ui">
+        <!-- Engine -->
+        <rect x="20" y="20" width="200" height="80" rx="10" fill="#1d222d" stroke="#7c5cff" stroke-width="1.5"/>
+        <text x="120" y="42" text-anchor="middle" fill="#e8ecf3" font-weight="700" font-size="14">🏛️ Engine（市政厅）</text>
+        <text x="120" y="62" text-anchor="middle" font-size="11" fill="#9aa3b2">UE 引擎本体</text>
+        <text x="120" y="78" text-anchor="middle" font-size="10" fill="#9aa3b2">所有人的底座，不能随便动</text>
+
+        <!-- Project -->
+        <rect x="250" y="20" width="200" height="80" rx="10" fill="#1d222d" stroke="#22c55e" stroke-width="1.5"/>
+        <text x="350" y="42" text-anchor="middle" fill="#e8ecf3" font-weight="700" font-size="14">Project（你家）</text>
+        <text x="350" y="62" text-anchor="middle" font-size="11" fill="#9aa3b2">.uproject + 项目配置</text>
+        <text x="350" y="78" text-anchor="middle" font-size="10" fill="#9aa3b2">项目的"入口"</text>
+
+        <!-- Plugins -->
+        <rect x="480" y="20" width="220" height="80" rx="10" fill="#1d222d" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="590" y="42" text-anchor="middle" fill="#e8ecf3" font-weight="700" font-size="14">🏪 Plugins（商业街）</text>
+        <text x="590" y="62" text-anchor="middle" font-size="11" fill="#9aa3b2">你写的工具就住这里</text>
+        <text x="590" y="78" text-anchor="middle" font-size="10" fill="#22d3ee">你改动最多的地方</text>
+
+        <!-- Source -->
+        <rect x="20" y="120" width="220" height="80" rx="10" fill="#1d222d" stroke="#f59e0b" stroke-width="1.5"/>
+        <text x="130" y="142" text-anchor="middle" fill="#e8ecf3" font-weight="700" font-size="14">🔧 Source（工坊区）</text>
+        <text x="130" y="162" text-anchor="middle" font-size="11" fill="#9aa3b2">.cpp / .h / Build.cs</text>
+        <text x="130" y="178" text-anchor="middle" font-size="10" fill="#9aa3b2">代码住的地方</text>
+
+        <!-- Content -->
+        <rect x="270" y="120" width="210" height="80" rx="10" fill="#1d222d" stroke="#22c55e" stroke-width="1.5"/>
+        <text x="375" y="142" text-anchor="middle" fill="#e8ecf3" font-weight="700" font-size="14">📦 Content（仓库）</text>
+        <text x="375" y="162" text-anchor="middle" font-size="11" fill="#9aa3b2">.uasset / 贴图 / 模型 / 蓝图</text>
+        <text x="375" y="178" text-anchor="middle" font-size="10" fill="#9aa3b2">美术资产住的地方</text>
+
+        <!-- Config -->
+        <rect x="510" y="120" width="190" height="80" rx="10" fill="#1d222d" stroke="#ef4444" stroke-width="1.5"/>
+        <text x="605" y="142" text-anchor="middle" fill="#e8ecf3" font-weight="700" font-size="14">⚙️ Config（设置面板）</text>
+        <text x="605" y="162" text-anchor="middle" font-size="11" fill="#9aa3b2">.ini 配置文件</text>
+        <text x="605" y="178" text-anchor="middle" font-size="10" fill="#ef4444">改参数不用编译</text>
+
+        <!-- Saved -->
+        <rect x="20" y="220" width="160" height="80" rx="10" fill="#1d222d" stroke="#9aa3b2" stroke-width="1.5"/>
+        <text x="100" y="242" text-anchor="middle" fill="#e8ecf3" font-weight="700" font-size="14">📝 Saved（存档）</text>
+        <text x="100" y="262" text-anchor="middle" font-size="11" fill="#9aa3b2">日志 / 崩溃记录</text>
+        <text x="100" y="278" text-anchor="middle" font-size="10" fill="#9aa3b2">可以随便删</text>
+
+        <!-- Intermediate -->
+        <rect x="210" y="220" width="190" height="80" rx="10" fill="#1d222d" stroke="#f59e0b" stroke-width="1.5"/>
+        <text x="305" y="242" text-anchor="middle" fill="#e8ecf3" font-weight="700" font-size="14">🍳 Intermediate（厨房）</text>
+        <text x="305" y="262" text-anchor="middle" font-size="11" fill="#9aa3b2">编译中间产物</text>
+        <text x="305" y="278" text-anchor="middle" font-size="10" fill="#f59e0b">编译坏了就删它</text>
+
+        <!-- Binaries -->
+        <rect x="430" y="220" width="270" height="80" rx="10" fill="#1d222d" stroke="#22c55e" stroke-width="1.5"/>
+        <text x="565" y="242" text-anchor="middle" fill="#e8ecf3" font-weight="700" font-size="14">📤 Binaries（成品柜）</text>
+        <text x="565" y="262" text-anchor="middle" font-size="11" fill="#9aa3b2">.dll / .exe / .so 编译产出</text>
+        <text x="565" y="278" text-anchor="middle" font-size="10" fill="#22c55e">程序真正跑起来靠这里</text>
+
+        <!-- Legend -->
+        <text x="360" y="340" text-anchor="middle" fill="#9aa3b2" font-size="11">紫色 = 公用底座 · 绿色 = 你每天动 · 青色 = 你的代码住的地方 · 橙色 = 编译相关 · 红色 = 设置</text>
+      </g>
+    </svg>
+    <figcaption>九个核心文件夹，每个都有自己的"地盘"和"规矩"。你不需要记住每个文件，但要知道想干什么事该去哪。</figcaption>
+  </figure>
+
+  <h3>逐个街区走一遍</h3>
+
+  <h4>🏛️ Engine — 市政厅，所有人的底座</h4>
+
+  <p>这个文件夹里是 UE 引擎本身。渲染器、物理引擎、音频系统、编辑器框架——
+  全在这里面。源码版 UE 的话，这下面有<strong>几万个 .cpp 文件</strong>。</p>
+
+  <p><strong>关键规则</strong>：做工具开发时，你<strong>一般不改 Engine 目录下的东西</strong>。
+  你是在 Plugins 里写自己的代码，调用 Engine 提供的功能。
+  就像你可以在商业街开一家店，但不能随便去改市政厅的承重墙。</p>
+
+  <p>但有些情况下（修引擎 bug、改渲染管线、加底层功能），你会需要改 Engine。
+  这时候知道它在哪里就行了。Day 4 会讲什么时候改引擎、什么时候写插件。</p>
+
+  <h4>🏪 Plugins — 商业街，你的工具就住这里</h4>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>你作为"工具开发"，你写的代码 80% 都住在这个文件夹里。
+    这是你的主战场。不认识它，就像厨师不认识厨房。</h4>
+  </div>
+
+  <p>Plugins 是一个<strong>插件集合目录</strong>。下面每个子文件夹是一个独立的插件。
+  比如 <code>Plugins/MyTool/</code> 就是你写的一个工具插件。</p>
+
+  <p>一个典型的插件内部长这样：</p>
+
+<pre><code>Plugins/MyTool/
+├── MyTool.uplugin          ← 插件的"身份证"
+├── Source/                  ← C++ 代码
+│   ├── MyTool/              ← 模块文件夹
+│   │   ├── MyTool.Build.cs  ← 编译配置
+│   │   ├── Public/          ← 头文件 (.h)
+│   │   └── Private/         ← 实现文件 (.cpp)
+│   └── MyToolEditor/        ← 另一个模块(编辑器专用)
+├── Content/                 ← 插件自带的资产
+└── Resources/               ← 图标等资源</code></pre>
+
+  <p>现在先不用理解每层是干嘛的。你只需要记住：<strong>你今后每天打开的这个文件夹，就是 Plugins 下的某个子文件夹</strong>。
+  Day 5 会把这张图彻底拆清楚。</p>
+
+  <h4>🔧 Source — 工坊区，代码住的地方</h4>
+
+  <p>这个文件夹只在<strong>源码版</strong>出现。它里面是引擎的 C++ 源代码。
+  和 Plugins 类似的结构：下面有 Runtime、Editor、Developer 等子目录，
+  每个下面又有 .cpp / .h / Build.cs。</p>
+
+  <p>你作为工具开发者，更多时候是<strong>读</strong> Source 里的代码——
+  看引擎提供了什么功能，看别人怎么写的——而不是改它。</p>
+
+  <h4>📦 Content — 仓库，美术资产的天下</h4>
+
+  <p>Content 里放的是 UE 的<strong>资产文件</strong>（.uasset）。贴图、模型、材质、蓝图、
+  动画、音频统统在这里。这些文件不是文本——你用记事本打开会看到乱码。
+  它们是 UE 自己的二进制格式。</p>
+
+  <p>你写工具时经常会操作 Content 下的资产——
+  比如"选中 100 张贴图批量改名"、"扫描所有材质找出参数不对的"。
+  你的工具就是在操作这个仓库里的东西。</p>
+
+  <h4>⚙️ Config — 设置面板，改参数不用编译</h4>
+
+  <p>Config 里是一堆 <code>.ini</code> 文件——纯文本的配置文件。
+  引擎设置、项目设置、插件设置、输入映射……全是 ini。</p>
+
+  <p>为什么 Config 重要？因为<strong>改 ini 不需要编译</strong>。你加了一个新的配置项到 ini 里，
+  重启编辑器就生效。很多工具的行为可以通过 ini 来控制，而不需要每次改代码、
+  等编译。</p>
+
+  <h4>📝 Saved — 存档，可以随便删</h4>
+
+  <p>Saved 里是<strong>运行时产生的临时数据</strong>：
+  编辑器日志（Logs/）、崩溃报告（Crashes/）、自动保存（Autosaves/）、
+  配置文件缓存（Config/）。</p>
+
+  <p>如果你遇到了奇怪的编辑器问题，"删 Saved 目录"是 UE 程序员的第一反应——
+  就像"重启试试"之于普通用户。Saved 删了不会丢任何代码或资产，
+  下次启动编辑器会自动重建。</p>
+
+  <h4>🍳 Intermediate — 厨房，编译的中间产物</h4>
+
+  <p>编译器在翻译你的 .cpp 时，会产生大量中间文件（.obj、预编译头等）。
+  这些都扔在 Intermediate 里。</p>
+
+  <p>如果编译出了奇怪的错误——比如明明改了代码但编译出来还是旧的——
+  删掉 Intermediate 然后重新编译，通常能好。
+  <strong>这是 UE 排错三板斧之二</strong>（第一是删 Saved，第二是删 Intermediate）。</p>
+
+  <h4>📤 Binaries — 成品柜，编译的最终产出</h4>
+
+  <p>编译完的最终产物——.dll（动态链接库）和 .exe（可执行文件）——放在这里。
+  你双击 UE 编辑器的时候，Windows 加载的就是 Binaries 下的 .exe 和 .dll。</p>
+
+  <p>你的插件编译完之后，对应的 .dll 也会出现在这里。
+  这就是为什么"代码改完 → 编译 → 编辑器里就能用"——
+  UE 加载了你刚编译出来的新 .dll。</p>
+
+  <div class="callout warn">
+    <div class="callout-title">⚠️ 两个绝对不能手动改的文件夹</div>
+    <p><strong>Intermediate 和 Binaries</strong>——这两个文件夹里的东西全是编译自动生成的。
+    你<strong>永远不要</strong>手动去修改里面的任何文件。
+    它们唯一的维护方式就是"删掉然后重新编译"。</p>
+    <p>如果你手动改了里面一个 .dll 或 .obj，下次编译行为完全不可预测。</p>
+  </div>
+
+  <h3>新人最常问的三个问题</h3>
+
+  <h4>"我改的代码在哪个文件夹？"</h4>
+  <p>→ <strong>Plugins/你的插件名/Source/</strong> 下。具体是 Public/ 下的 .h 和 Private/ 下的 .cpp。
+  这两个文件夹里面是你每天打开、修改、保存的文件。</p>
+
+  <h4>"为什么 Content 里看不到我的 C++ 代码？"</h4>
+  <p>→ Content 只放资产（.uasset），不含 C++ 代码（.cpp / .h）。
+  C++ 代码在 Source 或 Plugins 里。这是两个完全不同的世界，
+  通过 UCLASS/UFUNCTION 等"魔法词"互相连接。Day 4 展开。</p>
+
+  <h4>"同事让我去 Config 里改个东西——Config 在哪？"</h4>
+  <p>→ 项目根目录下的 Config/ 文件夹，里面一堆 .ini 文件。
+  最常用的是 DefaultEngine.ini 和 DefaultGame.ini。
+  用记事本就能打开。</p>
+
+  <div class="big-quote">
+    文件夹结构不是要背的，是要在脑子里画成一张地图。<br/>
+    每次打开项目，你都知道自己站在"镇上哪个位置"。
+  </div>
+
+  <div class="tasks">
+    <h4>今日打卡</h4>
+    <label class="task" data-task="d3t1"><input type="checkbox"/><span class="t-text">能说出九个核心文件夹各自是干嘛的（Engine / Project / Plugins / Source / Content / Config / Saved / Intermediate / Binaries）</span></label>
+    <label class="task" data-task="d3t2"><input type="checkbox"/><span class="t-text">知道自己的代码住在 Plugins/xxx/Source/ 下</span></label>
+    <label class="task" data-task="d3t3"><input type="checkbox"/><span class="t-text">记住排错三板斧：重启编辑器 → 删 Saved → 删 Intermediate 重编译</span></label>
+    <label class="task" data-task="d3t4"><input type="checkbox"/><span class="t-text">知道 Config 里的 .ini 改了不用编译就能生效</span></label>
+    <label class="task" data-task="d3t5"><input type="checkbox"/><span class="t-text">理解 Content 放资产（.uasset）、不放代码</span></label>
+  </div>
+  <div class="day-foot">
+    <span class="day-progress" data-progress></span>
+    <button class="complete-btn" data-complete>完成今日 ✓</button>
+  </div>
+</article>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</body>
+</html>

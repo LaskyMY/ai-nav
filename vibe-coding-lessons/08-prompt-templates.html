@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Prompt 模板库：把需求说到 AI 能干活 · 小K的大神之路</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.8;padding:16px;max-width:700px;margin:0 auto;padding-bottom:32px}
+h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:4px}
+h2{font-size:16px;font-weight:700;color:#818cf8;margin:20px 0 8px;border-left:3px solid #818cf8;padding-left:10px}
+h3{font-size:14px;color:rgba(255,255,255,.85);margin:14px 0 6px}
+.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:16px}
+.breadcrumb{font-size:10px;color:rgba(255,255,255,.25);margin-bottom:12px}
+.breadcrumb a{color:rgba(255,255,255,.35);text-decoration:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge.req{background:rgba(99,102,241,.15);color:#818cf8}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
+.scene-tag{font-size:9px;color:#00e5ff;font-weight:700;margin-bottom:8px;letter-spacing:.5px}
+.who{color:#fbbf24;font-weight:600}
+.checklist{list-style:none;padding:0}
+.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
+.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
+.nav-btns{display:flex;gap:8px;margin:20px 0}
+.btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:12px;text-decoration:none;text-align:center}
+.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:#00e5ff}
+pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.5;margin:8px 0}
+code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
+.tip{border-left:2px solid #fbbf24;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(245,158,11,.04)}
+p{margin:8px 0;font-size:12px;color:rgba(255,255,255,.65)}
+.back{text-align:center;margin-top:24px}
+.back a{color:rgba(255,255,255,.2);font-size:10px;text-decoration:none}
+.lesson-kicker{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / AI 工具入门 / 必修课 · §10</div>
+<div class="lesson-kicker"><span class="badge required">必修</span><span class="lesson-index">第 11 / 33 节</span></div><h1>Prompt 模板库：把需求说到 AI 能干活</h1><p>小K 发现同一句“帮我做一下”，有时候 AI 像开挂，有时候像在瞎猜。差别不在魔法咒语，而在你有没有把任务、上下文、边界和验收标准说清楚。</p>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<article><div class="scene">
+    <div class="scene-tag">SCENE · 不是咒语，是交接单</div>
+    <p><span class="who">小K</span>：“我看网上都说 Prompt 工程很玄，要写角色、写人格、写一堆咒语。我是不是要背模板？”</p>
+    <p><span class="who">G 哥</span>：“不用玄学。好的 Prompt 本质是<strong>把工作交接清楚</strong>：我要什么、已有条件是什么、不能碰什么、做完怎么算过。”</p>
+  </div>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>AI 不是读心术。你给它一句模糊愿望，它就只能用平均答案糊你。</h4>
+    <p>Prompt 模板的价值不是让你显得专业，而是让你每次开工前都不漏关键上下文。尤其是 VibeCoding：你不是一次问完，而是和 AI 一轮轮推进项目。</p>
+  </div>
+
+  <h3>第一步：一个好 Prompt 的六个格子</h3>
+  <table class="decision-table"><tr><th>格子</th><th>要写什么</th><th>糟糕写法</th><th>更好写法</th></tr><tr><td>目标</td><td>这次到底要完成什么</td><td>帮我优化一下</td><td>把课程首页的编程基础模块新增一张 Git 课程卡片</td></tr><tr><td>上下文</td><td>项目背景、当前文件、现有风格</td><td>你看着办</td><td>保持现有课程卡片样式，不新增框架</td></tr><tr><td>约束</td><td>不能做什么、范围多大</td><td>随便改</td><td>只改课程页和 manifest，不动服务器配置</td></tr><tr><td>产出</td><td>希望 AI 给什么结果</td><td>给我代码</td><td>先给方案，再改文件，最后列验证结果</td></tr><tr><td>验收</td><td>怎么判断完成</td><td>看起来对就行</td><td>链接检查通过，课程总数正确，上一节/下一节无断链</td></tr><tr><td>风险</td><td>让 AI 主动提醒不确定点</td><td>别问我</td><td>如果发现旧结构冲突，先说明再处理</td></tr></table>
+
+  <div class="big-quote">Prompt 不是许愿。<br/>它是你给 AI 的<strong>任务说明书、边界线和验收单</strong>。</div>
+
+  <h3>第二步：常用模板库</h3>
+  <p>下面这些模板不用原封不动背。你要学的是它们的骨架：先让 AI 理解，再让 AI 动手，最后让 AI 自证。</p>
+
+  <h4>模板一：需求脑暴</h4>
+  <div class="prompt-block">我有一个初步想法：[一句话需求]。
+
+请你先不要写代码，先和我脑暴需求。
+请输出：
+1. 这个需求可能对应的 3 类用户；
+2. 每类用户最核心的使用场景；
+3. 最小可行版本 MVP 应该只包含哪些功能；
+4. 哪些功能应该先砍掉；
+5. 你需要继续问我的 5 个关键问题。</div>
+
+  <h4>模板二：技术选型</h4>
+  <div class="prompt-block">我要做：[项目目标]。
+我的约束是：[时间 / 平台 / 技术水平 / 是否要部署 / 是否要桌面端]。
+
+请给我 3 个技术方案。
+每个方案说明：
+1. 适合什么场景；
+2. 优点；
+3. 缺点；
+4. 新手风险；
+5. 你推荐哪一个，以及为什么不推荐另外两个。</div>
+
+  <h4>模板三：让 AI 先读项目再改</h4>
+  <div class="prompt-block">请先阅读当前项目结构，不要马上改代码。
+
+目标：[这次要做的事]
+要求：
+1. 先列出你认为相关的文件；
+2. 说明每个文件为什么相关；
+3. 给出最小修改方案；
+4. 明确不会修改哪些文件；
+5. 等我确认后再开始实现。</div>
+
+  <h4>模板四：报错排查</h4>
+  <div class="prompt-block">这是我的报错：[粘贴完整报错]
+我的系统是：[Windows / macOS / Linux]
+我使用的终端是：[PowerShell / CMD / Bash]
+我当前目录是：[路径]
+
+请你：
+1. 用新手能懂的话翻译报错；
+2. 判断是代码、依赖、路径、环境变量还是权限问题；
+3. 每次只给一个检查命令；
+4. 告诉我正常输出应该长什么样；
+5. 不要直接让我重装全部工具。</div>
+
+  <h4>模板五：UI 审查</h4>
+  <div class="prompt-block">请从 UI/UX 角度审查这个页面。
+目标用户是：[用户类型]
+页面目的：[页面要帮助用户完成什么]
+
+请按以下维度给建议：
+1. 信息层级；
+2. 阅读节奏；
+3. 按钮和操作是否明确；
+4. 移动端是否容易读；
+5. 哪些地方看起来像临时拼出来的；
+6. 给出按优先级排序的修改清单。</div>
+
+  <h4>模板六：验证和复盘</h4>
+  <div class="prompt-block">你刚才完成了这个改动：[改动目标]。
+
+请不要只总结“已完成”。
+请输出：
+1. 修改了哪些文件；
+2. 每个文件改了什么；
+3. 我应该如何手动验证；
+4. 哪些边界情况需要检查；
+5. 如果出问题，优先回滚哪些改动。</div>
+
+  <div class="ai-chat"><div class="ai-chat-title">AI 互动现场：把模糊愿望改成可执行任务</div><div class="chat-turn user"><div class="role">你</div><p>帮我把页面做高级一点。</p></div><div class="chat-turn ai"><div class="role">AI</div><p>可以，我会加渐变、动画、卡片、阴影……</p></div><div class="chat-turn user"><div class="role">你</div><p>先停。目标是提升阅读体验，不是加装饰。请先指出当前页面的信息层级问题，再给 5 条最小修改建议。</p></div><div class="chat-turn ai"><div class="role">AI</div><p>明白。我会优先检查标题层级、段落长度、目录位置、按钮文案和移动端可读性。</p></div></div>
+
+  <div class="tasks"><h4>本节打卡</h4><label class="task" data-task="prompt-template-t1"><input type="checkbox"/><span class="t-text">能说出好 Prompt 的六个格子</span></label><label class="task" data-task="prompt-template-t2"><input type="checkbox"/><span class="t-text">能把“帮我优化一下”改写成有目标、有约束、有验收的任务</span></label><label class="task" data-task="prompt-template-t3"><input type="checkbox"/><span class="t-text">会让 AI 先读项目结构再动手</span></label><label class="task" data-task="prompt-template-t4"><input type="checkbox"/><span class="t-text">会用报错排查模板描述系统、终端和当前目录</span></label><label class="task" data-task="prompt-template-t5"><input type="checkbox"/><span class="t-text">会用 UI 审查模板要求 AI 按优先级给建议</span></label><label class="task" data-task="prompt-template-t6"><input type="checkbox"/><span class="t-text">会让 AI 给出验证和回滚清单</span></label></div>
+  <div class="day-foot"><span class="day-progress" data-progress></span><button class="complete-btn" data-complete>完成本节</button></div>
+</article>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</body>
+</html>

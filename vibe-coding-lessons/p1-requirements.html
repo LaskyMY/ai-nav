@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>需求脑暴：把一句想法聊成产品定义 · 小K的大神之路</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.8;padding:16px;max-width:700px;margin:0 auto;padding-bottom:32px}
+h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:4px}
+h2{font-size:16px;font-weight:700;color:#818cf8;margin:20px 0 8px;border-left:3px solid #818cf8;padding-left:10px}
+h3{font-size:14px;color:rgba(255,255,255,.85);margin:14px 0 6px}
+.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:16px}
+.breadcrumb{font-size:10px;color:rgba(255,255,255,.25);margin-bottom:12px}
+.breadcrumb a{color:rgba(255,255,255,.35);text-decoration:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge.req{background:rgba(99,102,241,.15);color:#818cf8}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
+.scene-tag{font-size:9px;color:#00e5ff;font-weight:700;margin-bottom:8px;letter-spacing:.5px}
+.who{color:#fbbf24;font-weight:600}
+.checklist{list-style:none;padding:0}
+.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
+.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
+.nav-btns{display:flex;gap:8px;margin:20px 0}
+.btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:12px;text-decoration:none;text-align:center}
+.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:#00e5ff}
+pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.5;margin:8px 0}
+code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
+.tip{border-left:2px solid #fbbf24;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(245,158,11,.04)}
+p{margin:8px 0;font-size:12px;color:rgba(255,255,255,.65)}
+.back{text-align:center;margin-top:24px}
+.back a{color:rgba(255,255,255,.2);font-size:10px;text-decoration:none}
+.lesson-kicker{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / AI 协作开发实战 - 做一款代办工具 / 实践课 · §P1</div>
+<div class="lesson-kicker"><span class="badge practice">实践课</span><span class="lesson-index">第 28 / 33 节</span></div><h1>需求脑暴：把一句想法聊成产品定义</h1><p>重点不是你会不会写 PRD，而是你能不能把一句“我想做个待办工具”，通过和 AI 的追问，变成可执行、可验证、可取舍的产品定义。</p>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<article><div class="scene"><div class="scene-tag">SCENE · 从一句话开始调度 AI</div><p><span class="who">小K</span>：“我不是要自己从零写代码，我想用 AI 帮我做一个桌面待办工具。那我第一句话该怎么说？”</p><p><span class="who">G 哥</span>：“不要一上来让 AI 写代码。先让它当产品合伙人，逼你把需求讲清楚。能把需求聊清楚，后面代码只是执行。”</p></div>
+<div class="why"><div class="why-tag">这一节真正要学什么</div><h4>Vibe Coding 的第一步不是写 Prompt，而是建立一个可被 AI 理解的产品语境。</h4><p>传统教程会说“先写需求文档”。我们这里换一种说法：你要先和 AI 开一场产品脑暴会。目标不是一次说对，而是让 AI 帮你追问、归类、补洞、收敛，最后把模糊想法变成一份项目简报。</p></div>
+<h3>第一轮：把“我想做个待办”变成一份项目简报</h3><p>一开始不要追求完美，先把粗糙想法丢给 AI，然后明确让它做三件事：追问、整理、提出风险。</p><div class="prompt-block">你先不要写代码。请你作为产品经理和技术顾问，帮我把一个想法聊清楚。
+
+我想做一个桌面悬浮待办工具，平时像一个小球浮在屏幕边缘，点开后变成面板，可以记录不同场景下的待办事项。
+
+请你：
+1. 先问我 10 个关键问题，逼我把需求讲清楚；
+2. 根据我的回答整理成一页项目简报；
+3. 标出哪些需求是 MVP 必须做，哪些可以推迟；
+4. 提醒我这个产品最容易翻车的地方。</div><p>这段 Prompt 的关键不是“礼貌”，而是角色、边界、输出物都说清楚了。AI 不再是一个代码生成器，而是一个帮你压缩混乱的工作台。</p>
+<div class="ai-chat"><div class="ai-chat-title">AI 互动现场：第一次回复太大了</div><div class="chat-turn user"><div class="role">你</div><p>我想做一个悬浮待办工具，最好看起来像一个真的产品。你先帮我想想要做什么。</p></div><div class="chat-turn ai"><div class="role">AI</div><p>可以做登录、团队协作、云同步、日历订阅、番茄钟、提醒、数据统计、标签系统和多端同步。</p></div><div class="chat-turn user"><div class="role">你</div><p>先停。这个课程要展示两天内能跑通的 Vibe Coding，不是融资路演。请把需求分成 MVP、下一版、明确不做三类，并解释为什么。</p></div><div class="chat-turn ai"><div class="role">AI</div><p>收到。MVP 只保留添加、完成、删除、本地保存和一个清晰的悬浮入口。提醒、账号、协作和云同步先放进不做清单，避免原型失焦。</p></div></div><div class="ai-moment"><b>有意思的转折</b><p>AI 很擅长把东西变完整，但不一定擅长把东西变小。真正体现掌控力的地方，是你能用一句“这不是融资路演”把它从功能狂奔拉回课程目标。</p></div><h3>第二轮：让 AI 帮你收敛，而不是越聊越大</h3><p>很多人和 AI 脑暴会越聊越兴奋，最后项目膨胀成一个怪物。真正高级的做法是让 AI 主动砍需求。</p><table class="decision-table"><tr><th>候选需求</th><th>AI 帮我判断</th><th>最后怎么定</th></tr><tr><td>悬浮小球 + 展开面板</td><td>这是产品记忆点，也是桌面应用区别于网页 demo 的核心。</td><td>保留，MVP 必须做。</td></tr><tr><td>多列表、多场景</td><td>能体现真实使用场景，但不能做太复杂。</td><td>保留 4 个固定场景，不做自定义列表。</td></tr><tr><td>登录、云同步、多人协作</td><td>会引入账号、后端、同步冲突，远超学习目标。</td><td>砍掉，先做纯本地。</td></tr><tr><td>漂亮 UI 和动画</td><td>能提升展示效果，但必须建立在可用原型之后。</td><td>后置，交给 UI UX Pro 和 Codex 打磨。</td></tr></table>
+<h3>第三轮：把脑暴结果变成 AI 可以执行的“项目宪法”</h3><p>最后产物不是一堆聊天记录，而是一份可以反复贴给 AI 的上下文。之后每次让 AI 改代码，都先让它读这份“项目宪法”。</p><div class="artifact-grid"><div class="artifact"><h4>产品一句话</h4><p>FloatThings 是一个桌面悬浮待办工具：平时收成轻量小球，需要时展开成面板，用最少干扰帮我记住今天、本周、进行中和承诺事项。</p></div><div class="artifact"><h4>MVP 边界</h4><p>只做本地数据、固定列表、添加/完成/删除/排序、主题切换、悬浮形态。账号、同步、插件生态全部不做。</p></div><div class="artifact"><h4>验收标准</h4><p>新用户 30 秒内知道怎么添加事项；关闭重开数据还在；切换主题不闪烁；滑动和拖拽不会误触。</p></div><div class="artifact"><h4>风险提醒</h4><p>不要在第一版追求“全平台完美”。先做一条可演示的闭环，再把体验做得像产品。</p></div></div>
+<div class="big-quote">这一节的价值不是“写了几个功能点”。<br/>而是你把 AI 从“帮我写代码”升级成了<strong>帮我定义问题、控制范围、建立标准</strong>。</div>
+<div class="tasks"><h4>本节打卡</h4><label class="task" data-task="p1v2t1"><input type="checkbox"/><span class="t-text">能说出为什么 Vibe Coding 的第一步不是写代码，而是和 AI 对齐语境</span></label><label class="task" data-task="p1v2t2"><input type="checkbox"/><span class="t-text">拿到一份产品一句话、MVP 边界、验收标准、风险提醒</span></label><label class="task" data-task="p1v2t3"><input type="checkbox"/><span class="t-text">知道如何让 AI 主动砍需求，避免项目膨胀</span></label><label class="task" data-task="p1v2t4"><input type="checkbox"/><span class="t-text">把脑暴结果整理成后续所有 Prompt 都能复用的项目上下文</span></label></div><div class="day-foot"><span class="day-progress" data-progress></span><button class="complete-btn" data-complete>完成本节</button></div></article>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</body>
+</html>

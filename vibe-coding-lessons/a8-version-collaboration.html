@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>提交、版本、协作 · 小K的大神之路</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.8;padding:16px;max-width:700px;margin:0 auto;padding-bottom:32px}
+h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:4px}
+h2{font-size:16px;font-weight:700;color:#818cf8;margin:20px 0 8px;border-left:3px solid #818cf8;padding-left:10px}
+h3{font-size:14px;color:rgba(255,255,255,.85);margin:14px 0 6px}
+.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:16px}
+.breadcrumb{font-size:10px;color:rgba(255,255,255,.25);margin-bottom:12px}
+.breadcrumb a{color:rgba(255,255,255,.35);text-decoration:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge.req{background:rgba(99,102,241,.15);color:#818cf8}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
+.scene-tag{font-size:9px;color:#00e5ff;font-weight:700;margin-bottom:8px;letter-spacing:.5px}
+.who{color:#fbbf24;font-weight:600}
+.checklist{list-style:none;padding:0}
+.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
+.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
+.nav-btns{display:flex;gap:8px;margin:20px 0}
+.btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:12px;text-decoration:none;text-align:center}
+.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:#00e5ff}
+pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.5;margin:8px 0}
+code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
+.tip{border-left:2px solid #fbbf24;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(245,158,11,.04)}
+p{margin:8px 0;font-size:12px;color:rgba(255,255,255,.65)}
+.back{text-align:center;margin-top:24px}
+.back a{color:rgba(255,255,255,.2);font-size:10px;text-decoration:none}
+.lesson-kicker{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / UE 工具开发 / DAY · 09</div>
+<div class="lesson-kicker"><span class="badge elective">选修 A</span><span class="lesson-index">第 21 / 33 节</span></div><h1>提交、版本、协作</h1><p>代码写完了不代表结束了——要让团队用上、不影响别人、出问题能回退。 最后一天，小K 走通版本控制的全流程，把工具真正&quot;交出去&quot;。</p>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<article><div class="scene">
+    <div class="scene-tag">SCENE 9 · 第十天上午</div>
+    <p><span class="who">小K</span>：
+    "G哥，工具做好了，在编辑器里能跑。我怎么给其他人用？把代码文件夹压缩发群里？"</p>
+    <p><span class="who">G 哥</span>（捏了捏眉心）：
+    "绝对不能。第一，压缩包没有版本历史，
+    出了问题不知道是你改的还是别人改的。
+    第二，你这压缩包和服务器上 P4 仓库里的版本完全脱节，
+    同事拿到了也没法跟他的代码合并。"</p>
+    <p><span class="who">G 哥</span>：
+    "今天教你走一遍 P4 的完整流程——Checkout → 改代码 → 编译验证 → Submit。
+    顺便讲讲 Shelve 是干嘛的、为什么 Code Review 之前要先 Shelve 一下。
+    你走通了这个流程，才算真正'入行'了。"</p>
+  </div>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>代码写完了，只完成了 50%。剩下的 50% 是让团队安全地拿到你的代码。
+    版本控制是多人协作的基础设施——它不是你"顺便学"的东西，
+    是你"入行必须会"的东西。</h4>
+    <p>很多新人把"改代码"当成主要工作，把"提交"当成一键操作。
+    实际上，在 UE 大项目里，错一次提交可以让全组编译不了、让美术打不开编辑器。
+    把提交流程走对，是对团队的基本尊重。</p>
+  </div>
+
+  <h3>为什么 UE 大项目用 Perforce 而不是 Git？</h3>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>不是 Git 不好——是 UE 项目有大量几百 MB 的二进制文件（贴图、模型），
+    Git 天生不适合存这些。</h4>
+  </div>
+
+  <p>简单记住两点：</p>
+
+  <ul>
+    <li><strong>Git</strong> 是为<strong>纯代码</strong>（文本文件）设计的。
+    它存每一个版本的完整快照，一个 200MB 的贴图改了 10 次，
+    Git 仓库可能膨胀到几个 GB。</li>
+    <li><strong>Perforce</strong> 是为<strong>代码+大型二进制资产</strong>设计的。
+    它的服务器集中式管理，二进制文件只存差异，对大型资产友好得多。</li>
+  </ul>
+
+  <p>UE 项目就是典型的"几万个小文本代码文件 + 几千个大型二进制资产文件"——
+  P4 正好是为此设计的。在游戏行业，P4 是事实标准。</p>
+
+  <h3>Perforce 五个核心操作，记一辈子</h3>
+
+  <figure>
+    <svg viewBox="0 0 720 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="P4五大操作">
+      <defs>
+        <marker id="arr9a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#22d3ee"/></marker>
+      </defs>
+      <g font-size="12" fill="#cdd6e3" font-family="ui-sans-serif,system-ui">
+        <!-- Sync -->
+        <rect x="20" y="60" width="120" height="70" rx="10" fill="#1d222d" stroke="#7c5cff" stroke-width="1.5"/>
+        <text x="80" y="88" text-anchor="middle" fill="#e8ecf3" font-weight="700">Sync</text>
+        <text x="80" y="106" text-anchor="middle" font-size="11" fill="#9aa3b2">下载最新版本</text>
+        <text x="80" y="122" text-anchor="middle" font-size="10" fill="#22c55e">每天开工第一步</text>
+
+        <line x1="140" y1="95" x2="165" y2="95" stroke="#22d3ee" stroke-width="2" marker-end="url(#arr9a)"/>
+
+        <!-- Checkout -->
+        <rect x="170" y="60" width="120" height="70" rx="10" fill="#1d222d" stroke="#f59e0b" stroke-width="1.5"/>
+        <text x="230" y="88" text-anchor="middle" fill="#e8ecf3" font-weight="700">Checkout</text>
+        <text x="230" y="106" text-anchor="middle" font-size="11" fill="#9aa3b2">声明"我要改这个"</text>
+        <text x="230" y="122" text-anchor="middle" font-size="10" fill="#f59e0b">改之前必须操作</text>
+
+        <line x1="290" y1="95" x2="315" y2="95" stroke="#22d3ee" stroke-width="2" marker-end="url(#arr9a)"/>
+
+        <!-- Edit -->
+        <rect x="320" y="60" width="120" height="70" rx="10" fill="#1d222d" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="380" y="88" text-anchor="middle" fill="#e8ecf3" font-weight="700">改代码</text>
+        <text x="380" y="106" text-anchor="middle" font-size="11" fill="#9aa3b2">在本地改 .cpp/.h</text>
+        <text x="380" y="122" text-anchor="middle" font-size="10" fill="#9aa3b2">编译验证通过</text>
+
+        <line x1="440" y1="95" x2="465" y2="95" stroke="#22d3ee" stroke-width="2" marker-end="url(#arr9a)"/>
+
+        <!-- Shelve -->
+        <rect x="470" y="60" width="120" height="70" rx="10" fill="#1d222d" stroke="#7c5cff" stroke-width="1.5"/>
+        <text x="530" y="88" text-anchor="middle" fill="#e8ecf3" font-weight="700">Shelve</text>
+        <text x="530" y="106" text-anchor="middle" font-size="11" fill="#9aa3b2">存到服务器不提交</text>
+        <text x="530" y="122" text-anchor="middle" font-size="10" fill="#7c5cff">Code Review 用</text>
+
+        <line x1="590" y1="95" x2="615" y2="95" stroke="#22d3ee" stroke-width="2" marker-end="url(#arr9a)"/>
+
+        <!-- Submit -->
+        <rect x="620" y="60" width="80" height="70" rx="10" fill="#1d222d" stroke="#22c55e" stroke-width="1.8"/>
+        <text x="660" y="88" text-anchor="middle" fill="#22c55e" font-weight="700">Submit</text>
+        <text x="660" y="106" text-anchor="middle" font-size="11" fill="#9aa3b2">正式入库</text>
+        <text x="660" y="122" text-anchor="middle" font-size="10" fill="#22c55e">全员可见</text>
+
+        <!-- Descriptions -->
+        <text x="80" y="160" text-anchor="middle" fill="#9aa3b2" font-size="11">每天来先跑一下</text>
+        <text x="230" y="160" text-anchor="middle" fill="#9aa3b2" font-size="11">让 P4 知道你要改</text>
+        <text x="380" y="160" text-anchor="middle" fill="#9aa3b2" font-size="11">正常写代码</text>
+        <text x="530" y="160" text-anchor="middle" fill="#9aa3b2" font-size="11">给别人看你的改动</text>
+        <text x="660" y="160" text-anchor="middle" fill="#9aa3b2" font-size="11">正式入库</text>
+
+        <text x="360" y="40" text-anchor="middle" fill="#e8ecf3" font-size="13" font-weight="600">P4 标准工作流</text>
+        <text x="360" y="200" text-anchor="middle" fill="#9aa3b2" font-size="11">你每天的操作就是在这个流程图上从左到右走一遍</text>
+      </g>
+    </svg>
+    <figcaption>Sync → Checkout → 改代码 → Shelve（可选）→ Submit。这就是你每天的 P4 日常。</figcaption>
+  </figure>
+
+  <h4>① Sync — "把服务器上最新的拉下来"</h4>
+
+  <p>每天开工第一件事：P4 Sync。把同事提交的最新代码同步到你的 Workspace 里。
+  就像打开共享文件夹，先检查有没有新文件。</p>
+
+  <p><strong>关键</strong>：Sync 不会覆盖你正在修改的文件。它只更新你没在修改的文件。
+  如果你改着的文件和同事的提交冲突了，P4 会让你手动处理——而不是悄悄覆盖。</p>
+
+  <h4>② Checkout — "我要改这个文件了"</h4>
+
+  <p>P4 管理的文件默认是<strong>只读</strong>的。你要改它，必须先 Checkout。
+  这个动作不是多余的——它告诉 P4（和团队）："这个文件现在归我管了，
+  我正在动它。"其他同事在同一时间也可以 Checkout 同一个文件，
+  但提交的时候 P4 会帮忙处理合并。</p>
+
+  <div class="callout warn">
+    <div class="callout-title">⚠️ 千万别做的事</div>
+    <p>没 Checkout 就强行改了文件（比如手动把只读属性去掉）——然后发现改完了存不了。
+    P4 不认你这个修改，因为它在服务器端没看到"你声明了要改"。</p>
+    <p>流程必须遵守：<strong>先 Checkout，再改代码</strong>。</p>
+  </div>
+
+  <h4>③ 改代码 + 编译验证</h4>
+
+  <p>这一步你已经会了——Day 8 完整走过。在本地写代码、编译、跑起来验证。
+  确认功能正常、没有新引入的编译错误。</p>
+
+  <h4>④ Shelve — "存到服务器但不提交"</h4>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>Shelve 是新人最容易忽略的操作——但它解决了一个核心矛盾：
+    你代码还没准备好正式提交，但需要给别人看、或者想存个安全备份。</h4>
+  </div>
+
+  <p>Shelve 的作用：把你的改动<strong>上传到 P4 服务器</strong>，
+  但不合并到主分支。相当于"把草稿存到云端，但不发表"。</p>
+
+  <p>什么时候用 Shelve：</p>
+  <ul>
+    <li><strong>Code Review 之前</strong>——把改动 Shelve 到服务器，
+    告诉 G哥 "CL #12345，帮我 review 一下"。
+    G哥 能直接在你的 Shelve 上看到每一行改动。</li>
+    <li><strong>代码写到一半要下班了</strong>——Shelve 到服务器，
+    万一明天你电脑坏了，代码还在 P4 上。</li>
+    <li><strong>需要换一台电脑继续写</strong>——Shelve → 到另一台电脑上
+    Unshelve → 继续写。</li>
+  </ul>
+
+  <h4>⑤ Submit — "正式入库"</h4>
+
+  <p>代码经过你自己验证、经过 Code Review（如果团队有要求），
+  就可以 Submit 了。Submit 之后，你的改动就正式进了 P4 仓库，
+  其他同事 Sync 的时候就会拿到你的代码。</p>
+
+  <p>Submit 的时候要写一段描述（Description），说明你改了什么、为什么改。
+  这不是形式——三个月后你回来看这个提交，描述写得好能让你 10 秒想起来上下文；
+  描述写了 "fix" 一个字，你得重新读全部 diff。</p>
+
+  <div class="callout key">
+    <div class="callout-title">🔑 一个好 Description 的样子</div>
+    <p>❌ 不好的描述：<em>"修了一下"</em>、<em>"update"</em>、<em>"Fix bug"</em></p>
+    <p>✅ 好的描述：<em>"修复编辑器启动时 MyTool 插件加载失败的问题。
+    原因是 Build.cs 里漏了 Slate 依赖。加了依赖，并加了一个空指针检查。"</em></p>
+    <p>好的描述包含三要素：<strong>做了什么 + 为什么做 + 怎么做的</strong>。</p>
+  </div>
+
+  <h3>Code Review —— 代码给别人看一眼再入库</h3>
+
+  <div class="why">
+    <div class="why-tag">为什么要懂这个</div>
+    <h4>很多新人把 Code Review 当"被检查作业"——觉得紧张。其实 Code Review
+    是新人成长最快的方式：一个有经验的人花 10 分钟看你的代码，
+    指出的问题够你自己摸索一周。</h4>
+  </div>
+
+  <p>Code Review 的流程通常是：</p>
+  <ol>
+    <li>你把代码 Shelve 到 P4，拿到一个 CL 号</li>
+    <li>把 CL 号发给 G哥（或团队指定的 Reviewer）</li>
+    <li>Reviewer 在 P4 里看你的 Shelve，逐行看改了啥</li>
+    <li>如果没问题——Reviewer 说 OK，你可以 Submit</li>
+    <li>如果有问题——Reviewer 在具体行上写评论，你改完再 Shelve，再 Review，直到通过</li>
+  </ol>
+
+  <p><strong>不要把 Review 的意见当成"批评"。</strong>
+  每一条 Review 意见都是一个老手在告诉你"这里可以写得更好"——
+  这恰好是自学最难获得的东西。</p>
+
+  <h3>一个完整的工作日流程</h3>
+
+  <p>把今天的内容串起来——你今后每天的典型节奏：</p>
+
+  <ol>
+    <li>早上到工位：<strong>P4 Sync</strong>，拿到同事的最新代码</li>
+    <li>改代码之前：<strong>P4 Checkout</strong> 你要改的那些文件</li>
+    <li>写代码 + 编译 + 本地验证</li>
+    <li>改完了、验证过了：<strong>P4 Shelve</strong>（如果需要 Review）</li>
+    <li>Review 通过后：<strong>P4 Submit</strong>，写清楚描述</li>
+    <li>下班前再做一次 <strong>P4 Sync</strong>，保证明天开工的时候代码是最新的</li>
+  </ol>
+
+  <div class="big-quote">
+    写代码让你成为一个"能做出东西的人"。<br/>
+    会提交流程让你成为一个"能跟团队协作的人"。<br/>
+    两样齐全，你才是一个完整的开发者。
+  </div>
+
+  <div class="tasks">
+    <h4>今日打卡</h4>
+    <label class="task" data-task="d9t1"><input type="checkbox"/><span class="t-text">知道 P4 五个核心操作：Sync / Checkout / 改代码 / Shelve / Submit</span></label>
+    <label class="task" data-task="d9t2"><input type="checkbox"/><span class="t-text">理解 Shelve 是"存到服务器但不提交"，主要用于 Code Review 和备份</span></label>
+    <label class="task" data-task="d9t3"><input type="checkbox"/><span class="t-text">理解 Code Review 不是"检查作业"，是新人成长最快的方式</span></label>
+    <label class="task" data-task="d9t4"><input type="checkbox"/><span class="t-text">知道提交描述怎么写——做了什么 + 为什么做 + 怎么做的</span></label>
+    <label class="task" data-task="d9t5"><input type="checkbox"/><span class="t-text">记住"修改之前先 Checkout"这条铁律</span></label>
+    <label class="task" data-task="d9t6"><input type="checkbox"/><span class="t-text">能说出一个完整工作日的六个步骤</span></label>
+  </div>
+  <div class="day-foot">
+    <span class="day-progress" data-progress></span>
+    <button class="complete-btn" data-complete>完成今日 ✓</button>
+  </div>
+</article>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</body>
+</html>

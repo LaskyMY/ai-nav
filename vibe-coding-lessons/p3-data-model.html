@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>最小原型：先让 AI 做出一条能跑的闭环 · 小K的大神之路</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.8;padding:16px;max-width:700px;margin:0 auto;padding-bottom:32px}
+h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:4px}
+h2{font-size:16px;font-weight:700;color:#818cf8;margin:20px 0 8px;border-left:3px solid #818cf8;padding-left:10px}
+h3{font-size:14px;color:rgba(255,255,255,.85);margin:14px 0 6px}
+.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:16px}
+.breadcrumb{font-size:10px;color:rgba(255,255,255,.25);margin-bottom:12px}
+.breadcrumb a{color:rgba(255,255,255,.35);text-decoration:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge.req{background:rgba(99,102,241,.15);color:#818cf8}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
+.scene-tag{font-size:9px;color:#00e5ff;font-weight:700;margin-bottom:8px;letter-spacing:.5px}
+.who{color:#fbbf24;font-weight:600}
+.checklist{list-style:none;padding:0}
+.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
+.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
+.nav-btns{display:flex;gap:8px;margin:20px 0}
+.btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:12px;text-decoration:none;text-align:center}
+.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:#00e5ff}
+pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.5;margin:8px 0}
+code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
+.tip{border-left:2px solid #fbbf24;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(245,158,11,.04)}
+p{margin:8px 0;font-size:12px;color:rgba(255,255,255,.65)}
+.back{text-align:center;margin-top:24px}
+.back a{color:rgba(255,255,255,.2);font-size:10px;text-decoration:none}
+.lesson-kicker{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / AI 协作开发实战 - 做一款代办工具 / 实践课 · §P3</div>
+<div class="lesson-kicker"><span class="badge practice">实践课</span><span class="lesson-index">第 30 / 33 节</span></div><h1>最小原型：先让 AI 做出一条能跑的闭环</h1><p>不要一口气让 AI 做完整产品。先让它实现最薄的一条链路：能添加、能显示、能完成、能保存。只要闭环跑通，项目就活了。</p>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<article><div class="scene"><div class="scene-tag">SCENE · 第一版不是作品，是证据</div><p><span class="who">小K</span>：“我想一次把漂亮小球、拖拽、主题、托盘全做完。”</p><p><span class="who">G 哥</span>：“这就是翻车开局。第一版只回答一个问题：这个产品的核心链路能不能跑？”</p></div><div class="why"><div class="why-tag">为什么要先做最小原型</div><h4>AI 很擅长写代码，但它不擅长替你判断“现在该写多少”。MVP 是你给 AI 设下的护栏。</h4><p>最小原型不是偷懒，而是风险控制。只要添加、显示、完成、本地保存这一条链路成立，后面的 UI、动画、托盘都是增强，不会影响产品是否成立。</p></div><figure class="product-figure product-figure-wide"><img src="http://www.baoxiaoxing.com/vibecoding/assets/product/floatthings-main.svg" width="1200" height="820" loading="lazy" alt="FloatThings 代办工具主界面：待办列表、添加按钮、废纸篓入口和四条彩色事项"><figcaption>主视觉先放在原型课里：学习者能马上看到最终要验证的闭环，不会误以为这只是抽象方法论。</figcaption></figure>
+<h3>第一步：把任务拆成 AI 能连续执行的小切片</h3><p>不要说“帮我做完整应用”。要说“先做最小闭环，并且每一步完成后告诉我如何验证”。</p><div class="prompt-block">请基于当前项目，先实现 FloatThings 的最小原型，不要做高级 UI，不要做拖拽，不要做托盘。
+
+只做这 4 件事：
+1. 添加一条待办；
+2. 在列表里展示待办；
+3. 可以标记完成；
+4. 刷新页面后数据仍然存在。
+
+请你先给实施计划，再改代码。每改完一个阶段，都告诉我：我应该打开哪个页面、点击哪里、看到什么，才能确认它真的工作。</div>
+<div class="ai-chat"><div class="ai-chat-title">AI 互动现场：原型第一次跑偏</div><div class="chat-turn user"><div class="role">你</div><p>请先做最小原型，只要能添加、完成、删除、刷新后还在。</p></div><div class="chat-turn ai"><div class="role">Codex</div><p>我准备先搭建完整目录：components、hooks、services、storage、theme、drag-drop，并预留提醒和过滤器。</p></div><div class="chat-turn user"><div class="role">你</div><p>暂停。不要先搭大架子。请把任务缩成三个提交：状态模型、列表渲染、本地保存。每个提交后都给我一条手动验证路径。</p></div><div class="chat-turn ai"><div class="role">Codex</div><p>调整计划：第一步只实现内存中的任务数组；第二步接入输入框和完成状态；第三步把数据同步到 localStorage，并用刷新页面验证。</p></div></div><div class="ai-moment"><b>有意思的转折</b><p>AI 经常会把“专业”理解成“工程化很满”。你把它改成三次小步提交之后，课程看起来反而更专业，因为每一步都有证据。</p></div><h3>第二步：让 Codex 按“计划 - 修改 - 验证”节奏工作</h3><div class="vibe-timeline"><div class="vibe-step"><b>计划</b><p>先让 AI 说明会改哪些文件、为什么这么拆，不接受一上来甩一大坨代码。</p></div><div class="vibe-step"><b>修改</b><p>一次只改一条能力：状态模型、输入框、列表渲染、完成按钮、本地保存。</p></div><div class="vibe-step"><b>验证</b><p>每次修改后都要求给出手动验证路径，例如“刷新页面后刚才的事项仍然存在”。</p></div><div class="vibe-step"><b>记录</b><p>把能跑通的结果记下来，后续 UI 打磨不能破坏这条链路。</p></div></div>
+<h3>第三步：用“冒烟路径”判断原型是否成立</h3><p>这时候不需要 100 个测试，先要一条冒烟路径。它像体检里的心跳检测：不代表健康完美，但能证明项目没死。</p><table class="decision-table"><tr><th>步骤</th><th>操作</th><th>通过标准</th></tr><tr><td>1</td><td>打开应用，输入“写周报”。</td><td>列表出现一条新待办。</td></tr><tr><td>2</td><td>点击完成。</td><td>事项进入完成状态，样式有明显变化。</td></tr><tr><td>3</td><td>刷新或重启。</td><td>刚才的数据仍然存在。</td></tr><tr><td>4</td><td>添加多条事项。</td><td>列表顺序稳定，没有覆盖旧数据。</td></tr></table>
+<h3>第四步：把 AI 的输出变成可以复用的工作模板</h3><p>这一步的重点是沉淀协作方式：以后任何功能都按同样节奏推进。</p><div class="artifact-grid"><div class="artifact"><h4>输入</h4><p>一个明确的功能切片，而不是一个模糊大目标。</p></div><div class="artifact"><h4>过程</h4><p>先计划，再修改，再给验证路径。</p></div><div class="artifact"><h4>输出</h4><p>代码、说明、验证方法三件套。</p></div><div class="artifact"><h4>回滚点</h4><p>如果验证不通过，回到上一个能跑通的切片。</p></div></div>
+<div class="big-quote">最小原型不是“寒酸版产品”。<br/>它是你和 AI 之间的第一份<strong>可运行契约</strong>。</div>
+<div class="tasks"><h4>本节打卡</h4><label class="task" data-task="p3v2t1"><input type="checkbox"/><span class="t-text">能把完整产品拆成“添加 - 展示 - 完成 - 保存”的最小闭环</span></label><label class="task" data-task="p3v2t2"><input type="checkbox"/><span class="t-text">让 AI 每次修改前先给计划，每次修改后给验证路径</span></label><label class="task" data-task="p3v2t3"><input type="checkbox"/><span class="t-text">写出一条能证明原型活着的冒烟路径</span></label><label class="task" data-task="p3v2t4"><input type="checkbox"/><span class="t-text">知道如何阻止 AI 一次性把项目做得过大</span></label></div><div class="day-foot"><span class="day-progress" data-progress></span><button class="complete-btn" data-complete>完成本节</button></div></article>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Codex 入门——另一个选择 · 小K的大神之路</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.8;padding:16px;max-width:700px;margin:0 auto;padding-bottom:32px}
+h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:4px}
+h2{font-size:16px;font-weight:700;color:#818cf8;margin:20px 0 8px;border-left:3px solid #818cf8;padding-left:10px}
+h3{font-size:14px;color:rgba(255,255,255,.85);margin:14px 0 6px}
+.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:16px}
+.breadcrumb{font-size:10px;color:rgba(255,255,255,.25);margin-bottom:12px}
+.breadcrumb a{color:rgba(255,255,255,.35);text-decoration:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-right:6px;font-weight:600}
+.badge.req{background:rgba(99,102,241,.15);color:#818cf8}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.scene{background:rgba(255,255,255,.02);border-radius:10px;padding:14px 16px;margin:12px 0;border-left:3px solid rgba(0,229,255,.2)}
+.scene-tag{font-size:9px;color:#00e5ff;font-weight:700;margin-bottom:8px;letter-spacing:.5px}
+.who{color:#fbbf24;font-weight:600}
+.checklist{list-style:none;padding:0}
+.checklist li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;align-items:flex-start;gap:8px}
+.checklist li::before{content:'☐';color:rgba(255,255,255,.2);font-size:14px;margin-right:6px}
+.nav-btns{display:flex;gap:8px;margin:20px 0}
+.btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:12px;text-decoration:none;text-align:center}
+.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:#00e5ff}
+pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.5;margin:8px 0}
+code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:.9em}
+.tip{border-left:2px solid #fbbf24;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(245,158,11,.04)}
+p{margin:8px 0;font-size:12px;color:rgba(255,255,255,.65)}
+.back{text-align:center;margin-top:24px}
+.back a{color:rgba(255,255,255,.2);font-size:10px;text-decoration:none}
+.lesson-kicker{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a><a href="../index.html">课程主页</a> / AI 工具入门 / 必修课 · §9</div>
+<div class="lesson-kicker"><span class="badge required">必修</span><span class="lesson-index">第 10 / 33 节</span></div><h1>Codex 入门——另一个选择</h1><p>小K 装好了 Claude Code，用得很开心。但网上又有人说&quot;Codex 更好&quot;—— 它们到底什么区别？我有必要两个都用吗？</p>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<article><div class="scene">
+    <div class="scene-tag">SCENE · 周末刷手机</div>
+    <p><span class="who">小K</span> 在 V2EX 上刷到一个帖子："Claude Code vs Codex，谁才是最好的 AI 编程工具？"
+    下面吵了 200 楼，有人说 Claude Code 对代码理解更深，有人说 Codex 任务执行更稳……</p>
+    <p><span class="who">小K</span>："……所以我该信谁？"</p>
+    <p>他决定周一问问 G哥。</p>
+  </div>
+
+  <div class="why">
+    <div class="why-tag">为什么要了解 Codex</div>
+    <h4>工具没有"最好的"，只有"最适合你的"。两个都了解了，你才能做出自己的判断。</h4>
+    <p>就跟选编程语言一样——C++ 和 Python 哪个好？答案永远是"看你要干什么"。
+    Claude Code 和 Codex 也一样：它们都是优秀的 AI 编程 Agent，但设计理念、使用方式、
+    价格定位都有差异。了解差异，你才知道自己该用哪个。</p>
+  </div>
+
+  <h3>Codex 是什么？</h3>
+
+  <p>Codex 是<strong>OpenAI 推出的云端软件工程智能体</strong>。官方口号是
+  "One agent for everywhere you code"——一个在你编码时无处不在的助手。</p>
+
+  <p>和 Claude Code 一样，它也是 Agent——能读代码、写代码、跑命令、改文件。
+  但它的"形状"更多样：</p>
+
+  <h3>四种使用方式</h3>
+
+  <table style="width:100%;border-collapse:collapse;color:var(--read);font-size:14px;margin:24px 0">
+    <tr style="border-bottom:1px solid var(--line)">
+      <th style="padding:10px 12px;text-align:left;color:#fff;font-size:13px;width:100px">方式</th>
+      <th style="padding:10px 12px;text-align:left;color:#fff;font-size:13px">场景</th>
+      <th style="padding:10px 12px;text-align:left;color:#fff;font-size:13px">适合谁</th>
+    </tr>
+    <tr style="border-bottom:1px solid var(--line)">
+      <td style="padding:10px 12px;font-weight:700;color:#4ade80">桌面 App</td>
+      <td style="padding:10px 12px">macOS/Windows 原生应用，打开就能用</td>
+      <td style="padding:10px 12px">不想碰终端的同学，喜欢有界面的工具</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--line)">
+      <td style="padding:10px 12px;font-weight:700;color:#4ade80">IDE 扩展</td>
+      <td style="padding:10px 12px">嵌在 VS Code / Cursor / Windsurf 里</td>
+      <td style="padding:10px 12px">习惯在编辑器里做一切事情的人</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--line)">
+      <td style="padding:10px 12px;font-weight:700;color:#4ade80">CLI 命令行</td>
+      <td style="padding:10px 12px">终端操作，和 Claude Code 类似</td>
+      <td style="padding:10px 12px">终端党、喜欢键盘操作的</td>
+    </tr>
+    <tr>
+      <td style="padding:10px 12px;font-weight:700;color:#4ade80">Web 云端</td>
+      <td style="padding:10px 12px">chatgpt.com/codex 浏览器访问</td>
+      <td style="padding:10px 12px">不想装任何东西、远程办公的</td>
+    </tr>
+  </table>
+
+  <p><strong>Claude Code 目前只有 CLI（终端）和 IDE 插件两种形态。</strong>
+  如果你更喜欢图形界面，Codex 的桌面 App 和 Web 版会更友好。</p>
+
+  <h3>五大核心能力</h3>
+
+  <ol>
+    <li><strong>编写代码</strong>——根据需求自动生成适配项目规范的代码</li>
+    <li><strong>理解代码库</strong>——阅读和解释复杂或遗留代码（"这坨屎山是干嘛的？"）</li>
+    <li><strong>代码审查</strong>——分析潜在 Bug、逻辑错误、没处理的边缘情况</li>
+    <li><strong>调试修复</strong>——追踪报错原因并给出修复方案</li>
+    <li><strong>自动化任务</strong>——重构、测试、迁移等重复性工作自动完成</li>
+  </ol>
+
+  <h3>Claude Code vs Codex：一张表看懂</h3>
+
+  <table style="width:100%;border-collapse:collapse;color:var(--read);font-size:14px;margin:24px 0">
+    <tr style="border-bottom:2px solid var(--line)">
+      <th style="padding:10px 12px;text-align:left;color:#fff;font-size:13px">对比维度</th>
+      <th style="padding:10px 12px;text-align:left;color:#7c5cff;font-size:13px">Claude Code</th>
+      <th style="padding:10px 12px;text-align:left;color:#4ade80;font-size:13px">Codex</th>
+    </tr>
+    <tr style="border-bottom:1px solid var(--line)">
+      <td style="padding:10px 12px;font-weight:700">出品方</td>
+      <td style="padding:10px 12px">Anthropic</td>
+      <td style="padding:10px 12px">OpenAI</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--line)">
+      <td style="padding:10px 12px;font-weight:700">底层模型</td>
+      <td style="padding:10px 12px">Claude 系列</td>
+      <td style="padding:10px 12px">GPT-4 系列（也支持其他模型）</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--line)">
+      <td style="padding:10px 12px;font-weight:700">使用形态</td>
+      <td style="padding:10px 12px">CLI + IDE 插件</td>
+      <td style="padding:10px 12px">桌面App + IDE扩展 + CLI + Web</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--line)">
+      <td style="padding:10px 12px;font-weight:700">项目指令文件</td>
+      <td style="padding:10px 12px">CLAUDE.md</td>
+      <td style="padding:10px 12px">AGENTS.md（概念类似）</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--line)">
+      <td style="padding:10px 12px;font-weight:700">新手友好度</td>
+      <td style="padding:10px 12px">需要适应终端操作</td>
+      <td style="padding:10px 12px">桌面App/Web版对新手更友好</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--line)">
+      <td style="padding:10px 12px;font-weight:700">MCP 支持</td>
+      <td style="padding:10px 12px">✅ 原生支持</td>
+      <td style="padding:10px 12px">✅ 支持</td>
+    </tr>
+    <tr>
+      <td style="padding:10px 12px;font-weight:700">价格</td>
+      <td style="padding:10px 12px">API 按量付费 + 月订阅可选</td>
+      <td style="padding:10px 12px">Free / Plus($20) / Pro($200)</td>
+    </tr>
+  </table>
+
+  <div class="callout tip">
+    <div class="callout-title">💡 给新人的选择建议</div>
+    <p><strong>如果你喜欢简洁、愿意碰终端：</strong>Claude Code 很适合你。CLI 看起来吓人，但用两天就习惯了。
+    而且 Claude Code 的代码理解能力在社区口碑非常好。<br/><br/>
+    <strong>如果你更喜欢图形界面、不想碰命令行：</strong>Codex 的桌面 App 或 Web 版更适合你。
+    或者干脆用 Codex 的 IDE 扩展装在 VS Code 里。<br/><br/>
+    <strong>如果你时间和预算允许：</strong>两个都试试。它们不是"替代"关系——
+    有些任务 Claude 做得更好，有些任务 Codex 更稳。有经验之后你就会有自己的偏好了。</p>
+  </div>
+
+  <div class="big-quote">
+    工具选哪个不重要，重要的是<strong>开始用</strong>。<br/>
+    用 AI 写一个月代码，比不用 AI 写三个月的进步更大。<br/>
+    因为 AI 不仅帮你写——它还在<strong>教你怎么想</strong>。
+  </div>
+
+  <div class="tasks">
+    <h4>本节打卡</h4>
+    <label class="task" data-task="req7t1"><input type="checkbox"/><span class="t-text">知道 Codex 有四种使用方式：桌面App、IDE扩展、CLI、Web</span></label>
+    <label class="task" data-task="req7t2"><input type="checkbox"/><span class="t-text">能说出 Claude Code 和 Codex 的两个核心差异</span></label>
+    <label class="task" data-task="req7t3"><input type="checkbox"/><span class="t-text">理解了"工具没有最好的，只有最适合的"——和编程语言选型一个道理</span></label>
+    <label class="task" data-task="req7t4"><input type="checkbox"/><span class="t-text">（可选）注册了 Codex 免费版或者 Claude Code，实际跑了一次</span></label>
+  </div>
+  <div class="day-foot">
+    <span class="day-progress" data-progress></span>
+    <button class="complete-btn" data-complete>完成本节 ✓</button>
+  </div>
+</article>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程目录</a></div>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
+</body>
+</html>
