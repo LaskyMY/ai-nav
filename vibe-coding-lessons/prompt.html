@@ -1,0 +1,80 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>03/17 · 怎么跟AI说话——四要素法则</title><style>
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--emerald:#10B981;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.4}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
+.wrap{max-width:800px;margin:0 auto;padding:20px;position:relative;z-index:1}
+h1{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:12px 0 4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+h2{font-size:16px;font-weight:700;color:var(--cyan);margin:0 0 10px}
+.breadcrumb{font-size:11px;color:var(--tx3);margin-bottom:8px}
+.breadcrumb a{color:var(--tx4);text-decoration:none}
+.badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:10px;font-weight:600;margin-bottom:8px;background:rgba(99,102,241,.15);color:#818cf8}
+.hero-desc{font-size:14px;color:var(--tx2);margin:10px 0 20px;line-height:1.8}
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:16px;padding:18px 20px;margin-bottom:12px;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.card-ok{border-left:3px solid var(--emerald)}.card-warn{border-left:3px solid var(--amber)}
+ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,255,255,.7)}li::marker{color:rgba(255,255,255,.15)}
+.nav-btns{display:flex;gap:8px;margin:24px 0}
+.btn{display:inline-block;padding:10px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;transition:all .25s var(--ease);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.btn:hover{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.08);color:var(--tx)}
+.btn.primary{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.2);color:var(--cyan)}
+.back{text-align:center;margin-top:28px}.back a{color:var(--tx4);font-size:11px;text-decoration:none}
+
+/* Progress bar */
+.pbar{margin:16px 0;background:rgba(255,255,255,.04);border-radius:8px;height:6px;overflow:hidden}
+.pbar-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,var(--a1),var(--cyan),var(--pink));transition:width .5s var(--ease)}
+.pnum{font-size:10px;color:var(--tx3);text-align:right;margin-top:2px}
+
+/* Diagram box */
+.diag{background:rgba(99,102,241,.05);border:1px dashed rgba(99,102,241,.15);border-radius:12px;padding:14px 16px;margin:12px 0;text-align:center;font-size:12px;line-height:2;color:var(--tx2)}
+.diag b{color:var(--cyan)}.diag .arr{color:var(--pink)}
+.toc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px 16px;margin-bottom:20px}
+.toc-title{font-size:12px;font-weight:700;color:var(--cyan);margin-bottom:6px}
+.toc-list{display:flex;flex-direction:column;gap:1px}
+.toc-item{display:block;padding:5px 10px;border-radius:6px;font-size:11px;color:var(--tx3);text-decoration:none;transition:all .15s}
+.toc-item:hover{background:rgba(255,255,255,.05);color:var(--tx2)}
+.toc-item.active{background:rgba(99,102,241,.1);color:var(--a1);font-weight:600}
+.toc-all{display:block;margin-top:8px;font-size:10px;color:var(--tx4);text-decoration:none}.toc-all:hover{color:var(--tx2)}
+@media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
+</style></head>
+<body><div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div><div class="glow-spot" id="glowSpot"></div><div class="wrap">
+<div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 阶段2 · 学会说话</div>
+<div class="toc"><div class="toc-title">📑 全部课程</div><div class="toc-list"><a class="toc-item" href="./restart.html">01. 认知重启：编程不是你想的那样</a>
+<a class="toc-item" href="./fear.html">02. 恐惧是正常的——怎么跨过去</a>
+<a class="toc-item active" href="./prompt.html">03. 怎么跟AI说话——四要素法则</a>
+<a class="toc-item" href="./errors.html">04. 报错不是你的敌人</a>
+<a class="toc-item" href="./tools.html">05. 三件套就够了</a>
+<a class="toc-item" href="./think.html">06. 写代码之前——停下来想一想</a>
+<a class="toc-item" href="./mvp.html">07. 先做最丑的版本</a>
+<a class="toc-item" href="./verify.html">08. 跑一下再信</a>
+<a class="toc-item" href="./safe.html">09. 随便改，改不坏的</a>
+<a class="toc-item" href="./copy.html">10. 抄，使劲抄</a>
+<a class="toc-item" href="./duck.html">11. 跟橡皮鸭说话</a>
+<a class="toc-item" href="./try.html">12. 你敢不敢试试</a>
+<a class="toc-item" href="./spot.html">13. 三秒定位bug</a>
+<a class="toc-item" href="./env.html">14. 不是你的错</a>
+<a class="toc-item" href="./docs.html">15. 不要从头读文档</a>
+<a class="toc-item" href="./small.html">16. 一次只改一件事</a>
+<a class="toc-item" href="./show.html">17. 让人看到，不是解释</a></div><a class="toc-all" href="../vibe-coding.html">返回课程主页 →</a></div>
+<div class="pbar"><div class="pbar-fill" style="width:17%"></div></div><div class="pnum">03/17</div>
+<span class="badge">💬 阶段2 · 学会说话</span>
+<h1>怎么跟AI说话——四要素法则</h1>
+<div class="hero-desc">"帮我写个网页"→ 一坨垃圾。"帮我写一个深色主题的待办列表，能添加删除，数据存localStorage，不要框架"→ 一个能用的东西。差距就是六个字：具体、具体、具体。好Prompt=角色+任务+标准+约束。这四个写齐了，AI基本不跑偏。</div>
+<div class="diag"><b>角色</b> + <b>任务</b> + <b>标准</b> + <b>约束</b> = <span style="color:var(--emerald)">好Prompt</span></div>
+<div class="card card-ok"><h2>核心要点</h2><ul><li>四要素模板："你是[角色]。请[任务]。要求：[条件]。输出格式：[怎么交]"</li>
+<li>坏例子："帮我写个网页"——AI要猜你100件事</li>
+<li>好例子："你是前端。写登录页。邮箱+密码+红色错误提示。纯HTML。"</li>
+<li>模糊的需求=模糊的结果。这不是AI的问题，是你的问题</li>
+<li>改bug时：贴完整报错+贴相关代码+说"我已经试过XX了"</li></ul></div>
+<div class="card card-warn"><h2>动手试试</h2><ul><li>用四要素模板写一个Prompt发给AI</li>
+<li>同一个需求写模糊版和详细版，对比结果</li>
+<li>下次结果不满意，直接说"不对，我要的是XX"</li></ul></div>
+<div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 课程主页</a></div>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div></div>
+<script>(function(){var g=document.getElementById('glowSpot');if(!g||'ontouchstart' in window)return;var x=window.innerWidth/2,y=window.innerHeight/2,tx=x,ty=y;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}anim()})()</script></body></html>
