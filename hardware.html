@@ -4,12 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>硬件控制台</title>
+<link rel="stylesheet" href="./shared.css">
 <style>
+*{-webkit-font-smoothing:antialiased}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.6;padding:16px;max-width:600px;margin:0 auto;padding-bottom:32px}
+body{background:#0a0a0f;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.6;padding:16px;max-width:600px;margin:0 auto;padding-bottom:32px}
 h1{font-size:22px;font-weight:700;color:#00e5ff;margin-bottom:2px}
 .sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:20px}
-.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px 18px;margin-bottom:10px;cursor:pointer;transition:all .2s;text-decoration:none;display:block;color:inherit}
+.card{backdrop-filter:saturate(180%)blur(40px);-webkit-backdrop-filter:saturate(180%)blur(40px);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px 18px;margin-bottom:10px;cursor:pointer;transition:all .2s;text-decoration:none;display:block;color:inherit}
 .card:hover{border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.05);transform:translateY(-1px)}
 .card:active{transform:scale(.98)}
 .card-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:4px}
@@ -24,6 +26,8 @@ h1{font-size:22px;font-weight:700;color:#00e5ff;margin-bottom:2px}
 </style>
 </head>
 <body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot" id="glowSpot"></div>
 
 <h1>硬件控制台</h1>
 <div class="sub">IoT 设备管理 · BLE / WiFi 控制面板</div>
@@ -84,5 +88,7 @@ h1{font-size:22px;font-weight:700;color:#00e5ff;margin-bottom:2px}
   更多硬件项目持续接入中
 </p>
 
+<script src="./shared.js"></script>
+<p style="text-align:center;margin-top:24px"><a href="./index.html" style="color:rgba(255,255,255,.2);font-size:10px;text-decoration:none">← 返回主页</a></p>
 </body>
 </html>

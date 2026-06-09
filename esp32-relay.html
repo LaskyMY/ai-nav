@@ -1,10 +1,12 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>ESP32 继电器控制</title>
+<link rel="stylesheet" href="./shared.css">
 <style>
+*{-webkit-font-smoothing:antialiased}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#0a0a14;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.5;padding:16px;max-width:500px;margin:0 auto;padding-bottom:32px}
+body{background:#0a0a0f;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.5;padding:16px;max-width:500px;margin:0 auto;padding-bottom:32px}
 h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:2px}
 .sub{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:14px}
-.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.card{backdrop-filter:saturate(180%)blur(40px);-webkit-backdrop-filter:saturate(180%)blur(40px);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px}
 .card.ok{border-color:rgba(16,185,129,.15);background:rgba(16,185,129,.03)}
 .card.warn{border-color:rgba(245,158,11,.15);background:rgba(245,158,11,.03)}
 .row{display:flex;align-items:center;gap:8px;margin:4px 0}
@@ -34,6 +36,8 @@ select{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);bo
 .wire b{color:#00e5ff}.wire span.r{color:#f87171}.wire span.g{color:#10b981}.wire span.y{color:#fbbf24}
 .debug{font-size:9px;color:rgba(255,255,255,.2);font-family:monospace;margin-top:6px}
 </style></head><body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot" id="glowSpot"></div>
 
 <h1>⚡ 继电器控制台</h1>
 <div class="sub" id="infoBar">未连接</div>
@@ -207,4 +211,5 @@ function setSchedule(){
   relayCmd('SCHED:'+h+','+m+','+d+','+days.join(','));
 }
 setInterval(function(){if(info)info.readValue().catch(function(){})},3000);
-</script></body></html>
+</script><script src="./shared.js"></script>
+</body></html>

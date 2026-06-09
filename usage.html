@@ -4,11 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>DeepSeek 用量</title>
+<link rel="stylesheet" href="./shared.css">
 <style>
+*{-webkit-font-smoothing:antialiased}
 :root{--bg:#050510;--card-bg:rgba(255,255,255,.04);--card-border:rgba(255,255,255,.07);--cyan:#00e5ff;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.28);--purple:#a855f7;}
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%;overflow-x:hidden}
-body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:13px;line-height:1.5;padding:16px;max-width:520px;margin:0 auto;}
+body{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:13px;line-height:1.5;padding:16px;max-width:520px;margin:0 auto;}
 h1{font-size:20px;font-weight:700;margin-bottom:4px;color:var(--cyan);}
 .sub{font-size:10px;color:var(--tx3);margin-bottom:20px;}
 .card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:14px 16px;margin-bottom:10px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);}
@@ -28,6 +30,8 @@ td:first-child,th:first-child{text-align:left;}
 </style>
 </head>
 <body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot" id="glowSpot"></div>
 <h1>DeepSeek API 用量</h1>
 <div class="sub" id="updated">加载中<span class="spin"></span></div>
 
@@ -41,5 +45,7 @@ td:first-child,th:first-child{text-align:left;}
 
 <script>var API='https://99107705bcfb4f23-183-6-87-29.serveousercontent.com';function load(){fetch(API+'/api/usage').then(function(r){return r.json()}).then(function(d){document.getElementById('updated').textContent='更新: '+new Date().toLocaleTimeString('zh-CN');document.getElementById('totalTokens').textContent=d.total.tokens.toLocaleString();document.getElementById('totalCost').textContent='\u0024'+d.total.cost.toFixed(5)+' (\u00a5'+(d.total.cost*7.2).toFixed(3)+')';document.getElementById('promptTokens').textContent=d.total.prompt.toLocaleString();document.getElementById('completionTokens').textContent=d.total.completion.toLocaleString();if(d.conversation){document.getElementById('convTokens').textContent=d.conversation.tokens.toLocaleString();document.getElementById('convCost').textContent='\u0024'+d.conversation.cost.toFixed(5)+' (\u00a5'+(d.conversation.cost*7.2).toFixed(3)+')';document.getElementById('grandTotal').textContent='\u0024'+(d.total.cost+d.conversation.cost).toFixed(4)+' (\u00a5'+((d.total.cost+d.conversation.cost)*7.2).toFixed(2)+')'}var calls=0;for(var i=0;i<d.entries.length;i++)calls+=1;document.getElementById('totalCalls').textContent=calls+' \u6b21';var maxT=1;for(var i=0;i<d.days.length;i++)if(d.days[i].tokens>maxT)maxT=d.days[i].tokens;var html='';for(var i=0;i<Math.min(d.days.length,14);i++){var day=d.days[i];var pct=(day.tokens/maxT*100).toFixed(0);html+='<div class="row"><span>'+day.day+'</span><span>'+day.tokens.toLocaleString()+' tokens</span></div><div class="bar"><div class="bar-fill" style="width:'+pct+'%"></div></div>'}document.getElementById('dailyList').innerHTML=html||'暂无数据'}).catch(function(){document.getElementById('updated').innerHTML='<span style="color:#ef4444">加载失败</span>'})}load();setInterval(load,60000)</script>
 <script src="./floating-nav.js"></script>
+<script src="./shared.js"></script>
+<p style="text-align:center;margin-top:24px"><a href="./index.html" style="color:rgba(255,255,255,.2);font-size:10px;text-decoration:none">← 返回主页</a></p>
 </body>
 </html>
