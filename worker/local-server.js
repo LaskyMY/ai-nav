@@ -442,6 +442,31 @@ async function dbQuery(sql, params = []) {
 	    }
 
 	    
+    
+    // ── Site Data API ──
+    if (path === "/api/site/config") {
+      if (!dbReady) return err("db not ready", 503);
+      const r = await dbQuery("SELECT key, value FROM site_config");
+      const cfg = {}; r.forEach(row => { cfg[row.key] = row.value; });
+      return ok(cfg);
+    }
+    if (path === "/api/site/pages") {
+      if (!dbReady) return err("db not ready", 503);
+      return ok(await dbQuery("SELECT * FROM page_meta WHERE is_active = true ORDER BY nav_order"));
+    }
+    if (path === "/api/site/nav") {
+      if (!dbReady) return err("db not ready", 503);
+      return ok(await dbQuery("SELECT * FROM nav_items WHERE is_visible = true ORDER BY sort_order"));
+    }
+    if (path === "/api/site/changelog") {
+      if (!dbReady) return err("db not ready", 503);
+      return ok(await dbQuery("SELECT * FROM changelog ORDER BY entry_date DESC LIMIT 20"));
+    }
+    if (path === "/api/site/manual") {
+      if (!dbReady) return err("db not ready", 503);
+      return ok(await dbQuery("SELECT slug, title, category, description FROM manual_content ORDER BY category"));
+    }
+
     // ── Course API ──
     if (path === "/api/course/list") {
       if (!dbReady) return err("database not ready", 503);
