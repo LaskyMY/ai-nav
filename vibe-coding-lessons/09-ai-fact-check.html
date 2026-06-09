@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>DAY 28 · AI也会胡说</title>
-<style>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>DAY 28 · AI也会胡说</title><style>
 :root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
@@ -45,43 +39,24 @@ li::marker{color:rgba(255,255,255,.15)}
 .toc-all{display:block;margin-top:8px;font-size:10px;color:var(--tx4);text-decoration:none}
 .toc-all:hover{color:var(--tx2)}
 @media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
-</style>
-</head>
-<body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
-<div class="glow-spot" id="glowSpot"></div>
-<div class="wrap">
+</style></head>
+<body><div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div><div class="glow-spot" id="glowSpot"></div><div class="wrap">
 <div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 概念与工具 / DAY 28</div>
-<div class="toc"><div class="toc-title">📑 本模块目录</div><div class="toc-track">概念与工具</div><div class="toc-list"><a class="toc-item" href="./05-ai-basics.html">AI术语说人话</a>
-<a class="toc-item" href="./06-claude-code.html">Claude Code能帮你做什么</a>
-<a class="toc-item" href="./07-codex.html">OpenAI Codex是什么</a>
+<div class="toc"><div class="toc-title">📑 本模块目录</div><div class="toc-track">概念与工具</div><div class="toc-list"><a class="toc-item" href="./05-ai-basics.html">05-ai-basics.html</a>
+<a class="toc-item" href="./06-claude-code.html">06-claude-code.html</a>
+<a class="toc-item" href="./07-codex.html">07-codex.html</a>
 <a class="toc-item" href="./08-prompt-templates.html">怎么跟AI说话</a>
 <a class="toc-item active" href="./09-ai-fact-check.html">AI也会胡说</a>
 <a class="toc-item" href="./10-ai-rollback.html">别让AI一次改太多</a></div><a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a></div>
-<span class="badge">DAY · 28</span>
-<h1>AI也会胡说</h1>
-<div class="hero-desc">AI有时候会编造不存在的东西——这叫"幻觉"。它可能发明一个不存在的API函数，可能给10年前过时的信息，可能说能做到实际做不到的事。学会验证AI的输出，才是真正的AI高手。</div>
-<div class="card card-ok"><h2>核心要点</h2><ul><li>AI会编造不存在的函数和库</li>
-<li>AI会给过时的信息（它的知识有截止日期）</li>
-<li>验证方法：让AI给出信息来源</li>
-<li>验证方法：实际跑一下AI写的代码</li>
-<li>验证方法：用搜索引擎交叉验证</li>
-<li>不确定的结论让AI标注"这是我的推测"</li></ul></div>
-<div class="card card-warn"><h2>动手练习</h2><ul><li>问AI一个你专业领域的问题，看看它有没有胡说</li>
-<li>让AI写一段代码，复制粘贴真的跑一下</li>
-<li>问AI"请引用信息来源"看它给的链接能不能打开</li></ul></div>
+<span class="badge">DAY · 28</span><h1>AI也会胡说</h1><div class="hero-desc">我必须告诉你这个：AI经常胡说。上周它就给我编了一个不存在的Python函数。它不是说谎——它只是在做词语接龙，有时候接错了。所以永远验证AI的输出：代码就实际跑一下，信息就搜一下确认。问AI"你确定吗？"它有时候会承认错误。最保险的做法是：让AI给出信息来源，然后自己去查。</div>
+<div class="card card-ok"><h2>核心要点</h2><ul><li>AI编造过不存在的API、不存在的库、不存在的命令——我就遇到过</li>
+<li>验证三步走：1）实际跑代码 2）搜索引擎交叉验证 3）问AI"请给出来源"</li>
+<li>AI给的信息可能有截止日期——GPT的知识停在某个时间点</li>
+<li>AI说"可以做到"的时候保持警惕——让它先证明</li>
+<li>AI犯错了不要骂它，告诉它错了，它会重新来——这比人好多了</li></ul></div>
+<div class="card card-warn"><h2>动手练习</h2><ul><li>问AI一个你熟悉的领域的问题，看它给的信息准不准确</li>
+<li>让AI写一段代码，复制粘贴真的跑起来</li>
+<li>问AI"你为什么这么说"让它自己解释推理过程</li></ul></div>
 <div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 全部课程</a></div>
-<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
-</div>
-<script>
-(function(){
-  var g=document.getElementById('glowSpot');
-  if(!g||'ontouchstart' in window)return;
-  var x=window.innerWidth/2,y=window.innerHeight/2,tx=x,ty=y;
-  document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});
-  function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}
-  anim();
-})();
-</script>
-</body>
-</html>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div></div>
+<script>(function(){var g=document.getElementById('glowSpot');if(!g||'ontouchstart' in window)return;var x=window.innerWidth/2,y=window.innerHeight/2,tx=x,ty=y;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}anim()})()</script></body></html>

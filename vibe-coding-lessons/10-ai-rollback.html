@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>DAY 29 · 别让AI一次改太多</title>
-<style>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>DAY 29 · 别让AI一次改太多</title><style>
 :root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
@@ -45,42 +39,24 @@ li::marker{color:rgba(255,255,255,.15)}
 .toc-all{display:block;margin-top:8px;font-size:10px;color:var(--tx4);text-decoration:none}
 .toc-all:hover{color:var(--tx2)}
 @media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
-</style>
-</head>
-<body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
-<div class="glow-spot" id="glowSpot"></div>
-<div class="wrap">
+</style></head>
+<body><div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div><div class="glow-spot" id="glowSpot"></div><div class="wrap">
 <div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 概念与工具 / DAY 29</div>
-<div class="toc"><div class="toc-title">📑 本模块目录</div><div class="toc-track">概念与工具</div><div class="toc-list"><a class="toc-item" href="./05-ai-basics.html">AI术语说人话</a>
-<a class="toc-item" href="./06-claude-code.html">Claude Code能帮你做什么</a>
-<a class="toc-item" href="./07-codex.html">OpenAI Codex是什么</a>
+<div class="toc"><div class="toc-title">📑 本模块目录</div><div class="toc-track">概念与工具</div><div class="toc-list"><a class="toc-item" href="./05-ai-basics.html">05-ai-basics.html</a>
+<a class="toc-item" href="./06-claude-code.html">06-claude-code.html</a>
+<a class="toc-item" href="./07-codex.html">07-codex.html</a>
 <a class="toc-item" href="./08-prompt-templates.html">怎么跟AI说话</a>
 <a class="toc-item" href="./09-ai-fact-check.html">AI也会胡说</a>
 <a class="toc-item active" href="./10-ai-rollback.html">别让AI一次改太多</a></div><a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a></div>
-<span class="badge">DAY · 29</span>
-<h1>别让AI一次改太多</h1>
-<div class="hero-desc">AI最大的陷阱：你让它改一个小功能，它顺手改了10个文件。正确的做法是：改之前先存档（commit），一次只让AI改一个文件，改完立刻测试。出问题了能立刻回滚，而不是在300行改动里大海捞针。</div>
-<div class="card card-ok"><h2>核心要点</h2><ul><li>改代码前一定先git commit</li>
-<li>一次只让AI改一个功能点</li>
-<li>改完立刻测试，不要攒着一起测</li>
-<li>出问题用git checkout回滚</li>
-<li>让AI先说明它要改什么，你同意后再让它动手</li></ul></div>
-<div class="card card-warn"><h2>动手练习</h2><ul><li>创建一个 Git 仓库，做第一次 commit</li>
-<li>让 AI 帮你写一个小功能，commit 前 diff 一下看改了什么</li>
-<li>练习 git checkout 回滚到上一个版本</li></ul></div>
+<span class="badge">DAY · 29</span><h1>别让AI一次改太多</h1><div class="hero-desc">这是我帮人改bug的血泪教训。AI最危险的不是改错，而是改太多。你让它修一个按钮的颜色，它顺便改了布局、改了CSS变量、改了三个其他文件。等你发现的时候，已经找不到是哪里改坏的了。正确的做法：一次只让AI改一件事，改完立刻测试，确认没问题再继续。每次改之前用git保存，出问题一秒回滚。</div>
+<div class="card card-ok"><h2>核心要点</h2><ul><li>血的教训：让AI修一个bug，它改了10个文件——然后整个项目崩了</li>
+<li>每次让AI干活前：git commit（存档）</li>
+<li>每次让AI干完活：立刻测试，别攒着一堆改动一起测</li>
+<li>如果出问题：git checkout（一秒回到存档点）</li>
+<li>让AI先说明"我要改什么"，你同意后再让它动手</li></ul></div>
+<div class="card card-warn"><h2>动手练习</h2><ul><li>创建一个Git仓库，做第一次commit</li>
+<li>让AI改一个小功能，你git diff看看它改了什么</li>
+<li>练习git checkout回到上一个版本——这个技能关键时刻救命</li></ul></div>
 <div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 全部课程</a></div>
-<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
-</div>
-<script>
-(function(){
-  var g=document.getElementById('glowSpot');
-  if(!g||'ontouchstart' in window)return;
-  var x=window.innerWidth/2,y=window.innerHeight/2,tx=x,ty=y;
-  document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});
-  function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}
-  anim();
-})();
-</script>
-</body>
-</html>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div></div>
+<script>(function(){var g=document.getElementById('glowSpot');if(!g||'ontouchstart' in window)return;var x=window.innerWidth/2,y=window.innerHeight/2,tx=x,ty=y;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}anim()})()</script></body></html>

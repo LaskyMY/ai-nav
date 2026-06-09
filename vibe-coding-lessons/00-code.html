@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>DAY 00 · 代码是什么</title>
-<style>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>DAY 00 · 代码是什么</title><style>
 :root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
@@ -45,43 +39,25 @@ li::marker{color:rgba(255,255,255,.15)}
 .toc-all{display:block;margin-top:8px;font-size:10px;color:var(--tx4);text-decoration:none}
 .toc-all:hover{color:var(--tx2)}
 @media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
-</style>
-</head>
-<body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
-<div class="glow-spot" id="glowSpot"></div>
-<div class="wrap">
+</style></head>
+<body><div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div><div class="glow-spot" id="glowSpot"></div><div class="wrap">
 <div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 编程基础 / DAY 00</div>
 <div class="toc"><div class="toc-title">📑 本模块目录</div><div class="toc-track">编程基础</div><div class="toc-list"><a class="toc-item active" href="./00-code.html">代码是什么</a>
-<a class="toc-item" href="./01-program-run.html">程序怎么跑起来</a>
-<a class="toc-item" href="./02-languages.html">语言怎么选</a>
-<a class="toc-item" href="./03-algorithm.html">算法没那么玄</a>
-<a class="toc-item" href="./04-framework.html">框架是干嘛的</a>
-<a class="toc-item" href="./05-programming-jargon.html">黑话翻译器</a>
-<a class="toc-item" href="./06-git-basics.html">Git让你不再害怕改代码</a></div><a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a></div>
-<span class="badge">DAY · 00</span>
-<h1>代码是什么</h1>
-<div class="hero-desc">电脑很笨，它只认识0和1。但人类写0和1会疯掉，所以我们发明了编程语言——一种人能看懂、电脑也能翻译的中间语言。代码就是你和电脑之间的对话。你说"显示一张图片"，代码帮你翻译给电脑。</div>
-<div class="card card-ok"><h2>核心要点</h2><ul><li>代码是人类和电脑之间的翻译官</li>
-<li>就像你跟外国人说英语，跟电脑说代码</li>
-<li>不用怕记不住——写多了自然记住，忘了就搜</li>
-<li>每行代码就是一条命令，从上往下执行</li>
-<li>你手机上的健康码、支付、游戏，全是代码在跑</li></ul></div>
-<div class="card card-warn"><h2>动手练习</h2><ul><li>打开任意网站，按 F12 看看背后的代码长什么样</li>
-<li>想一个你每天重复做的事，用"第1步→第2步→第3步"写下来</li>
-<li>搜索"Hello World"看看最简单的代码是什么</li></ul></div>
+<a class="toc-item" href="./01-program-run.html">程序怎么跑起来的</a>
+<a class="toc-item" href="./02-languages.html">02-languages.html</a>
+<a class="toc-item" href="./03-algorithm.html">03-algorithm.html</a>
+<a class="toc-item" href="./04-framework.html">04-framework.html</a>
+<a class="toc-item" href="./05-programming-jargon.html">05-programming-jargon.html</a>
+<a class="toc-item" href="./06-git-basics.html">06-git-basics.html</a></div><a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a></div>
+<span class="badge">DAY · 00</span><h1>代码是什么</h1><div class="hero-desc">我帮过很多人从零开始。大部分人卡在同一个地方：他们以为代码是什么高深的数学。不是。代码就是你给电脑写的便签——"把这个按钮放左边"、"用户点了这里就跳转"、"每天晚上12点自动备份"。你不需要理解电脑怎么执行这些指令，你只需要把话说清楚。剩下的交给翻译官（编程语言）和跑腿的（电脑）。</div>
+<div class="card card-ok"><h2>核心要点</h2><ul><li>把代码想象成你给助理的便签：越具体越好</li>
+<li>你不需要数学好。我见过最好的程序员数学只及格</li>
+<li>编程语言只是翻译官——Python翻译得更像英语，C++翻译得更接近机器</li>
+<li>每行代码只做一件事。一万行代码就是一万个简单的指令堆起来的</li>
+<li>你手机上每个App背后就是一堆这样的便签</li></ul></div>
+<div class="card card-warn"><h2>动手练习</h2><ul><li>打开手机备忘录，用"先...再...然后..."格式写一个"早上去公司"的流程</li>
+<li>把这段流程想象成代码——如果中间某步失败了怎么办？加一个条件</li>
+<li>搜索"Hello World Python"，看看最简单的代码长什么样</li></ul></div>
 <div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 全部课程</a></div>
-<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
-</div>
-<script>
-(function(){
-  var g=document.getElementById('glowSpot');
-  if(!g||'ontouchstart' in window)return;
-  var x=window.innerWidth/2,y=window.innerHeight/2,tx=x,ty=y;
-  document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});
-  function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}
-  anim();
-})();
-</script>
-</body>
-</html>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div></div>
+<script>(function(){var g=document.getElementById('glowSpot');if(!g||'ontouchstart' in window)return;var x=window.innerWidth/2,y=window.innerHeight/2,tx=x,ty=y;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}anim()})()</script></body></html>

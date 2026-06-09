@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>DAY 20 · 测试测试再测试</title>
-<style>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>DAY 20 · 测试测试再测试</title><style>
 :root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:40px;-webkit-font-smoothing:antialiased}
@@ -45,42 +39,24 @@ li::marker{color:rgba(255,255,255,.15)}
 .toc-all{display:block;margin-top:8px;font-size:10px;color:var(--tx4);text-decoration:none}
 .toc-all:hover{color:var(--tx2)}
 @media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
-</style>
-</head>
-<body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
-<div class="glow-spot" id="glowSpot"></div>
-<div class="wrap">
+</style></head>
+<body><div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div><div class="glow-spot" id="glowSpot"></div><div class="wrap">
 <div class="breadcrumb"><a href="../vibe-coding.html">VibeCoding</a> / 发布与迭代 / DAY 20</div>
-<div class="toc"><div class="toc-title">📑 本模块目录</div><div class="toc-track">发布与迭代</div><div class="toc-list"><a class="toc-item" href="./p1-requirements.html">先把想法想清楚</a>
-<a class="toc-item" href="./p2-architecture.html">让AI帮你选技术方案</a>
-<a class="toc-item" href="./p3-data-model.html">先做最小能跑的版本</a>
-<a class="toc-item" href="./p4-interface.html">怎么让界面好看</a>
+<div class="toc"><div class="toc-title">📑 本模块目录</div><div class="toc-track">发布与迭代</div><div class="toc-list"><a class="toc-item" href="./p1-requirements.html">p1-requirements.html</a>
+<a class="toc-item" href="./p2-architecture.html">p2-architecture.html</a>
+<a class="toc-item" href="./p3-data-model.html">p3-data-model.html</a>
+<a class="toc-item" href="./p4-interface.html">界面好看的秘密</a>
 <a class="toc-item active" href="./p5-interactions.html">测试测试再测试</a>
 <a class="toc-item" href="./p6-polish-release.html">把项目讲成一个故事</a></div><a class="toc-all" href="../vibe-coding.html">查看全部课程 →</a></div>
-<span class="badge">DAY · 20</span>
-<h1>测试测试再测试</h1>
-<div class="hero-desc">AI能把功能做得很快，也能把旧功能改得很坏。每次改完都要测：点一遍所有按钮、输入极端值（0、负数、超长文字）、用不同设备试试。这叫"回归测试"——确保新改动没有破坏旧功能。</div>
-<div class="card card-ok"><h2>核心要点</h2><ul><li>每次改完都要手动点一遍</li>
-<li>测边界：0、负数、空值、超长文本</li>
-<li>用手机和电脑都试试</li>
-<li>截图对比改前改后</li>
-<li>让AI帮你写测试用例</li></ul></div>
-<div class="card card-warn"><h2>动手练习</h2><ul><li>给你项目的所有功能做一次手动测试</li>
-<li>写出5个边界条件（最极端的情况）</li>
-<li>让AI帮你写自动化测试</li></ul></div>
+<span class="badge">DAY · 20</span><h1>测试测试再测试</h1><div class="hero-desc">我每次让AI干完活，第一件事就是自己从头点一遍。不是为了找茬，是因为AI确实会改坏东西。它可能修好了一个按钮，但弄坏了导航栏。它可能加了个新功能，但老功能报错了。这种事每天都在发生。专业的做法是：列出5个最重要的功能，每次改完都走一遍。这叫"回归测试"——确保旧功能没有被新改动破坏。</div>
+<div class="card card-ok"><h2>核心要点</h2><ul><li>AI改完代码后，我每次都手动重测一遍——不是不信任AI，是职业习惯</li>
+<li>列出你项目里最重要的5个功能，每次改完走一遍</li>
+<li>测极端情况：输入框什么都不填直接提交、输入几万个字、网络断开时操作</li>
+<li>用手机和电脑分别测试——AI在响应式布局上经常翻车</li>
+<li>截图对比：改前截一张，改后截一张，任何差异都是线索</li></ul></div>
+<div class="card card-warn"><h2>动手练习</h2><ul><li>给你项目的每个功能手动测一遍，记录有没有bug</li>
+<li>写出5个极端输入场景（空值、超长文本、特殊字符）</li>
+<li>让AI帮你生成一份测试清单："列出这个页面需要测试的所有场景"</li></ul></div>
 <div class="nav-btns"><a class="btn" href="../vibe-coding.html">📚 全部课程</a></div>
-<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div>
-</div>
-<script>
-(function(){
-  var g=document.getElementById('glowSpot');
-  if(!g||'ontouchstart' in window)return;
-  var x=window.innerWidth/2,y=window.innerHeight/2,tx=x,ty=y;
-  document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});
-  function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}
-  anim();
-})();
-</script>
-</body>
-</html>
+<div class="back"><a href="../vibe-coding.html">← 返回课程目录</a></div></div>
+<script>(function(){var g=document.getElementById('glowSpot');if(!g||'ontouchstart' in window)return;var x=window.innerWidth/2,y=window.innerHeight/2,tx=x,ty=y;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}anim()})()</script></body></html>
