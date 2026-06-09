@@ -1,0 +1,59 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>API 文档</title>
+<link rel="stylesheet" href="./shared.css">
+<style>
+body{padding:16px;max-width:800px;margin:0 auto;font-size:14px}
+h1{font-size:24px;margin:16px 0}
+h2{font-size:16px;color:var(--cyan);margin:24px 0 8px;border-left:3px solid var(--cyan);padding-left:10px}
+.endpoint{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px;margin:10px 0}
+.endpoint .method{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;margin-right:8px}
+.method.get{background:rgba(16,185,129,.15);color:#10b981}
+.method.post{background:rgba(245,158,11,.15);color:#fbbf24}
+.endpoint .path{font-family:monospace;font-size:13px;color:var(--cyan)}
+.endpoint .desc{font-size:12px;color:var(--tx2);margin-top:4px}
+pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;font-size:11px;overflow-x:auto;margin:8px 0}
+</style></head><body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot" id="glowSpot"></div>
+<h1>API 文档</h1>
+<p style="color:var(--tx3);font-size:12px;margin-bottom:20px">AI Nav 后端API接口说明 · 基础URL: http://localhost:8765</p>
+
+<h2>天气</h2>
+<div class="endpoint"><span class="method get">GET</span><span class="path">/api/weather?lat=&lon=</span><div class="desc">Open-Meteo 天气数据，返回当前温度/湿度/风速/预报</div></div>
+
+<h2>新闻</h2>
+<div class="endpoint"><span class="method get">GET</span><span class="path">/api/news</span><div class="desc">多源新闻聚合 (NPR RSS + 中文热榜)</div></div>
+<div class="endpoint"><span class="method get">GET</span><span class="path">/api/news-cn</span><div class="desc">AI翻译+优先级排序的中文新闻</div></div>
+<div class="endpoint"><span class="method get">GET</span><span class="path">/api/news-summary</span><div class="desc">DeepSeek AI 生成的新闻简报</div></div>
+
+<h2>数据库</h2>
+<div class="endpoint"><span class="method get">GET</span><span class="path">/api/db/stats</span><div class="desc">各表数据量统计</div></div>
+<div class="endpoint"><span class="method get">GET</span><span class="path">/api/db/news?limit=50</span><div class="desc">分页获取新闻</div></div>
+<div class="endpoint"><span class="method get">GET</span><span class="path">/api/db/search?q=关键词</span><div class="desc">全文搜索新闻</div></div>
+<div class="endpoint"><span class="method get">GET</span><span class="path">/api/db/summaries?type=news-summary</span><div class="desc">AI摘要历史</div></div>
+<div class="endpoint"><span class="method get">GET</span><span class="path">/api/db/pages</span><div class="desc">页面访问统计</div></div>
+
+<h2>金融</h2>
+<div class="endpoint"><span class="method get">GET</span><span class="path">/api/financial/briefs?days=10</span><div class="desc">金融早晚简报</div></div>
+<div class="endpoint"><span class="method get">GET</span><span class="path">/api/financial/latest</span><div class="desc">最新金融简报</div></div>
+
+<h2>站点</h2>
+<div class="endpoint"><span class="method get">GET</span><span class="path">/api/site/config</span><div class="desc">站点配置</div></div>
+<div class="endpoint"><span class="method get">GET</span><span class="path">/api/site/pages</span><div class="desc">页面元数据列表</div></div>
+<div class="endpoint"><span class="method get">GET</span><span class="path">/api/site/nav</span><div class="desc">导航结构</div></div>
+<div class="endpoint"><span class="method get">GET</span><span class="path">/api/site/changelog</span><div class="desc">更新日志</div></div>
+<div class="endpoint"><span class="method get">GET</span><span class="path">/api/site/sitemap-db</span><div class="desc">数据库驱动的网站大纲</div></div>
+<div class="endpoint"><span class="method get">GET</span><span class="path">/api/site/git-log</span><div class="desc">Git 提交记录</div></div>
+
+<h2>课程</h2>
+<div class="endpoint"><span class="method get">GET</span><span class="path">/api/course/list</span><div class="desc">全部课程列表</div></div>
+<div class="endpoint"><span class="method get">GET</span><span class="path">/api/course/:slug</span><div class="desc">单课详情</div></div>
+
+<h2>论文</h2>
+<div class="endpoint"><span class="method get">GET</span><span class="path">/api/papers?q=关键词</span><div class="desc">arXiv 论文检索</div></div>
+<div class="endpoint"><span class="method post">POST</span><span class="path">/api/summary</span><div class="desc">DeepSeek AI 文本总结</div></div>
+<div class="endpoint"><span class="method get">GET</span><span class="path">/api/geocode?lat=&lon=</span><div class="desc">经纬度→城市名</div></div>
+<div class="endpoint"><span class="method get">GET</span><span class="path">/api/usage</span><div class="desc">API 用量统计</div></div>
+
+<p style="text-align:center;margin:30px 0;color:var(--tx4);font-size:10px">AI Nav API v25 · 共 22 个端点</p>
+<script src="./shared.js"></script>
+</body></html>

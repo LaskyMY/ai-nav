@@ -88,7 +88,31 @@ h1{font-size:22px;font-weight:700;color:#00e5ff;margin-bottom:2px}
 <div class="glow-spot" id="glowSpot"></div>
 
 <h1>金融每日简报</h1>
-<div class="sub" id="todayLabel">加载中...</div>
+
+<div style="display:flex;gap:8px;align-items:center;margin:12px 0">
+  <button class="btn" onclick="prevDay()" style="flex:1">← 前一天</button>
+  <span id="dateNavLabel" style="font-size:12px;color:var(--tx3);white-space:nowrap"></span>
+  <button class="btn" onclick="nextDay()" style="flex:1">后一天 →</button>
+</div>
+<script>
+var currentOffset=0;
+function loadDay(offset){
+  currentOffset=offset;
+  var d=new Date();d.setDate(d.getDate()-offset);
+  var dateStr=d.toISOString().slice(0,10);
+  document.getElementById("dateNavLabel").textContent=offset===0?"今天":offset===1?"昨天":dateStr;
+  var A=location.hostname==="localhost"?"http://localhost:8765":"https://99107705bcfb4f23-183-6-87-29.serveousercontent.com";
+  fetch(A+"/api/financial/briefs?days="+(offset+3)).then(function(r){return r.json()}).then(function(b){
+    var filtered=b.filter(function(x){return x.date===dateStr});
+    if(filtered.length)render(filtered);
+    else document.getElementById("briefList").innerHTML='<div class="empty"><div class="e">📭</div>'+dateStr+' 无数据</div>';
+  }).catch(function(){});
+}
+function prevDay(){loadDay(currentOffset+1)}
+function nextDay(){if(currentOffset>0)loadDay(currentOffset-1)}
+document.addEventListener("DOMContentLoaded",function(){loadDay(0)});
+</script>
+<div class="sub" id="todayLabel" style="display:none">加载中...</div>
 
 <!-- AI 要点摘要 -->
 <div class="ai-summary" id="aiSummary" style="display:none">

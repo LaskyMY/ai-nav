@@ -144,5 +144,18 @@ h1{font-size:20px;font-weight:700;color:var(--cyan);margin-bottom:4px;}
 </div>
 
 <script src="./shared.js"></script>
+
+<script>
+// 从数据库动态加载最新页面列表
+(function(){
+  var API=location.hostname==="localhost"?"http://localhost:8765":"https://99107705bcfb4f23-183-6-87-29.serveousercontent.com";
+  fetch(API+"/api/site/sitemap-db").then(function(r){return r.json()}).then(function(d){
+    if(!d||!d.total)return;
+    document.getElementById("dbPageCount").textContent=d.total+" 个页面 (数据库)";
+    document.getElementById("dbUpdated").textContent="更新: "+d.updated.slice(0,16);
+  }).catch(function(){});
+})();
+</script>
+
 </body>
 </html>

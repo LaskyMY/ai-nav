@@ -1,49 +1,43 @@
-const CACHE = 'ai-nav-v3';
-const ASSETS = ['./icon.svg','./manifest.json'];
-
-// Fetch version.json and compare with stored version
-async function checkVersion() {
-  try {
-    const r = await fetch('./version.json?t=' + Date.now(), { cache: 'no-store' });
-    if (!r.ok) return;
-    const data = await r.json();
-    const clients = await self.clients.matchAll();
-    for (const client of clients) {
-      client.postMessage({ type: 'version-check', version: data.version });
-    }
-  } catch(e) {}
-}
+// AI Nav Service Worker v2 — 离线缓存
+const CACHE = 'ainav-v25';
+const PRECACHE = [
+  './', './index.html', './shared.css', './shared.js',
+  './knowledge.html', './vibe-coding.html', './financial-news.html',
+  './manual.html', './hardware.html', './dashboards.html', './sitemap.html',
+  './icon.svg', './manifest.json'
+];
 
 self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(ASSETS).catch(() => {}))
-  );
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(PRECACHE)).catch(()=>{}));
   self.skipWaiting();
 });
 
 self.addEventListener('activate', e => {
-  e.waitUntil(
-    caches.keys().then(keys => Promise.all(
-      keys.filter(k => k !== CACHE).map(k => caches.delete(k))
-    ))
-  );
-  self.clients.claim();
-  // Check version on activation
-  e.waitUntil(checkVersion());
+  e.waitUntil(caches.keys().then(keys => Promise.all(
+    keys.filter(k => k !== CACHE).map(k => caches.delete(k))
+  )));
+  clients.claim();
 });
 
-// Periodic version check (every 3 minutes)
-setInterval(checkVersion, 180000);
-
 self.addEventListener('fetch', e => {
+  // 只缓存GET请求
   if (e.request.method !== 'GET') return;
-  if (e.request.mode === 'navigate') {
-    e.respondWith(
-      fetch(e.request).catch(() => caches.match(e.request))
-    );
-  } else {
-    e.respondWith(
-      caches.match(e.request).then(cached => cached || fetch(e.request))
-    );
+  // API请求走网络，不缓存
+  if (e.request.url.includes('/api/')) {
+    e.respondWith(fetch(e.request).catch(() => new Response('{"error":"offline"}', {
+      headers: {'Content-Type':'application/json'}
+    })));
+    return;
   }
+  e.respondWith(
+    caches.match(e.request).then(cached =>
+      cached || fetch(e.request).then(response => {
+        if (response.ok) {
+          const clone = response.clone();
+          caches.open(CACHE).then(c => c.put(e.request, clone));
+        }
+        return response;
+      })
+    )
+  );
 });

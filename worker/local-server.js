@@ -497,6 +497,42 @@ async function dbQuery(sql, params = []) {
       }
     }
 
+    
+    // ── Full-text Search ──
+    if (path === "/api/search") {
+      const q = url.searchParams.get("q");
+      if (!q || q.length < 1) return ok({ results: [] });
+      if (!dbReady) return err("db not ready", 503);
+
+      const results = [];
+      // Search page_meta
+      const pages = await dbQuery(
+        "SELECT path, title, description, category FROM page_meta WHERE title ILIKE $1 OR description ILIKE $1 LIMIT 10",
+        ['%'+q+'%']
+      );
+      for (const p of pages) {
+        results.push({ type: "page", title: p.title, desc: p.description, path: p.path, cat: p.category });
+      }
+      // Search course_lessons
+      const courses = await dbQuery(
+        "SELECT slug, title, desc_text, stage FROM course_lessons WHERE title ILIKE $1 OR desc_text ILIKE $1 LIMIT 10",
+        ['%'+q+'%']
+      );
+      for (const c of courses) {
+        results.push({ type: "course", title: c.title, desc: c.desc_text?.slice(0,100), path: "vibe-coding-lessons/"+c.slug+".html", cat: c.stage });
+      }
+      // Search financial_briefs
+      const fin = await dbQuery(
+        "SELECT date, type, content FROM financial_briefs WHERE content ILIKE $1 LIMIT 5",
+        ['%'+q+'%']
+      );
+      for (const f of fin) {
+        results.push({ type: "financial", title: f.type==='morning'?'早间简报':'晚间简报', desc: f.content?.slice(0,100), path: "financial-news.html", cat: f.date });
+      }
+
+      return ok({ results: results.slice(0, 20), query: q });
+    }
+
     // ── Course API ──
     if (path === "/api/course/list") {
       if (!dbReady) return err("database not ready", 503);
