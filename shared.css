@@ -1,4 +1,4 @@
-/* AI Nav Shared Design v2 */
+/* AI Nav Shared Design v3 */
 :root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--green:#10B981;--red:#EF4444;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:16px;--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{box-sizing:border-box}
 body{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased;overflow-x:hidden;margin:0;padding:0}
@@ -9,15 +9,32 @@ body{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;backgroun
 .bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--cyan) 0%,transparent 70%);top:50%;left:50%;animation:floatOrb 22s ease-in-out infinite;animation-delay:-7s}
 @keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
 .glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
+
+/* ── Header ── */
+.header{position:sticky;top:0;z-index:50;background:rgba(24,24,32,.85);backdrop-filter:saturate(200%)blur(60px);-webkit-backdrop-filter:saturate(200%)blur(60px);border:1px solid rgba(255,255,255,.1);border-top:none;padding:8px 16px;border-radius:0 0 18px 18px;box-shadow:0 0 40px rgba(99,102,241,.1),0 4px 20px rgba(0,0,0,.2);margin-bottom:12px}
+.header-in{max-width:800px;margin:0 auto;display:flex;align-items:center;gap:8px}
+.back-btn,.home-btn{width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;color:var(--tx3);flex-shrink:0;text-decoration:none;transition:all .2s}
+.back-btn:hover,.home-btn:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.header-logo{font-size:14px;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.header-clock{font-size:12px;color:var(--tx2);font-family:monospace;white-space:nowrap}
+.header-ver{font-size:9px;color:var(--tx4);white-space:nowrap}
+
+/* ── Cards ── */
 .card{backdrop-filter:saturate(180%)blur(40px);-webkit-backdrop-filter:saturate(180%)blur(40px);position:relative;overflow:hidden}
 .card::after{content:'';position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.02) 100%)}
+
+/* ── Bottom Nav ── */
 .bottom-nav{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:100;display:flex;gap:6px;padding:8px 16px;background:rgba(24,24,32,.85);backdrop-filter:saturate(200%)blur(60px);-webkit-backdrop-filter:saturate(200%)blur(60px);border-radius:22px;border:1px solid rgba(255,255,255,.1);box-shadow:0 0 50px rgba(99,102,241,.12),0 8px 32px rgba(0,0,0,.3)}
 .bottom-nav a{color:var(--tx3);text-decoration:none;font-size:11px;padding:6px 12px;border-radius:14px;transition:all .3s var(--ease);white-space:nowrap}
 .bottom-nav a:hover{background:rgba(255,255,255,.06);color:var(--tx2)}
+
+/* ── FAB ── */
 .fab-top{position:fixed;bottom:80px;right:20px;z-index:90;width:40px;height:40px;border-radius:20px;background:rgba(24,24,32,.78);border:1px solid rgba(255,255,255,.1);color:var(--tx2);font-size:16px;cursor:pointer;backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.3)}
 .fab-top:hover{background:rgba(99,102,241,.15);color:#fff}
+
+/* ── Common ── */
 .btn{backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 h1{background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:tFlow 5s ease-in-out infinite}
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
 .container{max-width:800px;margin:0 auto;padding:20px;position:relative;z-index:1}
-@media(max-width:500px){.container{padding:14px}h1{font-size:22px}}
+@media(max-width:500px){.container{padding:14px}h1{font-size:22px}.header{padding:6px 10px}}
