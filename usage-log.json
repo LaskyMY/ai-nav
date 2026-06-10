@@ -3103,5 +3103,14 @@
     "completion_tokens": 26,
     "total_tokens": 65,
     "cost": 0.00003913
+  },
+  {
+    "ts": "2026-06-10T14:55:25.018Z",
+    "endpoint": "/api/summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 39,
+    "completion_tokens": 23,
+    "total_tokens": 62,
+    "cost": 0.00003583
   }
 ]

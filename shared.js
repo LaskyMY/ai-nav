@@ -15,14 +15,16 @@
 
   // ═══ PATH RESOLVER ═══
   function resolveIndex() {
-    var depth = (location.pathname.match(/\//g) || []).length;
-    // pathname like: /ai-nav/bilibili/BVxxx.html → depth 2, need ../
-    // pathname like: /page.html → depth 0, need ./
-    if (depth <= 1) return './index.html';
-    return '../'.repeat(depth - 1) + 'index.html';
+    var pn = location.pathname;
+    // Subdirectory pages: bilibili/BV*.html, vibe-coding-lessons/*.html, etc.
+    // Root pages: /page.html or /ai-nav/page.html
+    if (pn.includes('/bilibili/') || pn.includes('/vibe-coding-lessons/')) {
+      return '../index.html';
+    }
+    return './index.html';
   }
   var INDEX_PATH = resolveIndex();
-  log('path_resolve', 'index=' + INDEX_PATH + ' depth=' + ((location.pathname.match(/\//g)||[]).length));
+  log('path_resolve', 'index=' + INDEX_PATH + ' path=' + location.pathname);
 
   // ═══ GLOW ═══
   var g = document.getElementById('glowSpot');
