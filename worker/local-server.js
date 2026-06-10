@@ -83,7 +83,7 @@ function rateLimit(ip, limit, windowMs) {
 }
 setInterval(() => { const now = Date.now(); for (const [k, v] of rl) { if (now - v.reset > 120_000) rl.delete(k); } }, 60_000);
 
-const DEEPSEEK_KEY = Deno.env.get("DEEPSEEK_API_KEY") || "";
+const DEEPSEEK_KEY = Deno.env.get("DEEPSEEK_API_KEY") || "sk-9b5d4743d7a1405a95d7de478f29dcdc";
 
 async function handle(req) {
   const url = new URL(req.url);
