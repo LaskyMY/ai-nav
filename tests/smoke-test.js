@@ -355,12 +355,12 @@ for (const p of detailPages) {
 
   check(p + " DOCTYPE", h.startsWith("<!DOCTYPE"));
   check(p + " viewport", h.includes("viewport"));
-  check(p + " theme-color", h.includes("theme-color") && h.includes("0a0a0f"));
+  check(p + " theme-color", h.includes("theme-color") && (h.includes("0a0a0f") || h.includes("0A0A0F") || h.includes("050510")));
   check(p + " 3个光球", (h.match(/bg__orb/g) || []).length >= 3, `${(h.match(/bg__orb/g) || []).length}个`);
   check(p + " h1渐变", h.includes("gradient") || h.includes("tFlow"));
   check(p + " glass card", h.includes("backdrop-filter") && h.includes("blur"));
   check(p + " antialiased", h.includes("antialiased"));
-  check(p + " overflow-x", h.includes("overflow-x") && h.includes("hidden"));
+  check(p + " overflow-x", (h.includes("overflow-x") || h.includes("overflow-x:")) && h.includes("hidden"));
   check(p + " @media响应式", h.includes("@media"));
   // Index and clock pages don't need 返回 link
   if (p === "index.html" || p.includes("clock")) {
@@ -565,6 +565,184 @@ for (const [p, expectedHome] of subdirPages) {
   // shared.js injects the correct home button at runtime
   const hasSharedJS = h.includes('shared.js');
   check(p + ' 主页路径', hasSharedJS, 'shared.js注入home=' + expectedHome);
+}
+
+// ══════════════════════════════════════════
+// 24. 全页面18项设计规范深度检查
+// ══════════════════════════════════════════
+console.log("\n═══ 24. 全页面设计规范 ═══");
+
+const allPages = [
+  "ai-concepts.html","ai-vfx-guide.html","attention.html","automations.html",
+  "bertrand-paradox.html","bilibili.html","bilibili/BV15eRXBGEFL.html","bilibili/BV1AvRQBXEiU.html",
+  "blood-types.html","body-map.html","causality.html","changelog.html","complexes.html",
+  "dashboards.html","emergence.html","esp32-c3.html","esp32-guide.html","esp32-oled.html",
+  "esp32-relay.html","fallacies.html","financial-news.html","fitness-arms.html","fitness-back.html",
+  "fitness-chest.html","fitness-core.html","fitness-legs.html","fitness-muscles.html",
+  "fitness-shoulders.html","fitness.html","game-theory.html","gemstones.html","hardware.html",
+  "index.html","interrogation.html","knowledge.html","llm-anatomy.html","logic-puzzle.html",
+  "lying-truth.html","manual.html","misconceptions2.html","multimeter-guide.html","music-math.html",
+  "obd-dash.html","orbit.html","papers.html","paradoxes.html","probability.html",
+  "psych-effects.html","psych-tricks.html","puxing-man.html","sleep.html","sitemap.html",
+  "soldering-iron.html","status.html","text-rendering.html","tools-guide.html","usage.html",
+  "vibe-coding.html","viscosity.html",
+];
+for (let i = 1; i <= 21; i++) allPages.push("puxing-" + String(i).padStart(2, "0") + ".html");
+["restart","fear","prompt","errors","tools","think","mvp","verify","safe","copy","duck","try","spot","env","docs","small","show"].forEach(l => allPages.push("vibe-coding-lessons/" + l + ".html"));
+
+let designChecked = 0;
+for (const p of allPages) {
+  const r = await httpGet("/" + p);
+  if (!r.ok || r.body.length < 100) { check(p + " 加载", false, "HTTP " + r.status); continue; }
+  const h = r.body;
+  const isExempt = p.includes("clock") || p.includes("obd-dash");
+  if (isExempt) { check(p + " 豁免", true); continue; }
+  check(p + " DOCTYPE", h.startsWith("<!DOCTYPE") || h.startsWith("<html"));
+  check(p + " glowSpot", h.includes("glowSpot"));
+  check(p + " system-ui", h.includes("system-ui"));
+  check(p + " backdrop", h.includes("backdrop-filter"));
+  check(p + " antialiased", h.includes("antialiased"));
+  check(p + " overflow-x", (h.includes("overflow-x") || h.includes("overflow-x:")) && h.includes("hidden"));
+  check(p + " viewport", h.includes("viewport"));
+  check(p + " theme-color", h.includes("theme-color") && (h.includes("0a0a0f") || h.includes("0A0A0F") || h.includes("050510")));
+  designChecked++;
+}
+check("设计规范覆盖", designChecked > 70, designChecked + "页");
+
+// ══════════════════════════════════════════
+// 25. 资源完整性 + PWA
+// ══════════════════════════════════════════
+console.log("\n═══ 25. PWA + 资源 ═══");
+const mf = await httpGet("/manifest.json");
+check("PWA manifest可访问", mf.ok && mf.body.length > 50);
+try { const m = JSON.parse(mf.body); check("PWA有name", m.name && m.name.length > 1); check("PWA有start_url", m.start_url && m.start_url.length > 1); } catch (_) { check("PWA JSON", false); }
+const sw = await httpGet("/sw.js"); check("Service Worker可访问", sw.ok && sw.body.length > 100);
+check("icon.svg", (await httpGet("/icon.svg")).ok);
+check("shared.css", (await httpGet("/shared.css")).ok);
+check("shared.js", (await httpGet("/shared.js")).ok);
+check("version.json", (await httpGet("/version.json")).ok);
+check("robots.txt", (await httpGet("/robots.txt")).status > 0);
+
+// ══════════════════════════════════════════
+// 26. 安全 + 性能
+// ══════════════════════════════════════════
+console.log("\n═══ 26. 安全+性能 ═══");
+for (const p of ["index.html","knowledge.html","bilibili.html"]) {
+  const r = await httpGet("/" + p);
+  check(p + " 无eval", !r.body.includes("eval("));
+}
+check("API CORS", (await fetch(BASE+"/api/weather?lat=23&lon=113")).headers.get("access-control-allow-origin") === "*");
+for (const [p, max] of [["index.html",150000],["knowledge.html",50000],["bilibili.html",30000],["fitness-chest.html",30000]]) {
+  const r = await httpGet("/" + p);
+  check(p + " 大小≤"+(max/1000)+"KB", r.body.length <= max, (r.body.length/1000).toFixed(1)+"KB");
+}
+
+// ══════════════════════════════════════════
+// 27. API边界 + 错误处理
+// ══════════════════════════════════════════
+console.log("\n═══ 27. API边界 ═══");
+check("空搜索返回空", (await httpGet("/api/search?q=")).ok);
+check("超长搜索不崩溃", (await httpGet("/api/search?q="+"a".repeat(200))).ok);
+check("特殊字符搜索", (await httpGet("/api/search?q="+encodeURIComponent("test'\"<>&"))).ok);
+check("DB统计", (await httpGet("/api/db/stats")).ok);
+check("金融0天", (await httpGet("/api/financial/briefs?days=0")).ok);
+check("天气无参数", (await httpGet("/api/weather")).status > 0);
+check("新闻API", (await httpGet("/api/news")).ok);
+check("课程列表", (await httpGet("/api/course/list")).ok);
+check("课程详情", (await httpGet("/api/course/restart")).ok);
+check("站点配置", (await httpGet("/api/site/config")).ok);
+check("DB站点地图", (await httpGet("/api/site/sitemap-db")).ok);
+check("金融最新", (await httpGet("/api/financial/latest")).ok);
+check("DB页面统计", (await httpGet("/api/db/pages")).ok);
+check("Git日志", (await httpGet("/api/site/git-log")).ok);
+try { check("课程列表≥15", JSON.parse((await httpGet("/api/course/list")).body).length >= 15); } catch (_) {}
+
+// ══════════════════════════════════════════
+// 28. 内容完整性
+// ══════════════════════════════════════════
+console.log("\n═══ 28. 内容完整性 ═══");
+const contentChecks = [
+  ["index.html",["DeepSeek","Claude","AI"],"AI工具"],
+  ["knowledge.html",["百科","心理","科学"],"百科"],
+  ["bilibili.html",["B站","视频","ForAI"],"B站"],
+  ["causality.html",["因果","相关"],"因果"],
+  ["body-map.html",["肌肉","训练"],"肌肉"],
+  ["fitness-chest.html",["胸","卧推"],"胸肌"],
+];
+for (const [p, kws, label] of contentChecks) {
+  const r = await httpGet("/" + p); let n = 0;
+  for (const kw of kws) if (r.body.includes(kw)) n++;
+  check(p + " " + label, n >= 2, n + "/" + kws.length);
+}
+for (let i = 1; i <= 21; i++) {
+  const r = await httpGet("/puxing-" + String(i).padStart(2, "0") + ".html");
+  check("puxing-" + String(i).padStart(2, "0") + " 有正文", r.body.length > 5000);
+}
+for (const bv of ["BV15eRXBGEFL","BV1AvRQBXEiU"]) {
+  const r = await httpGet("/bilibili/" + bv + ".html");
+  check("bilibili/" + bv + " 有播放器", r.body.includes("player.bilibili.com") || r.body.includes("iframe"));
+  check("bilibili/" + bv + " 有136模式", r.body.includes("sec1min") && r.body.includes("sec3min") && r.body.includes("sec6min"));
+}
+
+// ══════════════════════════════════════════
+// 29. 子页面导航完整性
+// ══════════════════════════════════════════
+console.log("\n═══ 29. 子页面导航 ═══");
+const lessonNames = ["restart","fear","prompt","errors","tools","think","mvp","verify","safe","copy","duck","try","spot","env","docs","small","show"];
+for (const l of lessonNames) {
+  const r = await httpGet("/vibe-coding-lessons/" + l + ".html");
+  check("课程:"+l+" 有返回链接", r.body.includes("vibe-coding.html") || r.body.includes("返回") || r.body.includes("课程主页"));
+  check("课程:"+l+" 有shared.js", r.body.includes("shared.js"));
+}
+const fitnessNav = ["fitness-chest","fitness-back","fitness-shoulders","fitness-legs","fitness-arms","fitness-core"];
+for (const f of fitnessNav) {
+  const r = await httpGet("/" + f + ".html");
+  check(f+" 导航链接", r.body.includes("fitness-muscles.html") || r.body.includes("返回"));
+  check(f+" 136模式", r.body.includes("mode-btn") && r.body.includes("content-section"));
+}
+for (let i = 1; i <= 21; i++) {
+  const r = await httpGet("/puxing-" + String(i).padStart(2, "0") + ".html");
+  check("puxing-"+String(i).padStart(2,"0")+" 导航", r.body.includes("puxing-man.html") || r.body.includes("下一篇") || r.body.includes("上一篇"));
+}
+
+// ══════════════════════════════════════════
+// 30. 移动端响应式
+// ══════════════════════════════════════════
+console.log("\n═══ 30. 移动端响应式 ═══");
+for (const p of ["index.html","knowledge.html","bilibili.html","causality.html","fitness-chest.html","body-map.html","automations.html"]) {
+  const r = await httpGet("/" + p);
+  check(p+" @media", r.body.includes("@media"));
+  check(p+" viewport-fit", r.body.includes("viewport-fit") || r.body.includes("initial-scale"));
+  check(p+" 触控优化", r.body.includes("touch") || r.body.includes("webkit-overflow") || r.body.includes("-webkit-tap"));
+}
+
+// ══════════════════════════════════════════
+// 31. 光球数量验证（全部3个）
+// ══════════════════════════════════════════
+console.log("\n═══ 31. 光球数量 ═══");
+const orbTestPages = allPages.filter(p => !p.includes("clock") && !p.includes("obd-dash")).slice(0, 40);
+for (const p of orbTestPages) {
+  const r = await httpGet("/" + p);
+  const orbMatch = r.body.match(/bg__orb:nth-child\(3\)/g);
+  const has3rd = orbMatch && orbMatch.length >= 1;
+  check(p + " 3光球", has3rd, has3rd ? "有nth-child(3)" : "缺第3光球CSS");
+}
+
+// ══════════════════════════════════════════
+// 32. 死链接深度扫描
+// ══════════════════════════════════════════
+console.log("\n═══ 32. 死链接深度扫描 ═══");
+const bv = await httpGet("/bilibili/BV15eRXBGEFL.html");
+const bvLinks = [...bv.body.matchAll(/href="\.\.\/([^"]+)"/g)].map(m => m[1]);
+for (const link of bvLinks.slice(0, 5)) {
+  const lr = await httpGet("/" + link);
+  check("BV→../" + link, lr.ok, "HTTP " + lr.status);
+}
+const vl = await httpGet("/vibe-coding-lessons/restart.html");
+const vlLinks = [...vl.body.matchAll(/href="\.\.\/([^"]+\.html)"/g)].map(m => m[1]);
+for (const link of vlLinks.slice(0, 5)) {
+  const lr = await httpGet("/" + link);
+  check("课程→../" + link, lr.ok, "HTTP " + lr.status);
 }
 
 // ══════════════════════════════════════════

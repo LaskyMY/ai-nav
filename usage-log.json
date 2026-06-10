@@ -3247,5 +3247,104 @@
     "completion_tokens": 26,
     "total_tokens": 65,
     "cost": 0.00003913
+  },
+  {
+    "ts": "2026-06-10T17:10:44.583Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 392,
+    "completion_tokens": 628,
+    "total_tokens": 1020,
+    "cost": 0.0007966399999999999
+  },
+  {
+    "ts": "2026-06-10T17:25:42.532Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 392,
+    "completion_tokens": 578,
+    "total_tokens": 970,
+    "cost": 0.00074164
+  },
+  {
+    "ts": "2026-06-10T17:29:02.826Z",
+    "endpoint": "/api/summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 39,
+    "completion_tokens": 23,
+    "total_tokens": 62,
+    "cost": 0.00003583
+  },
+  {
+    "ts": "2026-06-10T17:40:45.414Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 392,
+    "completion_tokens": 639,
+    "total_tokens": 1031,
+    "cost": 0.0008087400000000001
+  },
+  {
+    "ts": "2026-06-10T17:45:54.247Z",
+    "endpoint": "/api/summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 39,
+    "completion_tokens": 26,
+    "total_tokens": 65,
+    "cost": 0.00003913
+  },
+  {
+    "ts": "2026-06-10T17:46:05.336Z",
+    "endpoint": "/api/summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 39,
+    "completion_tokens": 31,
+    "total_tokens": 70,
+    "cost": 0.000044630000000000005
+  },
+  {
+    "ts": "2026-06-10T17:46:40.122Z",
+    "endpoint": "/api/summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 39,
+    "completion_tokens": 24,
+    "total_tokens": 63,
+    "cost": 0.00003693
+  },
+  {
+    "ts": "2026-06-10T17:46:51.610Z",
+    "endpoint": "/api/summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 39,
+    "completion_tokens": 25,
+    "total_tokens": 64,
+    "cost": 0.00003803
+  },
+  {
+    "ts": "2026-06-10T17:47:15.793Z",
+    "endpoint": "/api/summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 39,
+    "completion_tokens": 33,
+    "total_tokens": 72,
+    "cost": 0.000046830000000000004
+  },
+  {
+    "ts": "2026-06-10T17:47:29.688Z",
+    "endpoint": "/api/summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 39,
+    "completion_tokens": 30,
+    "total_tokens": 69,
+    "cost": 0.000043530000000000005
+  },
+  {
+    "ts": "2026-06-10T17:47:51.683Z",
+    "endpoint": "/api/summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 39,
+    "completion_tokens": 33,
+    "total_tokens": 72,
+    "cost": 0.000046830000000000004
   }
 ]
