@@ -54,3 +54,8 @@ h1{background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));backgrou
   input,select,textarea{font-size:16px!important}
   .grid2,.grid3{grid-template-columns:1fr}
 }
+
+.header-weather{font-size:11px;color:var(--amber);white-space:nowrap;min-width:28px;text-align:center}
+.header-refresh{font-size:14px;text-decoration:none;padding:2px 4px;opacity:.6;transition:all .2s}
+.header-refresh:hover{opacity:1;transform:rotate(180deg)}
+.header-logo{font-size:15px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;letter-spacing:-.02em}
