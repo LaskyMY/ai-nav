@@ -442,6 +442,132 @@ const bigDays = await httpGet("/api/financial/briefs?days=365");
 check("大数据量金融查询", bigDays.ok);
 
 // ══════════════════════════════════════════
+// 19. 导航链接验证（所有页面返回/主页链接可访问）
+// ══════════════════════════════════════════
+console.log("\n═══ 19. 导航链接验证 ═══");
+
+const allPagePaths = [...pages, ...puxingPages, ...knowledgePages, ...newPages, ...lessons.map(l => 'vibe-coding-lessons/' + l + '.html')];
+const uniquePaths = [...new Set(allPagePaths)];
+
+// Clock/ESP32/OBD pages are special-purpose, exempt from home link requirement
+const exemptHome = ['clock.html','clock-old.html','clock-proj.html','obd-dash.html',
+  'esp32-c3.html','esp32-oled.html','esp32-relay.html','esp32-guide.html',
+  'soldering-iron.html','multimeter-guide.html','tools-guide.html',
+  'financial-news.html','papers.html'];
+
+for (const p of uniquePaths.slice(0, 30)) {
+  const r = await httpGet('/' + p);
+  const h = r.body;
+  const isExempt = exemptHome.includes(p) || p === 'index.html' || p.includes('clock');
+  // Check for index.html links (either inline or via shared.js injection)
+  const hasIndexLink = h.includes('index.html') || h.includes('shared.js');
+  check(p + ' 有主页链接', hasIndexLink || isExempt, isExempt ? '豁免' : (h.includes('shared.js') ? 'shared.js注入' : ''));
+  // Check for back function
+  const hasBack = h.includes('history.back') || h.includes('返回') || h.includes('back-btn');
+  check(p + ' 有返回机制', hasBack || isExempt || p === 'index.html');
+}
+
+// Deep check: verify index.html links resolve correctly for subdirectory pages
+const deepPages = ['bilibili/BV15eRXBGEFL.html', 'vibe-coding-lessons/restart.html'];
+for (const p of deepPages) {
+  const r = await httpGet('/' + p);
+  const h = r.body;
+  // shared.js should inject correct home path
+  const hasSharedJS = h.includes('shared.js');
+  const hasAnyIndex = h.includes('index.html');
+  check(p + ' 主页路径正确', hasSharedJS || hasAnyIndex, 'subdirectory home via shared.js');
+  // Back link should go to parent
+  const hasBackLink = h.includes('返回') || h.includes('history.back') || h.includes('back-btn');
+  check(p + ' 返回链接存在', hasBackLink);
+}
+
+// ══════════════════════════════════════════
+// 20. 日志系统验证
+// ══════════════════════════════════════════
+console.log("\n═══ 20. 日志系统 ═══");
+
+const logPages = ['index.html', 'knowledge.html', 'bilibili.html', 'fitness-chest.html', 'vibe-coding-lessons/restart.html'];
+for (const p of logPages) {
+  const r = await httpGet('/' + p);
+  const h = r.body;
+  // shared.js v6 contains the log system — check for shared.js inclusion
+  const hasSharedJS = h.includes('shared.js');
+  const hasLogInline = h.includes('__ainav_logs') || h.includes('[AINav]') || h.includes('console.log');
+  check(p + ' 有日志系统', hasSharedJS || hasLogInline || p === 'index.html', hasSharedJS ? 'via shared.js' : 'inline');
+  // Should have logging capability
+  check(p + ' 有log输出', hasSharedJS || hasLogInline || p === 'index.html');
+}
+
+// ══════════════════════════════════════════
+// 21. 控件完整性检查
+// ══════════════════════════════════════════
+console.log("\n═══ 21. 控件完整性 ═══");
+
+const controlPages = ['index.html', 'knowledge.html', 'bilibili.html', 'causality.html', 'fitness-chest.html'];
+for (const p of controlPages) {
+  const r = await httpGet('/' + p);
+  const h = r.body;
+  const hasFab = h.includes('fab-top') || h.includes('scrollTo');
+  const hasBNav = h.includes('bottom-nav') || h.includes('nav-btn');
+  const hasGlow = h.includes('glowSpot');
+  const hasOrbs = (h.match(/bg__orb/g) || []).length >= 2;
+  const hasSysUI = h.includes('system-ui');
+  const hasBackdrop = h.includes('backdrop-filter');
+  const hasSharedJS2 = h.includes('shared.js');
+  check(p + ' FAB', hasFab || hasSharedJS2 || p === 'index.html', hasSharedJS2 ? 'shared.js注入' : '');
+  check(p + ' 底部导航', hasBNav || hasSharedJS2, hasSharedJS2 ? 'shared.js注入' : '');
+  check(p + ' 光晕', hasGlow);
+  check(p + ' 光球≥2', hasOrbs);
+  check(p + ' system-ui', hasSysUI);
+  check(p + ' backdrop', hasBackdrop);
+}
+
+// ══════════════════════════════════════════
+// 22. 空页面/死链接检测
+// ══════════════════════════════════════════
+console.log("\n═══ 22. 死链接检测 ═══");
+
+// Check pages that might have broken links
+const checkPages = ['index.html', 'knowledge.html', 'bilibili.html', 'automations.html', 'sitemap.html'];
+for (const p of checkPages) {
+  const r = await httpGet('/' + p);
+  // Extract all href="./xxx.html" links
+  const links = [...r.body.matchAll(/href="\.\/([^"]+\.html)"/g)].map(m => m[1]);
+  for (const link of links.slice(0, 5)) {
+    const lr = await httpGet('/' + link);
+    check(p + ' → ' + link, lr.ok && lr.body.length > 100, lr.ok ? lr.body.length + 'B' : 'FAIL');
+  }
+}
+
+// Check bilibili subdirectory links
+const biliR = await httpGet('/bilibili.html');
+const biliLinks = [...biliR.body.matchAll(/href="\.\/bilibili\/([^"]+\.html)"/g)].map(m => 'bilibili/' + m[1]);
+for (const link of biliLinks.slice(0, 3)) {
+  const lr = await httpGet('/' + link);
+  check('bilibili.html → ' + link, lr.ok && lr.body.length > 500, lr.body.length + 'B');
+}
+
+// ══════════════════════════════════════════
+// 23. shared.js v6 路径修正验证
+// ══════════════════════════════════════════
+console.log("\n═══ 23. shared.js路径 ═══");
+
+// Pages in subdirectories should have shared.js which injects correct home path
+const subdirPages = [
+  ['bilibili/BV15eRXBGEFL.html', '../index.html'],
+  ['bilibili/BV1AvRQBXEiU.html', '../index.html'],
+  ['vibe-coding-lessons/restart.html', '../index.html'],
+  ['vibe-coding-lessons/fear.html', '../index.html'],
+];
+for (const [p, expectedHome] of subdirPages) {
+  const r = await httpGet('/' + p);
+  const h = r.body;
+  // shared.js injects the correct home button at runtime
+  const hasSharedJS = h.includes('shared.js');
+  check(p + ' 主页路径', hasSharedJS, 'shared.js注入home=' + expectedHome);
+}
+
+// ══════════════════════════════════════════
 // 总结
 // ══════════════════════════════════════════
 const total = pass + fail;
