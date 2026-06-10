@@ -4,7 +4,7 @@
 :root{--bg:#0a0a0f;--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.7;min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:80px}
-.bg{position:fixed;inset:0;pointer-events:none;z-index:0}.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.4}.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.bg{position:fixed;inset:0;pointer-events:none;z-index:0}.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.4}.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,#06B6D4 0%,transparent 70%);top:50%;left:50%;animation:floatOrb 22s ease-in-out infinite;animation-delay:-7s}@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
 .glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
 .wrap{max-width:800px;margin:0 auto;padding:20px;position:relative;z-index:1}
 h1{font-size:26px;font-weight:700;margin:12px 0 4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:tFlow 5s ease-in-out infinite}@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
@@ -28,7 +28,7 @@ ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,
 .toc-item{display:block;padding:5px 10px;border-radius:6px;font-size:11px;color:var(--tx3);text-decoration:none}.toc-item:hover{background:rgba(255,255,255,.05);color:var(--tx2)}.toc-item.active{background:rgba(99,102,241,.1);color:var(--a1);font-weight:600}
 @media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}}
 </style></head><body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div><div class="glow-spot" id="glowSpot"></div>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div><div class="glow-spot" id="glowSpot"></div>
 <div class="wrap">
 <div class="breadcrumb"><a href="../vibe-coding.html">AI帮你写代码</a> / 阶段2 · 学会说话</div>
 <div class="pbar"><div class="pbar-fill" style="width:18%"></div></div><div class="pnum">03/17</div>

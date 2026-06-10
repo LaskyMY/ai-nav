@@ -101,7 +101,7 @@ body { background: var(--bg); overflow-x: hidden; }
   <div class="bg__orb"></div>
 </div>
 ```
-- 2个光球，filter: blur(120px), opacity: 0.4
+- 3个光球，filter: blur(120px), opacity: 0.4
 - floatOrb动画，20s/24s错开
 
 ### 4.3 鼠标光晕（必须，移动端自动禁用）
@@ -173,7 +173,7 @@ border-radius: 22px;
 | 3 | theme-color meta | 必须 |
 | 4 | CSS :root变量 | 必须 |
 | 5 | body bg #0a0a0f | 必须 |
-| 6 | 光球 .bg | 必须（2个） |
+| 6 | 光球 .bg | 必须（3个） |
 | 7 | 光晕 #glowSpot | 必须 |
 | 8 | 顶栏 .header | 必须（时钟除外） |
 | 9 | h1渐变动画 | 必须 |
