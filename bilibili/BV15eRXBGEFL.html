@@ -4,61 +4,91 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 <meta name="theme-color" content="#0a0a0f">
-<title>【中配】每天吃这个 我的睾酮水平飙升 · ForAI</title>
+<title>【中配】每天吃这个 我的睾酮水平飙升 · B站视频整理</title>
 <link rel="icon" href="../icon.svg">
 <style>
-:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.05);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--green:#10B981;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:18px;--ease:cubic-bezier(.22,1,.36,1)}
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.05);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--green:#10B981;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:16px;--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.7;min-height:100vh;padding-bottom:80px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.7;min-height:100vh;padding-bottom:80px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.35}
-.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--cyan) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
-.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.3}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--cyan) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
 .bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:50%;left:50%;animation:floatOrb 22s ease-in-out infinite;animation-delay:-7s}
 @keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
 .glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
 .wrap{max-width:760px;margin:0 auto;padding:20px;position:relative;z-index:1}
 
-h1{font-size:24px;font-weight:700;margin:12px 0 6px;background:linear-gradient(135deg,var(--cyan),var(--a1),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+h1{font-size:22px;font-weight:700;margin:12px 0 4px;background:linear-gradient(135deg,var(--pink),var(--cyan),var(--a1));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
-h2{font-size:15px;font-weight:700;color:var(--cyan);margin:0 0 8px}
+.sub{font-size:11px;color:var(--tx3);margin-bottom:16px}
 
-/* Hero cover */
-.video-hero{position:relative;border-radius:16px;overflow:hidden;margin-bottom:14px;border:1px solid rgba(255,255,255,.08);aspect-ratio:16/9;background:rgba(0,0,0,.3)}
-.video-hero img{width:100%;height:100%;object-fit:cover;display:block}
-.video-hero .play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.3);opacity:0;transition:opacity .3s}
+/* ── 136 Reading Mode ── */
+.reading-mode{display:flex;gap:8px;margin:14px 0}
+.mode-btn{flex:1;padding:10px 6px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);color:var(--tx3);font-size:11px;cursor:pointer;text-align:center;transition:all .3s;font-family:inherit}
+.mode-btn:hover{border-color:rgba(236,72,153,.2);color:var(--tx2)}
+.mode-btn.active{border-color:rgba(236,72,153,.4);background:rgba(236,72,153,.08);color:var(--pink);font-weight:600}
+.mode-time{display:block;font-size:22px;font-weight:700;margin-bottom:2px}
+.mode-label{font-size:10px;opacity:.6}
+
+.content-section{margin:10px 0;transition:all .3s}
+.content-section.hidden{display:none}
+
+/* ── Hero Cover ── */
+.video-hero{position:relative;border-radius:16px;overflow:hidden;margin-bottom:12px;border:1px solid rgba(255,255,255,.08);aspect-ratio:16/9;background:rgba(0,0,0,.3)}
+.video-hero img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s var(--ease)}
+.video-hero:hover img{transform:scale(1.03)}
+.video-hero .play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);opacity:0;transition:opacity .3s}
 .video-hero:hover .play-overlay{opacity:1}
-.play-btn{width:64px;height:64px;border-radius:50%;background:rgba(99,102,241,.6);backdrop-filter:blur(10px);border:2px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;transition:all .3s}
-.video-hero:hover .play-btn{transform:scale(1.1);background:rgba(99,102,241,.8)}
+.play-btn{width:56px;height:56px;border-radius:50%;background:rgba(236,72,153,.5);backdrop-filter:blur(8px);border:2px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;transition:all .3s}
 
-/* Glass card */
-.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:18px;margin-bottom:12px;position:relative;overflow:hidden}
+/* ── Glass Card ── */
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:18px;margin-bottom:10px;position:relative;overflow:hidden}
 .card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.01) 100%);pointer-events:none}
+h2{font-size:15px;font-weight:700;color:var(--pink);margin:0 0 10px;padding-left:12px;border-left:3px solid var(--pink)}
+h3{font-size:13px;font-weight:600;color:var(--tx);margin:14px 0 6px}
 
-/* Meta grid */
-.meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
-.meta-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--tx2);padding:8px 12px;background:rgba(255,255,255,.02);border-radius:10px}
-.meta-icon{font-size:16px;flex-shrink:0}
+/* ── Meta Grid ── */
+.meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.meta-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--tx2);padding:8px 10px;background:rgba(255,255,255,.02);border-radius:8px}
+.meta-icon{font-size:15px;flex-shrink:0}
 .meta-item b{color:var(--tx);font-weight:600}
 
-/* Description */
-.desc{font-size:14px;color:var(--tx2);line-height:1.9;white-space:pre-wrap}
+/* ── Content ── */
+.desc{font-size:13px;color:var(--tx2);line-height:2;white-space:pre-wrap}
+.section-body{font-size:13px;color:var(--tx2);line-height:1.9}
+.tag{display:inline-block;padding:4px 10px;border-radius:8px;background:rgba(236,72,153,.08);color:var(--pink);font-size:10px;margin:2px;border:1px solid rgba(236,72,153,.12)}
+.tag-blue{background:rgba(99,102,241,.08);color:var(--a1);border-color:rgba(99,102,241,.12)}
+.tag-cyan{background:rgba(6,182,212,.08);color:var(--cyan);border-color:rgba(6,182,212,.12)}
 
-/* Embed */
-.video-embed{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px}
+/* ── Embed ── */
+.video-embed{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;margin-top:8px}
 .video-embed iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
 
-/* Buttons */
-.btn{display:inline-block;padding:10px 20px;border-radius:10px;font-size:13px;text-decoration:none;transition:all .25s;margin-right:8px;margin-bottom:6px}
-.btn-primary{background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.25);color:var(--a1);font-weight:600}
-.btn-primary:hover{background:rgba(99,102,241,.25);border-color:rgba(99,102,241,.4)}
-.btn-outline{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--tx2)}
-.btn-outline:hover{background:rgba(255,255,255,.08);color:var(--tx)}
+/* ── Buttons ── */
+.btn{display:inline-block;padding:8px 16px;border-radius:10px;font-size:12px;text-decoration:none;transition:all .25s;margin:3px;font-family:inherit;cursor:pointer}
+.btn-primary{background:rgba(236,72,153,.12);border:1px solid rgba(236,72,153,.25);color:var(--pink);font-weight:600}
+.btn-primary:hover{background:rgba(236,72,153,.22)}
+.btn-outline{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);color:var(--tx2)}
+.btn-outline:hover{background:rgba(255,255,255,.06);color:var(--tx)}
+
+/* ── Key Points ── */
+.key-points{list-style:none;padding:0}
+.key-points li{padding:6px 0;font-size:13px;color:var(--tx2);border-bottom:1px solid rgba(255,255,255,.03);display:flex;gap:8px}
+.key-points li .kp-dot{width:6px;height:6px;border-radius:50%;background:var(--pink);flex-shrink:0;margin-top:7px}
+
+/* ── Canvas Animation ── */
+.anim-canvas{width:100%;height:120px;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.05);background:rgba(0,0,0,.2);margin-bottom:12px}
+.anim-canvas canvas{width:100%;height:100%;display:block}
 
 .back-link{text-align:center;margin-top:24px}
 .back-link a{color:var(--tx4);font-size:11px;text-decoration:none}
 
-@media(max-width:500px){.wrap{padding:14px}h1{font-size:20px}.meta-grid{grid-template-columns:repeat(2,1fr)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.card{animation:fadeUp .4s var(--ease) both}
+.card:nth-child(2){animation-delay:.03s}.card:nth-child(3){animation-delay:.06s}
+
+@media(max-width:500px){.wrap{padding:12px}h1{font-size:18px}.meta-grid{grid-template-columns:repeat(2,1fr)}.reading-mode{gap:4px}.mode-btn{padding:8px 4px}}
 </style>
 </head>
 <body>
@@ -66,49 +96,116 @@ h2{font-size:15px;font-weight:700;color:var(--cyan);margin:0 0 8px}
 <div class="glow-spot" id="glowSpot"></div>
 
 <div class="wrap">
-<!-- Hero cover -->
+
+<!-- Hero Cover -->
 <a class="video-hero" href="https://www.bilibili.com/video/BV15eRXBGEFL" target="_blank" rel="noopener">
-  <img src="https://i0.hdslb.com/bfs/archive/d0e8c9e281c5d0f31298d646222ea5dd969e1296.png" alt="【中配】每天吃这个 我的睾酮水平飙升" loading="lazy">
+  <img src="https://i0.hdslb.com/bfs/archive/d0e8c9e281c5d0f31298d646222ea5dd969e1296.png" alt="【中配】每天吃这个 我的睾酮水平飙升" loading="lazy" referrerpolicy="no-referrer">
   <div class="play-overlay"><div class="play-btn">▶</div></div>
 </a>
 
 <h1>【中配】每天吃这个 我的睾酮水平飙升</h1>
+<p class="sub">👤 AI译片君 · ▶ 1.3万 播放 · 💬 19 弹幕 · ⏱ 9:31 · 📅 2026-05-09</p>
 
-<!-- Meta -->
-<div class="card">
+<!-- ── 136 Reading Modes ── -->
+<div class="reading-mode">
+  <button class="mode-btn active" onclick="setMode('1min',this)"><span class="mode-time">1</span><span class="mode-label">分钟速览</span></button>
+  <button class="mode-btn" onclick="setMode('3min',this)"><span class="mode-time">3</span><span class="mode-label">分钟梳理</span></button>
+  <button class="mode-btn" onclick="setMode('6min',this)"><span class="mode-time">6</span><span class="mode-label">分钟深读</span></button>
+</div>
+
+<!-- ── Canvas Animation ── -->
+<div class="anim-canvas"><canvas id="animC"></canvas></div>
+
+<!-- ── Section 1: 一分钟速览（元数据卡片）── -->
+<div class="content-section" id="s1">
+  <div class="card"><h2>📋 视频信息</h2>
   <div class="meta-grid">
-    <div class="meta-item"><span class="meta-icon">⏱</span><b>9:31</b></div>
-    <div class="meta-item"><span class="meta-icon">▶</span><b>1.3万</b> 播放</div>
-    <div class="meta-item"><span class="meta-icon">💬</span><b>19</b> 弹幕</div>
-    <div class="meta-item"><span class="meta-icon">👤</span>AI译片君</div>
-    <div class="meta-item"><span class="meta-icon">📅</span>2026-05-09</div>
+    <div class="meta-item"><span class="meta-icon">⏱</span><b>9:31</b><span style="font-size:10px">时长</span></div>
+    <div class="meta-item"><span class="meta-icon">▶</span><b>1.3万</b><span style="font-size:10px">播放</span></div>
+    <div class="meta-item"><span class="meta-icon">💬</span><b>19</b><span style="font-size:10px">弹幕</span></div>
+    <div class="meta-item"><span class="meta-icon">👤</span><b>AI译片君</b></div>
+    <div class="meta-item"><span class="meta-icon">📅</span><b>2026-05-09</b></div>
     <div class="meta-item"><span class="meta-icon">⭐</span>收藏于 2026-06-10</div>
+  </div>
+  <div style="margin-top:10px">
+    <span class="tag">B站视频</span><span class="tag-blue">ForAI收藏夹</span><span class="tag-cyan">自动抓取</span>
+  </div>
   </div>
 </div>
 
-<!-- Description -->
-<div class="card"><h2>📝 简介</h2><div class="desc">来源：https://www.youtube.com
+<!-- ── Section 2: 三分钟内容梳理 ── -->
+<div class="content-section" id="s2">
+  <div class="card"><h2>📝 内容梳理</h2>
+  <div class="section-body">来源：https://www.youtube.com
+上传日期：20260501
+11种食物让你重振雄风！90%的人都没吃够这些营养炸弹！三文鱼靠边站，沙丁鱼鲭鱼才是真王者，研究证实鱼油能飙升睾酮！生蚝补锌王，牛肉维生素爆棚，连鸡蛋里的胆固醇都是荷尔蒙原料！蔬菜补镁抗衰老，氧化压力是睾酮杀手！别被伪科学忽悠，天然食材完爆保健品！下期揭秘更多猛料！</div>
+  
+  </div>
+</div>
+
+<!-- ── Section 3: 六分钟深读（原文+播放）── -->
+<div class="content-section" id="s3">
+  <div class="card"><h2>📖 原文简介</h2><div class="desc">来源：https://www.youtube.com
 上传日期：20260501
 11种食物让你重振雄风！90%的人都没吃够这些营养炸弹！三文鱼靠边站，沙丁鱼鲭鱼才是真王者，研究证实鱼油能飙升睾酮！生蚝补锌王，牛肉维生素爆棚，连鸡蛋里的胆固醇都是荷尔蒙原料！蔬菜补镁抗衰老，氧化压力是睾酮杀手！别被伪科学忽悠，天然食材完爆保健品！下期揭秘更多猛料！</div></div>
-
-<!-- Player -->
-<div class="card">
-  <h2>🎬 播放</h2>
+  <div class="card"><h2>🎬 播放视频</h2>
   <div class="video-embed">
     <iframe src="//player.bilibili.com/player.html?bvid=BV15eRXBGEFL&page=1&high_quality=1" scrolling="no" allowfullscreen loading="lazy"></iframe>
   </div>
-  <div style="margin-top:12px">
-    <a class="btn btn-primary" href="https://www.bilibili.com/video/BV15eRXBGEFL" target="_blank" rel="noopener">在 Bilibili 打开 →</a>
+  <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">
+    <a class="btn btn-primary" href="https://www.bilibili.com/video/BV15eRXBGEFL" target="_blank" rel="noopener">在 Bilibili 观看 →</a>
+    <a class="btn btn-outline" href="../bilibili.html">← 返回视频整理</a>
+  </div>
   </div>
 </div>
 
 <div class="back-link">
-  <a href="../bilibili.html">← 返回 ForAI 收藏夹</a>
+  <a href="../bilibili.html">← 返回 B站视频整理</a> · <a href="../index.html">返回首页</a>
 </div>
 </div>
 
+<!-- ── Scripts ── -->
 <script>
-(function(){var g=document.getElementById('glowSpot');if(!g||('ontouchstart' in window))return;var x=innerWidth/2,y=innerHeight/2,tx=x,ty=y;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}anim()})();
+// 136 Reading Mode
+function setMode(mode,btn){
+  document.querySelectorAll('.mode-btn').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');
+  var s1=document.getElementById('s1'),s2=document.getElementById('s2'),s3=document.getElementById('s3');
+  if(mode==='1min'){s1.classList.remove('hidden');s2.classList.add('hidden');s3.classList.add('hidden')}
+  else if(mode==='3min'){s1.classList.remove('hidden');s2.classList.remove('hidden');s3.classList.add('hidden')}
+  else{s1.classList.remove('hidden');s2.classList.remove('hidden');s3.classList.remove('hidden')}
+}
+
+// Canvas particle animation
+(function(){
+  var c=document.getElementById('animC'),ctx=c.getContext('2d');
+  var W,H,particles=[];
+  function resize(){var box=c.parentElement;W=box.clientWidth;H=box.clientHeight;c.width=W;c.height=H}
+  resize();window.addEventListener('resize',resize);
+  for(var i=0;i<40;i++){particles.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2+1,vx:(Math.random()-.5)*.5,vy:(Math.random()-.5)*.5,a:Math.random()*.3+.1})}
+  function anim(){
+    ctx.clearRect(0,0,W,H);
+    for(var i=0;i<particles.length;i++){
+      var p=particles[i];p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(236,72,153,'+p.a+')';ctx.fill();
+    }
+    // Draw connections
+    for(var i=0;i<particles.length;i++){
+      for(var j=i+1;j<particles.length;j++){
+        var dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
+        var dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<80){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle='rgba(236,72,153,'+(.06*(1-dist/80))+')';ctx.lineWidth=.5;ctx.stroke()}
+      }
+    }
+    requestAnimationFrame(anim);
+  }
+  anim();
+})();
+
+// Glow
+(function(){var g=document.getElementById('glowSpot');if(!g||('ontouchstart' in window))return;var x=innerWidth/2,y=innerHeight/2,tx=x,ty=y;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(236,72,153,.04) 0%,rgba(99,102,241,.025) 20%,rgba(6,182,212,.01) 45%,transparent 70%)';requestAnimationFrame(anim)}anim()})();
 </script>
 <script src="../shared.js"></script>
 </body>
