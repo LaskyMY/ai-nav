@@ -200,7 +200,7 @@ function generateVideoPage(meta) {
   const favDate = fmtTime(fav_time);
   const biliUrl = `https://www.bilibili.com/video/${bvid}`;
   const coverUrl = cover ? cover.replace("http://", "https://") : "";
-  const sections = parseIntroSections(intro);
+  const s = parseIntroSections(intro);
 
   return `<!DOCTYPE html>
 <html lang="zh-CN">
@@ -211,9 +211,9 @@ function generateVideoPage(meta) {
 <title>${escapeHtml(title)} · B站视频整理</title>
 <link rel="icon" href="../icon.svg">
 <style>
-:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--green:#10B981;--red:#EF4444;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:16px;--ease:cubic-bezier(.22,1,.36,1)}
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.04);--card-border:rgba(255,255,255,.06);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--green:#10B981;--red:#EF4444;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:16px;--ease:cubic-bezier(.22,1,.36,1)}
 *,::before,::after{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.7;min-height:100vh;padding-bottom:80px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:80px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 .bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.4}
 .bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
@@ -221,71 +221,68 @@ body{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;backgroun
 .bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--cyan) 0%,transparent 70%);top:50%;left:50%;animation:floatOrb 22s ease-in-out infinite;animation-delay:-7s}
 @keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
 .glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
-.wrap{max-width:760px;margin:0 auto;padding:20px;position:relative;z-index:1}
 
-h1{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:12px 0 6px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+.wrap{max-width:800px;margin:0 auto;padding:20px;position:relative;z-index:1}
+.breadcrumb{font-size:11px;color:var(--tx3);margin-bottom:8px}.breadcrumb a{color:var(--tx4);text-decoration:none}
+.badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:10px;font-weight:600;margin-bottom:8px;background:rgba(99,102,241,.15);color:#818cf8}
+
+h1{font-size:26px;font-weight:700;margin:12px 0 4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
 @keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
-.sub{font-size:12px;color:var(--tx3);margin-bottom:14px}
+h2{font-size:16px;font-weight:700;color:var(--cyan);margin:0 0 10px}
+h3{font-size:14px;font-weight:600;color:rgba(255,255,255,.85);margin:16px 0 8px}
 
-/* ── 136 Reading Mode ── */
+/* ── 136 Mode Buttons ── */
 .reading-mode{display:flex;gap:8px;margin:14px 0}
-.mode-btn{flex:1;padding:12px 8px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:var(--tx3);font-size:11px;cursor:pointer;text-align:center;transition:all .3s;font-family:inherit}
+.mode-btn{flex:1;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:var(--tx3);font-size:12px;cursor:pointer;text-align:center;transition:all .3s;font-family:inherit}
 .mode-btn:hover{border-color:rgba(99,102,241,.2);color:var(--tx2)}
-.mode-btn.active{border-color:rgba(99,102,241,.4);background:rgba(99,102,241,.15);color:var(--a1);font-weight:600}
-.mode-time{display:block;font-size:22px;font-weight:700;margin-bottom:2px}
-.mode-label{font-size:10px;opacity:.6}
-.reading-content{margin:10px 0;transition:all .3s}
-.reading-content.hidden{display:none}
+.mode-btn.active{border-color:rgba(99,102,241,.4);background:rgba(99,102,241,.1);color:var(--a1);font-weight:600}
+.mode-btn .mode-time{display:block;font-size:20px;font-weight:700;margin-bottom:2px}
+.mode-btn .mode-label{font-size:10px;opacity:.6}
+.content-section{margin:16px 0;transition:all .3s}
+.content-section.hidden{display:none}
 
-/* ── Cover Hero ── */
-.video-hero{position:relative;border-radius:var(--r);overflow:hidden;margin-bottom:14px;border:1px solid var(--card-border);aspect-ratio:16/9;background:rgba(0,0,0,.3)}
+/* ── Canvas Hero ── */
+.hero-canvas{width:100%;max-width:600px;height:200px;margin:0 auto 16px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.2)}
+.hero-canvas canvas{width:100%;height:100%;display:block}
+
+/* ── Glass Card (matching fitness page style) ── */
+.card{background:rgba(255,255,255,.04);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:18px 20px;margin-bottom:12px;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.card-ok{border-left:3px solid rgba(16,185,129,.4)}
+.card-warn{border-left:3px solid rgba(245,158,11,.4)}
+.card-info{border-left:3px solid rgba(99,102,241,.4)}
+
+/* ── Cover ── */
+.video-hero{position:relative;border-radius:16px;overflow:hidden;margin-bottom:14px;border:1px solid rgba(255,255,255,.08);aspect-ratio:16/9;background:rgba(0,0,0,.3)}
 .video-hero img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s var(--ease)}
 .video-hero:hover img{transform:scale(1.03)}
 .video-hero .play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);opacity:0;transition:opacity .3s}
 .video-hero:hover .play-overlay{opacity:1}
 .play-btn{width:56px;height:56px;border-radius:50%;background:rgba(99,102,241,.55);backdrop-filter:blur(10px);border:2px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;transition:all .3s}
 
-/* ── Glass Card ── */
-.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:18px;margin-bottom:12px;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(99,102,241,.04),0 4px 24px rgba(0,0,0,.1)}
-.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.01) 100%);pointer-events:none}
-.card:hover{transform:translateY(-2px);border-color:rgba(99,102,241,.2)}
-h2{font-size:17px;font-weight:700;color:var(--cyan);margin:0 0 12px;padding-left:12px;border-left:3px solid var(--cyan)}
-h3{font-size:15px;font-weight:600;color:rgba(255,255,255,.85);margin:14px 0 8px}
+/* ── Meta ── */
+.meta-row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0;font-size:12px;color:var(--tx3)}
+.meta-row span{background:rgba(255,255,255,.03);padding:4px 10px;border-radius:8px}
+.tag{display:inline-block;padding:3px 10px;border-radius:6px;font-size:10px;font-weight:600;margin:2px;background:rgba(99,102,241,.15);color:var(--a1)}
 
-/* ── Meta Grid ── */
-.meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
-.meta-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--tx2);padding:8px 10px;background:rgba(255,255,255,.02);border-radius:8px}
-.meta-icon{font-size:15px;flex-shrink:0}
-.meta-item b{color:var(--tx);font-weight:600}
+/* ── Video Embed ── */
+.video-box{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;margin:8px 0}
+.video-box iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
 
-/* ── Content Text ── */
-.section-body{font-size:14px;color:var(--tx2);line-height:1.9}
-.tag{display:inline-block;padding:3px 10px;border-radius:6px;background:rgba(99,102,241,.08);color:var(--a1);font-size:10px;font-weight:600;margin:2px;border:1px solid rgba(99,102,241,.12)}
-.tag-cyan{background:rgba(6,182,212,.08);color:var(--cyan);border-color:rgba(6,182,212,.12)}
-.key-points{list-style:none;padding:0}
-.key-points li{padding:8px 0;font-size:14px;color:var(--tx2);line-height:1.7;border-bottom:1px solid rgba(255,255,255,.03);display:flex;gap:8px}
-.key-points li .kp-dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);flex-shrink:0;margin-top:8px}
+/* ── Content ── */
+ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,255,255,.7);line-height:1.7}li::marker{color:rgba(255,255,255,.15)}
+p{font-size:14px;color:rgba(255,255,255,.7);line-height:1.8;margin:6px 0}
+strong{color:rgba(255,255,255,.92)}
 
-/* ── Embed ── */
-.video-embed{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;margin-top:8px}
-.video-embed iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
-
-.btn{display:inline-block;padding:10px 18px;border-radius:10px;font-size:12px;text-decoration:none;transition:all .25s;margin:3px;font-family:inherit;cursor:pointer;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
-.btn-primary{background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.25);color:var(--a1);font-weight:600}
+.btn{display:inline-block;padding:10px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;transition:all .25s;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);margin:3px}
+.btn:hover{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.08);color:var(--tx)}
+.btn-primary{background:rgba(99,102,241,.15);border-color:rgba(99,102,241,.25);color:var(--a1);font-weight:600}
 .btn-primary:hover{background:rgba(99,102,241,.25)}
-.btn-outline{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--tx2)}
-.btn-outline:hover{background:rgba(255,255,255,.08);color:var(--tx)}
 
-.anim-canvas{width:100%;height:100px;border-radius:var(--r);overflow:hidden;border:1px solid rgba(255,255,255,.05);background:rgba(0,0,0,.2);margin-bottom:12px}
-.anim-canvas canvas{width:100%;height:100%;display:block}
+.nav-btns{display:flex;gap:8px;margin:24px 0;flex-wrap:wrap}
+.back{text-align:center;margin-top:28px}.back a{color:var(--tx4);font-size:11px;text-decoration:none}
 
-.back-link{text-align:center;margin-top:24px}
-.back-link a{color:var(--tx4);font-size:11px;text-decoration:none}
-
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.card{animation:fadeUp .5s var(--ease) both}
-
-@media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}.meta-grid{grid-template-columns:repeat(2,1fr)}.reading-mode{gap:4px}}
+@media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}.reading-mode{gap:4px}.mode-btn{padding:10px 6px}}
 </style>
 </head>
 <body>
@@ -293,97 +290,115 @@ h3{font-size:15px;font-weight:600;color:rgba(255,255,255,.85);margin:14px 0 8px}
 <div class="glow-spot" id="glowSpot"></div>
 
 <div class="wrap">
-<!-- Hero Cover -->
-${coverUrl ? `<a class="video-hero" href="${biliUrl}" target="_blank" rel="noopener">
-  <img src="${coverUrl}" alt="${escapeHtml(title)}" loading="lazy" referrerpolicy="no-referrer">
-  <div class="play-overlay"><div class="play-btn">▶</div></div>
-</a>` : ""}
-
+<div class="breadcrumb"><a href="../bilibili.html">B站视频整理</a> / ForAI收藏夹</div>
+<span class="badge">🎬 B站视频</span>
 <h1>${escapeHtml(title)}</h1>
-<p class="sub">👤 ${escapeHtml(upper_name)} · ▶ ${playStr} 播放 · 💬 ${danmuStr} 弹幕 · ⏱ ${durStr} · 📅 ${pubDate}</p>
+<div class="meta-row">
+  <span>👤 ${escapeHtml(upper_name)}</span><span>▶ ${playStr} 播放</span><span>💬 ${danmuStr} 弹幕</span><span>⏱ ${durStr}</span><span>📅 ${pubDate}</span><span>⭐ 收藏于 ${favDate}</span>
+</div>
 
-<!-- ── 136 Reading Modes ── -->
+<!-- ── 136 Mode Buttons ── -->
 <div class="reading-mode">
-  <button class="mode-btn active" onclick="setMode('1min',this)"><span class="mode-time">1</span><span class="mode-label">分钟速览</span></button>
-  <button class="mode-btn" onclick="setMode('3min',this)"><span class="mode-time">3</span><span class="mode-label">分钟梳理</span></button>
-  <button class="mode-btn" onclick="setMode('6min',this)"><span class="mode-time">6</span><span class="mode-label">分钟深读</span></button>
+  <button class="mode-btn active" onclick="switchMode('1min')" id="btn1min">
+    <span class="mode-time">⚡ 1分钟</span><span class="mode-label">快速扫读</span>
+  </button>
+  <button class="mode-btn" onclick="switchMode('3min')" id="btn3min">
+    <span class="mode-time">📖 3分钟</span><span class="mode-label">内容梳理</span>
+  </button>
+  <button class="mode-btn" onclick="switchMode('6min')" id="btn6min">
+    <span class="mode-time">🧠 6分钟</span><span class="mode-label">完整深读</span>
+  </button>
 </div>
 
-<!-- Canvas Animation -->
-<div class="anim-canvas"><canvas id="animC"></canvas></div>
+<!-- ── Canvas Hero Animation ── -->
+<div class="hero-canvas"><canvas id="heroC"></canvas></div>
 
-<!-- ═══ 1-MIN: 速览 ═══ -->
-<div class="reading-content" id="r1min">
-  <div class="card">
-    <h2>📋 一分钟速览</h2>
-    <div class="meta-grid">
-      <div class="meta-item"><span class="meta-icon">⏱</span><b>${durStr}</b><span style="font-size:10px;color:var(--tx3)">时长</span></div>
-      <div class="meta-item"><span class="meta-icon">▶</span><b>${playStr}</b><span style="font-size:10px;color:var(--tx3)">播放</span></div>
-      <div class="meta-item"><span class="meta-icon">👤</span><b>${escapeHtml(upper_name)}</b></div>
-      <div class="meta-item"><span class="meta-icon">📅</span><b>${pubDate}</b></div>
-    </div>
-    <p style="font-size:14px;color:var(--tx2);margin-top:10px;line-height:1.8">${sections.oneLiner}</p>
-    <div style="margin-top:10px">
-      <span class="tag">B站视频</span><span class="tag tag-cyan">ForAI收藏夹</span>
-    </div>
+<!-- ═══ 1分钟：快速扫读 ═══ -->
+<div class="content-section" id="sec1min">
+  <div class="card card-ok">
+    <h2>⚡ 一分钟速览</h2>
+    <p><strong>一句话总结：</strong>${s.oneLiner}</p>
+    ${s.points.length >= 2 ? `<p><strong>核心要点：</strong>${s.points.slice(0,2).join('；')}</p>` : ''}
+  </div>
+  ${coverUrl ? `<a class="video-hero" href="${biliUrl}" target="_blank" rel="noopener">
+    <img src="${coverUrl}" alt="${escapeHtml(title)}" loading="lazy" referrerpolicy="no-referrer">
+    <div class="play-overlay"><div class="play-btn">▶</div></div>
+  </a>` : ''}
+  <div class="card card-info">
+    <h2>📋 视频信息</h2>
+    <p>UP主：<strong>${escapeHtml(upper_name)}</strong> · 时长：<strong>${durStr}</strong> · 播放：<strong>${playStr}</strong> · 发布：<strong>${pubDate}</strong></p>
+    <div style="margin-top:8px"><span class="tag">B站视频</span><span class="tag" style="background:rgba(6,182,212,.15);color:var(--cyan)">ForAI收藏夹</span></div>
   </div>
 </div>
 
-<!-- ═══ 3-MIN: 内容梳理 ═══ -->
-<div class="reading-content hidden" id="r3min">
-  <div class="card">
-    <h2>📝 三分钟内容梳理</h2>
-    <div class="section-body">${sections.digest}</div>
-    ${sections.points.length > 0 ? `
-    <h3>🔑 关键要点</h3>
-    <ul class="key-points">${sections.points.map(p => `<li><span class="kp-dot"></span>${escapeHtml(p)}</li>`).join('')}</ul>` : ''}
+<!-- ═══ 3分钟：内容梳理 ═══ -->
+<div class="content-section hidden" id="sec3min">
+  <div class="card card-ok">
+    <h2>📖 内容梳理</h2>
+    <p>${s.digest}</p>
   </div>
-  <div class="card">
-    <h2>📊 视频数据</h2>
-    <div class="meta-grid">
-      <div class="meta-item"><span class="meta-icon">⏱</span><b>${durStr}</b></div>
-      <div class="meta-item"><span class="meta-icon">▶</span><b>${playStr}</b></div>
-      <div class="meta-item"><span class="meta-icon">💬</span><b>${danmuStr}</b></div>
-      <div class="meta-item"><span class="meta-icon">⭐</span>收藏于 ${favDate}</div>
-    </div>
+  ${s.points.length > 0 ? `
+  <div class="card card-info">
+    <h2>🔑 关键要点</h2>
+    <ul>${s.points.map(p => `<li>${escapeHtml(p)}</li>`).join('')}</ul>
+  </div>` : ''}
+  <div class="card card-warn">
+    <h2>💡 为什么收藏这个视频</h2>
+    <p>该视频来自ForAI收藏夹，于${favDate}被收藏。截至目前已有${playStr}次播放、${danmuStr}条弹幕。</p>
   </div>
 </div>
 
-<!-- ═══ 6-MIN: 完整深读 ═══ -->
-<div class="reading-content hidden" id="r6min">
-  ${intro ? `<div class="card"><h2>📖 完整简介</h2><div class="section-body" style="white-space:pre-wrap">${escapeHtml(intro)}</div></div>` : ''}
+<!-- ═══ 6分钟：完整深读 ═══ -->
+<div class="content-section hidden" id="sec6min">
+  ${intro ? `
   <div class="card">
-    <h2>🎬 在 Bilibili 观看</h2>
-    <div class="video-embed">
+    <h2>📝 完整简介</h2>
+    <p style="white-space:pre-wrap">${escapeHtml(intro)}</p>
+  </div>` : ''}
+  <div class="card">
+    <h2>🎬 在 Bilibili 观看完整视频</h2>
+    <div class="video-box">
       <iframe src="//player.bilibili.com/player.html?bvid=${bvid}&page=1&high_quality=1" scrolling="no" allowfullscreen loading="lazy"></iframe>
     </div>
-    <div style="margin-top:14px;display:flex;gap:6px;flex-wrap:wrap">
-      <a class="btn btn-primary" href="${biliUrl}" target="_blank" rel="noopener">在 Bilibili 观看 →</a>
-      <a class="btn btn-outline" href="../bilibili.html">← 返回视频整理</a>
+    <div style="margin-top:12px">
+      <a class="btn btn-primary" href="${biliUrl}" target="_blank" rel="noopener">在 Bilibili 打开 →</a>
     </div>
   </div>
 </div>
 
-<div class="back-link">
-  <a href="../bilibili.html">← 返回 B站视频整理</a> · <a href="../index.html">返回首页</a>
+<div class="nav-btns">
+  <a class="btn" href="../bilibili.html">← 返回 B站视频整理</a>
+  <a class="btn btn-primary" href="${biliUrl}" target="_blank" rel="noopener">在 Bilibili 观看 →</a>
 </div>
+<div class="back"><a href="../bilibili.html">← 返回 B站视频整理</a> · <a href="../index.html">返回首页</a></div>
 </div>
 
 <script>
-// 136 Reading Mode
-function setMode(mode,btn){
+// 136 Mode Switcher
+function switchMode(mode){
   document.querySelectorAll('.mode-btn').forEach(function(b){b.classList.remove('active')});
-  btn.classList.add('active');
-  var r1=document.getElementById('r1min'),r3=document.getElementById('r3min'),r6=document.getElementById('r6min');
-  r1.classList.add('hidden');r3.classList.add('hidden');r6.classList.add('hidden');
-  if(mode==='1min')r1.classList.remove('hidden');
-  else if(mode==='3min'){r1.classList.remove('hidden');r3.classList.remove('hidden');}
-  else{r1.classList.remove('hidden');r3.classList.remove('hidden');r6.classList.remove('hidden');}
+  document.getElementById('btn'+mode).classList.add('active');
+  document.getElementById('sec1min').classList.toggle('hidden',mode!=='1min');
+  document.getElementById('sec3min').classList.toggle('hidden',mode!=='3min');
+  document.getElementById('sec6min').classList.toggle('hidden',mode!=='6min');
   console.log('[AINav] reading_mode:',mode);
 }
 
-// Canvas particles
-(function(){var c=document.getElementById('animC'),ctx=c.getContext('2d');var W,H,ps=[];function rs(){W=c.parentElement.clientWidth;H=c.parentElement.clientHeight;c.width=W;c.height=H}rs();window.addEventListener('resize',rs);for(var i=0;i<35;i++){ps.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2+1,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,a:Math.random()*.25+.08})}function anim(){ctx.clearRect(0,0,W,H);for(var i=0;i<ps.length;i++){var p=ps[i];p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(99,102,241,'+p.a+')';ctx.fill()}for(var i=0;i<ps.length;i++){for(var j=i+1;j<ps.length;j++){var dx=ps[i].x-ps[j].x,dy=ps[i].y-ps[j].y;if(dx*dx+dy*dy<6400){ctx.beginPath();ctx.moveTo(ps[i].x,ps[i].y);ctx.lineTo(ps[j].x,ps[j].y);ctx.strokeStyle='rgba(99,102,241,'+(.05*(1-Math.sqrt(dx*dx+dy*dy)/80))+')';ctx.lineWidth=.5;ctx.stroke()}}}requestAnimationFrame(anim)}anim()})();
+// Canvas hero animation
+(function(){
+  var c=document.getElementById('heroC'),ctx=c.getContext('2d');
+  var W,H,ps=[];
+  function rs(){W=c.parentElement.clientWidth;H=c.parentElement.clientHeight;c.width=W;c.height=H}
+  rs();window.addEventListener('resize',rs);
+  for(var i=0;i<40;i++){ps.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2.5+1,vx:(Math.random()-.5)*.5,vy:(Math.random()-.5)*.5,a:Math.random()*.3+.05})}
+  function anim(){
+    ctx.clearRect(0,0,W,H);
+    for(var i=0;i<ps.length;i++){var p=ps[i];p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(99,102,241,'+p.a+')';ctx.fill()}
+    for(var i=0;i<ps.length;i++){for(var j=i+1;j<ps.length;j++){var dx=ps[i].x-ps[j].x,dy=ps[i].y-ps[j].y;var d=Math.sqrt(dx*dx+dy*dy);if(d<80){ctx.beginPath();ctx.moveTo(ps[i].x,ps[i].y);ctx.lineTo(ps[j].x,ps[j].y);ctx.strokeStyle='rgba(99,102,241,'+(.06*(1-d/80))+')';ctx.lineWidth=.5;ctx.stroke()}}}
+    requestAnimationFrame(anim);
+  }
+  anim();
+})();
 
 // Glow
 (function(){var g=document.getElementById('glowSpot');if(!g||('ontouchstart' in window))return;var x=innerWidth/2,y=innerHeight/2,tx=x,ty=y;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}anim()})();
