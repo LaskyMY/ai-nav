@@ -45,7 +45,7 @@
   var isIndex = location.pathname.endsWith('index.html') || location.pathname === '/' || location.pathname.endsWith('/ai-nav/');
   if (isClock || isIndex) { log('inject_skip', isClock ? 'clock' : 'index'); return; }
 
-  var ver = 'v26';
+  var ver = 'v27';
   try { var v = JSON.parse(localStorage.getItem('site_version')); if (v) ver = 'v' + v; } catch (e) {}
 
   // ═══ HEADER ═══
