@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>B站视频整理 · AI Nav</title>
+<link rel="stylesheet" href="./shared.css">
+<link rel="icon" href="./icon.svg">
+<style>
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.04);--card-border:rgba(255,255,255,.07);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--green:#10B981;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:14px;--ease:cubic-bezier(.22,1,.36,1)}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.6;min-height:100vh;padding-bottom:80px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.35}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--cyan) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:50%;left:50%;animation:floatOrb 22s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
+.wrap{max-width:860px;margin:0 auto;padding:20px;position:relative;z-index:1}
+
+h1{font-size:24px;font-weight:700;margin:8px 0 4px;background:linear-gradient(135deg,var(--pink),var(--cyan),var(--a1));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+.sub{font-size:12px;color:var(--tx3);margin-bottom:16px}
+
+/* Stats row */
+.stats{display:flex;gap:10px;margin:10px 0 20px;flex-wrap:wrap}
+.stat{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:12px;padding:10px 16px;text-align:center;flex:1;min-width:80px}
+.stat b{display:block;font-size:22px;color:var(--pink);font-weight:700}
+.stat span{font-size:10px;color:var(--tx3)}
+
+/* ── Video Card Grid ── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin:18px 0}
+
+/* Video card */
+.vcard{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);overflow:hidden;text-decoration:none;color:var(--tx);transition:all .35s var(--ease);position:relative;animation:fadeUp .5s var(--ease) both}
+.vcard::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.03) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.01) 100%);pointer-events:none}
+.vcard:hover{transform:translateY(-3px);border-color:rgba(236,72,153,.25);box-shadow:0 0 80px rgba(236,72,153,.08),0 12px 32px rgba(0,0,0,.2)}
+.vcard:nth-child(2){animation-delay:.05s}.vcard:nth-child(3){animation-delay:.10s}.vcard:nth-child(4){animation-delay:.15s}.vcard:nth-child(5){animation-delay:.20s}.vcard:nth-child(6){animation-delay:.25s}.vcard:nth-child(7){animation-delay:.30s}.vcard:nth-child(8){animation-delay:.35s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* Cover image — the star of the show */
+.vcard-cover{position:relative;aspect-ratio:16/9;background:rgba(0,0,0,.35);overflow:hidden}
+.vcard-cover img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease)}
+.vcard:hover .vcard-cover img{transform:scale(1.05)}
+.vcard-cover .no-cover{display:flex;align-items:center;justify-content:center;height:100%;font-size:56px;background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(236,72,153,.1))}
+
+/* Hover play overlay */
+.vcard-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);opacity:0;transition:opacity .3s}
+.vcard:hover .vcard-overlay{opacity:1}
+.play-icon{width:52px;height:52px;border-radius:50%;background:rgba(236,72,153,.5);backdrop-filter:blur(8px);border:2px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff}
+
+/* Duration badge */
+.vcard-dur{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.75);color:#fff;font-size:10px;padding:3px 7px;border-radius:5px;font-weight:500;letter-spacing:.02em}
+
+/* Card body */
+.vcard-body{padding:14px 16px}
+.vcard-body h3{font-size:14px;font-weight:600;line-height:1.5;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.vcard-meta{display:flex;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--tx3)}
+.vcard-meta span{white-space:nowrap}
+
+/* Empty */
+.empty{text-align:center;padding:48px 20px;color:var(--tx4)}
+.empty .emoji{font-size:64px;display:block;margin-bottom:12px}
+
+.back-link{text-align:center;margin-top:28px}
+.back-link a{color:var(--tx4);font-size:11px;text-decoration:none}
+
+@media(max-width:500px){.wrap{padding:12px}h1{font-size:18px}.grid{grid-template-columns:1fr;gap:12px}.vcard-body{padding:12px}}
+</style>
+</head>
+<body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot" id="glowSpot"></div>
+
+<div class="wrap">
+<h1>📺 B站视频整理</h1>
+<p class="sub">ForAI 收藏夹定时抓取 · 封面即缩略图 · 每小时自动更新 · 最后更新：2026/6/10 17:47:01</p>
+
+<div class="stats">
+  <div class="stat"><b>2</b><span>视频</span></div>
+  <div class="stat"><b>每小时</b><span>自动抓取</span></div>
+  <div class="stat"><b>ForAI</b><span>收藏夹</span></div>
+</div>
+
+<div class="grid">
+  <a class="vcard" href="./bilibili/BV15eRXBGEFL.html">
+    <div class="vcard-cover">
+      <img src="https://i0.hdslb.com/bfs/archive/d0e8c9e281c5d0f31298d646222ea5dd969e1296.png" alt="" loading="lazy">
+      <div class="vcard-overlay"><span class="play-icon">▶</span></div>
+      <span class="vcard-dur">9:31</span>
+    </div>
+    <div class="vcard-body">
+      <h3>【中配】每天吃这个 我的睾酮水平飙升</h3>
+      <div class="vcard-meta">
+        <span>👤 AI译片君</span>
+        <span>▶ 1.3万</span>
+        <span>📅 2026-05-09</span>
+      </div>
+    </div>
+  </a>
+
+  <a class="vcard" href="./bilibili/BV1AvRQBXEiU.html">
+    <div class="vcard-cover">
+      <img src="https://i0.hdslb.com/bfs/archive/fa9649880063e726f3a11c4f555235831ae0c6b0.png" alt="" loading="lazy">
+      <div class="vcard-overlay"><span class="play-icon">▶</span></div>
+      <span class="vcard-dur">11:04</span>
+    </div>
+    <div class="vcard-body">
+      <h3>【中配】这样做能让睾酮水平飙升</h3>
+      <div class="vcard-meta">
+        <span>👤 AI译片君</span>
+        <span>▶ 4.2万</span>
+        <span>📅 2026-05-09</span>
+      </div>
+    </div>
+  </a></div>
+
+<div class="back-link">
+  <a href="./index.html">← 返回首页</a> · <a href="./automations.html">⚙️ 自动化监控</a>
+</div>
+</div>
+
+<script>
+(function(){var g=document.getElementById('glowSpot');if(!g||('ontouchstart' in window))return;var x=innerWidth/2,y=innerHeight/2,tx=x,ty=y;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(236,72,153,.05) 0%,rgba(99,102,241,.03) 20%,rgba(6,182,212,.015) 45%,transparent 70%)';requestAnimationFrame(anim)}anim()})();
+</script>
+<script src="./shared.js"></script>
+</body>
+</html>

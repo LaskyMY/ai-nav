@@ -10,7 +10,9 @@ import { initDB, insertNews, getNews, getNewsCount, searchNews, getLatestSummary
          saveSummary, saveWeather, getWeather, logUsage as dbLogUsage, getUsageStats as dbUsageStats,
          getPageStats, trackPage, getDBStats, queryForAI,
          ingestFinancialBrief as dbIngestFinancial, getFinancialBriefs as dbGetFinancialBriefs,
-         getLatestFinancialBriefs as dbGetLatestFinancial, cleanupOldFinancialBriefs as dbCleanupFinancial } from "./db.js";
+         getLatestFinancialBriefs as dbGetLatestFinancial, cleanupOldFinancialBriefs as dbCleanupFinancial,
+         searchPageContent as dbSearchPages, getPageMetas as dbGetPageMetas,
+         updateAutomationStatus as dbUpdateAuto, getAutomationStatus as dbGetAuto } from "./db.js";
 let dbReady = false;
 
 // ── Usage tracking ──
@@ -498,39 +500,38 @@ async function dbQuery(sql, params = []) {
     }
 
     
+    // ── Automation Status ──
+    if (path === "/api/auto/status") {
+      if (!dbReady) return err("db not ready", 503);
+      const rows = await dbGetAuto();
+      return ok(rows);
+    }
+    if (path === "/api/auto/update" && req.method === "POST") {
+      if (!dbReady) return err("db not ready", 503);
+      try {
+        const body = await req.json();
+        await dbUpdateAuto(body.name, body.status, body.summary || null, body.error || null);
+        return ok({ ok: true });
+      } catch(e) { console.log("[auto] update error:", e.message); return err(e.message, 400); }
+    }
+
     // ── Full-text Search ──
     if (path === "/api/search") {
       const q = url.searchParams.get("q");
       if (!q || q.length < 1) return ok({ results: [] });
       if (!dbReady) return err("db not ready", 503);
 
-      const results = [];
-      // Search page_meta
-      const pages = await dbQuery(
-        "SELECT path, title, description, category FROM page_meta WHERE title ILIKE $1 OR description ILIKE $1 LIMIT 10",
-        ['%'+q+'%']
-      );
-      for (const p of pages) {
-        results.push({ type: "page", title: p.title, desc: p.description, path: p.path, cat: p.category });
-      }
-      // Search course_lessons
-      const courses = await dbQuery(
-        "SELECT slug, title, desc_text, stage FROM course_lessons WHERE title ILIKE $1 OR desc_text ILIKE $1 LIMIT 10",
-        ['%'+q+'%']
-      );
-      for (const c of courses) {
-        results.push({ type: "course", title: c.title, desc: c.desc_text?.slice(0,100), path: "vibe-coding-lessons/"+c.slug+".html", cat: c.stage });
-      }
-      // Search financial_briefs
-      const fin = await dbQuery(
-        "SELECT date, type, content FROM financial_briefs WHERE content ILIKE $1 LIMIT 5",
-        ['%'+q+'%']
-      );
-      for (const f of fin) {
-        results.push({ type: "financial", title: f.type==='morning'?'早间简报':'晚间简报', desc: f.content?.slice(0,100), path: "financial-news.html", cat: f.date });
-      }
+      const results = await dbSearchPages(q, 20);
+      const formatted = results.map(r => ({
+        type: r.path?.includes('vibe-coding') ? 'course' :
+              r.path?.includes('financial') ? 'financial' : 'page',
+        title: r.title,
+        desc: r.excerpt || r.description || '',
+        path: r.path,
+        cat: r.category || ''
+      }));
 
-      return ok({ results: results.slice(0, 20), query: q });
+      return ok({ results: formatted, query: q });
     }
 
     // ── Course API ──
@@ -762,12 +763,30 @@ async function startup() {
   try { await initDB(); dbReady = true; console.log("[server] PostgreSQL ready"); } catch(e) { console.log("[server] DB init failed:", e.message); }
   try { const cn = JSON.parse(await Deno.readTextFile("/Users/lasky_my/ai-nav/news-cn-cache.json")); if (cn && cn.length) { cn._ts = Date.now(); cacheSet("news-cn", cn); console.log("[init] loaded news-cn cache:", cn.length, "items"); } } catch(_) {}
   try { const ns = JSON.parse(await Deno.readTextFile("/Users/lasky_my/ai-nav/news-cache.json")); if (ns && ns.summary) { cacheSet("news-summary", ns); console.log("[init] loaded news-summary cache"); } } catch(_) {}
+
+  // Init automation statuses
+  if (dbReady) {
+    for (const [name, desc] of [["news-summary","AI新闻摘要"],["news-cn","中文新闻"],["weather-refresh","天气刷新"],["papers-refresh","论文同步"],["financial-daily","金融简报"]]){
+      try { await dbUpdateAuto(name, "pending", desc); } catch(_) {}
+    }
+  }
+
   refreshNewsSummary();
   setInterval(refreshNewsSummary, 900_000);
   setInterval(refreshNewsCN, 300000);
 
   // Financial briefs: schedule daily at 6AM
   await scheduleDailyFinancial();
+
+  // Bilibili scraper: run on startup + every hour (backup for launchd)
+  try {
+    const { scrapeAndGenerate } = await import("./bilibili-scraper.js");
+    scrapeAndGenerate();
+    setInterval(scrapeAndGenerate, 3600000);
+    console.log("[bilibili] Scraper scheduled (hourly)");
+  } catch (e) {
+    console.log("[bilibili] Scraper not available:", e.message);
+  }
 }
 startup();
 

@@ -1,47 +1,47 @@
-// AI Nav 按需加载模块 — 减少首页初始加载
+// AI Nav 按需加载模块 v2 — 主页拆分后智能加载
 (function(){
   if(typeof App==='undefined')return;
-  var loaded={};
+
   var API=location.hostname==='localhost'?'http://localhost:8765':'https://99107705bcfb4f23-183-6-87-29.serveousercontent.com';
-  
-  // 拦截页面切换，按需加载数据
+
+  // Track which data has been fetched
+  var fetched={};
+
+  // Intercept page switches for lazy data loading
   var origSwitch=App.switchPage;
   App.switchPage=function(name){
     origSwitch.call(App,name);
-    // 懒加载各页面数据
-    if(name==='papers'&&!loaded.papers){
-      loaded.papers=true;
-      fetch(API+'/api/db/summaries?type=papers-summary').then(r=>r.json()).then(d=>{
+
+    // Load data when user switches to specific tabs
+    if(name==='papers'&&!fetched.papers){
+      fetched.papers=true;
+      fetch(API+'/api/db/summaries?type=papers-summary').then(function(r){return r.json()}).then(function(d){
         if(d&&d.length)console.log('[lazy] Papers loaded:',d.length);
       }).catch(function(){});
     }
-    if(name==='vfx'&&!loaded.vfx){
-      loaded.vfx=true;
-      console.log('[lazy] VFX section activated');
-    }
-    if(name==='overview'&&!loaded.insights){
-      loaded.insights=true;
-      // Insights already loaded by init, just mark
+    if(name==='overview'&&!fetched.insights){
+      fetched.insights=true;
     }
   };
-  
-  // 延迟加载非关键资源
+
+  // Deferred: load non-critical data after page is fully loaded
   window.addEventListener('load',function(){
     setTimeout(function(){
-      // 预加载金融简报
-      if(document.getElementById('finBriefCard')){
-        fetch(API+'/api/financial/latest').then(r=>r.json()).then(d=>{
+      // Pre-load financial brief content
+      var el=document.getElementById('finBriefCard');
+      if(el){
+        fetch(API+'/api/financial/latest').then(function(r){return r.json()}).then(function(d){
           if(d&&d.length){
             var s=d.find(function(x){return x.type==='summary'});
-            if(s&&s.content){
-              var el=document.getElementById('finBriefContent');
-              if(el)el.textContent=s.content.slice(0,200)+'...';
+            var briefEl=document.getElementById('finBriefContent');
+            if(s&&s.content&&briefEl){
+              briefEl.textContent=s.content.slice(0,200)+'...';
             }
           }
         }).catch(function(){});
       }
-    },2000);
+    },1500);
   });
-  
-  console.log('[lazy] 按需加载模块已激活');
+
+  console.log('[lazy] v2 模块加载器已激活');
 })();

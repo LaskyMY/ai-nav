@@ -199,6 +199,153 @@ export async function cleanupOldFinancialBriefs(days = 10) {
   await client.queryArray("DELETE FROM financial_briefs WHERE date < CURRENT_DATE - $1", [days]);
 }
 
+// ── Page Meta + Full-Text Search ──
+export async function upsertPageMeta(path, title, description, bodyText, category = 'other') {
+  if (!client) return;
+  await client.queryArray(
+    `INSERT INTO page_meta (path, title, description, body_text, category, search_vector, indexed_at)
+     VALUES ($1, $2, $3, $4, $5,
+       setweight(to_tsvector('simple', COALESCE($2, '')), 'A') ||
+       setweight(to_tsvector('simple', COALESCE($3, '')), 'B') ||
+       setweight(to_tsvector('simple', COALESCE($4, '')), 'C'),
+       NOW())
+     ON CONFLICT (path) DO UPDATE SET
+       title = EXCLUDED.title,
+       description = EXCLUDED.description,
+       body_text = EXCLUDED.body_text,
+       category = EXCLUDED.category,
+       search_vector = EXCLUDED.search_vector,
+       indexed_at = NOW()`,
+    [path, title, description, bodyText, category]
+  );
+}
+
+export async function getPageMetas(activeOnly = true) {
+  if (!client) return [];
+  const r = await client.queryObject(
+    activeOnly
+      ? "SELECT * FROM page_meta WHERE is_active = true ORDER BY category, nav_order"
+      : "SELECT * FROM page_meta ORDER BY category, nav_order"
+  );
+  return r.rows;
+}
+
+export async function getPageMetaByPath(path) {
+  if (!client) return null;
+  const r = await client.queryObject(
+    "SELECT * FROM page_meta WHERE path = $1", [path]
+  );
+  return r.rows[0] || null;
+}
+
+// Full-text search across page_meta
+export async function searchPageContent(query, limit = 20) {
+  if (!client || !query || query.length < 1) return [];
+
+  // Try tsvector search first (for Chinese, 'simple' config works best)
+  const tsQuery = query.split(/\s+/).filter(w => w.length > 0).join(' & ');
+  let results = [];
+  try {
+    const r = await client.queryObject(
+      `SELECT path, title, description,
+              COALESCE(left(body_text, 300), description) as excerpt,
+              category,
+              ts_rank(search_vector, to_tsquery('simple', $1)) as rank
+       FROM page_meta
+       WHERE is_active = true AND search_vector @@ to_tsquery('simple', $1)
+       ORDER BY rank DESC LIMIT $2`,
+      [tsQuery, limit]
+    );
+    results = r.rows;
+  } catch (_) {
+    // tsquery parse error — fall through to ILIKE
+  }
+
+  // Fallback: ILIKE search
+  if (results.length === 0) {
+    const q = `%${query}%`;
+    const r = await client.queryObject(
+      `SELECT path, title, description,
+              COALESCE(left(body_text, 300), description) as excerpt,
+              category
+       FROM page_meta
+       WHERE is_active = true
+         AND (title ILIKE $1 OR description ILIKE $1 OR body_text ILIKE $1)
+       ORDER BY title LIMIT $2`,
+      [q, limit]
+    );
+    results = r.rows;
+  }
+
+  // Also search course_lessons
+  const q = `%${query}%`;
+  const cr = await client.queryObject(
+    `SELECT ('./vibe-coding-lessons/' || slug || '.html') as path,
+            title, desc_text as description,
+            desc_text as excerpt,
+            ('课程·阶段' || stage) as category
+     FROM course_lessons
+     WHERE title ILIKE $1 OR desc_text ILIKE $1
+     LIMIT 5`,
+    [q]
+  );
+  results.push(...cr.rows);
+
+  // Also search financial_briefs
+  const fr = await client.queryObject(
+    `SELECT './financial-news.html' as path,
+            title,
+            left(content, 200) as description,
+            left(content, 300) as excerpt,
+            type as category
+     FROM financial_briefs
+     WHERE content ILIKE $1
+     ORDER BY date DESC LIMIT 3`,
+    [q]
+  );
+  results.push(...fr.rows);
+
+  return results.slice(0, limit);
+}
+
+// ── Automation Log ──
+export async function updateAutomationStatus(name, status, resultSummary = null, errorMsg = null) {
+  if (!client) return;
+  await client.queryArray(
+    `INSERT INTO automation_log (process_name, status, result_summary, error_message, started_at, finished_at, next_run_at, run_count)
+     VALUES ($1, $2, $3, $4, NOW(), NOW(),
+       CASE $2 WHEN 'running' THEN NULL ELSE NOW() + (
+         CASE $1
+           WHEN 'bilibili-scraper' THEN INTERVAL '1 hour'
+           WHEN 'financial-daily' THEN INTERVAL '24 hours'
+           WHEN 'news-summary' THEN INTERVAL '15 minutes'
+           WHEN 'news-cn' THEN INTERVAL '5 minutes'
+           WHEN 'weather-refresh' THEN INTERVAL '10 minutes'
+           WHEN 'papers-refresh' THEN INTERVAL '5 minutes'
+           ELSE INTERVAL '1 hour'
+         END
+       ) END,
+       1)
+     ON CONFLICT ON CONSTRAINT automation_log_process_name_key DO UPDATE SET
+       status = EXCLUDED.status,
+       result_summary = COALESCE(EXCLUDED.result_summary, automation_log.result_summary),
+       error_message = EXCLUDED.error_message,
+       started_at = CASE WHEN $2 = 'running' THEN EXCLUDED.started_at ELSE automation_log.started_at END,
+       finished_at = CASE WHEN $2 != 'running' THEN EXCLUDED.finished_at ELSE automation_log.finished_at END,
+       next_run_at = EXCLUDED.next_run_at,
+       run_count = automation_log.run_count + 1`,
+    [name, status, resultSummary, errorMsg]
+  );
+}
+
+export async function getAutomationStatus() {
+  if (!client) return [];
+  const r = await client.queryObject(
+    "SELECT * FROM automation_log ORDER BY process_name"
+  );
+  return r.rows;
+}
+
 // ── 关闭 ──
 export async function closeDB() {
   if (client) await client.end();

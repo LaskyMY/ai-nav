@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>自动化进程监控 · AI Nav</title>
+<link rel="stylesheet" href="./shared.css">
+<link rel="icon" href="./icon.svg">
+<style>
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.05);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--green:#10B981;--red:#ef4444;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:16px;--ease:cubic-bezier(.22,1,.36,1)}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.6;min-height:100vh;padding-bottom:80px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.35}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--green) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--cyan) 0%,transparent 70%);top:50%;left:50%;animation:floatOrb 22s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
+.wrap{max-width:700px;margin:0 auto;padding:20px;position:relative;z-index:1}
+
+h1{font-size:22px;font-weight:700;margin:8px 0 4px;background:linear-gradient(135deg,var(--green),var(--cyan),var(--a1));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+.sub{font-size:12px;color:var(--tx3);margin-bottom:16px}
+
+/* Summary bar */
+.summary-bar{display:flex;gap:10px;margin:12px 0 18px;flex-wrap:wrap}
+.sbar-item{flex:1;min-width:100px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:12px;text-align:center}
+.sbar-item .num{font-size:28px;font-weight:700}
+.sbar-item .lbl{font-size:10px;color:var(--tx3);margin-top:2px}
+
+/* Process card */
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:16px 18px;margin-bottom:10px;position:relative;overflow:hidden;transition:all .3s var(--ease);animation:fadeUp .4s var(--ease) both}
+.card:nth-child(2){animation-delay:.04s}.card:nth-child(3){animation-delay:.08s}.card:nth-child(4){animation-delay:.12s}.card:nth-child(5){animation-delay:.16s}.card:nth-child(6){animation-delay:.20s}.card:nth-child(7){animation-delay:.24s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.01) 100%);pointer-events:none}
+.card:hover{border-color:rgba(99,102,241,.15);transform:translateY(-1px)}
+
+.card-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.card-icon{font-size:22px;flex-shrink:0}
+.card-name{font-size:14px;font-weight:600;flex:1}
+.card-desc{font-size:10px;color:var(--tx3);margin-bottom:6px}
+
+/* Status badges */
+.badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:10px;font-weight:600;flex-shrink:0}
+.badge-success{background:rgba(16,185,129,.12);color:var(--green);border:1px solid rgba(16,185,129,.2)}
+.badge-running{background:rgba(99,102,241,.12);color:var(--a1);border:1px solid rgba(99,102,241,.2);animation:pulse 2s ease-in-out infinite}
+.badge-error{background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+.badge-pending{background:rgba(255,255,255,.04);color:var(--tx3);border:1px solid rgba(255,255,255,.08)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+
+.card-meta{display:flex;flex-wrap:wrap;gap:14px;font-size:11px;color:var(--tx2)}
+.card-meta span{display:flex;align-items:center;gap:4px}
+.card-meta .meta-icon{font-size:12px;opacity:.6}
+.card-meta .error{color:var(--red)}
+.card-summary{font-size:12px;color:var(--tx2);margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.04)}
+
+/* Refresh bar */
+.refresh-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.refresh-bar .last-update{font-size:11px;color:var(--tx3)}
+.btn-refresh{padding:6px 14px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--tx2);font-size:11px;cursor:pointer;font-family:inherit;transition:all .2s}
+.btn-refresh:hover{background:rgba(255,255,255,.08);color:var(--tx)}
+
+.back-link{text-align:center;margin-top:24px}.back-link a{color:var(--tx4);font-size:11px;text-decoration:none}
+
+@media(max-width:500px){.wrap{padding:14px}h1{font-size:18px}.card{padding:14px}.card-meta{gap:8px;flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot" id="glowSpot"></div>
+
+<div class="wrap">
+<h1>⚙️ 自动化进程监控</h1>
+<p class="sub">定时任务运行状态 · 实时刷新 · 异常告警</p>
+
+<div class="summary-bar" id="summaryBar"></div>
+
+<div class="refresh-bar">
+  <button class="btn-refresh" onclick="loadStatus()">🔄 刷新</button>
+  <span class="last-update" id="lastUpdate">加载中...</span>
+  <span style="margin-left:auto;font-size:10px;color:var(--tx4)">自动刷新: 30s</span>
+</div>
+
+<div id="processList">加载中...</div>
+
+<div class="back-link">
+  <a href="./index.html">← 返回首页</a>
+</div>
+</div>
+
+<script>
+var API = location.hostname === 'localhost' ? 'http://localhost:8765' : 'https://99107705bcfb4f23-183-6-87-29.serveousercontent.com';
+
+function badge(status) {
+  var map = {success:'success',running:'running',error:'error',pending:'pending'};
+  var labels = {success:'✅ 正常',running:'⏳ 运行中',error:'❌ 异常',pending:'⏸ 待命'};
+  return '<span class="badge badge-'+(map[status]||'pending')+'">'+(labels[status]||status)+'</span>';
+}
+
+function timeAgo(ts) {
+  if (!ts) return '--';
+  var d = new Date(ts), now = new Date();
+  var sec = Math.floor((now - d) / 1000);
+  if (sec < 60) return sec + '秒前';
+  if (sec < 3600) return Math.floor(sec/60) + '分钟前';
+  if (sec < 86400) return Math.floor(sec/3600) + '小时前';
+  return Math.floor(sec/86400) + '天前';
+}
+
+function render(processes) {
+  var el = document.getElementById('processList');
+  if (!processes || !processes.length) {
+    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--tx4)">暂无自动化进程数据<br><span style="font-size:11px">服务器启动后自动初始化</span></div>';
+    return;
+  }
+
+  var html = '';
+  for (var i = 0; i < processes.length; i++) {
+    var p = processes[i];
+    var runCount = p.run_count || 0;
+    var summary = p.result_summary || '';
+    var error = p.error_message || '';
+    var nextRun = p.next_run_at ? new Date(p.next_run_at).toLocaleString('zh-CN',{hour:'2-digit',minute:'2-digit',month:'numeric',day:'numeric'}) : '--';
+
+    html += '<div class="card">';
+    html += '<div class="card-top">';
+    html += '<span class="card-icon">' + getIcon(p.process_name) + '</span>';
+    html += '<span class="card-name">' + getLabel(p.process_name) + '</span>';
+    html += badge(p.status);
+    html += '</div>';
+    html += '<div class="card-desc">' + getDesc(p.process_name) + '</div>';
+    html += '<div class="card-meta">';
+    html += '<span><span class="meta-icon">⏱</span> 上次: ' + timeAgo(p.finished_at) + '</span>';
+    html += '<span><span class="meta-icon">🔄</span> 运行: ' + runCount + ' 次</span>';
+    html += '<span><span class="meta-icon">📅</span> 下次: ' + nextRun + '</span>';
+    html += '</div>';
+    if (summary) html += '<div class="card-summary">📋 ' + escapeHtml(summary) + '</div>';
+    if (error) html += '<div class="card-meta" style="margin-top:4px"><span class="error">⚠️ ' + escapeHtml(error) + '</span></div>';
+    html += '</div>';
+  }
+
+  el.innerHTML = html;
+
+  // Summary bar
+  var success = processes.filter(function(x){return x.status==='success'}).length;
+  var running = processes.filter(function(x){return x.status==='running'}).length;
+  var error = processes.filter(function(x){return x.status==='error'}).length;
+  document.getElementById('summaryBar').innerHTML =
+    '<div class="sbar-item"><div class="num" style="color:var(--green)">' + success + '</div><div class="lbl">正常</div></div>' +
+    '<div class="sbar-item"><div class="num" style="color:var(--a1)">' + running + '</div><div class="lbl">运行中</div></div>' +
+    '<div class="sbar-item"><div class="num" style="color:var(--red)">' + error + '</div><div class="lbl">异常</div></div>' +
+    '<div class="sbar-item"><div class="num" style="color:var(--tx3)">' + processes.length + '</div><div class="lbl">总计</div></div>';
+}
+
+function getIcon(name) {
+  var icons = {'bilibili-scraper':'🎬','financial-daily':'📊','news-summary':'📰','news-cn':'🌐','weather-refresh':'🌤️','papers-refresh':'📄'};
+  return icons[name] || '⚙️';
+}
+function getLabel(name) {
+  var labels = {'bilibili-scraper':'B站收藏夹抓取','financial-daily':'金融简报采集','news-summary':'AI新闻摘要','news-cn':'中文新闻翻译','weather-refresh':'天气数据刷新','papers-refresh':'论文数据同步'};
+  return labels[name] || name;
+}
+function getDesc(name) {
+  var descs = {'bilibili-scraper':'每小时抓取ForAI收藏夹，新视频自动生成页面','financial-daily':'每天6:01从腾讯文档采集金融早间/晚间简报','news-summary':'每15分钟调用DeepSeek生成中文新闻摘要','news-cn':'每5分钟翻译最新英文新闻为中文','weather-refresh':'每10分钟刷新天气数据 (wttr.in)','papers-refresh':'每5分钟从OpenAlex同步最新AI论文'};
+  return descs[name] || '';
+}
+function escapeHtml(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+async function loadStatus() {
+  var el = document.getElementById('processList');
+  el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--tx3)">⏳ 加载中...</div>';
+  try {
+    var r = await fetch(API + '/api/auto/status', {signal: AbortSignal.timeout(5000)});
+    var data = await r.json();
+    render(data);
+    document.getElementById('lastUpdate').textContent = '更新于 ' + new Date().toLocaleTimeString('zh-CN');
+  } catch(e) {
+    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--red)">⚠️ 无法获取数据<br><span style="font-size:11px;color:var(--tx3)">请确认本地服务器正在运行</span></div>';
+  }
+}
+
+loadStatus();
+setInterval(loadStatus, 30000);
+</script>
+
+<script>
+(function(){var g=document.getElementById('glowSpot');if(!g||('ontouchstart' in window))return;var x=innerWidth/2,y=innerHeight/2,tx=x,ty=y;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(16,185,129,.05) 0%,rgba(99,102,241,.03) 20%,rgba(6,182,212,.015) 45%,transparent 70%)';requestAnimationFrame(anim)}anim()})();
+</script>
+<script src="./shared.js"></script>
+</body>
+</html>

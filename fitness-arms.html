@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>手臂训练完全指南 · AI Nav 健身</title>
+<link rel="stylesheet" href="./shared.css">
+<link rel="icon" href="./icon.svg">
+<style>
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.06);--card-border:rgba(255,255,255,.08);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--green:#10B981;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:18px;--ease:cubic-bezier(.22,1,.36,1)}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.7;min-height:100vh;padding-bottom:80px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.35}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,#f59e0b 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);top:50%;left:50%;animation:floatOrb 22s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
+.wrap{max-width:760px;margin:0 auto;padding:20px;position:relative;z-index:1}
+
+h1{font-size:26px;font-weight:700;margin:12px 0 4px;background:linear-gradient(135deg,#f59e0b,var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+.hero-desc{font-size:13px;color:var(--tx3);margin-bottom:16px}
+
+h2{font-size:17px;font-weight:700;color:#f59e0b;margin:24px 0 10px;border-left:3px solid #f59e0b;padding-left:12px}
+h3{font-size:14px;font-weight:700;color:var(--tx);margin:16px 0 8px}
+
+/* Reading modes */
+.reading-mode{display:flex;gap:8px;margin:16px 0}
+.mode-btn{flex:1;padding:12px 8px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:var(--tx3);font-size:11px;cursor:pointer;text-align:center;transition:all .3s;font-family:inherit}
+.mode-btn:hover{border-color:rgba(99,102,241,.2);color:var(--tx2)}
+.mode-btn.active{border-color:rgba(99,102,241,.4);background:rgba(99,102,241,.1);color:var(--a1);font-weight:600}
+.mode-time{display:block;font-size:22px;font-weight:700;margin-bottom:2px}
+.mode-label{font-size:10px;opacity:.6}
+
+.content-section{margin:12px 0;transition:all .3s}
+.content-section.hidden{display:none}
+.section-body{font-size:14px;color:var(--tx2);line-height:1.9}
+
+/* Exercise table */
+.ex-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.06)}
+.ex-table td,.ex-table th{border:1px solid rgba(255,255,255,.05);padding:10px 14px;text-align:left}
+.ex-table th{background:rgba(255,255,255,.04);color:#f59e0b;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.03em}
+.ex-table td{color:var(--tx2)}
+.ex-table tr:hover td{background:rgba(255,255,255,.02)}
+.ex-table td:first-child{font-weight:600;color:var(--tx)}
+
+/* Card */
+.card{background:var(--card-bg);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid var(--card-border);border-radius:var(--r);padding:18px;margin:12px 0;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.01) 100%);pointer-events:none}
+.card-tip{background:rgba(99,102,241,.04);border-color:rgba(99,102,241,.15)}
+
+/* Nav */
+.nav-btns{display:flex;gap:8px;margin:28px 0 12px;flex-wrap:wrap}
+.btn{display:inline-block;padding:10px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:var(--tx2);font-size:12px;text-decoration:none;transition:all .25s;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.btn:hover{border-color:rgba(99,102,241,.25);color:var(--tx);background:rgba(255,255,255,.08)}
+
+.back{text-align:center;margin-top:24px}.back a{color:var(--tx4);font-size:11px;text-decoration:none}
+
+@media(max-width:600px){.wrap{padding:14px}h1{font-size:20px}.ex-table td,.ex-table th{padding:6px 8px;font-size:11px}.reading-mode{flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot" id="glowSpot"></div>
+
+<div class="wrap">
+<h1>💪 手臂训练完全指南</h1>
+<p class="hero-desc">粗壮的手臂是最直观的训练成果。肱三头肌占上臂2/3体积——想要粗手臂，三头比二头更重要。</p>
+
+<!-- 136 Reading Modes -->
+<div class="reading-mode">
+  <button class="mode-btn active" onclick="setMode('1min',this)"><span class="mode-time">1</span><span class="mode-label">分钟速览</span></button>
+  <button class="mode-btn" onclick="setMode('3min',this)"><span class="mode-time">3</span><span class="mode-label">分钟精读</span></button>
+  <button class="mode-btn" onclick="setMode('6min',this)"><span class="mode-time">6</span><span class="mode-label">分钟深读</span></button>
+</div>
+
+<div class="content-section" id="s1">
+<h2>解剖结构</h2>
+<p class="section-body">手臂主要肌群：<br><b>肱二头肌</b> — 手臂前侧，分长头和短头。弯举类动作直接刺激。长头在外侧，短头在内侧。锤式弯举可以额外刺激肱肌，让手臂看起来更厚。<br><b>肱三头肌</b> — 手臂后侧，分长头、外侧头和内侧头。占上臂体积的2/3！想要粗手臂，三头比二头更重要。绳索下压和窄距卧推最有效。<br><b>前臂肌群</b> — 前臂屈肌（内侧）和伸肌（外侧）。握力是所有拉类动作的基础。腕弯举和反握弯举专门训练。</p>
+</div><div class="content-section" id="s2">
+<h2>核心动作</h2>
+<p class="section-body"><b>杠铃弯举</b> — 二头肌的经典动作。上臂夹紧身体不动，只有前臂移动。每组10-12次。<br><b>锤式弯举</b> — 哑铃掌心相对，同时刺激肱肌。让手臂看起来更厚实。每组10-12次。<br><b>窄距卧推</b> — 三头肌最好的复合动作。握距与肩同宽，杠铃下放到下胸位置。每组8-10次。<br><b>绳索下压</b> — 三头肌孤立动作。上臂贴紧身体，用绳索或直杆，下压到手臂完全伸直。</p>
+</div><div class="content-section" id="s3">
+<h2>训练计划</h2>
+<p class="section-body"><b>初学者（每周1次）</b>：杠铃弯举3×10 + 绳索下压3×12 + 锤式弯举2×12<br><b>中级（每周1-2次）</b>：杠铃弯举3×10 + 牧师凳弯举3×12 + 窄距卧推3×8 + 绳索下压3×12 + 腕弯举2×15<br><b>避坑提示</b>：手臂是相对小的肌群，不需要太多组数。9-12组二头+9-12组三头就足够了。超过20组反而影响恢复。</p>
+</div><div class="content-section" id="s4">
+<h2>常见错误</h2>
+<p class="section-body">❌ 弯举时身体摇晃借力 → 重量太大，二头肌没有孤立刺激<br>❌ 只练二头不练三头 → 手臂从后面看是平的，前面看也不够粗<br>❌ 手臂训练放在大重量日的第二天 → 手臂还没恢复，影响训练效果<br>❌ 忽略离心阶段 → 控制下放（2-3秒）比快速弯举对肌肉刺激更大</p>
+</div>
+
+<!-- Training Plan Summary -->
+<h2>📋 训练动作一览</h2>
+<table class="ex-table">
+<thead><tr><th>动作</th><th>目标区域</th><th>组数×次数</th><th>作用</th></tr></thead>
+<tbody><tr><td>杠铃弯举</td><td>肱二头肌</td><td>3×10-12</td><td>二头整体厚度</td></tr><tr><td>锤式弯举</td><td>肱肌+二头</td><td>3×10-12</td><td>手臂宽度</td></tr><tr><td>绳索下压</td><td>肱三头肌</td><td>3×12-15</td><td>三头孤立塑形</td></tr><tr><td>窄距卧推</td><td>肱三头肌</td><td>3×8-10</td><td>三头复合力量</td></tr><tr><td>牧师凳弯举</td><td>肱二头肌短头</td><td>3×12-15</td><td>二头肌峰</td></tr><tr><td>腕弯举</td><td>前臂屈肌</td><td>3×15-20</td><td>握力+前臂</td></tr></tbody>
+</table>
+
+<!-- Tip Card -->
+<div class="card card-tip">
+<h3>💡 关键提示</h3>
+<p style="font-size:13px;color:var(--tx2);line-height:1.8">训练前做10分钟动态热身（特别是目标关节）。每个动作先做1-2组轻重量热身。控制离心阶段（下放2-3秒），肌肉在拉伸位置受到的刺激最大。训练后30分钟内补充蛋白质。</p>
+</div>
+
+<!-- Navigation -->
+<div class="nav-btns"><a class="btn" href="./fitness-legs.html">← 腿部训练完全指南</a><a class="btn" href="./fitness-core.html">核心训练完全指南 →</a><a class="btn" href="./fitness-muscles.html">📋 肌肉总览</a></div>
+<div class="back"><a href="./fitness-muscles.html">← 返回肌肉总览</a> · <a href="./index.html">返回首页</a></div>
+</div>
+
+<script>
+// 136 Reading Mode
+function setMode(mode,btn){
+  document.querySelectorAll('.mode-btn').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');
+  var sections=document.querySelectorAll('.content-section');
+  if(mode==='1min'){
+    // Show only first section
+    sections.forEach(function(s,i){s.classList.toggle('hidden',i!==0)});
+  }else if(mode==='3min'){
+    // Show first 2 sections
+    sections.forEach(function(s,i){s.classList.toggle('hidden',i>=2)});
+  }else{
+    // Show all
+    sections.forEach(function(s){s.classList.remove('hidden')});
+  }
+}
+
+// Glow
+(function(){var g=document.getElementById('glowSpot');if(!g||'ontouchstart' in window)return;var x=window.innerWidth/2,y=window.innerHeight/2,tx=x,ty=y;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}anim()})();
+</script>
+<script src="./shared.js"></script>
+</body>
+</html>
