@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>长期侧睡的人必练！单侧扭转拉伸，快速打开胸肩背改善猥琐体态 · B站视频整理</title>
+<link rel="stylesheet" href="../shared.css">
+<link rel="icon" href="../icon.svg">
+<style>
+:root{--bg:#0a0a0f;--card-bg:rgba(255,255,255,.04);--card-border:rgba(255,255,255,.06);--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--green:#10B981;--red:#EF4444;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:16px;--ease:cubic-bezier(.22,1,.36,1)}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.8;min-height:100vh;padding-bottom:80px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.4}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--cyan) 0%,transparent 70%);top:50%;left:50%;animation:floatOrb 22s ease-in-out infinite;animation-delay:-7s}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
+
+.wrap{max-width:800px;margin:0 auto;padding:20px;position:relative;z-index:1}
+.breadcrumb{font-size:11px;color:var(--tx3);margin-bottom:8px}.breadcrumb a{color:var(--tx4);text-decoration:none}
+.badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:10px;font-weight:600;margin-bottom:8px;background:rgba(99,102,241,.15);color:#818cf8}
+
+h1{font-size:26px;font-weight:700;margin:12px 0 4px;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+@keyframes tFlow{0%{background-position:0% 50%}50%{background-position:100% 100%}100%{background-position:0% 50%}}
+h2{font-size:16px;font-weight:700;color:var(--cyan);margin:0 0 10px}
+h3{font-size:14px;font-weight:600;color:rgba(255,255,255,.85);margin:16px 0 8px}
+
+/* ── 136 Mode Buttons ── */
+.reading-mode{display:flex;gap:8px;margin:14px 0}
+.mode-btn{flex:1;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:var(--tx3);font-size:12px;cursor:pointer;text-align:center;transition:all .3s;font-family:inherit}
+.mode-btn:hover{border-color:rgba(99,102,241,.2);color:var(--tx2)}
+.mode-btn.active{border-color:rgba(99,102,241,.4);background:rgba(99,102,241,.1);color:var(--a1);font-weight:600}
+.mode-btn .mode-time{display:block;font-size:20px;font-weight:700;margin-bottom:2px}
+.mode-btn .mode-label{font-size:10px;opacity:.6}
+.content-section{margin:16px 0;transition:all .3s}
+.content-section.hidden{display:none}
+
+/* ── Canvas Hero ── */
+.hero-canvas{width:100%;max-width:600px;height:200px;margin:0 auto 16px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.2)}
+.hero-canvas canvas{width:100%;height:100%;display:block}
+
+/* ── Glass Card (matching fitness page style) ── */
+.card{background:rgba(255,255,255,.04);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:18px 20px;margin-bottom:12px;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.02) 100%);pointer-events:none}
+.card-ok{border-left:3px solid rgba(16,185,129,.4)}
+.card-warn{border-left:3px solid rgba(245,158,11,.4)}
+.card-info{border-left:3px solid rgba(99,102,241,.4)}
+
+/* ── Cover ── */
+.video-hero{position:relative;border-radius:16px;overflow:hidden;margin-bottom:14px;border:1px solid rgba(255,255,255,.08);aspect-ratio:16/9;background:rgba(0,0,0,.3)}
+.video-hero img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s var(--ease)}
+.video-hero:hover img{transform:scale(1.03)}
+.video-hero .play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);opacity:0;transition:opacity .3s}
+.video-hero:hover .play-overlay{opacity:1}
+.play-btn{width:56px;height:56px;border-radius:50%;background:rgba(99,102,241,.55);backdrop-filter:blur(10px);border:2px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;transition:all .3s}
+
+/* ── Meta ── */
+.meta-row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0;font-size:12px;color:var(--tx3)}
+.meta-row span{background:rgba(255,255,255,.03);padding:4px 10px;border-radius:8px}
+.tag{display:inline-block;padding:3px 10px;border-radius:6px;font-size:10px;font-weight:600;margin:2px;background:rgba(99,102,241,.15);color:var(--a1)}
+
+/* ── Video Embed ── */
+.video-box{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;margin:8px 0}
+.video-box iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
+
+/* ── Content ── */
+ul{padding-left:20px;margin:6px 0}li{margin:5px 0;font-size:14px;color:rgba(255,255,255,.7);line-height:1.7}li::marker{color:rgba(255,255,255,.15)}
+p{font-size:14px;color:rgba(255,255,255,.7);line-height:1.8;margin:6px 0}
+strong{color:rgba(255,255,255,.92)}
+
+.btn{display:inline-block;padding:10px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--tx2);font-size:12px;text-decoration:none;transition:all .25s;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);margin:3px}
+.btn:hover{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.08);color:var(--tx)}
+.btn-primary{background:rgba(99,102,241,.15);border-color:rgba(99,102,241,.25);color:var(--a1);font-weight:600}
+.btn-primary:hover{background:rgba(99,102,241,.25)}
+
+.nav-btns{display:flex;gap:8px;margin:24px 0;flex-wrap:wrap}
+.back{text-align:center;margin-top:28px}.back a{color:var(--tx4);font-size:11px;text-decoration:none}
+
+@media(max-width:500px){.wrap{padding:14px}h1{font-size:22px}.reading-mode{gap:4px}.mode-btn{padding:10px 6px}}
+</style>
+</head>
+<body>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot" id="glowSpot"></div>
+
+<div class="wrap">
+<div class="breadcrumb"><a href="../bilibili.html">B站视频整理</a> / ForAI收藏夹</div>
+<span class="badge">🎬 B站视频</span>
+<h1>长期侧睡的人必练！单侧扭转拉伸，快速打开胸肩背改善猥琐体态</h1>
+<div class="meta-row">
+  <span>👤 自律的黑</span><span>▶ 17.9万 播放</span><span>💬 38 弹幕</span><span>⏱ 0:29</span><span>📅 2026-05-16</span><span>⭐ 收藏于 2026-06-11</span>
+</div>
+
+<!-- ── 136 Mode Buttons ── -->
+<div class="reading-mode">
+  <button class="mode-btn active" onclick="switchMode('1min')" id="btn1min">
+    <span class="mode-time">⚡ 1分钟</span><span class="mode-label">快速扫读</span>
+  </button>
+  <button class="mode-btn" onclick="switchMode('3min')" id="btn3min">
+    <span class="mode-time">📖 3分钟</span><span class="mode-label">内容梳理</span>
+  </button>
+  <button class="mode-btn" onclick="switchMode('6min')" id="btn6min">
+    <span class="mode-time">🧠 6分钟</span><span class="mode-label">完整深读</span>
+  </button>
+</div>
+
+<!-- ── Canvas Hero Animation ── -->
+<div class="hero-canvas"><canvas id="heroC"></canvas></div>
+
+<!-- ═══ 1分钟：快速扫读 ═══ -->
+<div class="content-section" id="sec1min">
+  <div class="card card-ok">
+    <h2>⚡ 一分钟速览</h2>
+    <p><strong>一句话总结：</strong>暂无简介</p>
+    
+  </div>
+  <a class="video-hero" href="https://www.bilibili.com/video/BV1TwLg62E1V" target="_blank" rel="noopener">
+    <img src="https://i0.hdslb.com/bfs/archive/7e5e80b8acfe25272ebcf87f3e61dde2432cd48c.jpg" alt="长期侧睡的人必练！单侧扭转拉伸，快速打开胸肩背改善猥琐体态" loading="lazy" referrerpolicy="no-referrer">
+    <div class="play-overlay"><div class="play-btn">▶</div></div>
+  </a>
+  <div class="card card-info">
+    <h2>📋 视频信息</h2>
+    <p>UP主：<strong>自律的黑</strong> · 时长：<strong>0:29</strong> · 播放：<strong>17.9万</strong> · 发布：<strong>2026-05-16</strong></p>
+    <div style="margin-top:8px"><span class="tag">B站视频</span><span class="tag" style="background:rgba(6,182,212,.15);color:var(--cyan)">ForAI收藏夹</span></div>
+  </div>
+</div>
+
+<!-- ═══ 3分钟：内容梳理 ═══ -->
+<div class="content-section hidden" id="sec3min">
+  <div class="card card-ok">
+    <h2>📖 内容梳理</h2>
+    <p>(暂无简介)</p>
+  </div>
+  
+  <div class="card card-warn">
+    <h2>💡 为什么收藏这个视频</h2>
+    <p>该视频来自ForAI收藏夹，于2026-06-11被收藏。截至目前已有17.9万次播放、38条弹幕。</p>
+  </div>
+</div>
+
+<!-- ═══ 6分钟：完整深读 ═══ -->
+<div class="content-section hidden" id="sec6min">
+  
+  <div class="card">
+    <h2>📝 完整简介</h2>
+    <p style="white-space:pre-wrap">-</p>
+  </div>
+  <div class="card">
+    <h2>🎬 在 Bilibili 观看完整视频</h2>
+    <div class="video-box">
+      <iframe src="//player.bilibili.com/player.html?bvid=BV1TwLg62E1V&page=1&high_quality=1" scrolling="no" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <div style="margin-top:12px">
+      <a class="btn btn-primary" href="https://www.bilibili.com/video/BV1TwLg62E1V" target="_blank" rel="noopener">在 Bilibili 打开 →</a>
+    </div>
+  </div>
+</div>
+
+<div class="nav-btns">
+  <a class="btn" href="../bilibili.html">← 返回 B站视频整理</a>
+  <a class="btn btn-primary" href="https://www.bilibili.com/video/BV1TwLg62E1V" target="_blank" rel="noopener">在 Bilibili 观看 →</a>
+</div>
+<div class="back"><a href="../bilibili.html">← 返回 B站视频整理</a> · <a href="../index.html">返回首页</a></div>
+</div>
+
+<script>
+// 136 Mode Switcher
+function switchMode(mode){
+  document.querySelectorAll('.mode-btn').forEach(function(b){b.classList.remove('active')});
+  document.getElementById('btn'+mode).classList.add('active');
+  document.getElementById('sec1min').classList.toggle('hidden',mode!=='1min');
+  document.getElementById('sec3min').classList.toggle('hidden',mode!=='3min');
+  document.getElementById('sec6min').classList.toggle('hidden',mode!=='6min');
+  console.log('[AINav] reading_mode:',mode);
+}
+
+// Canvas hero animation
+(function(){
+  var c=document.getElementById('heroC'),ctx=c.getContext('2d');
+  var W,H,ps=[];
+  function rs(){W=c.parentElement.clientWidth;H=c.parentElement.clientHeight;c.width=W;c.height=H}
+  rs();window.addEventListener('resize',rs);
+  for(var i=0;i<40;i++){ps.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2.5+1,vx:(Math.random()-.5)*.5,vy:(Math.random()-.5)*.5,a:Math.random()*.3+.05})}
+  function anim(){
+    ctx.clearRect(0,0,W,H);
+    for(var i=0;i<ps.length;i++){var p=ps[i];p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(99,102,241,'+p.a+')';ctx.fill()}
+    for(var i=0;i<ps.length;i++){for(var j=i+1;j<ps.length;j++){var dx=ps[i].x-ps[j].x,dy=ps[i].y-ps[j].y;var d=Math.sqrt(dx*dx+dy*dy);if(d<80){ctx.beginPath();ctx.moveTo(ps[i].x,ps[i].y);ctx.lineTo(ps[j].x,ps[j].y);ctx.strokeStyle='rgba(99,102,241,'+(.06*(1-d/80))+')';ctx.lineWidth=.5;ctx.stroke()}}}
+    requestAnimationFrame(anim);
+  }
+  anim();
+})();
+
+// Glow
+(function(){var g=document.getElementById('glowSpot');if(!g||('ontouchstart' in window))return;var x=innerWidth/2,y=innerHeight/2,tx=x,ty=y;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}anim()})();
+</script>
+<script src="../shared.js"></script>
+</body>
+</html>

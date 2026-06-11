@@ -2,8 +2,8 @@
   "version": 1,
   "folder_title": "ForAI",
   "media_id": 4054260043,
-  "last_full_update": "2026-06-10T17:40:35.019Z",
-  "total_videos": 2,
+  "last_full_update": "2026-06-11T15:36:04.852Z",
+  "total_videos": 5,
   "videos": {
     "BV15eRXBGEFL": {
       "bvid": "BV15eRXBGEFL",
@@ -34,6 +34,51 @@
       "upper_mid": 56628194,
       "page_path": "bilibili/BV1AvRQBXEiU.html",
       "generated_at": "2026-06-10T15:48:46.640Z"
+    },
+    "BV1SzEQ6GEEV": {
+      "bvid": "BV1SzEQ6GEEV",
+      "title": "【中配】别再给Claude写提示词了，试试卡帕西的方法 - Austin Marchese",
+      "intro": "原视频：Stop Prompting Claude. Use Karpathy's Method Instead.\n原作者：Austin Marchese\n发布日期：2026-06-09\n视频链接：https://www.youtube.com/watch?v=7zZy1QTvokM\n\n✨ 想看英文原声？请关注 @英文白斑马\n\n00:00 引言：Karpathy高效使用Claude的三层方法介绍\n博主介绍自己从Andrej Karpathy的分享中了解到多数人对Claude的提示词使用有误，引出其将AI开",
+      "cover": "http://i0.hdslb.com/bfs/archive/41b5d1e4786a208ae8c46245516e82f93c295e3b.png",
+      "duration": 761,
+      "play_count": 2575,
+      "danmaku_count": 0,
+      "pubtime": 1781064288,
+      "fav_time": 1781115933,
+      "upper_name": "黑纹白斑马",
+      "upper_mid": 1263732318,
+      "page_path": "bilibili/BV1SzEQ6GEEV.html",
+      "generated_at": "2026-06-10T18:35:58.647Z"
+    },
+    "BV1TwLg62E1V": {
+      "bvid": "BV1TwLg62E1V",
+      "title": "长期侧睡的人必练！单侧扭转拉伸，快速打开胸肩背改善猥琐体态",
+      "intro": "-",
+      "cover": "http://i0.hdslb.com/bfs/archive/7e5e80b8acfe25272ebcf87f3e61dde2432cd48c.jpg",
+      "duration": 29,
+      "play_count": 178748,
+      "danmaku_count": 38,
+      "pubtime": 1778924928,
+      "fav_time": 1781144646,
+      "upper_name": "自律的黑",
+      "upper_mid": 342070883,
+      "page_path": "bilibili/BV1TwLg62E1V.html",
+      "generated_at": "2026-06-11T02:36:00.792Z"
+    },
+    "BV1RVEF6uEzb": {
+      "bvid": "BV1RVEF6uEzb",
+      "title": "CPU是如何与千奇百怪的设备交互的？ | Core Dumped",
+      "intro": "来源：https://www.youtube.com/watch?v=tadUeiNe5-g\n原标题：How CPUs Interact with So Many Different Devices\n频道：Core Dumped\n发布时间：2025-10-08\n\n内容简介：\n在这个视频中，我们将学习I/O设备的基础知识，以及它们在通用计算机系统中是如何与CPU交互的。\n\n内容涵盖I/O设备的定义、CPU为何不直接控制外设的原因，并以键盘为例深入解析了其背后的I/O逻辑。接着探讨了微控制器与控制总线在其中的",
+      "cover": "http://i0.hdslb.com/bfs/archive/612d6d5660eebe6bbf1796e1509ec85bdfe26673.jpg",
+      "duration": 1408,
+      "play_count": 3983,
+      "danmaku_count": 3,
+      "pubtime": 1780644125,
+      "fav_time": 1781143913,
+      "upper_name": "地层世界",
+      "upper_mid": 1674460318,
+      "page_path": "bilibili/BV1RVEF6uEzb.html",
+      "generated_at": "2026-06-11T02:36:00.792Z"
     }
   }
 }
