@@ -2,8 +2,8 @@
   "version": 1,
   "folder_title": "ForAI",
   "media_id": 4054260043,
-  "last_full_update": "2026-06-11T19:36:06.445Z",
-  "total_videos": 5,
+  "last_full_update": "2026-06-11T20:36:06.939Z",
+  "total_videos": 6,
   "videos": {
     "BV15eRXBGEFL": {
       "bvid": "BV15eRXBGEFL",
@@ -79,6 +79,21 @@
       "upper_mid": 1674460318,
       "page_path": "bilibili/BV1RVEF6uEzb.html",
       "generated_at": "2026-06-11T02:36:00.792Z"
+    },
+    "BV1DvidBYEvj": {
+      "bvid": "BV1DvidBYEvj",
+      "title": "【中配】5000年前的世界是什么样子的？ - KhAnubis",
+      "intro": "原视频：What Did the World Look Like 5,000 Years Ago?\n原作者：KhAnubis\n发布日期：2025-12-28\n视频链接：https://www.youtube.com/watch?v=sQ0R-fcjM10\n这段视频探索了5000年前地球表面的样子，当时大陆还没有显著移动，但海岸线和地貌与今天有很大不同。主要变化包括波斯湾有不同的海岸线，撒哈拉沙漠是草原而非沙漠，黑海的配置也可能不同。在这个时期，人类已经开始耕种和建造城市。视频特别研究了乌尔（Ur），这座位",
+      "cover": "http://i2.hdslb.com/bfs/archive/cd7717bd938881835b86569c7067c12b118b33d7.jpg",
+      "duration": 650,
+      "play_count": 112020,
+      "danmaku_count": 163,
+      "pubtime": 1767945600,
+      "fav_time": 1781209241,
+      "upper_name": "观察员阿星",
+      "upper_mid": 475981121,
+      "page_path": "bilibili/BV1DvidBYEvj.html",
+      "generated_at": "2026-06-11T20:36:06.939Z"
     }
   }
 }
