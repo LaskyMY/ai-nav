@@ -542,6 +542,35 @@ async function dbQuery(sql, params = []) {
       } catch(e) { return err(e.message,500); }
     }
 
+
+    // ── 创业热点聚合 ──
+    if (path === "/api/trending/startups") {
+      const cached = cacheGet("trending-startups", 3600000);
+      if (cached) return ok(cached);
+      try {
+        const items = [];
+        // Get HN top
+        try {
+          const ids = await (await fetch("https://hacker-news.firebaseio.com/v0/topstories.json",{signal:AbortSignal.timeout(5000)})).json();
+          for (const id of ids.slice(0,5)) {
+            const d = await (await fetch("https://hacker-news.firebaseio.com/v0/item/"+id+".json",{signal:AbortSignal.timeout(3000)})).json();
+            if (d && d.title) items.push({title:d.title,url:d.url||"https://news.ycombinator.com/item?id="+id,source:"HackerNews",score:d.score,type:"startup"});
+          }
+        } catch(e) {}
+        // Get Reddit r/startups
+        try {
+          const r = await fetch("https://www.reddit.com/r/startups/hot.json?limit=5",{headers:{"User-Agent":"ai-nav/1.0"},signal:AbortSignal.timeout(5000)});
+          const d = await r.json();
+          for (const c of (d.data?.children||[]).slice(0,5)) {
+            const p = c.data;
+            items.push({title:p.title,url:"https://reddit.com"+p.permalink,source:"Reddit r/startups",score:p.ups,type:"startup"});
+          }
+        } catch(e) {}
+        cacheSet("trending-startups", {items,updated:new Date().toISOString()});
+        return ok({items,updated:new Date().toISOString()});
+      } catch(e) { return err(e.message,500); }
+    }
+
     // ── Full-text Search ──
     if (path === "/api/search") {
       const q = url.searchParams.get("q");
