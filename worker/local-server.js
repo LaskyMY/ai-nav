@@ -799,6 +799,43 @@ async function dbQuery(sql, params = []) {
       return ok({issues,clean:issues.length===0});
     }
 
+
+    // ── 排行榜 ──
+    if (path === "/api/ranking") {
+      const rank = [];
+      for (const [key,label] of [["trending-github","GitHub"],["trending-hn","HN"],["trending-startups","创业"]]){
+        const c = cacheGet(key, 99999999);
+        if (c?.items) for (const i of c.items.slice(0,3)) rank.push({title:i.title||i.name,score:i.stars||i.score||0,source:label});
+      }
+      rank.sort((a,b)=>b.score-a.score);
+      return ok({ranking:rank.slice(0,20)});
+    }
+    // ── 导出 API ──  
+    if (path === "/api/export/markdown") {
+      const items = [];
+      for (const [key,label] of [["trending-github","GitHub"],["trending-hn","HN"]]){
+        const c = cacheGet(key, 99999999);
+        if (c?.items) for (const i of c.items.slice(0,5)) items.push(`- [${i.title||i.name}](${i.url||"#"}) — ${label}`);
+      }
+      return ok({markdown: items.join("\n"),timestamp:new Date().toISOString()});
+    }
+    // ── 服务自愈检查 ──
+    if (path === "/api/health/heal") {
+      const checks = {db:false,news:false,weather:false};
+      try { const r=await fetch("http://localhost:8765/api/db/stats",{signal:AbortSignal.timeout(3000)}); checks.db=r.ok; } catch(e){}
+      try { const r=await fetch("http://localhost:8765/api/news",{signal:AbortSignal.timeout(3000)}); checks.news=r.ok; } catch(e){}
+      return ok({checks,healed:false});
+    }
+    // ── 数据质量评分 ──
+    if (path === "/api/quality/report") {
+      let totalSources=0,freshSources=0,totalItems=0;
+      for (const [key,ttl] of [["trending-github",1800],["trending-hn",600],["trending-zhihu",3600],["trending-startups",3600]]){
+        const c = cacheGet(key, ttl*2);
+        if (c?.items) { totalSources++; totalItems+=c.items.length; if(Date.now()-new Date(c.updated).getTime()<ttl*1000)freshSources++; }
+      }
+      return ok({totalSources,freshSources,staleSources:totalSources-freshSources,totalItems,score:totalSources>0?Math.round(freshSources/totalSources*100):0});
+    }
+
     // ── Full-text Search ──
     if (path === "/api/search") {
       const q = url.searchParams.get("q");
