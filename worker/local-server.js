@@ -629,6 +629,20 @@ async function dbQuery(sql, params = []) {
       } catch(e) { return err(e.message,500); }
     }
 
+
+    // ── Reddit 编程 ──
+    if (path === "/api/trending/reddit") {
+      const cached = cacheGet("trending-reddit", 3600000);
+      if (cached) return ok(cached);
+      try {
+        const r = await fetch("https://www.reddit.com/r/programming/hot.json?limit=10",{headers:{"User-Agent":"ai-nav/1.0"},signal:AbortSignal.timeout(8000)});
+        const d = await r.json();
+        const items = (d.data?.children||[]).map(c=>({title:c.data.title,url:"https://reddit.com"+c.data.permalink,score:c.data.score,comments:c.data.num_comments,source:"r/programming"}));
+        cacheSet("trending-reddit", {items,updated:new Date().toISOString()});
+        return ok({items,updated:new Date().toISOString()});
+      } catch(e) { return err(e.message,500); }
+    }
+
     // ── Full-text Search ──
     if (path === "/api/search") {
       const q = url.searchParams.get("q");
