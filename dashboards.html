@@ -58,6 +58,7 @@ function esc(s){var d=document.createElement('div');d.textContent=s||'';return d
 function fm(n){return n>999?(n/1000).toFixed(1)+'k':String(n)}
 var feeds=[
   {id:'github',icon:'🐙',title:'GitHub 热门',url:'/api/trending/github',render:function(i){return '<a class="feed-item" href="'+(i.url||'#')+'" target="_blank"><div class="item-title">'+esc(i.name)+'</div><div class="item-meta"><span class="badge-stars">⭐'+fm(i.stars)+'</span>'+(i.lang?'<span class="badge-lang">'+esc(i.lang)+'</span>':'')+'</div>'+(i.desc?'<div class="item-desc">'+esc(i.desc)+'</div>':'')+'</a>'}},
+  {id:'gap',icon:'📈',title:'信息差',url:'/api/insight/gap',render:function(i){return '<div class="feed-item"><div class="item-title" style="color:var(--cyan)">'+esc(i.source)+' 独有热点</div><div class="item-desc">'+(i.unique||[]).slice(0,3).map(function(t){return esc(t)}).join(' · ')+'</div></div>'},extract:'gaps'},
   {id:'zhihu',icon:'📰',title:'知乎日报',url:'/api/trending/zhihu',render:function(i){return '<a class="feed-item" href="'+i.url+'" target="_blank"><div class="item-title">'+esc(i.title)+'</div><div class="item-meta"><span>'+esc(i.source)+'</span></div></a>'}},
   {id:'startups',icon:'🚀',title:'创业热点',url:'/api/trending/startups',render:function(i){return '<a class="feed-item" href="'+(i.url||'#')+'" target="_blank"><div class="item-title">'+esc(i.title)+'</div><div class="item-meta"><span class="badge-score">▲'+i.score+'</span><span>'+esc(i.source)+'</span></div></a>'}},
   {id:'hn',icon:'🧠',title:'Hacker News',url:'/api/trending/hn',render:function(i){return '<a class="feed-item" href="'+(i.url||'#')+'" target="_blank"><div class="item-title">'+esc(i.title)+'</div><div class="item-meta"><span class="badge-score">▲'+i.score+'</span><span>by '+esc(i.by)+'</span></div></a>'}},
@@ -74,7 +75,7 @@ async function load(f){
     var r=await fetch(A+f.url,{signal:AbortSignal.timeout(8000)});
     var d=await r.json();
     var items=d.items||d;
-    if(f.single)items=[{summary:d.summary||d.content||''}];if(f.extract==='videos')items=Object.values(d.videos||{}).sort(function(a,b){return (b.fav_time||0)-(a.fav_time||0)});
+    if(f.single)items=[{summary:d.summary||d.content||''}];if(f.extract==='gaps')items=d.gaps||[];if(f.extract==='videos')items=Object.values(d.videos||{}).sort(function(a,b){return (b.fav_time||0)-(a.fav_time||0)});
     if(!items||!items.length){el.querySelector('.feed-body').innerHTML='<div class="feed-error">暂无数据</div>';return}
     el.querySelector('.feed-body').innerHTML=items.slice(0,10).map(f.render).join('');
     el.querySelector('.count').textContent=items.length;

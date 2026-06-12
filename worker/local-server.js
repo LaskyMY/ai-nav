@@ -585,6 +585,36 @@ async function dbQuery(sql, params = []) {
       } catch(e) { return err(e.message,500); }
     }
 
+
+    // ── 信息差分析 ──
+    if (path === "/api/insight/gap") {
+      const cached = cacheGet("insight-gap", 7200000);
+      if (cached) return ok(cached);
+      try {
+        // Collect titles from 3 sources
+        const sources = [];
+        try {
+          const r = await fetch("https://api.github.com/search/repositories?q=stars:>50+pushed:>"+new Date(Date.now()-86400000).toISOString().slice(0,10)+"&sort=stars&order=desc&per_page=5",{headers:{"User-Agent":"ai-nav/1.0"},signal:AbortSignal.timeout(5000)});
+          const d = await r.json();
+          sources.push({name:"GitHub",titles:(d.items||[]).map(i=>i.full_name)});
+        } catch(e) {}
+        try {
+          const ids = await (await fetch("https://hacker-news.firebaseio.com/v0/topstories.json",{signal:AbortSignal.timeout(5000)})).json();
+          const items = await Promise.all(ids.slice(0,5).map(async id=>{const r=await fetch("https://hacker-news.firebaseio.com/v0/item/"+id+".json",{signal:AbortSignal.timeout(3000)});return (await r.json()).title||""}));
+          sources.push({name:"HN",titles:items});
+        } catch(e) {}
+        try {
+          const r = await fetch("https://news-at.zhihu.com/api/4/news/latest",{headers:{"User-Agent":"Mozilla/5.0"},signal:AbortSignal.timeout(5000)});
+          const d = await r.json();
+          sources.push({name:"知乎",titles:(d.stories||[]).map(i=>i.title)});
+        } catch(e) {}
+        // Find gaps: topics unique to each source
+        const gaps = sources.map(s=>({source:s.name,unique:s.titles.slice(0,3),count:s.titles.length}));
+        cacheSet("insight-gap", {gaps,updated:new Date().toISOString()});
+        return ok({gaps,updated:new Date().toISOString()});
+      } catch(e) { return err(e.message,500); }
+    }
+
     // ── Full-text Search ──
     if (path === "/api/search") {
       const q = url.searchParams.get("q");
