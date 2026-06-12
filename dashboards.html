@@ -69,11 +69,13 @@ h1{font-size:22px;font-weight:700;margin:8px 0 4px;background:linear-gradient(13
 </div>
 <script>
 var A=location.hostname==='localhost'?'http://localhost:8765':'https://99107705bcfb4f23-183-6-87-29.serveousercontent.com';
+function renderTrendCloud(items){var el=document.getElementById('feed-trends').querySelector('.feed-body');el.innerHTML='<div style="padding:8px;line-height:2">'+items.map(function(i){return '<span style="display:inline-block;padding:2px 8px;margin:2px;border-radius:6px;background:rgba(99,102,241,'+(0.05+i.count*0.03)+');color:var(--a1);font-size:'+(10+i.count*2)+'px">'+esc(i.keyword)+'</span>'}).join('')+'</div>';}
 function esc(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
 function fm(n){return n>999?(n/1000).toFixed(1)+'k':String(n)}
 var feeds=[
   {id:'github',icon:'🐙',title:'GitHub 热门',url:'/api/trending/github',render:function(i){return '<a class="feed-item" href="'+(i.url||'#')+'" target="_blank"><div class="item-title">'+esc(i.name)+'</div><div class="item-meta"><span class="badge-stars">⭐'+fm(i.stars)+'</span>'+(i.lang?'<span class="badge-lang">'+esc(i.lang)+'</span>':'')+'</div>'+(i.desc?'<div class="item-desc">'+esc(i.desc)+'</div>':'')+'</a>'}},
   {id:'gap',icon:'📈',title:'信息差',url:'/api/insight/gap',render:function(i){return '<div class="feed-item"><div class="item-title" style="color:var(--cyan)">'+esc(i.source)+' 独有热点</div><div class="item-desc">'+(i.unique||[]).slice(0,3).map(function(t){return esc(t)}).join(' · ')+'</div></div>'},extract:'gaps'},
+  {id:'trends',icon:'🔮',title:'趋势预测',url:'/api/predict/trends',render:function(i){return '<span style="display:inline-block;padding:2px 8px;margin:2px;border-radius:6px;background:rgba(99,102,241,.08);color:var(--a1);font-size:'+(11+i.count*0.5)+'px">'+esc(i.keyword)+'<sup style="font-size:8px">'+i.count+'</sup></span>'},extract:'trends'},
   {id:'quality',icon:'✅',title:'数据质量',url:'/api/quality/report',render:function(i){return '<div class="feed-item"><div class="item-title">质量分: '+i.score+'%</div><div class="item-meta"><span>'+i.freshSources+'/'+i.totalSources+' 源在线</span><span>'+i.totalItems+' 条目</span></div></div>'},single:true},
   {id:'ranking',icon:'🏆',title:'综合排行',url:'/api/ranking',render:function(i){return '<div class="feed-item"><div class="item-title">'+esc(i.title)+'</div><div class="item-meta"><span class="badge-stars">'+i.score+'</span><span>'+esc(i.source)+'</span></div></div>'},extract:'ranking'},
   {id:'ph',icon:'🛒',title:'ProductHunt',url:'/api/trending/ph',render:function(i){return '<a class="feed-item" href="'+i.url+'" target="_blank"><div class="item-title">'+esc(i.title)+'</div><div class="item-meta"><span>▲'+i.votes+'</span><span>'+esc(i.source)+'</span></div><div class="item-desc">'+esc(i.tagline||'')+'</div></a>'}},
@@ -97,7 +99,7 @@ async function load(f){
     var r=await fetch(A+f.url,{signal:AbortSignal.timeout(8000)});
     var d=await r.json();
     var items=d.items||d;
-    if(f.single)items=[{summary:d.summary||d.content||''}];if(f.extract==='ranking')items=d.ranking||[];if(f.extract==='gaps')items=d.gaps||[];if(f.extract==='videos')items=Object.values(d.videos||{}).sort(function(a,b){return (b.fav_time||0)-(a.fav_time||0)});
+    if(f.single)items=[{summary:d.summary||d.content||''}];if(f.extract==='trends'){items=d.trends||[];renderTrendCloud(items);return;}if(f.extract==='ranking')items=d.ranking||[];if(f.extract==='gaps')items=d.gaps||[];if(f.extract==='videos')items=Object.values(d.videos||{}).sort(function(a,b){return (b.fav_time||0)-(a.fav_time||0)});
     if(!items||!items.length){el.querySelector('.feed-body').innerHTML='<div class="feed-error">暂无数据</div>';return}
     el.querySelector('.feed-body').innerHTML=items.slice(0,10).map(f.render).join('');
     el.querySelector('.count').textContent=items.length;

@@ -836,6 +836,60 @@ async function dbQuery(sql, params = []) {
       return ok({totalSources,freshSources,staleSources:totalSources-freshSources,totalItems,score:totalSources>0?Math.round(freshSources/totalSources*100):0});
     }
 
+
+    // ── AI改写标题 ──
+    if (path === "/api/ai/rewrite") {
+      const title = url.searchParams.get("title") || "";
+      const cleaned = title.replace(/[【】\[\]]/g,'').replace(/\s+/g,' ').trim().slice(0,80);
+      return ok({original:title,rewritten:cleaned,shortened:cleaned.length<title.length});
+    }
+    // ── 实体识别 ──
+    if (path === "/api/ner/extract") {
+      const text = (url.searchParams.get("text") || "").toLowerCase();
+      const entities = [];
+      const patterns = [
+        {type:"公司",re:/(apple|google|microsoft|meta|amazon|openai|anthropic|deepseek|tesla|nvidia)/gi},
+        {type:"技术",re:/(gpt|llm|transformer|neural network|deep learning|machine learning|react|vue|python|rust|javascript|typescript)/gi},
+        {type:"人名",re:/(sam altman|elon musk|sundar pichai|satya nadella|jensen huang)/gi},
+      ];
+      for (const p of patterns) {
+        const matches = text.match(p.re)||[];
+        for (const m of [...new Set(matches)]) entities.push({name:m,type:p.type});
+      }
+      return ok({entities:entities.slice(0,20)});
+    }
+    // ── 趋势预测 ──
+    if (path === "/api/predict/trends") {
+      const keywords = {};
+      for (const key of ["trending-github","trending-hn","trending-zhihu","trending-startups"]) {
+        const c = cacheGet(key, 99999999);
+        if (c?.items) for (const i of c.items) {
+          const words = (i.title||i.name||"").toLowerCase().split(/[\s·,，、]+/);
+          for (const w of words) { if(w.length>3){keywords[w]=(keywords[w]||0)+1;} }
+        }
+      }
+      const trends = Object.entries(keywords).sort((a,b)=>b[1]-a[1]).slice(0,15);
+      return ok({trends:trends.map(([k,v])=>({keyword:k,count:v})),updated:new Date().toISOString()});
+    }
+    // ── 术语词典 ──
+    if (path === "/api/glossary") {
+      const terms = [
+        {term:"LLM",def:"Large Language Model 大语言模型"},
+        {term:"GPT",def:"Generative Pre-trained Transformer"},
+        {term:"Transformer",def:"基于自注意力机制的神经网络架构"},
+        {term:"RAG",def:"Retrieval-Augmented Generation 检索增强生成"},
+        {term:"Agent",def:"能够自主执行任务的AI智能体"},
+        {term:"Fine-tuning",def:"在预训练模型上进行特定任务微调"},
+        {term:"Prompt",def:"给AI的输入指令或问题"},
+        {term:"Embedding",def:"将文本转换为向量的技术"},
+        {term:"API",def:"Application Programming Interface 应用程序接口"},
+        {term:"SDK",def:"Software Development Kit 软件开发工具包"},
+      ];
+      const q = (url.searchParams.get("q")||"").toLowerCase();
+      const results = q ? terms.filter(t=>t.term.toLowerCase().includes(q)||t.def.toLowerCase().includes(q)) : terms;
+      return ok({terms:results});
+    }
+
     // ── Full-text Search ──
     if (path === "/api/search") {
       const q = url.searchParams.get("q");
