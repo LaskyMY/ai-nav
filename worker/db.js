@@ -346,6 +346,21 @@ export async function getAutomationStatus() {
   return r.rows;
 }
 
+
+// ── 数据去重 ──
+export async function checkDuplicate(title, source, ttlHours = 24) {
+  if (!client) return false;
+  const hash = title ? title.toLowerCase().replace(/[^a-z0-9\u4e00-\u9fff]/g,'').slice(0,200).split('').reduce((a,c)=>a+c.charCodeAt(0),0).toString(16) : '0';
+  try {
+    await client.queryArray("CREATE TABLE IF NOT EXISTS dedup_cache (hash TEXT, source TEXT, created_at TIMESTAMPTZ DEFAULT NOW())");
+    await client.queryArray("CREATE INDEX IF NOT EXISTS idx_dedup_hash ON dedup_cache(hash)");
+    const r = await client.queryArray("SELECT 1 FROM dedup_cache WHERE hash=$1 AND source=$2 AND created_at > NOW() - INTERVAL '1 hour' * $3 LIMIT 1", [hash, source, ttlHours]);
+    if (r.rows.length > 0) return true;
+    await client.queryArray("INSERT INTO dedup_cache (hash, source) VALUES ($1,$2)", [hash, source]);
+    return false;
+  } catch(e) { return false; }
+}
+
 // ── 关闭 ──
 export async function closeDB() {
   if (client) await client.end();
