@@ -572,15 +572,15 @@ async function dbQuery(sql, params = []) {
     }
 
 
-    // ── V2EX 热门 ──
-    if (path === "/api/trending/v2ex") {
-      const cached = cacheGet("trending-v2ex", 1800000);
+    // ── 知乎日报 ──
+    if (path === "/api/trending/zhihu") {
+      const cached = cacheGet("trending-zhihu", 3600000);
       if (cached) return ok(cached);
       try {
-        const r = await fetch("https://www.v2ex.com/api/topics/hot.json",{signal:AbortSignal.timeout(8000)});
+        const r = await fetch("https://news-at.zhihu.com/api/4/news/latest",{headers:{"User-Agent":"Mozilla/5.0"},signal:AbortSignal.timeout(8000)});
         const d = await r.json();
-        const items = d.slice(0,10).map(i=>({title:i.title,url:i.url,replies:i.replies,node:i.node?.title||"",source:"V2EX"}));
-        cacheSet("trending-v2ex", {items,updated:new Date().toISOString()});
+        const items = (d.stories||[]).slice(0,10).map(i=>({title:i.title,url:"https://daily.zhihu.com/story/"+i.id,image:i.images?.[0]||"",source:"知乎日报"}));
+        cacheSet("trending-zhihu", {items,updated:new Date().toISOString()});
         return ok({items,updated:new Date().toISOString()});
       } catch(e) { return err(e.message,500); }
     }
