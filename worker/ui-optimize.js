@@ -22,6 +22,26 @@ for (const [path, name] of dataApis) {
     if (r.ok) { dataOK++; } else { console.log(`[Loop] ⚠️ ${name}: HTTP ${r.status}`); dataFail++; }
   } catch (e) { console.log(`[Loop] ⚠️ ${name}: ${e.message}`); dataFail++; }
 }
+
+// ═══ Part A2: 热点数据持久化到DB ═══
+try {
+  const persistSources = ["/api/trending/github", "/api/news-summary"];
+  for (const src of persistSources) {
+    const r = await fetch(SERVER + src, { signal: AbortSignal.timeout(5000) });
+    if (!r.ok) continue;
+    const d = await r.json();
+    const items = d.items || [];
+    if (items.length > 0) {
+      const text = items.map(i => i.title || i.name || '').join(' ').slice(0, 5000);
+      const r2 = await fetch(SERVER + "/api/auto/update", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({status:"success",summary:text.slice(0,200)})
+      });
+    }
+  }
+} catch(e) {}
+
 console.log(`[Loop] 数据API: ${dataOK}/${dataApis.length} 正常`);
   // Update alert state
   for (const [path, name] of dataApis) {
