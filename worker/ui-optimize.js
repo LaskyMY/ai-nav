@@ -23,6 +23,19 @@ for (const [path, name] of dataApis) {
   } catch (e) { console.log(`[Loop] ⚠️ ${name}: ${e.message}`); dataFail++; }
 }
 console.log(`[Loop] 数据API: ${dataOK}/${dataApis.length} 正常`);
+  // Update alert state
+  for (const [path, name] of dataApis) {
+    try {
+      const r = await fetch(SERVER + path, { signal: AbortSignal.timeout(5000) });
+      if (!r.ok) {
+        if (!alerts[name]) alerts[name] = { failCount: 0, lastFail: null };
+        alerts[name].failCount++;
+        alerts[name].lastFail = new Date().toISOString();
+        if (alerts[name].failCount >= 3) console.log(`[Loop] 🚨 ${name} 连续${alerts[name].failCount}次失败!`);
+      } else { if (alerts[name]?.failCount >= 3) console.log(`[Loop] ✅ ${name} 已恢复`); alerts[name] = { failCount: 0, lastFail: null }; }
+    } catch(e) { if (!alerts[name]) alerts[name] = { failCount: 0, lastFail: null }; alerts[name].failCount++; alerts[name].lastFail = new Date().toISOString(); }
+  }
+  try { await Deno.writeTextFile(ALERT_FILE, JSON.stringify(alerts)); } catch(e) {}
 
 // ═══ Part B: UI巡检 ═══
 const files = [...Deno.readDirSync(BASE)].filter(f => f.name.endsWith(".html") && !SKIP.includes(f.name));

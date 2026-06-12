@@ -3832,5 +3832,14 @@
     "completion_tokens": 572,
     "total_tokens": 982,
     "cost": 0.0007399
+  },
+  {
+    "ts": "2026-06-12T11:58:34.516Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 410,
+    "completion_tokens": 586,
+    "total_tokens": 996,
+    "cost": 0.0007553000000000001
   }
 ]
