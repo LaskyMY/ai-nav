@@ -3661,5 +3661,32 @@
     "completion_tokens": 580,
     "total_tokens": 971,
     "cost": 0.00074357
+  },
+  {
+    "ts": "2026-06-12T07:40:14.222Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 391,
+    "completion_tokens": 653,
+    "total_tokens": 1044,
+    "cost": 0.0008238700000000001
+  },
+  {
+    "ts": "2026-06-12T07:55:11.083Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 391,
+    "completion_tokens": 532,
+    "total_tokens": 923,
+    "cost": 0.0006907700000000001
+  },
+  {
+    "ts": "2026-06-12T08:10:13.900Z",
+    "endpoint": "news-summary",
+    "model": "deepseek-chat",
+    "prompt_tokens": 391,
+    "completion_tokens": 680,
+    "total_tokens": 1071,
+    "cost": 0.0008535700000000001
   }
 ]
