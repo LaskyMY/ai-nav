@@ -890,6 +890,46 @@ async function dbQuery(sql, params = []) {
       return ok({terms:results});
     }
 
+
+    // ── 自动配色建议 ──
+    if (path === "/api/design/palette") {
+      const palettes = [
+        {name:"Cyber",primary:"#6366f1",accent:"#06B6D4",warn:"#F59E0B"},
+        {name:"Ocean",primary:"#0ea5e9",accent:"#06B6D4",warn:"#10B981"},
+        {name:"Sunset",primary:"#ec4899",accent:"#F59E0B",warn:"#EF4444"},
+        {name:"Forest",primary:"#10B981",accent:"#06B6D4",warn:"#F59E0B"},
+        {name:"Midnight",primary:"#a855f7",accent:"#6366f1",warn:"#ec4899"},
+      ];
+      return ok({palettes});
+    }
+    // ── PDF导出(HTML→简单文本) ──  
+    if (path === "/api/export/pdf") {
+      const items = [];
+      for (const [key,label] of [["trending-github","GitHub"],["trending-hn","HN"]]){
+        const c = cacheGet(key, 99999999);
+        if (c?.items) for (const i of c.items.slice(0,5)) items.push(`${label}: ${i.title||i.name}\n${i.url||""}\n`);
+      }
+      return ok({text:items.join("\n---\n"),title:"AI Nav 数据导出"});
+    }
+    // ── CMS 内容管理 ──
+    if (path === "/api/cms/pages") {
+      const files = [...Deno.readDirSync("/Users/lasky_my/ai-nav")].filter(f=>f.name.endsWith(".html")).map(f=>({name:f.name,size:0,modified:null}));
+      return ok({pages:files.slice(0,50)});
+    }
+    // ── 限流状态 ──
+    if (path === "/api/rate-limit/status") {
+      return ok({limits:{deepseek:"10/min",github:"unlimited",hn:"unlimited"}});
+    }
+    // ── 自动问答 ──
+    if (path === "/api/faq") {
+      const faqs = [
+        {q:"数据多久更新？",a:"GitHub/HN每30分钟，知乎/创业/论文每小时，AI新闻每15分钟，金融每天6:01"},
+        {q:"如何添加新数据源？",a:"打开 worker/local-server.js，在数据引擎区域添加新API端点"},
+        {q:"看板支持哪些浏览器？",a:"所有现代浏览器(Chrome/Firefox/Safari/Edge)，IE不支持"},
+      ];
+      return ok({faqs});
+    }
+
     // ── Full-text Search ──
     if (path === "/api/search") {
       const q = url.searchParams.get("q");
