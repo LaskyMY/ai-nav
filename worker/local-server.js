@@ -643,6 +643,32 @@ async function dbQuery(sql, params = []) {
       } catch(e) { return err(e.message,500); }
     }
 
+
+    // ── 掘金热门 ──
+    if (path === "/api/trending/juejin") {
+      const cached = cacheGet("trending-juejin", 3600000);
+      if (cached) return ok(cached);
+      try {
+        const r = await fetch("https://api.juejin.cn/recommend_api/v1/article/recommend_all_feed",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id_type:2,sort_type:200,cursor:"0",limit:10}),signal:AbortSignal.timeout(8000)});
+        const d = await r.json();
+        const items = (d.data||[]).map(i=>({title:i.item_info?.article_info?.title||"",url:"https://juejin.cn/post/"+i.item_info?.article_id,source:"掘金"}));
+        cacheSet("trending-juejin", {items,updated:new Date().toISOString()});
+        return ok({items,updated:new Date().toISOString()});
+      } catch(e) { return err(e.message,500); }
+    }
+    // ── HuggingFace 模型趋势 ──
+    if (path === "/api/trending/hf") {
+      const cached = cacheGet("trending-hf", 7200000);
+      if (cached) return ok(cached);
+      try {
+        const r = await fetch("https://huggingface.co/api/models?sort=downloads&direction=-1&limit=10",{signal:AbortSignal.timeout(8000)});
+        const d = await r.json();
+        const items = d.map(i=>({title:i.id||i.modelId,url:"https://huggingface.co/"+i.id,downloads:i.downloads||0,likes:i.likes||0,source:"HuggingFace"}));
+        cacheSet("trending-hf", {items,updated:new Date().toISOString()});
+        return ok({items,updated:new Date().toISOString()});
+      } catch(e) { return err(e.message,500); }
+    }
+
     // ── Full-text Search ──
     if (path === "/api/search") {
       const q = url.searchParams.get("q");
