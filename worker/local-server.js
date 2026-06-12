@@ -717,6 +717,29 @@ async function dbQuery(sql, params = []) {
       return ok({score,title,grade:score>70?"A":score>50?"B":"C"});
     }
 
+
+    // ── 智能摘要(本地提取) ──
+    if (path === "/api/smart/summary") {
+      const text = url.searchParams.get("text") || "";
+      const sentences = text.split(/[。！？\n]/).filter(s=>s.length>10);
+      const summary = sentences.slice(0,3).join("。") + (sentences.length>3?"…":"");
+      return ok({summary,original: text.length,compression: Math.round((1-summary.length/text.length)*100)});
+    }
+    // ── 自动纠错 ──
+    if (path === "/api/smart/correct") {
+      const text = url.searchParams.get("text") || "";
+      const corrections = {
+        "Javascript": "JavaScript","Typescript": "TypeScript","react": "React","nodejs": "Node.js",
+        "AI":"AI","GPT":"GPT","LLM":"LLM","api":"API","css":"CSS","html":"HTML"
+      };
+      let corrected = text;
+      for (const [k,v] of Object.entries(corrections)) {
+        const re = new RegExp("\\b"+k+"\\b","g");
+        corrected = corrected.replace(re, v);
+      }
+      return ok({original: text, corrected, changes: text!==corrected});
+    }
+
     // ── Full-text Search ──
     if (path === "/api/search") {
       const q = url.searchParams.get("q");
