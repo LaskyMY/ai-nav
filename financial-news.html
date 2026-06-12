@@ -30,7 +30,7 @@ h1{font-size:22px;font-weight:700;background:linear-gradient(135deg,var(--cyan),
 .badge.evening{background:rgba(99,102,241,.12);color:#818cf8}
 
 /* Brief Content Card */
-.brief.card{backdrop-filter:saturate(180%)blur(40px);-webkit-backdrop-filter:saturate(180%)blur(40px);background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:18px 20px;margin-bottom:12px}
+.brief.card{position:relative;overflow:hidden;backdrop-filter:saturate(180%)blur(40px);-webkit-backdrop-filter:saturate(180%)blur(40px);background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:18px 20px;margin-bottom:12px}
 .brief-card.morning{border-left:3px solid rgba(245,158,11,.35)}
 .brief-card.evening{border-left:3px solid rgba(99,102,241,.35)}
 .brief-time{font-size:11px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px}
@@ -80,9 +80,10 @@ h1{font-size:22px;font-weight:700;background:linear-gradient(135deg,var(--cyan),
 @media(max-width:500px){
   .rich-text{font-size:12px}
   .ai-summary{padding:14px 16px}
-  .brief.card{backdrop-filter:saturate(180%)blur(40px);-webkit-backdrop-filter:saturate(180%)blur(40px);padding:14px 16px}
+  .brief.card{position:relative;overflow:hidden;backdrop-filter:saturate(180%)blur(40px);-webkit-backdrop-filter:saturate(180%)blur(40px);padding:14px 16px}
 }
 .bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--cyan) 0%,transparent 70%);top:50%;left:50%;animation:floatOrb 22s ease-in-out infinite;animation-delay:-7s}
+.card::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.01) 100%);pointer-events:none}
 </style>
 </head>
 <body>

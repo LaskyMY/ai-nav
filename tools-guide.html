@@ -14,7 +14,7 @@ h1{font-size:22px;font-weight:700;background:linear-gradient(135deg,var(--cyan),
 h2{font-size:16px;font-weight:700;color:var(--a1);margin:24px 0 10px;border-left:3px solid #818cf8;padding-left:10px}
 h3{font-size:14px;font-weight:700;color:rgba(255,255,255,.85);margin:16px 0 8px}
 .sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:20px}
-.card{backdrop-filter:saturate(180%)blur(40px);-webkit-backdrop-filter:saturate(180%)blur(40px);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.card{position:relative;overflow:hidden;backdrop-filter:saturate(180%)blur(40px);-webkit-backdrop-filter:saturate(180%)blur(40px);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:12px}
 .card.ok{border-color:rgba(16,185,129,.1);background:rgba(16,185,129,.03)}
 .card.warn{border-color:rgba(245,158,11,.15);background:rgba(245,158,11,.03)}
 table{width:100%;border-collapse:collapse;margin:8px 0;font-size:11px}
@@ -26,6 +26,7 @@ th{background:rgba(255,255,255,.04);color:var(--a1);font-weight:600}
 .tag.rec{background:rgba(16,185,129,.15);color:#10b981}
 .tag.opt{background:rgba(99,102,241,.1);color:rgba(129,140,248,.7)}
 .bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--cyan) 0%,transparent 70%);top:50%;left:50%;animation:floatOrb 22s ease-in-out infinite;animation-delay:-7s}
+.card::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.01) 100%);pointer-events:none}
 </style>
 </head>
 <body>
