@@ -59,7 +59,10 @@ function fm(n){return n>999?(n/1000).toFixed(1)+'k':String(n)}
 var feeds=[
   {id:'github',icon:'🐙',title:'GitHub 热门',url:'/api/trending/github',render:function(i){return '<a class="feed-item" href="'+(i.url||'#')+'" target="_blank"><div class="item-title">'+esc(i.name)+'</div><div class="item-meta"><span class="badge-stars">⭐'+fm(i.stars)+'</span>'+(i.lang?'<span class="badge-lang">'+esc(i.lang)+'</span>':'')+'</div>'+(i.desc?'<div class="item-desc">'+esc(i.desc)+'</div>':'')+'</a>'}},
   {id:'hn',icon:'🧠',title:'Hacker News',url:'/api/trending/hn',render:function(i){return '<a class="feed-item" href="'+(i.url||'#')+'" target="_blank"><div class="item-title">'+esc(i.title)+'</div><div class="item-meta"><span class="badge-score">▲'+i.score+'</span><span>by '+esc(i.by)+'</span></div></a>'}},
-  {id:'news',icon:'📰',title:'AI 每日摘要',url:'/api/news-summary',render:function(i){return '<div class="feed-item"><div class="item-title">AI 新闻简报</div><div class="item-desc">'+esc((i.summary||'').slice(0,200))+'</div></div>'},single:true}
+  {id:'news',icon:'📰',title:'AI 新闻摘要',url:'/api/news-summary',render:function(i){return '<div class="feed-item"><div class="item-title">AI 新闻简报</div><div class="item-desc">'+esc((i.summary||i.content||'').slice(0,200))+'</div></div>'},single:true},
+  {id:'arxiv',icon:'🔬',title:'前沿论文',url:'/api/papers?q=AI',render:function(i){return '<a class="feed-item" href="'+(i.u||'#')+'" target="_blank"><div class="item-title">'+esc((i.t||'').slice(0,60))+'</div><div class="item-meta"><span>'+esc(i.s||'')+'</span><span>'+esc(i.d||'')+'</span></div></a>'}},
+  {id:'financial',icon:'💰',title:'金融速报',url:'/api/financial/latest',render:function(i){return '<div class="feed-item"><div class="item-title">'+esc(i.title||i.type||'简报')+'</div><div class="item-desc">'+esc((i.content||'').slice(0,150))+'</div></div>'}},
+  {id:'bilibili',icon:'🎬',title:'B站最新视频',url:'/bilibili/manifest.json',render:function(i){return '<a class="feed-item" href="./bilibili/'+i.bvid+'.html"><div class="item-title">'+esc((i.title||'').slice(0,50))+'</div><div class="item-meta"><span>👤 '+esc(i.upper_name)+'</span><span>▶ '+fm(i.play_count)+'</span></div></a>'},extract:'videos'},
 ];
 
 async function load(f){
@@ -69,7 +72,7 @@ async function load(f){
     var r=await fetch(A+f.url,{signal:AbortSignal.timeout(8000)});
     var d=await r.json();
     var items=d.items||d;
-    if(f.single)items=[{summary:d.summary||d.content||''}];
+    if(f.single)items=[{summary:d.summary||d.content||''}];if(f.extract==='videos')items=Object.values(d.videos||{}).sort(function(a,b){return (b.fav_time||0)-(a.fav_time||0)});
     if(!items||!items.length){el.querySelector('.feed-body').innerHTML='<div class="feed-error">暂无数据</div>';return}
     el.querySelector('.feed-body').innerHTML=items.slice(0,10).map(f.render).join('');
     el.querySelector('.count').textContent=items.length;

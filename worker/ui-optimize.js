@@ -1,4 +1,4 @@
-// AI Nav Loop — 每30分钟：UI巡检 + 数据引擎健康检查 + 自动修复
+// AI Nav Loop v2 — 每30分钟：数据引擎迭代 + UI巡检 + 自动部署
 const BASE = "/Users/lasky_my/ai-nav";
 const DENO = "/Users/lasky_my/.deno/bin/deno";
 const SERVER = "http://localhost:8765";
