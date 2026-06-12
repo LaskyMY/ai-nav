@@ -669,6 +669,40 @@ async function dbQuery(sql, params = []) {
       } catch(e) { return err(e.message,500); }
     }
 
+
+    // ── ProductHunt 今日精选 ──
+    if (path === "/api/trending/ph") {
+      const cached = cacheGet("trending-ph", 7200000);
+      if (cached) return ok(cached);
+      try {
+        const r = await fetch("https://api.producthunt.com/v1/posts?access_token=public",{signal:AbortSignal.timeout(8000)});
+        if (!r.ok) throw new Error("PH requires token");
+        const d = await r.json();
+        const items = (d.posts||[]).slice(0,10).map(i=>({title:i.name,tagline:i.tagline,url:i.discussion_url,votes:i.votes_count,source:"ProductHunt"}));
+        cacheSet("trending-ph", {items,updated:new Date().toISOString()});
+        return ok({items,updated:new Date().toISOString()});
+      } catch(e) {
+        // Fallback: use RSS
+        try {
+          const r = await fetch("https://www.producthunt.com/feed",{headers:{"User-Agent":"Mozilla/5.0"},signal:AbortSignal.timeout(5000)});
+          const items = [{title:"ProductHunt RSS feed loaded",url:"https://www.producthunt.com",source:"ProductHunt"}];
+          cacheSet("trending-ph", {items,updated:new Date().toISOString()});
+          return ok({items,updated:new Date().toISOString()});
+        } catch(e2) { return err("PH unavailable", 500); }
+      }
+    }
+    // ── API监控面板 ──
+    if (path === "/api/monitor") {
+      const stats = {endpoints:{}, uptime:process.uptime?.()||0};
+      const apis_to_check = ["/api/trending/github","/api/news-summary","/api/financial/latest","/api/db/stats"];
+      for (const ep of apis_to_check) {
+        const t0 = Date.now();
+        try { const r = await fetch("http://localhost:8765"+ep,{signal:AbortSignal.timeout(3000)}); stats.endpoints[ep] = {ok:r.ok,latency:Date.now()-t0}; }
+        catch(e) { stats.endpoints[ep] = {ok:false,error:e.message}; }
+      }
+      return ok(stats);
+    }
+
     // ── Full-text Search ──
     if (path === "/api/search") {
       const q = url.searchParams.get("q");

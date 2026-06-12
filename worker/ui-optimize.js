@@ -122,4 +122,20 @@ if (fixed > 0) {
     console.log(`[Loop] ✅ 已提交推送 (${fixed}修)`);
   }
 }
+
+// ═══ Part D: 过期数据清理 ═══
+try {
+  const now = Date.now();
+  const cacheKeys = Object.keys(localStorage||{});
+  for (const k of cacheKeys) {
+    if (k.startsWith('trending-') || k.startsWith('insight-')) {
+      const d = JSON.parse(localStorage[k]);
+      if (d.updated && now - new Date(d.updated).getTime() > 86400000) {
+        delete localStorage[k];
+        console.log(`[Loop] 🧹 清理过期缓存: ${k}`);
+      }
+    }
+  }
+} catch(e) {}
+
 console.log(`[Loop] 完成: UI${fixed}修/${2-fixed}跳 数据${dataOK}/${dataApis.length}`);
