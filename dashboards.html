@@ -42,6 +42,7 @@ h1{font-size:22px;font-weight:700;margin:8px 0 4px;background:linear-gradient(13
 .feed-loading{text-align:center;padding:20px;color:var(--tx4);font-size:11px}
 .feed-error{text-align:center;padding:16px;color:var(--red);font-size:11px}
 @media(max-width:600px){.grid{grid-template-columns:1fr}.wrap{padding:12px}}
+@media(prefers-color-scheme:light){body{--bg:#f5f5f7;--tx:#1a1a1a;--tx2:#666;--tx3:#999;--tx4:#ccc}}
 </style>
 </head>
 <body>
@@ -51,7 +52,7 @@ h1{font-size:22px;font-weight:700;margin:8px 0 4px;background:linear-gradient(13
 <h1>📊 数据看板</h1>
 <p class="sub">实时数据聚合 · 每5分钟自动刷新 · <span id="lastUpdate">加载中...</span></p>
 
-<div class="stats-bar" id="statsBar" style="display:flex;gap:8px;margin:10px 0 16px;flex-wrap:wrap">
+<div class="font-ctrl" style="display:flex;gap:4px;margin-bottom:8px"><button onclick="setFont(13)" style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--tx3);cursor:pointer">小</button><button onclick="setFont(14)" style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--tx3);cursor:pointer">中</button><button onclick="setFont(16)" style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--tx3);cursor:pointer">大</button></div><div class="stats-bar" id="statsBar" style="display:flex;gap:8px;margin:10px 0 16px;flex-wrap:wrap">
   <div class="stat-chip"><b id="statTotal">0</b><span>数据源</span></div>
   <div class="stat-chip"><b id="statLive">0</b><span>在线</span></div>
   <div class="stat-chip"><b id="statItems">0</b><span>条目</span></div>
@@ -164,6 +165,7 @@ function updateStats(){
   draw();setInterval(function(){draw()},30000);
 })();
 
+function setFont(s){document.body.style.fontSize=s+'px';localStorage.setItem('fontSize',s);}var fs=localStorage.getItem('fontSize');if(fs)document.body.style.fontSize=fs+'px';
 build();setTimeout(function(){
   var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var fid=e.target.id.replace('feed-','');var f=feeds.find(function(x){return x.id===fid});if(f)load(f);io.unobserve(e.target)}})});
   document.querySelectorAll('.feed-card').forEach(function(c){io.observe(c)});

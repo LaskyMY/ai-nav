@@ -703,6 +703,20 @@ async function dbQuery(sql, params = []) {
       return ok(stats);
     }
 
+
+    // ── 内容质量评分 ──
+    if (path === "/api/quality/score") {
+      const title = url.searchParams.get("title") || "";
+      const text = url.searchParams.get("text") || "";
+      const score = Math.min(100, 
+        (title.length > 10 ? 30 : 10) + 
+        (text.length > 50 ? 30 : 5) + 
+        (title.includes("AI")||title.includes("GPT")||title.includes("LLM") ? 20 : 10) +
+        (text.length > 200 ? 20 : 5)
+      );
+      return ok({score,title,grade:score>70?"A":score>50?"B":"C"});
+    }
+
     // ── Full-text Search ──
     if (path === "/api/search") {
       const q = url.searchParams.get("q");
