@@ -25,6 +25,8 @@ pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;fon
 .warn-box{border-left:2px solid #f87171;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(239,68,68,.04)}
 .bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--cyan) 0%,transparent 70%);top:50%;left:50%;animation:floatOrb 22s ease-in-out infinite;animation-delay:-7s}
 .card::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.01) 100%);pointer-events:none}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.card{animation:fadeUp .5s cubic-bezier(.22,1,.36,1) both}
 </style>
 </head>
 <body>
