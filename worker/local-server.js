@@ -740,6 +740,28 @@ async function dbQuery(sql, params = []) {
       return ok({original: text, corrected, changes: text!==corrected});
     }
 
+
+    // ── 自动分类 ──
+    if (path === "/api/smart/classify") {
+      const text = (url.searchParams.get("text") || "").toLowerCase();
+      const cats = [
+        {name:"AI/ML",kw:["ai","ml","gpt","llm","transformer","neural","deep learning","machine learning"]},
+        {name:"编程",kw:["code","programming","javascript","python","rust","open source","github","api"]},
+        {name:"创业",kw:["startup","saas","funding","launch","product","market"]},
+        {name:"科技",kw:["tech","apple","google","microsoft","chip","hardware"]},
+        {name:"科学",kw:["research","paper","study","science","physics","biology"]},
+      ];
+      const scores = cats.map(c=>({name:c.name,score:c.kw.filter(k=>text.includes(k)).length}));
+      scores.sort((a,b)=>b.score-a.score);
+      return ok({class:scores[0].name,confidence:scores[0].score>0?"high":"low",all:scores});
+    }
+    // ── 分享链接生成 ──
+    if (path === "/api/share/generate") {
+      const title = url.searchParams.get("title") || "";
+      const link = url.searchParams.get("link") || "";
+      return ok({twitter:"https://twitter.com/intent/tweet?text="+encodeURIComponent(title)+"&url="+encodeURIComponent(link),copy:link});
+    }
+
     // ── Full-text Search ──
     if (path === "/api/search") {
       const q = url.searchParams.get("q");

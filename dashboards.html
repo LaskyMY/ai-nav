@@ -5,6 +5,8 @@
 <meta name="theme-color" content="#0a0a0f">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 <title>数据看板 · AI Nav</title>
+<link rel="preconnect" href="https://api.github.com">
+<link rel="dns-prefetch" href="https://hacker-news.firebaseio.com">
 <link rel="stylesheet" href="./shared.css">
 <link rel="icon" href="./icon.svg">
 <style>
@@ -44,6 +46,9 @@ h1{font-size:22px;font-weight:700;margin:8px 0 4px;background:linear-gradient(13
 @media(max-width:600px){.grid{grid-template-columns:1fr}.wrap{padding:12px}}
 @media(prefers-color-scheme:light){body{--bg:#f5f5f7;--tx:#1a1a1a;--tx2:#666;--tx3:#999;--tx4:#ccc}}
 .reading-progress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--a1),var(--pink));z-index:200;transition:width .1s linear}
+@media(min-width:768px){.grid{grid-template-columns:repeat(2,1fr)}}@media(min-width:1200px){.grid{grid-template-columns:repeat(3,1fr)}.wrap{max-width:1200px}}@media(orientation:landscape)and(max-width:1024px){.grid{grid-template-columns:repeat(2,1fr)}}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px;border-radius:4px}
+.skeleton{background:linear-gradient(90deg,rgba(255,255,255,.03) 25%,rgba(255,255,255,.06) 50%,rgba(255,255,255,.03) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 </style>
 </head>
 <body>
@@ -168,6 +173,7 @@ function updateStats(){
 
 function setFont(s){document.body.style.fontSize=s+'px';localStorage.setItem('fontSize',s);}var fs=localStorage.getItem('fontSize');if(fs)document.body.style.fontSize=fs+'px';
 window.addEventListener('scroll',function(){var h=document.documentElement.scrollHeight-window.innerHeight;var p=h>0?(window.scrollY/h)*100:0;var el=document.getElementById('readProgress');if(!el){el=document.createElement('div');el.id='readProgress';el.className='reading-progress';document.body.appendChild(el);}el.style.width=p+'%';});
+document.addEventListener('keydown',function(e){if(e.key==='/'&&e.target.tagName!=='INPUT'){e.preventDefault();window.scrollTo({top:0,behavior:'smooth'});}if(e.key==='r'&&e.ctrlKey){location.reload();}});
 build();setTimeout(function(){
   var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var fid=e.target.id.replace('feed-','');var f=feeds.find(function(x){return x.id===fid});if(f)load(f);io.unobserve(e.target)}})});
   document.querySelectorAll('.feed-card').forEach(function(c){io.observe(c)});
@@ -177,5 +183,6 @@ setInterval(build,300000);
 </script>
 <script>(function(){var g=document.getElementById('glowSpot');if(!g||('ontouchstart' in window))return;var x=innerWidth/2,y=innerHeight/2,tx=x,ty=y;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}anim()})();</script>
 <script src="./shared.js"></script>
+<button onclick="navigator.share&&navigator.share({title:document.title,url:location.href})" style="position:fixed;bottom:80px;right:16px;z-index:90;width:38px;height:38px;border-radius:19px;background:rgba(24,24,32,.85);border:1px solid rgba(255,255,255,.1);color:var(--tx2);cursor:pointer;font-size:14px;display:none" id="shareBtn">📤</button><script>if(navigator.share)document.getElementById("shareBtn").style.display="flex"</script>
 </body>
 </html>
