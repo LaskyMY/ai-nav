@@ -13,6 +13,9 @@ h2{font-size:16px;color:var(--cyan);margin:24px 0 8px;border-left:3px solid var(
 pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;font-size:11px;overflow-x:auto;margin:8px 0}
 @keyframes tFlow{0%{background-position:0 50%}50%{background-position:100% 100%}100%{background-position:0 50%}}
 @keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.endpoint{animation:fadeUp .5s cubic-bezier(.22,1,.36,1) both;position:relative;overflow:hidden}
+.endpoint::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.01) 100%);pointer-events:none}
 </style></head><body>
 <div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot" id="glowSpot"></div>
