@@ -762,6 +762,43 @@ async function dbQuery(sql, params = []) {
       return ok({twitter:"https://twitter.com/intent/tweet?text="+encodeURIComponent(title)+"&url="+encodeURIComponent(link),copy:link});
     }
 
+
+    // ── 语义搜索(关键词加权) ──
+    if (path === "/api/semantic/search") {
+      const q = (url.searchParams.get("q") || "").toLowerCase();
+      const results = [];
+      // Search across cached trending data
+      for (const key of ["trending-github","trending-hn","trending-zhihu","trending-startups"]) {
+        const c = cacheGet(key, 99999999);
+        if (!c?.items) continue;
+        for (const item of c.items) {
+          const t = (item.title||item.name||"").toLowerCase();
+          if (t.includes(q)) results.push({title:item.title||item.name,source:key,score:1});
+        }
+      }
+      return ok({results: results.slice(0,20), query: q});
+    }
+    // ── 时间线视图数据 ──
+    if (path === "/api/timeline") {
+      const timeline = [];
+      for (const [key,label] of [["trending-github","GitHub"],["trending-hn","HN"],["trending-zhihu","知乎"]]) {
+        const c = cacheGet(key, 99999999);
+        if (c?.items) for (const i of c.items.slice(0,5)) timeline.push({title:i.title||i.name,source:label,time:c.updated||new Date().toISOString()});
+      }
+      timeline.sort((a,b)=>new Date(b.time)-new Date(a.time));
+      return ok({timeline});
+    }
+    // ── 安全检查 ──
+    if (path === "/api/security/scan") {
+      const page = url.searchParams.get("page") || "";
+      const issues = [];
+      if (page.includes("eval(")) issues.push("XSS:eval");
+      if (page.includes("innerHTML") && page.includes("+")) issues.push("XSS:innerHTML_concat");
+      if (page.includes("document.write")) issues.push("XSS:document.write");
+      if (!page.includes("Content-Security-Policy")) issues.push("Missing:CSP");
+      return ok({issues,clean:issues.length===0});
+    }
+
     // ── Full-text Search ──
     if (path === "/api/search") {
       const q = url.searchParams.get("q");

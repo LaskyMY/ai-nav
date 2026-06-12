@@ -112,6 +112,17 @@ for (const name of picked) {
   }
 }
 
+
+// ═══ Part E: 安全检查 ═══
+try {
+  for (const name of picked.slice(0,1)) {
+    const html = await Deno.readTextFile(`${BASE}/${name}`);
+    if (html.includes("eval(") || (html.includes("innerHTML") && html.includes("+"))) {
+      console.log(`[Loop] ⚠️ ${name}: 潜在XSS风险`);
+    }
+  }
+} catch(e) {}
+
 // ═══ Part C: 提交推送 ═══
 if (fixed > 0) {
   const a = new Deno.Command("git", { args: ["-C", BASE, "add", "-A"] }); await a.output();
