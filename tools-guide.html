@@ -10,8 +10,8 @@
 *{-webkit-font-smoothing:antialiased}
 *{margin:0;padding:0;box-sizing:border-box}
 body{overflow-x:hidden;background:#0a0a0f;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.7;padding:16px;max-width:600px;margin:0 auto;padding-bottom:32px}
-h1{font-size:22px;font-weight:700;color:#00e5ff;margin-bottom:2px}
-h2{font-size:16px;font-weight:700;color:#818cf8;margin:24px 0 10px;border-left:3px solid #818cf8;padding-left:10px}
+h1{font-size:22px;font-weight:700;background:linear-gradient(135deg,var(--cyan),var(--a1),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite;margin-bottom:2px}
+h2{font-size:16px;font-weight:700;color:var(--a1);margin:24px 0 10px;border-left:3px solid #818cf8;padding-left:10px}
 h3{font-size:14px;font-weight:700;color:rgba(255,255,255,.85);margin:16px 0 8px}
 .sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:20px}
 .card{backdrop-filter:saturate(180%)blur(40px);-webkit-backdrop-filter:saturate(180%)blur(40px);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:12px}
@@ -19,16 +19,17 @@ h3{font-size:14px;font-weight:700;color:rgba(255,255,255,.85);margin:16px 0 8px}
 .card.warn{border-color:rgba(245,158,11,.15);background:rgba(245,158,11,.03)}
 table{width:100%;border-collapse:collapse;margin:8px 0;font-size:11px}
 td,th{border:1px solid rgba(255,255,255,.08);padding:6px 10px;text-align:left}
-th{background:rgba(255,255,255,.04);color:#818cf8;font-weight:600}
+th{background:rgba(255,255,255,.04);color:var(--a1);font-weight:600}
 .tip{border-left:2px solid #fbbf24;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(245,158,11,.04)}
 .tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin:2px 2px 2px 0}
 .tag.must{background:rgba(239,68,68,.15);color:#f87171}
 .tag.rec{background:rgba(16,185,129,.15);color:#10b981}
 .tag.opt{background:rgba(99,102,241,.1);color:rgba(129,140,248,.7)}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--cyan) 0%,transparent 70%);top:50%;left:50%;animation:floatOrb 22s ease-in-out infinite;animation-delay:-7s}
 </style>
 </head>
 <body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot" id="glowSpot"></div>
 
 <h1>常用工具选购指南</h1>

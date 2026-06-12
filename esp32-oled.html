@@ -5,7 +5,7 @@
 *{-webkit-font-smoothing:antialiased}
 *{margin:0;padding:0;box-sizing:border-box}
 body{overflow-x:hidden;background:#0a0a0f;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.5;padding:16px;max-width:500px;margin:0 auto;padding-bottom:32px}
-h1{font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:2px}
+h1{font-size:20px;font-weight:700;background:linear-gradient(135deg,var(--cyan),var(--a1),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite;margin-bottom:2px}
 .sub{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:14px}
 .card{backdrop-filter:saturate(180%)blur(40px);-webkit-backdrop-filter:saturate(180%)blur(40px);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:10px}
 .row{display:flex;align-items:center;gap:8px;margin:4px 0}
@@ -30,8 +30,9 @@ input[type=text],input[type=password]{background:rgba(255,255,255,.04);border:1p
 .wifi-name{flex:1;font-size:12px;font-weight:600}
 pre{background:rgba(0,0,0,.3);padding:10px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.5;margin:6px 0;max-height:100px;overflow-y:auto}
 .debug{font-size:9px;color:rgba(255,255,255,.2);font-family:monospace;margin-top:4px;white-space:pre-wrap;max-height:60px;overflow-y:auto}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--cyan) 0%,transparent 70%);top:50%;left:50%;animation:floatOrb 22s ease-in-out infinite;animation-delay:-7s}
 </style></head><body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot" id="glowSpot"></div>
 
 <h1>ESP32 OLED 控制台</h1>

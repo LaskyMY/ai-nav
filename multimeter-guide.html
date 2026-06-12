@@ -10,8 +10,8 @@
 *{-webkit-font-smoothing:antialiased}
 *{margin:0;padding:0;box-sizing:border-box}
 body{overflow-x:hidden;background:#0a0a0f;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.7;padding:16px;max-width:600px;margin:0 auto;padding-bottom:32px}
-h1{font-size:22px;font-weight:700;color:#00e5ff;margin-bottom:2px}
-h2{font-size:16px;font-weight:700;color:#818cf8;margin:24px 0 10px;border-left:3px solid #818cf8;padding-left:10px}
+h1{font-size:22px;font-weight:700;background:linear-gradient(135deg,var(--cyan),var(--a1),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite;margin-bottom:2px}
+h2{font-size:16px;font-weight:700;color:var(--a1);margin:24px 0 10px;border-left:3px solid #818cf8;padding-left:10px}
 h3{font-size:14px;font-weight:700;color:rgba(255,255,255,.85);margin:16px 0 8px}
 .sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:20px}
 .card{backdrop-filter:saturate(180%)blur(40px);-webkit-backdrop-filter:saturate(180%)blur(40px);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:12px}
@@ -19,14 +19,15 @@ h3{font-size:14px;font-weight:700;color:rgba(255,255,255,.85);margin:16px 0 8px}
 .card.ok{border-color:rgba(16,185,129,.1);background:rgba(16,185,129,.03)}
 table{width:100%;border-collapse:collapse;margin:8px 0;font-size:11px}
 td,th{border:1px solid rgba(255,255,255,.08);padding:6px 10px;text-align:left}
-th{background:rgba(255,255,255,.04);color:#818cf8;font-weight:600}
+th{background:rgba(255,255,255,.04);color:var(--a1);font-weight:600}
 pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;font-size:10px;line-height:1.6;margin:8px 0}
 .tip{border-left:2px solid #fbbf24;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(245,158,11,.04)}
 .warn-box{border-left:2px solid #f87171;padding:6px 12px;margin:8px 0;font-size:11px;color:rgba(255,255,255,.6);background:rgba(239,68,68,.04)}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--cyan) 0%,transparent 70%);top:50%;left:50%;animation:floatOrb 22s ease-in-out infinite;animation-delay:-7s}
 </style>
 </head>
 <body>
-<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot" id="glowSpot"></div>
 
 <h1>万用表使用指南</h1>
@@ -60,19 +61,19 @@ pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;fon
 <h2>三、最常用：蜂鸣档（通断测试）</h2>
 <div class="card">
   <p>这是日常使用<b>最多的档位</b>，用来检查导线是否连通、焊点是否虚焊、PCB走线是否断路。</p>
-  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:#818cf8;text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">1</div><div>红表笔插 <b>VΩmA</b>，黑表笔插 <b>COM</b></div></div>
-  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:#818cf8;text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">2</div><div>旋钮转到 <b>蜂鸣档 )))</b>（通常和电阻档在一起）</div></div>
-  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:#818cf8;text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">3</div><div>两个表笔碰一下 → 听到 <b>"嘀——"</b> 声 + 屏幕显示接近0Ω = 万用表正常</div></div>
-  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:#818cf8;text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">4</div><div>测导线两端 → 响 = 连通 / 不响 = 断路</div></div>
-  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:#818cf8;text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">5</div><div>测焊点两端 → 响 = 焊接OK / 不响 = 虚焊或断路</div></div>
+  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:var(--a1);text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">1</div><div>红表笔插 <b>VΩmA</b>，黑表笔插 <b>COM</b></div></div>
+  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:var(--a1);text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">2</div><div>旋钮转到 <b>蜂鸣档 )))</b>（通常和电阻档在一起）</div></div>
+  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:var(--a1);text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">3</div><div>两个表笔碰一下 → 听到 <b>"嘀——"</b> 声 + 屏幕显示接近0Ω = 万用表正常</div></div>
+  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:var(--a1);text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">4</div><div>测导线两端 → 响 = 连通 / 不响 = 断路</div></div>
+  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:var(--a1);text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">5</div><div>测焊点两端 → 响 = 焊接OK / 不响 = 虚焊或断路</div></div>
 </div>
 
 <h2>四、测电压（DCV 直流）</h2>
 <div class="card">
   <p>测电池、电源、开发板供电。</p>
-  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:#818cf8;text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">1</div><div>旋钮转到 <b>V⎓ (DCV)</b>，选合适量程（不知道就选最大 20V/200V）</div></div>
-  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:#818cf8;text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">2</div><div>红表笔接 <b>正极(+)</b>，黑表笔接 <b>负极(-)</b></div></div>
-  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:#818cf8;text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">3</div><div>读数 = 电压值</div></div>
+  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:var(--a1);text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">1</div><div>旋钮转到 <b>V⎓ (DCV)</b>，选合适量程（不知道就选最大 20V/200V）</div></div>
+  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:var(--a1);text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">2</div><div>红表笔接 <b>正极(+)</b>，黑表笔接 <b>负极(-)</b></div></div>
+  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:var(--a1);text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">3</div><div>读数 = 电压值</div></div>
   <table>
     <tr><th>测量对象</th><th>预期电压</th><th>量程</th></tr>
     <tr><td>1.5V电池 (AA/AAA)</td><td>1.2~1.6V</td><td>20V</td></tr>
@@ -99,8 +100,8 @@ pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;fon
 
 <h2>六、测电阻（Ω）</h2>
 <div class="card">
-  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:#818cf8;text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">1</div><div>旋钮转到 <b>Ω</b>，选合适量程</div></div>
-  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:#818cf8;text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">2</div><div>表笔接触电阻两端（<b>电路必须断电！</b>）</div></div>
+  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:var(--a1);text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">1</div><div>旋钮转到 <b>Ω</b>，选合适量程</div></div>
+  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:var(--a1);text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">2</div><div>表笔接触电阻两端（<b>电路必须断电！</b>）</div></div>
   <table>
     <tr><th>色环</th><th>阻值</th><th>四环识别口诀</th></tr>
     <tr><td>棕黑红金</td><td>1kΩ (1000Ω)</td><td>棕1 黑0 红×100 金±5%</td></tr>
@@ -120,18 +121,18 @@ pre{background:rgba(0,0,0,.3);padding:12px;border-radius:8px;overflow-x:auto;fon
     电流档内阻极小（接近0Ω），直接测电源两端 = 电源短路 = 烧保险甚至烧表。<br><br>
     <b>所以：测完电流立刻把旋钮转回电压档！</b>
   </div>
-  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:#818cf8;text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">1</div><div>小电流(<200mA): 红表笔插 <b>VΩmA</b>，旋钮选 <b>200mA⎓</b></div></div>
-  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:#818cf8;text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">2</div><div>大电流(>200mA): 红表笔插 <b>10A</b>，旋钮选 <b>10A⎓</b></div></div>
-  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:#818cf8;text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">3</div><div><b>断开</b>电路 → 万用表<b>串联</b>接入断口 → 通电读数</div></div>
+  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:var(--a1);text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">1</div><div>小电流(<200mA): 红表笔插 <b>VΩmA</b>，旋钮选 <b>200mA⎓</b></div></div>
+  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:var(--a1);text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">2</div><div>大电流(>200mA): 红表笔插 <b>10A</b>，旋钮选 <b>10A⎓</b></div></div>
+  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:var(--a1);text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">3</div><div><b>断开</b>电路 → 万用表<b>串联</b>接入断口 → 通电读数</div></div>
 </div>
 
 <h2>八、测二极管 / LED</h2>
 <div class="card">
   <p>判断LED好坏、极性、颜色。</p>
-  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:#818cf8;text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">1</div><div>旋钮转到 <b>二极管档 (→+)</b></div></div>
-  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:#818cf8;text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">2</div><div>红笔接LED长脚(+)，黑笔接短脚(-) → LED<b>微亮</b>，显示1.5~2.5V = 正常</div></div>
-  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:#818cf8;text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">3</div><div>反过来接 → 显示 <b>OL</b> (Open Loop) = 正常（二极管单向导通）</div></div>
-  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:#818cf8;text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">4</div><div>如果<b>两个方向都通</b> 或 <b>两个方向都不通</b> = LED坏了</div></div>
+  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:var(--a1);text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">1</div><div>旋钮转到 <b>二极管档 (→+)</b></div></div>
+  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:var(--a1);text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">2</div><div>红笔接LED长脚(+)，黑笔接短脚(-) → LED<b>微亮</b>，显示1.5~2.5V = 正常</div></div>
+  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:var(--a1);text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">3</div><div>反过来接 → 显示 <b>OL</b> (Open Loop) = 正常（二极管单向导通）</div></div>
+  <div class="step" style="display:flex;gap:10px;margin:6px 0"><div style="width:24px;height:24px;border-radius:12px;background:rgba(99,102,241,.2);color:var(--a1);text-align:center;line-height:24px;font-size:12px;font-weight:700;flex-shrink:0">4</div><div>如果<b>两个方向都通</b> 或 <b>两个方向都不通</b> = LED坏了</div></div>
 </div>
 
 <h2>九、常见问题速查</h2>
