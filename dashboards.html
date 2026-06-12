@@ -27,7 +27,7 @@ h1{font-size:22px;font-weight:700;margin:8px 0 4px;background:linear-gradient(13
 .feed-card{background:rgba(255,255,255,.04);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid rgba(255,255,255,.06);border-radius:var(--r);overflow:hidden;position:relative;animation:fadeUp .5s var(--ease) both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .feed-card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.01) 100%);pointer-events:none}
-.feed-card:nth-child(2){animation-delay:.03s}.feed-card:nth-child(3){animation-delay:.06s}.feed-card:nth-child(4){animation-delay:.09s}.feed-card:nth-child(5){animation-delay:.12s}.feed-card:nth-child(6){animation-delay:.15s}
+.stats-bar .stat-chip{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:8px 14px;text-align:center;flex:1;min-width:60px}.stat-chip b{display:block;font-size:18px;color:var(--cyan);font-weight:700}.stat-chip span{font-size:9px;color:var(--tx3)}.feed-card:nth-child(2){animation-delay:.03s}.feed-card:nth-child(3){animation-delay:.06s}.feed-card:nth-child(4){animation-delay:.09s}.feed-card:nth-child(5){animation-delay:.12s}.feed-card:nth-child(6){animation-delay:.15s}
 .feed-hd{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;gap:8px}
 .feed-hd .icon{font-size:16px}.feed-hd .title{font-size:13px;font-weight:700}.feed-hd .count{font-size:10px;color:var(--tx3);margin-left:auto;background:rgba(255,255,255,.04);padding:2px 8px;border-radius:8px}
 .feed-body{padding:8px 0;max-height:400px;overflow-y:auto}
@@ -50,6 +50,13 @@ h1{font-size:22px;font-weight:700;margin:8px 0 4px;background:linear-gradient(13
 <div class="wrap">
 <h1>📊 数据看板</h1>
 <p class="sub">实时数据聚合 · 每5分钟自动刷新 · <span id="lastUpdate">加载中...</span></p>
+
+<div class="stats-bar" id="statsBar" style="display:flex;gap:8px;margin:10px 0 16px;flex-wrap:wrap">
+  <div class="stat-chip"><b id="statTotal">0</b><span>数据源</span></div>
+  <div class="stat-chip"><b id="statLive">0</b><span>在线</span></div>
+  <div class="stat-chip"><b id="statItems">0</b><span>条目</span></div>
+  <div class="stat-chip"><b id="statUpdated">--</b><span>更新</span></div>
+</div>
 <div class="grid" id="dashboard"></div>
 </div>
 <script>
@@ -86,10 +93,25 @@ function build(){
   document.getElementById('dashboard').innerHTML=feeds.map(function(f){
     return '<div class="feed-card" id="feed-'+f.id+'"><div class="feed-hd"><span class="icon">'+f.icon+'</span><span class="title">'+f.title+'</span><span class="count">0</span></div><div class="feed-body"><div class="feed-loading">⏳</div></div></div>';
   }).join('');
-  feeds.forEach(load);
+  feeds.forEach(load);updateStats();
   document.getElementById('lastUpdate').textContent=new Date().toLocaleTimeString('zh-CN');
 }
+
+function updateStats(){
+  var cards=document.querySelectorAll('.feed-card');
+  var live=0,items=0;
+  cards.forEach(function(c){
+    var count=c.querySelector('.count');
+    if(count&&parseInt(count.textContent)>0)live++;
+    items+=parseInt(count.textContent)||0;
+  });
+  document.getElementById('statTotal').textContent=cards.length;
+  document.getElementById('statLive').textContent=live;
+  document.getElementById('statItems').textContent=items;
+  document.getElementById('statUpdated').textContent=new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
+}
 build();setInterval(build,300000);
+
 </script>
 <script>(function(){var g=document.getElementById('glowSpot');if(!g||('ontouchstart' in window))return;var x=innerWidth/2,y=innerHeight/2,tx=x,ty=y;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}anim()})();</script>
 <script src="./shared.js"></script>
