@@ -27,7 +27,7 @@ h1{font-size:22px;font-weight:700;margin:8px 0 4px;background:linear-gradient(13
 .feed-card{background:rgba(255,255,255,.04);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid rgba(255,255,255,.06);border-radius:var(--r);overflow:hidden;position:relative;animation:fadeUp .5s var(--ease) both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .feed-card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.01) 100%);pointer-events:none}
-.stats-bar .stat-chip{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:8px 14px;text-align:center;flex:1;min-width:60px}.stat-chip b{display:block;font-size:18px;color:var(--cyan);font-weight:700}.stat-chip span{font-size:9px;color:var(--tx3)}.feed-card:nth-child(2){animation-delay:.03s}.feed-card:nth-child(3){animation-delay:.06s}.feed-card:nth-child(4){animation-delay:.09s}.feed-card:nth-child(5){animation-delay:.12s}.feed-card:nth-child(6){animation-delay:.15s}
+.stats-bar .stat-chip{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:8px 14px;text-align:center;flex:1;min-width:60px}.stat-chip b{display:block;font-size:18px;color:var(--cyan);font-weight:700}.stat-chip span{font-size:9px;color:var(--tx3)}.chart-box{width:100%;height:120px;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.05);background:rgba(0,0,0,.2);margin-bottom:14px}.chart-box canvas{width:100%;height:100%}.feed-card:nth-child(2){animation-delay:.03s}.feed-card:nth-child(3){animation-delay:.06s}.feed-card:nth-child(4){animation-delay:.09s}.feed-card:nth-child(5){animation-delay:.12s}.feed-card:nth-child(6){animation-delay:.15s}
 .feed-hd{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;gap:8px}
 .feed-hd .icon{font-size:16px}.feed-hd .title{font-size:13px;font-weight:700}.feed-hd .count{font-size:10px;color:var(--tx3);margin-left:auto;background:rgba(255,255,255,.04);padding:2px 8px;border-radius:8px}
 .feed-body{padding:8px 0;max-height:400px;overflow-y:auto}
@@ -57,7 +57,7 @@ h1{font-size:22px;font-weight:700;margin:8px 0 4px;background:linear-gradient(13
   <div class="stat-chip"><b id="statItems">0</b><span>条目</span></div>
   <div class="stat-chip"><b id="statUpdated">--</b><span>更新</span></div>
 </div>
-<div class="grid" id="dashboard"></div>
+<div class="chart-box"><canvas id="trendChart"></canvas></div><div class="grid" id="dashboard"></div>
 </div>
 <script>
 var A=location.hostname==='localhost'?'http://localhost:8765':'https://99107705bcfb4f23-183-6-87-29.serveousercontent.com';
@@ -129,6 +129,37 @@ function updateStats(){
   document.getElementById('statItems').textContent=items;
   document.getElementById('statUpdated').textContent=new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
 }
+
+// Trend sparkline
+(function(){
+  var c=document.getElementById('trendChart'),ctx=c.getContext('2d');
+  var history=[];
+  function draw(){
+    var W=c.parentElement.clientWidth,H=c.parentElement.clientHeight;
+    c.width=W;c.height=H;
+    ctx.fillStyle='rgba(0,0,0,.2)';ctx.fillRect(0,0,W,H);
+    var now=Date.now();
+    history.push({t:now,v:document.querySelectorAll('.feed-card').length});
+    if(history.length>60)history.shift();
+    if(history.length<2)return;
+    ctx.beginPath();ctx.strokeStyle='rgba(6,182,212,.6)';ctx.lineWidth=2;
+    var maxV=Math.max.apply(null,history.map(function(h){return h.v}));
+    var minV=Math.min.apply(null,history.map(function(h){return h.v}));
+    var range=maxV-minV||1;
+    var xStep=W/(history.length-1);
+    history.forEach(function(h,i){
+      var x=i*xStep,y=H-((h.v-minV)/range)*H*0.8-10;
+      if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+    // Fill
+    ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.closePath();
+    ctx.fillStyle='rgba(6,182,212,.05)';ctx.fill();
+    requestAnimationFrame(draw);
+  }
+  draw();setInterval(function(){draw()},30000);
+})();
+
 build();setTimeout(function(){
   var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var fid=e.target.id.replace('feed-','');var f=feeds.find(function(x){return x.id===fid});if(f)load(f);io.unobserve(e.target)}})});
   document.querySelectorAll('.feed-card').forEach(function(c){io.observe(c)});
