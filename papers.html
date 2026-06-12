@@ -34,7 +34,7 @@ align-self:flex-start;margin-bottom:8px;
 }
 .back-btn:hover{background:rgba(0,229,255,.18)}
 .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.top-bar h1{font-size:20px;font-weight:700;letter-spacing:-.01em}
+.top-bar h1{font-size:20px;font-weight:700;letter-spacing:-.01em;background:linear-gradient(135deg,var(--a1),var(--cyan),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
 .top-bar .badge{
 font-size:10px;font-weight:600;color:var(--purple);padding:3px 10px;
 background:var(--purple3);border-radius:20px;border:1px solid rgba(168,85,247,.15);
@@ -115,6 +115,8 @@ text-align:center;padding:20px;color:#ef4444;font-size:13px;
 background:rgba(239,68,68,.08);border-radius:var(--r2);margin-bottom:16px;
 }
 .card::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.01) 100%);pointer-events:none}
+@keyframes tFlow{0%{background-position:0 50%}50%{background-position:100% 100%}100%{background-position:0 50%}}
+@keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
 </style>
 </head>
 <body>

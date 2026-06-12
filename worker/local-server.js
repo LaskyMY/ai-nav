@@ -515,6 +515,33 @@ async function dbQuery(sql, params = []) {
       } catch(e) { console.log("[auto] update error:", e.message); return err(e.message, 400); }
     }
 
+
+    // ── Data Engine APIs ──
+    if (path === "/api/trending/github") {
+      const cached = cacheGet("trending-github", 1800000);
+      if (cached) return ok(cached);
+      try {
+        const r = await fetch("https://api.github.com/search/repositories?q=stars:>100+pushed:>"+new Date(Date.now()-7*86400000).toISOString().slice(0,10)+"&sort=stars&order=desc&per_page=10", {headers:{"User-Agent":"ai-nav/1.0"},signal:AbortSignal.timeout(8000)});
+        const d = await r.json();
+        const items = (d.items||[]).map(i=>({name:i.full_name,stars:i.stargazers_count,desc:i.description,url:i.html_url,lang:i.language}));
+        cacheSet("trending-github", {items});
+        return ok({items});
+      } catch(e) { return err(e.message,500); }
+    }
+    if (path === "/api/trending/hn") {
+      const cached = cacheGet("trending-hn", 600000);
+      if (cached) return ok(cached);
+      try {
+        const ids = await (await fetch("https://hacker-news.firebaseio.com/v0/topstories.json",{signal:AbortSignal.timeout(5000)})).json();
+        const items = await Promise.all(ids.slice(0,8).map(async id=>{
+          const r=await fetch("https://hacker-news.firebaseio.com/v0/item/"+id+".json",{signal:AbortSignal.timeout(3000)});
+          const d=await r.json(); return {title:d.title,url:d.url,score:d.score,by:d.by};
+        }));
+        cacheSet("trending-hn", {items});
+        return ok({items});
+      } catch(e) { return err(e.message,500); }
+    }
+
     // ── Full-text Search ──
     if (path === "/api/search") {
       const q = url.searchParams.get("q");

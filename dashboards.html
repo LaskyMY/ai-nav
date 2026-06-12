@@ -3,77 +3,89 @@
 <head>
 <meta charset="UTF-8">
 <meta name="theme-color" content="#0a0a0f">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>时钟看板</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>数据看板 · AI Nav</title>
 <link rel="stylesheet" href="./shared.css">
+<link rel="icon" href="./icon.svg">
 <style>
-*{-webkit-font-smoothing:antialiased}
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#0a0a0f;color:rgba(255,255,255,.9);font-family:system-ui,sans-serif;font-size:13px;line-height:1.6;padding:16px;max-width:500px;margin:0 auto;padding-bottom:32px;overflow-x:hidden}
-h1{font-size:22px;font-weight:700;background:linear-gradient(135deg,#06B6D4,#6366f1,#ec4899);background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite;margin-bottom:2px}
-.sub{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:20px}
-.card{position:relative;overflow:hidden;backdrop-filter:saturate(180%)blur(40px);-webkit-backdrop-filter:saturate(180%)blur(40px);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:18px 20px;margin-bottom:10px;cursor:pointer;transition:all .2s;text-decoration:none;display:flex;align-items:center;gap:14px;color:inherit}
-.card:hover{border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.05);transform:translateY(-1px)}
-.card:active{transform:scale(.98)}
-.card-ico{font-size:32px;flex-shrink:0;width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.04)}
-.card-info{flex:1}
-.card-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:3px}
-.card-desc{font-size:11px;color:rgba(255,255,255,.4);line-height:1.5}
-.card-meta{font-size:10px;color:rgba(255,255,255,.2);margin-top:4px}
-.card-arrow{color:rgba(255,255,255,.15);font-size:18px}
-@keyframes tFlow{0%{background-position:0 50%}50%{background-position:100% 100%}100%{background-position:0 50%}}
+:root{--bg:#0a0a0f;--a1:#6366f1;--cyan:#06B6D4;--pink:#ec4899;--amber:#F59E0B;--green:#10B981;--red:#EF4444;--tx:rgba(255,255,255,.92);--tx2:rgba(255,255,255,.55);--tx3:rgba(255,255,255,.35);--tx4:rgba(255,255,255,.18);--r:14px;--ease:cubic-bezier(.22,1,.36,1)}
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.6;min-height:100vh;padding-bottom:80px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.35}
+.bg__orb:nth-child(1){width:500px;height:500px;background:radial-gradient(circle,var(--cyan) 0%,transparent 70%);top:-15%;left:-10%;animation:floatOrb 20s ease-in-out infinite}
+.bg__orb:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);bottom:-10%;right:-8%;animation:floatOrb 24s ease-in-out infinite reverse}
+.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,var(--a1) 0%,transparent 70%);top:50%;left:50%;animation:floatOrb 22s ease-in-out infinite;animation-delay:-7s}
 @keyframes floatOrb{0%,100%{transform:translate(0,0)scale(1)}25%{transform:translate(80px,-60px)scale(1.15)}50%{transform:translate(-40px,40px)scale(.9)}75%{transform:translate(-60px,-30px)scale(1.1)}}
+.glow-spot{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1}
+.wrap{max-width:960px;margin:0 auto;padding:20px;position:relative;z-index:1}
+h1{font-size:22px;font-weight:700;margin:8px 0 4px;background:linear-gradient(135deg,var(--cyan),var(--a1),var(--pink));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:tFlow 5s ease-in-out infinite}
+@keyframes tFlow{0%{background-position:0 50%}50%{background-position:100% 100%}100%{background-position:0 50%}}
+.sub{font-size:11px;color:var(--tx3);margin-bottom:14px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin:16px 0}
+.feed-card{background:rgba(255,255,255,.04);backdrop-filter:saturate(180%) blur(40px);-webkit-backdrop-filter:saturate(180%) blur(40px);border:1px solid rgba(255,255,255,.06);border-radius:var(--r);overflow:hidden;position:relative;animation:fadeUp .5s var(--ease) both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.card::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.01) 100%);pointer-events:none}
-.card{animation:fadeUp .5s cubic-bezier(.22,1,.36,1) both}
-.card:nth-child(2){animation-delay:.04s}
-.card:nth-child(3){animation-delay:.08s}
-.bg__orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,#06B6D4 0%,transparent 70%);top:50%;left:50%;animation:floatOrb 22s ease-in-out infinite;animation-delay:-7s}
+.feed-card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 45%,transparent 65%,rgba(255,255,255,.01) 100%);pointer-events:none}
+.feed-card:nth-child(2){animation-delay:.03s}.feed-card:nth-child(3){animation-delay:.06s}.feed-card:nth-child(4){animation-delay:.09s}.feed-card:nth-child(5){animation-delay:.12s}.feed-card:nth-child(6){animation-delay:.15s}
+.feed-hd{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;gap:8px}
+.feed-hd .icon{font-size:16px}.feed-hd .title{font-size:13px;font-weight:700}.feed-hd .count{font-size:10px;color:var(--tx3);margin-left:auto;background:rgba(255,255,255,.04);padding:2px 8px;border-radius:8px}
+.feed-body{padding:8px 0;max-height:400px;overflow-y:auto}
+.feed-item{display:block;padding:8px 16px;text-decoration:none;color:var(--tx);transition:all .2s;border-bottom:1px solid rgba(255,255,255,.02)}
+.feed-item:hover{background:rgba(255,255,255,.03)}
+.feed-item .item-title{font-size:13px;font-weight:600;line-height:1.5;margin-bottom:2px}
+.feed-item .item-meta{font-size:10px;color:var(--tx3);display:flex;gap:10px}
+.feed-item .item-desc{font-size:11px;color:var(--tx3);margin-top:2px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.badge-stars{display:inline-block;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:600;background:rgba(245,158,11,.12);color:var(--amber)}
+.badge-lang{display:inline-block;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:600;background:rgba(99,102,241,.12);color:var(--a1)}
+.badge-score{display:inline-block;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:600;background:rgba(16,185,129,.12);color:var(--green)}
+.feed-loading{text-align:center;padding:20px;color:var(--tx4);font-size:11px}
+.feed-error{text-align:center;padding:16px;color:var(--red);font-size:11px}
+@media(max-width:600px){.grid{grid-template-columns:1fr}.wrap{padding:12px}}
 </style>
 </head>
 <body>
 <div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
 <div class="glow-spot" id="glowSpot"></div>
+<div class="wrap">
+<h1>📊 数据看板</h1>
+<p class="sub">实时数据聚合 · 每5分钟自动刷新 · <span id="lastUpdate">加载中...</span></p>
+<div class="grid" id="dashboard"></div>
+</div>
+<script>
+var A=location.hostname==='localhost'?'http://localhost:8765':'https://99107705bcfb4f23-183-6-87-29.serveousercontent.com';
+function esc(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
+function fm(n){return n>999?(n/1000).toFixed(1)+'k':String(n)}
+var feeds=[
+  {id:'github',icon:'🐙',title:'GitHub 热门',url:'/api/trending/github',render:function(i){return '<a class="feed-item" href="'+(i.url||'#')+'" target="_blank"><div class="item-title">'+esc(i.name)+'</div><div class="item-meta"><span class="badge-stars">⭐'+fm(i.stars)+'</span>'+(i.lang?'<span class="badge-lang">'+esc(i.lang)+'</span>':'')+'</div>'+(i.desc?'<div class="item-desc">'+esc(i.desc)+'</div>':'')+'</a>'}},
+  {id:'hn',icon:'🧠',title:'Hacker News',url:'/api/trending/hn',render:function(i){return '<a class="feed-item" href="'+(i.url||'#')+'" target="_blank"><div class="item-title">'+esc(i.title)+'</div><div class="item-meta"><span class="badge-score">▲'+i.score+'</span><span>by '+esc(i.by)+'</span></div></a>'}},
+  {id:'news',icon:'📰',title:'AI 每日摘要',url:'/api/news-summary',render:function(i){return '<div class="feed-item"><div class="item-title">AI 新闻简报</div><div class="item-desc">'+esc((i.summary||'').slice(0,200))+'</div></div>'},single:true}
+];
 
-<h1>时钟看板</h1>
-<div class="sub">三端时钟仪表盘 · 实时天气/新闻/AI简报</div>
+async function load(f){
+  var el=document.getElementById('feed-'+f.id);if(!el)return;
+  el.querySelector('.feed-body').innerHTML='<div class="feed-loading">⏳</div>';
+  try{
+    var r=await fetch(A+f.url,{signal:AbortSignal.timeout(8000)});
+    var d=await r.json();
+    var items=d.items||d;
+    if(f.single)items=[{summary:d.summary||d.content||''}];
+    if(!items||!items.length){el.querySelector('.feed-body').innerHTML='<div class="feed-error">暂无数据</div>';return}
+    el.querySelector('.feed-body').innerHTML=items.slice(0,10).map(f.render).join('');
+    el.querySelector('.count').textContent=items.length;
+  }catch(e){el.querySelector('.feed-body').innerHTML='<div class="feed-error">⚠️离线</div>'}
+}
 
-<a class="card" href="./clock.html">
-  <div class="card-ico" style="background:rgba(99,102,241,.12)">📱</div>
-  <div class="card-info">
-    <div class="card-title">iOS 时钟看板</div>
-    <div class="card-desc">390×844 · 毫秒级时钟 · 液态玻璃 · 3列网格</div>
-    <div class="card-meta">手机端 · 3列网格 · emoji图标</div>
-  </div>
-  <span class="card-arrow">→</span>
-</a>
-
-<a class="card" href="./clock-old.html">
-  <div class="card-ico" style="background:rgba(16,185,129,.12)">📟</div>
-  <div class="card-info">
-    <div class="card-title">Android 平板看板</div>
-    <div class="card-desc">1200px宽 · 秒级时钟 · 无特效兼容 · 4列网格</div>
-    <div class="card-meta">老安卓6.0兼容 · ES5语法 · 文字标签</div>
-  </div>
-  <span class="card-arrow">→</span>
-</a>
-
-<a class="card" href="./clock-proj.html">
-  <div class="card-ico" style="background:rgba(245,158,11,.12)">🖥️</div>
-  <div class="card-info">
-    <div class="card-title">投影仪时钟看板</div>
-    <div class="card-desc">1920×1080 · 80px大字 · 8列网格 · 24条新闻</div>
-    <div class="card-meta">大屏投影 · 8列网格 · 更多卡片</div>
-  </div>
-  <span class="card-arrow">→</span>
-</a>
-
-<p style="text-align:center;color:rgba(255,255,255,.15);font-size:10px;margin-top:24px">
-  数据来源: NPR RSS + Open-Meteo 天气 + DeepSeek AI 简报<br>
-  每10分钟自动刷新 · localStorage 离线缓存
-</p>
-
+function build(){
+  document.getElementById('dashboard').innerHTML=feeds.map(function(f){
+    return '<div class="feed-card" id="feed-'+f.id+'"><div class="feed-hd"><span class="icon">'+f.icon+'</span><span class="title">'+f.title+'</span><span class="count">0</span></div><div class="feed-body"><div class="feed-loading">⏳</div></div></div>';
+  }).join('');
+  feeds.forEach(load);
+  document.getElementById('lastUpdate').textContent=new Date().toLocaleTimeString('zh-CN');
+}
+build();setInterval(build,300000);
+</script>
+<script>(function(){var g=document.getElementById('glowSpot');if(!g||('ontouchstart' in window))return;var x=innerWidth/2,y=innerHeight/2,tx=x,ty=y;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});function anim(){x+=(tx-x)*0.05;y+=(ty-y)*0.05;g.style.background='radial-gradient(circle 420px at '+x.toFixed(0)+'px '+y.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)}anim()})();</script>
 <script src="./shared.js"></script>
-<p style="text-align:center;margin-top:24px"><a href="./index.html" style="color:rgba(255,255,255,.2);font-size:10px;text-decoration:none">← 返回主页</a></p>
 </body>
 </html>
