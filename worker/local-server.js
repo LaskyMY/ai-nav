@@ -615,6 +615,20 @@ async function dbQuery(sql, params = []) {
       } catch(e) { return err(e.message,500); }
     }
 
+
+    // ── V2EX 最新 ──
+    if (path === "/api/trending/v2ex2") {
+      const cached = cacheGet("trending-v2ex2", 1800000);
+      if (cached) return ok(cached);
+      try {
+        const r = await fetch("https://www.v2ex.com/api/topics/latest.json",{headers:{"User-Agent":"Mozilla/5.0"},signal:AbortSignal.timeout(8000)});
+        const d = await r.json();
+        const items = d.slice(0,10).map(i=>({title:i.title,url:"https://www.v2ex.com/t/"+i.id,replies:i.replies,node:i.node?.title||"",source:"V2EX"}));
+        cacheSet("trending-v2ex2", {items,updated:new Date().toISOString()});
+        return ok({items,updated:new Date().toISOString()});
+      } catch(e) { return err(e.message,500); }
+    }
+
     // ── Full-text Search ──
     if (path === "/api/search") {
       const q = url.searchParams.get("q");
