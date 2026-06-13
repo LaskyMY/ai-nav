@@ -6,12 +6,12 @@
 
 /* ── Design Tokens (Dark Theme) ── */
 :root {
-  /* ═══ Surface 层级 ═══ */
-  --surface-base: #0a0a0f;
-  --surface-elevated: rgba(24,24,32,.82);
-  --surface-card: rgba(255,255,255,.05);
-  --surface-card-hover: rgba(255,255,255,.08);
-  --surface-card-active: rgba(255,255,255,.12);
+  /* ═══ Surface 层级 (对齐 Semi Design 暗色模式) ═══ */
+  --surface-base: #0c0c0d;
+  --surface-elevated: rgba(18,18,20,.78);
+  --surface-card: rgba(255,255,255,.025);
+  --surface-card-hover: rgba(255,255,255,.05);
+  --surface-card-active: rgba(255,255,255,.10);
 
   /* ═══ 文字 (透明度分层) ═══ */
   --text-primary: rgba(255,255,255,.93);
@@ -35,11 +35,11 @@
   --color-danger: #EF4444;
   --color-danger-bg: rgba(239,68,68,.12);
 
-  /* ═══ 边框 (透明度分层) ═══ */
-  --border-subtle: rgba(255,255,255,.06);
-  --border-default: rgba(255,255,255,.10);
-  --border-strong: rgba(255,255,255,.18);
-  --border-hover: rgba(99,102,241,.28);
+  /* ═══ 边框 (对齐 Semi 透明度分层) ═══ */
+  --border-subtle: rgba(255,255,255,.04);
+  --border-default: rgba(255,255,255,.08);
+  --border-strong: rgba(255,255,255,.16);
+  --border-hover: rgba(255,255,255,.22);
 
   /* ═══ 阴影阶梯 ═══ */
   --shadow-sm: 0 1px 3px rgba(0,0,0,.25);
