@@ -261,35 +261,5 @@ setInterval(function(){Papers._tryRefresh();},300000);
 setInterval(function(){Weather.load();},600000);
 setInterval(function(){Automations.load();},120000);
 
-// ═══════════ WINDOW SYNC ═══════════
-// 模块渲染后自动同步内容到打开的窗口
-window._syncWindow = function(contentId) {
-  if (!window.WindowManager) return;
-  var win = WindowManager.get(contentId);
-  if (!win || !win.el || win.minimized) return;
-  var pageEl = document.getElementById('p-' + contentId);
-  if (!pageEl) return;
-  var body = win.el.querySelector('.window-body');
-  if (body) {
-    body.innerHTML = pageEl.innerHTML;
-  }
-};
-// 自动同步: 监控 page 内容变化
-if (window.MutationObserver) {
-  var _observer = new MutationObserver(function(mutations) {
-    for (var i = 0; i < mutations.length; i++) {
-      var target = mutations[i].target;
-      if (!target || !target.id || target.id.indexOf('p-') !== 0) continue;
-      var contentId = target.id.replace('p-', '');
-      window._syncWindow(contentId);
-    }
-  });
-  // 监控所有 SPA 页面
-  var _pages = document.querySelectorAll('.page');
-  for (var i = 0; i < _pages.length; i++) {
-    _observer.observe(_pages[i], { childList: true, subtree: true, characterData: true });
-  }
-}
-
-console.log('[modules] ✅ 所有模块已加载 + 窗口同步');
+console.log('[modules] ✅ 所有模块已加载');
 })();

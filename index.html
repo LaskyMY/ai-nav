@@ -12,7 +12,6 @@
 <title>AI Center · 智能导航</title>
 <link rel="icon" href="./icon.svg">
 <link rel="stylesheet" href="./shared.css">
-<link rel="stylesheet" href="./desktop.css">
 <style>
 /* Premium font chromatic fringe */
 .grad-text,.section-hd h2,.hero-title,.hero-num,.timer-display,.stat-num,.todo-stat-num,.pomo-stat-num,.paper-title,.insight-cat,.tool-name,.todo-head-ttl,.daily-head-ttl,.profile-name{text-shadow:0.3px 0 0 rgba(99,102,241,.04),-0.3px 0 0 rgba(236,72,153,.03)}
@@ -738,47 +737,25 @@ input[type="range"]::-webkit-slider-runnable-track{height:6px;border-radius:3px;
 
 </div><!-- /container -->
 
-<!-- ═══ Taskbar (桌面任务栏) ═══ -->
-<div class="taskbar">
-  <div class="taskbar-left">
-    <button class="tb-btn" id="tbLauncher" title="启动台 (Cmd+K)" style="font-size:20px">⊞</button>
-    <button class="tb-btn" id="tbDesktop" title="显示桌面">⌂</button>
-  </div>
-  <div class="taskbar-center"><!-- 运行中的窗口图标由 WindowManager 动态填充 --></div>
-  <div class="taskbar-right">
-    <span class="tb-weather" id="tbWeather">--</span>
-    <span class="tb-clock" id="tbClock">--:--</span>
-  </div>
-</div>
-
-<!-- ═══ Desktop Icons (桌面图标) ═══ -->
-<div class="desktop-area">
-  <div class="desktop-icons">
-    <div class="desk-icon" onclick="WindowManager.open('overview','AI 导航','🏠',function(el){el.innerHTML=document.getElementById('p-overview').innerHTML;App.switchPage('overview')})"><div class="dsk-img">🏠</div><div class="dsk-label">AI 导航</div></div>
-    <div class="desk-icon" onclick="WindowManager.open('tools','AI 工具','🛠️',function(el){Tools.render();setTimeout(function(){App.switchPage('tools')},100)})"><div class="dsk-img">🛠️</div><div class="dsk-label">AI 工具</div></div>
-    <div class="desk-icon" onclick="WindowManager.open('papers','论文追踪','📄',function(el){Papers.load();setTimeout(function(){App.switchPage('papers')},100)})"><div class="dsk-img">📄</div><div class="dsk-label">论文追踪</div></div>
-    <div class="desk-icon" onclick="WindowManager.open('todos','待办事项','✅',function(el){Todo.init();Todo.renderFull();setTimeout(function(){App.switchPage('todos')},100)})"><div class="dsk-img">✅</div><div class="dsk-label">待办事项</div></div>
-    <div class="desk-icon" onclick="WindowManager.open('timer','计时器','⏱️',function(el){setTimeout(function(){App.switchPage('timer')},100)})"><div class="dsk-img">⏱️</div><div class="dsk-label">计时器</div></div>
-    <div class="desk-icon" onclick="WindowManager.open('dashboards','数据看板','📊',function(el){el.innerHTML='<iframe src=\"./dashboards.html\" style=\"width:100%;height:100%;border:none;border-radius:12px\"></iframe>'})"><div class="dsk-img">📊</div><div class="dsk-label">数据看板</div></div>
-    <div class="desk-icon" onclick="location.href='./knowledge.html'"><div class="dsk-img">📚</div><div class="dsk-label">知识百科</div></div>
-    <div class="desk-icon" onclick="location.href='./bilibili.html'"><div class="dsk-img">📺</div><div class="dsk-label">B站视频</div></div>
-    <div class="desk-icon" onclick="location.href='./vibe-coding.html'"><div class="dsk-img">💻</div><div class="dsk-label">AI 课程</div></div>
-    <div class="desk-icon" onclick="location.href='./financial-news.html'"><div class="dsk-img">💰</div><div class="dsk-label">金融简报</div></div>
-    <div class="desk-icon" onclick="location.href='./hardware.html'"><div class="dsk-img">🔧</div><div class="dsk-label">硬件控制</div></div>
-    <div class="desk-icon" onclick="location.href='./changelog.html'"><div class="dsk-img">📋</div><div class="dsk-label">更新日志</div></div>
-  </div>
-</div>
-
-<!-- ═══ Launcher (Cmd+K 启动台) ═══ -->
-<div class="launcher-overlay" id="launcherOverlay">
-  <div class="launcher-panel">
-    <div class="launcher-search">
-      <input type="text" placeholder="搜索工具、窗口、页面..." autocomplete="off">
-    </div>
-    <div class="launcher-results"></div>
-  </div>
-</div>
-<script src="./window-manager.js"></script>
+<!-- Bottom Nav — 核心入口在前 -->
+<nav class="bottom-nav" style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding:4px 8px;display:flex;flex-wrap:nowrap;gap:2px;">
+  <button class="nav-btn active" data-page="overview"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav-label">主页</span></button>
+  <button class="nav-btn" onclick="location.href='./knowledge.html'" style="cursor:pointer"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">百科</span></button>
+  <button class="nav-btn" onclick="location.href='./vibe-coding.html'" style="cursor:pointer"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v8M6 10v8M2 10l10-8 10 8M5 18h14a1 1 0 0 0 1-1v-7"/><line x1="9" y1="14" x2="9.01" y2="14"/><line x1="13" y1="14" x2="13.01" y2="14"/></svg></span><span class="nav-label">课程</span></button>
+  <button class="nav-btn" onclick="location.href='./bilibili.html'" style="cursor:pointer"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span><span class="nav-label">视频</span></button>
+  <button class="nav-btn" onclick="location.href='./papers.html'" style="cursor:pointer"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></span><span class="nav-label">论文</span></button>
+  <button class="nav-btn" onclick="location.href='./financial-news.html'" style="cursor:pointer"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span><span class="nav-label">金融</span></button>
+  <button class="nav-btn" onclick="location.href='./automations.html'" style="cursor:pointer"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span><span class="nav-label">自动化</span></button>
+  <button class="nav-btn" data-page="todos"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><span class="nav-label">待办</span></button>
+  <button class="nav-btn" onclick="location.href='./puxing-man.html'" style="cursor:pointer"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span><span class="nav-label">普行</span></button>
+  <button class="nav-btn" onclick="location.href='./hardware.html'" style="cursor:pointer"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="15" x2="12" y2="15"/></svg></span><span class="nav-label">硬件</span></button>
+  <button class="nav-btn" onclick="location.href='./dashboards.html'" style="cursor:pointer"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span><span class="nav-label">看板</span></button>
+  <button class="nav-btn" onclick="location.href='./manual.html'" style="cursor:pointer"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="nav-label">手册</span></button>
+  <button class="nav-btn" onclick="location.href='./sitemap.html'" style="cursor:pointer"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><line x1="12" y1="6" x2="12" y2="10"/><circle cx="12" cy="14" r="1"/></svg></span><span class="nav-label">大纲</span></button>
+  <button class="nav-btn" onclick="location.href='./changelog.html'" style="cursor:pointer"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg></span><span class="nav-label">更新</span></button>
+  <button class="nav-btn" onclick="location.href='./usage.html'" style="cursor:pointer"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></span><span class="nav-label">用量</span></button>
+  <button class="nav-btn" onclick="location.href='./desktop.html'" style="cursor:pointer;background:linear-gradient(135deg,rgba(99,102,241,.3),rgba(236,72,153,.2));border-radius:16px;margin-left:2px"><span class="ico" style="background:rgba(99,102,241,.45);box-shadow:0 0 12px rgba(99,102,241,.3)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span><span class="nav-label" style="color:rgba(255,255,255,.9)">桌面</span></button>
+</nav>
 <script>
 /* ============================================
    AI CENTER · Full Application
@@ -805,10 +782,15 @@ function toast(msg){
 // ==================== NAVIGATION ====================
 const App = {
   switchPage(name){
-    // 桌面模式: 展示对应 page 内容 (用于窗口内部渲染)
-    // 保留兼容: 非窗口环境仍用旧模式
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
     const page=$('p-'+name);if(page)page.classList.add('active');
+    const btn=document.querySelector('.nav-btn[data-page="'+name+'"]');
+    if(btn)btn.classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+    if(name==='tools')Tools.render();
+    if(name==='todos')Todo.renderFull();
+    if(name==='requests')Requests.render();
   },
   search(q){
     const val=(q||'').toLowerCase();
@@ -1010,62 +992,16 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js');nav
 // Version check on page load
 (async function(){try{const r=await fetch('./version.json?t='+Date.now(),{cache:'no-store'});const d=await r.json();const cur=localStorage.getItem('site_version');if(cur&&cur!==d.version){location.reload(true)}localStorage.setItem('site_version',d.version)}catch(e){}})();
 
-// ==================== DESKTOP INIT ====================
+// ==================== BOTTOM NAV HORIZONTAL SCROLL ====================
 (function(){
-  // ── Taskbar Clock ──
-  function updateTBClock() {
-    var el = document.getElementById('tbClock');
-    if (!el) return;
-    var n = new Date();
-    el.textContent = ('0'+n.getHours()).slice(-2)+':'+('0'+n.getMinutes()).slice(-2);
-  }
-  updateTBClock(); setInterval(updateTBClock, 30000);
-
-  // ── Taskbar Weather ──
-  function updateTBWeather() {
-    var el = document.getElementById('tbWeather');
-    if (!el) return;
-    try {
-      var c = JSON.parse(localStorage.getItem('weather_cache')||'{}');
-      if (c.temp && Date.now()-c.ts < 600000) { el.textContent = c.temp+'°'; return; }
-    } catch(e) {}
-    el.textContent = '';
-  }
-  updateTBWeather(); setInterval(updateTBWeather, 600000);
-
-  // ── Launcher button ──
-  var lb = document.getElementById('tbLauncher');
-  if (lb) lb.addEventListener('click', function() {
-    var lo = document.getElementById('launcherOverlay');
-    if (lo) { lo.classList.toggle('show'); var inp = lo.querySelector('input'); if (inp && lo.classList.contains('show')) { inp.focus(); inp.select(); } }
-  });
-
-  // ── Desktop button (minimize all) ──
-  var db = document.getElementById('tbDesktop');
-  if (db) db.addEventListener('click', function() { WindowManager.minimizeAll(); });
-
-  // ── Init Launcher items ──
-  var launcherItems = [
-    {title:'AI 导航', icon:'🏠', keywords:'主页 概览 overview', action:function(){ WindowManager.open('overview','AI 导航','🏠',function(el){el.innerHTML=document.getElementById('p-overview').innerHTML;App.switchPage('overview')}) }},
-    {title:'AI 工具', icon:'🛠️', keywords:'tools chatgpt claude deepseek', action:function(){ WindowManager.open('tools','AI 工具','🛠️',function(el){Tools.render();App.switchPage('tools')}) }},
-    {title:'论文追踪', icon:'📄', keywords:'papers arxiv 论文', action:function(){ WindowManager.open('papers','论文追踪','📄',function(el){Papers.load();App.switchPage('papers')}) }},
-    {title:'待办事项', icon:'✅', keywords:'todos todo 任务', action:function(){ WindowManager.open('todos','待办事项','✅',function(el){Todo.init();Todo.renderFull();App.switchPage('todos')}) }},
-    {title:'计时器', icon:'⏱️', keywords:'timer 番茄钟 倒计时', action:function(){ WindowManager.open('timer','计时器','⏱️',function(el){App.switchPage('timer')}) }},
-    {title:'数据看板', icon:'📊', keywords:'dashboard 数据 监控', action:function(){ WindowManager.open('dashboards','数据看板','📊',function(el){el.innerHTML='<iframe src=\"./dashboards.html\" style=\"width:100%;height:100%;border:none;border-radius:12px\"></iframe>'}) }},
-    {title:'知识百科', icon:'📚', keywords:'knowledge 百科 科普', action:function(){ location.href='./knowledge.html' }},
-    {title:'B站视频', icon:'📺', keywords:'bilibili b站 视频', action:function(){ location.href='./bilibili.html' }},
-    {title:'AI 课程', icon:'💻', keywords:'vibe coding 课程 编程', action:function(){ location.href='./vibe-coding.html' }},
-    {title:'金融简报', icon:'💰', keywords:'financial 金融 财经', action:function(){ location.href='./financial-news.html' }},
-    {title:'硬件控制', icon:'🔧', keywords:'hardware esp32 硬件', action:function(){ location.href='./hardware.html' }},
-    {title:'更新日志', icon:'📋', keywords:'changelog 更新 版本', action:function(){ location.href='./changelog.html' }},
-    {title:'自动化', icon:'⚙️', keywords:'automation 自动化 监控', action:function(){ location.href='./automations.html' }},
-    {title:'用量统计', icon:'📈', keywords:'usage 用量 api', action:function(){ location.href='./usage.html' }},
-    {title:'网站大纲', icon:'🗺️', keywords:'sitemap 大纲 导航', action:function(){ location.href='./sitemap.html' }},
-  ];
-  WindowManager.initLauncher(launcherItems);
-
-  // ── Mobile: restore bottom nav on small screens (taskbar still exists but without window mode) ──
-  console.log('[Desktop] init — taskbar + launcher + ' + launcherItems.length + ' items');
+const nav = document.querySelector('.bottom-nav');
+if (!nav) return;
+nav.addEventListener('wheel', e => {
+if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+e.preventDefault();
+nav.scrollLeft += e.deltaY;
+}
+}, {passive: false});
 })();
 
 // ==================== MOBILE GYRO TILT ====================

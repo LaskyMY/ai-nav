@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0c0c0d">
+<title>AI Center · 桌面</title>
+<link rel="icon" href="./icon.svg">
+<link rel="stylesheet" href="./shared.css">
+<style>
+/* ═══ Desktop Layout ═══ */
+:root{--tb-h:56px;--icon-w:128px;--icon-h:112px}
+html,body{height:100%;overflow:hidden}
+body{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:var(--surface-base);color:var(--text-primary);-webkit-font-smoothing:antialiased;margin:0;padding:0}
+
+/* Desktop area (壁纸区域) */
+.desktop-area{position:fixed;inset:0;bottom:var(--tb-h);z-index:1}
+.desktop-icons{position:absolute;inset:8px;display:flex;flex-direction:column;flex-wrap:wrap;align-content:flex-start;gap:10px}
+
+/* Desktop icon (对齐飞牛) */
+.desk-icon{display:flex;flex-direction:column;align-items:center;width:var(--icon-w);height:var(--icon-h);cursor:pointer;border-radius:var(--radius-xl);transition:background var(--dur-fast) var(--ease-out);padding:6px 2px;gap:5px;user-select:none}
+.desk-icon:hover{background:rgba(255,255,255,.06)}
+.desk-icon:active{background:rgba(255,255,255,.12);transform:scale(.95)}
+.desk-icon .dsk-img{width:50px;height:50px;border-radius:var(--radius-md);background:var(--surface-card);border:1px solid var(--border-subtle);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;transition:transform var(--dur-fast) var(--ease-out)}
+.desk-icon:hover .dsk-img{transform:scale(1.06)}
+.desk-icon .dsk-label{font-size:12px;font-weight:700;color:#fff;text-align:center;line-height:16px;text-shadow:0 1px 6px rgba(0,0,0,.2),0 0 4px rgba(0,0,0,.5);max-width:120px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+
+/* ═══ Floating Window ═══ */
+.window{position:absolute;border-radius:var(--radius-lg);background:var(--surface-elevated);backdrop-filter:saturate(180%) var(--blur-lg);-webkit-backdrop-filter:saturate(180%) var(--blur-lg);border:1px solid var(--border-default);box-shadow:var(--shadow-glow-md),var(--shadow-xl);display:flex;flex-direction:column;overflow:hidden;min-width:360px;min-height:280px;z-index:10}
+.window.active{border-color:var(--border-strong);box-shadow:var(--shadow-glow-lg),0 24px 80px rgba(0,0,0,.5)}
+.window.inactive{opacity:.85;border-color:var(--border-subtle)}
+.window.minimizing{opacity:0;transform:translateY(80px)scale(.3);pointer-events:none;transition:all var(--dur-slow) var(--ease-in-out)}
+.window.maximized{inset:0 0 var(--tb-h) 0!important;width:100%!important;height:auto!important;border-radius:0;border:none}
+
+/* Title Bar */
+.window-titlebar{height:38px;min-height:38px;flex-shrink:0;display:flex;align-items:center;gap:8px;padding:0 6px 0 14px;background:rgba(255,255,255,.03);border-bottom:1px solid var(--border-subtle);cursor:grab;user-select:none}
+.window-titlebar:active{cursor:grabbing}
+.window-icon{font-size:16px;flex-shrink:0}.window-title{flex:1;font-size:12px;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+
+/* Window Controls */
+.window-ctrls{display:flex;gap:2px;flex-shrink:0;margin-left:auto}
+.window-ctrls button{width:28px;height:28px;border:none;background:transparent;color:var(--text-tertiary);font-size:14px;cursor:pointer;border-radius:var(--radius-xs);display:flex;align-items:center;justify-content:center;font-family:inherit;line-height:1;transition:all var(--dur-fast) var(--ease-out)}
+.window-ctrls button:hover{background:var(--surface-card-hover);color:var(--text-primary)}
+.win-close:hover{background:var(--color-danger)!important;color:#fff!important}
+
+/* Window Body + iframe */
+.window-body{flex:1;overflow:hidden;position:relative}
+.window-body iframe{width:100%;height:100%;border:none;display:block}
+
+/* Resize handles */
+.win-r-n,.win-r-s{position:absolute;left:6px;right:6px;height:6px;z-index:5}
+.win-r-n{top:0;cursor:n-resize}.win-r-s{bottom:0;cursor:s-resize}
+.win-r-e,.win-r-w{position:absolute;top:6px;bottom:6px;width:6px;z-index:5}
+.win-r-e{right:0;cursor:e-resize}.win-r-w{left:0;cursor:w-resize}
+.win-r-ne,.win-r-nw,.win-r-se,.win-r-sw{position:absolute;width:12px;height:12px;z-index:5}
+.win-r-ne{top:0;right:0;cursor:ne-resize}.win-r-nw{top:0;left:0;cursor:nw-resize}
+.win-r-se{bottom:0;right:0;cursor:se-resize}.win-r-sw{bottom:0;left:0;cursor:sw-resize}
+
+/* ═══ Taskbar ═══ */
+.taskbar{position:fixed;bottom:0;left:0;right:0;z-index:500;height:var(--tb-h);background:var(--surface-elevated);backdrop-filter:saturate(200%) var(--blur-lg);-webkit-backdrop-filter:saturate(200%) var(--blur-lg);border-top:1px solid var(--border-default);box-shadow:0 -4px 32px rgba(0,0,0,.3),var(--shadow-glow-sm);padding:0 6px;display:flex;align-items:center;gap:3px}
+.taskbar-left{display:flex;align-items:center;gap:2px;flex-shrink:0}
+.taskbar-center{flex:1;display:flex;align-items:center;gap:2px;overflow-x:auto;justify-content:center;min-width:0}
+.taskbar-center::-webkit-scrollbar{display:none}
+.taskbar-right{display:flex;align-items:center;gap:8px;flex-shrink:0;margin-left:auto}
+
+.tb-btn{width:42px;height:42px;border:none;background:transparent;border-radius:var(--radius-sm);color:var(--text-tertiary);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;flex-shrink:0;transition:all var(--dur-fast) var(--ease-out);font-family:inherit}
+.tb-btn:hover{background:var(--surface-card-hover);color:var(--text-primary)}
+.tb-btn:active{transform:scale(.93)}
+
+.tb-win-btn{width:46px;height:40px;border:none;background:transparent;border-radius:var(--radius-sm);color:var(--text-secondary);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;flex-shrink:0;transition:all var(--dur-fast) var(--ease-out);position:relative;font-family:inherit}
+.tb-win-btn:hover{background:var(--surface-card-hover);color:var(--text-primary)}
+.tb-win-btn.active{background:var(--brand-primary-bg);color:var(--brand-primary)}
+.tb-win-btn.active::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:14px;height:3px;border-radius:2px;background:var(--brand-primary)}
+
+.tb-clock{font-size:13px;color:var(--text-secondary);font-variant-numeric:tabular-nums;white-space:nowrap;font-family:'SF Mono','Fira Code',monospace}
+.tb-home{font-size:11px;color:var(--brand-accent);text-decoration:none;white-space:nowrap;padding:4px 10px;border-radius:var(--radius-xs);transition:all var(--dur-fast) var(--ease-out)}
+.tb-home:hover{background:var(--brand-accent-bg)}
+
+/* ═══ Launcher ═══ */
+.launcher-overlay{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.7);backdrop-filter:var(--blur-lg);-webkit-backdrop-filter:var(--blur-lg);display:flex;align-items:flex-start;justify-content:center;padding-top:15vh;opacity:0;pointer-events:none;transition:opacity var(--dur-fast) var(--ease-out)}
+.launcher-overlay.show{opacity:1;pointer-events:auto}
+.launcher-panel{width:min(520px,calc(100vw-32px));max-height:65vh;background:var(--surface-elevated);border:1px solid var(--border-default);border-radius:var(--radius-lg);box-shadow:var(--shadow-xl);display:flex;flex-direction:column;overflow:hidden;transform:scale(.92);transition:transform var(--dur-fast) var(--ease-spring)}
+.launcher-overlay.show .launcher-panel{transform:scale(1)}
+.launcher-search{padding:14px 18px 10px;border-bottom:1px solid var(--border-subtle)}
+.launcher-search input{width:100%;padding:10px 14px;border-radius:var(--radius-sm);border:1px solid var(--border-default);background:var(--surface-card);color:var(--text-primary);font-size:14px;font-family:inherit;outline:none;transition:all var(--dur-fast) var(--ease-out)}
+.launcher-search input:focus{border-color:rgba(255,255,255,.25);box-shadow:0 0 20px rgba(99,102,241,.12)}
+.launcher-search input::placeholder{color:var(--text-disabled)}
+.launcher-results{flex:1;overflow-y:auto;padding:6px;display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:4px}
+.launcher-results::-webkit-scrollbar{width:3px}
+.launcher-results::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
+.launcher-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--radius-md);cursor:pointer;font-size:12px;font-weight:500;color:var(--text-secondary);transition:all var(--dur-fast) var(--ease-out)}
+.launcher-item:hover{background:var(--surface-card-hover);color:var(--text-primary)}
+.launcher-item .li-icon{font-size:18px;flex-shrink:0;width:28px;height:28px;border-radius:6px;background:var(--surface-card);display:flex;align-items:center;justify-content:center}
+
+/* Loading shimmer */
+.skeleton{background:linear-gradient(90deg,rgba(255,255,255,.03)25%,rgba(255,255,255,.06)50%,rgba(255,255,255,.03)75%);background-size:200%100%;animation:shimmer 1.5s infinite}
+@keyframes shimmer{0%{background-position:200%0}100%{background-position:-200%0}}
+
+@media(max-width:800px){
+  .window{inset:0 0 var(--tb-h) 0!important;width:100%!important;height:auto!important;border-radius:0;border:none}
+  .win-r-n,.win-r-s,.win-r-e,.win-r-w,.win-r-ne,.win-r-nw,.win-r-se,.win-r-sw{display:none}
+  .window-titlebar{cursor:default}
+  .desktop-icons{display:none}
+  .taskbar-center{display:none}
+  :root{--tb-h:50px}
+  .desk-icon{width:100px;height:96px}
+  .desk-icon .dsk-img{width:40px;height:40px;font-size:20px}
+}
+</style>
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg"><div class="bg__orb"></div><div class="bg__orb"></div><div class="bg__orb"></div></div>
+<div class="glow-spot" id="glowSpot"></div>
+
+<!-- ═══ Desktop Icons ═══ -->
+<div class="desktop-area"><div class="desktop-icons" id="desktopIcons"></div></div>
+
+<!-- ═══ Taskbar ═══ -->
+<div class="taskbar">
+  <div class="taskbar-left">
+    <button class="tb-btn" id="tbLauncher" title="启动台 (Cmd+K)" style="font-size:20px">⊞</button>
+    <button class="tb-btn" id="tbDesktop" title="显示桌面">⌂</button>
+  </div>
+  <div class="taskbar-center" id="tbWindows"></div>
+  <div class="taskbar-right">
+    <a href="./index.html" class="tb-home">← 主页</a>
+    <span class="tb-clock" id="tbClock">--:--</span>
+  </div>
+</div>
+
+<!-- ═══ Launcher ═══ -->
+<div class="launcher-overlay" id="launcherOverlay">
+  <div class="launcher-panel">
+    <div class="launcher-search"><input type="text" placeholder="搜索应用... (Esc关闭)" autocomplete="off" id="launcherInput"></div>
+    <div class="launcher-results" id="launcherResults"></div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   Desktop OS — 独立窗口管理器 (iframe 应用模式)
+   ═══════════════════════════════════════════════════ */
+(function(){
+'use strict';
+
+// App registry
+var APPS = [
+  {id:'home',title:'AI 导航',icon:'🏠',url:'./index.html',kw:'主页 导航 home index'},
+  {id:'knowledge',title:'知识百科',icon:'📚',url:'./knowledge.html',kw:'百科 知识 knowledge 科普'},
+  {id:'tools',title:'AI 工具',icon:'🛠️',url:'./index.html#tools',kw:'工具 ChatGPT Claude DeepSeek tools'},
+  {id:'papers',title:'论文追踪',icon:'📄',url:'./papers.html',kw:'论文 papers 学术 arxiv'},
+  {id:'vibe',title:'AI 课程',icon:'💻',url:'./vibe-coding.html',kw:'课程 vibe coding 编程'},
+  {id:'bilibili',title:'B站视频',icon:'📺',url:'./bilibili.html',kw:'bilibili b站 视频'},
+  {id:'dashboards',title:'数据看板',icon:'📊',url:'./dashboards.html',kw:'数据 看板 dashboard 监控'},
+  {id:'financial',title:'金融简报',icon:'💰',url:'./financial-news.html',kw:'金融 财经 financial 简报'},
+  {id:'clock',title:'毫秒时钟',icon:'🕐',url:'./clock.html',kw:'时钟 clock 时间 天气'},
+  {id:'hardware',title:'硬件控制',icon:'🔧',url:'./hardware.html',kw:'硬件 hardware esp32 iot'},
+  {id:'puxing',title:'普行男',icon:'💪',url:'./puxing-man.html',kw:'普行 健身 puxing'},
+  {id:'body',title:'肌肉图鉴',icon:'🦴',url:'./body-map.html',kw:'肌肉 body 健身 解剖'},
+  {id:'sitemap',title:'网站大纲',icon:'🗺️',url:'./sitemap.html',kw:'大纲 sitemap 导航 目录'},
+  {id:'changelog',title:'更新日志',icon:'📋',url:'./changelog.html',kw:'更新 changelog 版本 日志'},
+  {id:'usage',title:'用量统计',icon:'📈',url:'./usage.html',kw:'用量 usage api 统计'},
+  {id:'automations',title:'自动化',icon:'⚙️',url:'./automations.html',kw:'自动化 automation 监控'},
+  {id:'manual',title:'使用手册',icon:'📖',url:'./manual.html',kw:'手册 manual 使用 帮助'},
+  {id:'causality',title:'因果关系',icon:'🔗',url:'./causality.html',kw:'因果 关系 causality 科学'},
+  {id:'attention',title:'注意力机制',icon:'🧠',url:'./attention.html',kw:'注意力 attention AI transformer'},
+  {id:'ai-concepts',title:'AI概念链',icon:'💡',url:'./ai-concepts.html',kw:'AI 概念 底层 逻辑'},
+  {id:'gemstones',title:'宝石耐久',icon:'💎',url:'./gemstones.html',kw:'宝石 耐久 gemstones 硬度'},
+  {id:'viscosity',title:'流体粘度',icon:'💧',url:'./viscosity.html',kw:'流体 粘度 viscosity 物理'},
+  {id:'logic',title:'红蓝眼谜题',icon:'👁️',url:'./logic-puzzle.html',kw:'逻辑 谜题 红蓝眼 logic'},
+  {id:'game-theory',title:'游戏数学',icon:'🎲',url:'./game-theory.html',kw:'游戏 数学 策略 game'},
+  {id:'psych-tricks',title:'心理技巧',icon:'🎭',url:'./psych-tricks.html',kw:'心理 技巧 psych 人际'},
+  {id:'ai-vfx',title:'VFX指南',icon:'🎬',url:'./ai-vfx-guide.html',kw:'VFX 特效 游戏 指南'},
+  {id:'fallacies',title:'常见谬误',icon:'❌',url:'./fallacies.html',kw:'谬误 逻辑 fallacy 错误'},
+  {id:'sleep',title:'睡眠指南',icon:'😴',url:'./sleep.html',kw:'睡眠 sleep 健康 时长'},
+];
+
+// Window Manager
+var _windows=[],_nextId=1,_nextZ=10,_ACTIVE_Z=10000,_allMin=false;
+var _drag=null,_resize=null;
+var MIN_W=360,MIN_H=280;
+
+function findWin(id){for(var i=0;i<_windows.length;i++)if(_windows[i].id===id)return _windows[i];return null}
+
+function deactivateAll(){for(var i=0;i<_windows.length;i++){_windows[i].active=false;updateDOM(_windows[i])}}
+
+function findTop(){var t=null;for(var i=0;i<_windows.length;i++){var w=_windows[i];if(w.min)continue;if(!t||w.z>t.z)t=w}return t}
+
+function updateDOM(w){
+  if(!w.el)return;
+  w.el.style.left=w.x+'px';w.el.style.top=w.y+'px';
+  w.el.style.width=w.w+'px';w.el.style.height=w.h+'px';
+  w.el.style.zIndex=w.z;
+  w.el.className='window'+(w.active?' active':' inactive')+(w.max?' maximized':'')+(w.min?' minimizing':'');
+}
+
+function createDOM(w){
+  var el=document.createElement('div');
+  el.className='window inactive';el.setAttribute('data-wid',w.id);
+  el.style.cssText='left:'+w.x+'px;top:'+w.y+'px;width:'+w.w+'px;height:'+w.h+'px;z-index:'+w.z;
+  el.innerHTML='<div class="window-titlebar" data-act="drag"><span class="window-icon">'+w.icon+'</span><span class="window-title">'+escH(w.title)+'</span><div class="window-ctrls"><button class="win-min" data-act="min" title="最小化">─</button><button class="win-max" data-act="max" title="最大化">□</button><button class="win-close" data-act="close" title="关闭">✕</button></div></div><div class="window-body"><iframe src="'+escH(w.url)+'" allow="clipboard-read;clipboard-write" loading="lazy"></iframe></div><div class="win-r-n" data-act="rs" data-dir="n"></div><div class="win-r-s" data-act="rs" data-dir="s"></div><div class="win-r-e" data-act="rs" data-dir="e"></div><div class="win-r-w" data-act="rs" data-dir="w"></div><div class="win-r-ne" data-act="rs" data-dir="ne"></div><div class="win-r-nw" data-act="rs" data-dir="nw"></div><div class="win-r-se" data-act="rs" data-dir="se"></div><div class="win-r-sw" data-act="rs" data-dir="sw"></div>';
+  return el;
+}
+
+function escH(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+function updateTaskbar(){
+  var c=document.getElementById('tbWindows');if(!c)return;
+  c.innerHTML='';
+  for(var i=0;i<_windows.length;i++){
+    var w=_windows[i];
+    var b=document.createElement('button');
+    b.className='tb-win-btn'+(w.active&&!w.min?' active':'');
+    b.title=w.title+(w.min?' (已最小化)':'');
+    b.textContent=w.icon;
+    (function(wid){b.onclick=function(){var fw=findWin(wid);if(!fw)return;if(fw.min){fw.min=false;_allMin=false;focusWin(wid)}else if(fw.active)minWin(wid);else focusWin(wid)}})(w.id);
+    c.appendChild(b);
+  }
+}
+
+function openWin(id,title,icon,url){
+  var existing=findWin(id);
+  if(existing){if(existing.min){existing.min=false;_allMin=false}focusWin(id);return existing}
+  var cnt=_windows.length;
+  var w=Math.min(window.innerWidth*.65,960);
+  var h=Math.min(window.innerHeight*.7,600);
+  var x=40+cnt%4*35;var y=30+cnt%4*25;
+  var win={id:id,title:title,icon:icon,url:url,x:x,y:y,w:w,h:h,z:_ACTIVE_Z+(_nextZ++),active:true,min:false,max:false,el:null};
+  deactivateAll();
+  var el=createDOM(win);win.el=el;document.body.appendChild(el);
+  if(window.innerWidth<=800){win.max=true;updateDOM(win)}
+  _windows.push(win);
+  if(_allMin){_allMin=false;for(var i=0;i<_windows.length;i++){if(_windows[i].id!==id){_windows[i].min=false;_windows[i].active=false;updateDOM(_windows[i])}}}
+  updateTaskbar();return win;
+}
+
+function focusWin(id){
+  var w=findWin(id);if(!w)return;
+  if(w.min){w.min=false}if(!w.active){deactivateAll();w.active=true;w.z=_ACTIVE_Z+(_nextZ++)}
+  updateDOM(w);updateTaskbar();
+}
+
+function minWin(id){
+  var w=findWin(id);if(!w)return;
+  w.min=true;w.active=false;updateDOM(w);
+  var t=findTop();if(t){deactivateAll();t.active=true;t.z=_ACTIVE_Z+(_nextZ++);updateDOM(t)}
+  updateTaskbar();
+}
+
+function maxWin(id){
+  var w=findWin(id);if(!w)return;
+  if(w.max){w.max=false;w.x=w._px||40;w.y=w._py||30;w.w=w._pw||680;w.h=w._ph||460}
+  else{w._px=w.x;w._py=w.y;w._pw=w.w;w._ph=w.h;w.max=true}
+  if(!w.active){deactivateAll();w.active=true;w.z=_ACTIVE_Z+(_nextZ++)}
+  updateDOM(w);
+}
+
+function closeWin(id){
+  var w=findWin(id);if(!w)return;
+  if(w.el&&w.el.parentNode)w.el.parentNode.removeChild(w.el);
+  _windows=_windows.filter(function(x){return x.id!==id});
+  var t=findTop();if(t){deactivateAll();t.active=true;t.z=_ACTIVE_Z+(_nextZ++);updateDOM(t)}
+  updateTaskbar();
+}
+
+function minAll(){
+  if(_allMin){_allMin=false;for(var i=0;i<_windows.length;i++){_windows[i].min=false;_windows[i].active=false;updateDOM(_windows[i])}var t=findTop();if(t){t.active=true;t.z=_ACTIVE_Z+(_nextZ++);updateDOM(t)}}
+  else{_allMin=true;for(var i=0;i<_windows.length;i++){_windows[i].min=true;_windows[i].active=false;updateDOM(_windows[i])}}
+  updateTaskbar();
+}
+
+// Desktop icons
+function renderIcons(filtered){
+  var apps=filtered||APPS;
+  var c=document.getElementById('desktopIcons');if(!c)return;
+  c.innerHTML='';
+  for(var i=0;i<apps.length;i++){var a=apps[i];(function(a){var d=document.createElement('div');d.className='desk-icon';d.innerHTML='<div class="dsk-img">'+a.icon+'</div><div class="dsk-label">'+a.title+'</div>';d.ondblclick=function(){openWin(a.id,a.title,a.icon,a.url)};d.onclick=function(e){if(e.detail===2)return;/* single click selects */};c.appendChild(d)})(a)}
+}
+
+// Launcher
+function initLauncher(){
+  var inp=document.getElementById('launcherInput');
+  var res=document.getElementById('launcherResults');
+  if(!inp||!res)return;
+  function render(items){
+    res.innerHTML='';
+    for(var i=0;i<items.length;i++){var it=items[i];(function(it){var d=document.createElement('div');d.className='launcher-item';d.innerHTML='<span class="li-icon">'+it.icon+'</span>'+escH(it.title);d.onclick=function(){closeLauncher();openWin(it.id,it.title,it.icon,it.url)};res.appendChild(d)})(it)}
+  }
+  render(APPS);
+  inp.oninput=function(){var q=inp.value.toLowerCase().trim();if(!q){render(APPS);return}render(APPS.filter(function(a){return a.title.toLowerCase().indexOf(q)>=0||a.kw.toLowerCase().indexOf(q)>=0}))}
+}
+
+function openLauncher(){var o=document.getElementById('launcherOverlay');if(!o)return;o.classList.add('show');var i=document.getElementById('launcherInput');if(i)i.focus()}
+function closeLauncher(){var o=document.getElementById('launcherOverlay');if(o)o.classList.remove('show')}
+
+// Global events
+document.addEventListener('mousedown',function(e){
+  var act=e.target.closest('[data-act]');if(!act)return;
+  var wel=act.closest('.window');if(!wel)return;
+  var wid=parseInt(wel.getAttribute('data-wid'));
+  var w=findWin(wid);if(!w)return;
+  if(!w.active)focusWin(w.id);
+  var a=act.getAttribute('data-act');
+  if(a==='min'){e.preventDefault();minWin(w.id);return}
+  if(a==='max'){e.preventDefault();maxWin(w.id);return}
+  if(a==='close'){e.preventDefault();closeWin(w.id);return}
+  if(a==='drag'&&window.innerWidth>800&&!w.max){e.preventDefault();_drag={win:w,sx:e.clientX,sy:e.clientY,wx:w.x,wy:w.y}}
+  if(a==='rs'&&window.innerWidth>800&&!w.max){e.preventDefault();_resize={win:w,dir:act.getAttribute('data-dir'),sx:e.clientX,sy:e.clientY,sw:w.w,sh:w.h,lx:w.x,ly:w.y}}
+});
+
+document.addEventListener('mousemove',function(e){
+  if(_drag){var d=_drag,w=d.win;w.x=Math.max(-w.w+80,Math.min(window.innerWidth-80,d.wx+e.clientX-d.sx));w.y=Math.max(0,Math.min(window.innerHeight-80,d.wy+e.clientY-d.sy));updateDOM(w)}
+  if(_resize){var r=_resize,w=r.win,dx=e.clientX-r.sx,dy=e.clientY-r.sy,d=r.dir;var nw=w.w,nh=w.h,nx=w.x,ny=w.y;
+    if(d.indexOf('e')>=0)nw=Math.max(MIN_W,r.sw+dx);if(d.indexOf('w')>=0){nw=Math.max(MIN_W,r.sw-dx);nx=r.lx+dx}
+    if(d.indexOf('s')>=0)nh=Math.max(MIN_H,r.sh+dy);if(d.indexOf('n')>=0){nh=Math.max(MIN_H,r.sh-dy);ny=r.ly+dy}
+    w.w=nw;w.h=nh;w.x=nx;w.y=ny;updateDOM(w)}
+});
+
+document.addEventListener('mouseup',function(){_drag=null;_resize=null});
+
+// Touch
+document.addEventListener('touchstart',function(e){
+  var act=e.target.closest('[data-act]');if(!act||!act.classList.contains('window-titlebar'))return;
+  var wel=act.closest('.window');if(!wel)return;
+  var w=findWin(parseInt(wel.getAttribute('data-wid')));if(!w||w.max)return;
+  if(!w.active)focusWin(w.id);var t=e.touches[0];_drag={win:w,sx:t.clientX,sy:t.clientY,wx:w.x,wy:w.y}
+},{passive:false});
+
+document.addEventListener('touchmove',function(e){
+  if(_drag){var d=_drag,w=d.win,t=e.touches[0];w.x=Math.max(-w.w+80,Math.min(window.innerWidth-80,d.wx+t.clientX-d.sx));w.y=Math.max(0,Math.min(window.innerHeight-80,d.wy+t.clientY-d.sy));updateDOM(w)}
+},{passive:false});
+
+document.addEventListener('touchend',function(){_drag=null});
+
+// Keyboard
+document.addEventListener('keydown',function(e){
+  if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();var o=document.getElementById('launcherOverlay');if(o&&o.classList.contains('show'))closeLauncher();else openLauncher()}
+  if(e.key==='Escape'){closeLauncher()}
+});
+
+// Resize handler
+window.addEventListener('resize',function(){var m=window.innerWidth<=800;for(var i=0;i<_windows.length;i++){if(m){_windows[i].max=true}updateDOM(_windows[i])}});
+
+// Init
+renderIcons();
+initLauncher();
+
+// Clock
+(function tick(){var e=document.getElementById('tbClock');if(e){var n=new Date();e.textContent=('0'+n.getHours()).slice(-2)+':'+('0'+n.getMinutes()).slice(-2)}setTimeout(tick,30000)})();
+
+// Taskbar buttons
+document.getElementById('tbLauncher').onclick=function(){var o=document.getElementById('launcherOverlay');if(o.classList.contains('show'))closeLauncher();else openLauncher()};
+document.getElementById('tbDesktop').onclick=function(){minAll()};
+
+// Launcher backdrop click
+document.getElementById('launcherOverlay').addEventListener('click',function(e){if(e.target===this)closeLauncher()});
+
+// Glow (simple)
+(function(){var g=document.getElementById('glowSpot');if(!g||('ontouchstart' in window))return;var gx=innerWidth/2,gy=innerHeight/2,tx=gx,ty=gy;document.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY});(function anim(){gx+=(tx-gx)*0.05;gy+=(ty-gy)*0.05;g.style.background='radial-gradient(circle 420px at '+gx.toFixed(0)+'px '+gy.toFixed(0)+'px,rgba(99,102,241,.06) 0%,rgba(236,72,153,.035) 18%,rgba(6,182,212,.02) 42%,transparent 70%)';requestAnimationFrame(anim)})()})();
+
+console.log('[Desktop] '+APPS.length+' apps ready');
+})();
+</script>
+</body>
+</html>
