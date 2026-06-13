@@ -1,0 +1,312 @@
+/* ═══════════════════════════════════════════════════════
+   AI Nav Desktop OS — 飞牛式桌面交互样式
+   依赖: shared.css (Token 系统)
+   ═══════════════════════════════════════════════════════ */
+
+/* ═══ Desktop Background ═══ */
+.desktop-area {
+  position: fixed; inset: 0; z-index: 1;
+  /* 继承 .bg orbs 作为壁纸 */
+  padding-bottom: 64px; /* 任务栏高度 */
+}
+.desktop-icons {
+  position: absolute; inset: 12px 12px 76px;
+  display: flex; flex-direction: column; flex-wrap: wrap;
+  align-content: flex-start; align-items: flex-start;
+  gap: 10px;
+}
+
+/* ═══ Desktop Icon (对齐飞牛 144x120 / 52x52) ═══ */
+.desk-icon {
+  display: flex; flex-direction: column; align-items: center;
+  width: 144px; height: 120px; cursor: pointer;
+  border-radius: var(--radius-xl);
+  transition: background var(--dur-fast) var(--ease-out);
+  padding: 8px 4px; gap: 6px;
+  user-select: none;
+}
+.desk-icon:hover { background: rgba(255,255,255,.06) }
+.desk-icon:active { background: rgba(255,255,255,.12); transform: scale(.95) }
+.desk-icon .dsk-img {
+  width: 52px; height: 52px; border-radius: var(--radius-md);
+  background: var(--surface-card); border: 1px solid var(--border-subtle);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; flex-shrink: 0;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.desk-icon:hover .dsk-img { transform: scale(1.06) }
+.desk-icon .dsk-label {
+  font-size: 14px; font-weight: 700; color: #fff;
+  text-align: center; line-height: 18px;
+  text-shadow: 0 1px 6px rgba(0,0,0,.2), 0 0 4px rgba(0,0,0,.5);
+  max-width: 128px; display: -webkit-box;
+  -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  word-break: break-word;
+}
+
+/* ═══ Floating Window ═══ */
+.window {
+  position: absolute;
+  border-radius: var(--radius-lg);
+  background: var(--surface-elevated);
+  backdrop-filter: saturate(180%) var(--blur-lg);
+  -webkit-backdrop-filter: saturate(180%) var(--blur-lg);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-glow-md), var(--shadow-xl);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  min-width: 320px; min-height: 240px;
+  transition: box-shadow var(--dur-normal) var(--ease-out),
+              border-color var(--dur-normal) var(--ease-out);
+  z-index: 10;
+}
+.window.active {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-glow-lg), 0 24px 80px rgba(0,0,0,.5);
+}
+.window.inactive {
+  opacity: .88;
+  border-color: var(--border-subtle);
+}
+.window.minimizing {
+  transition: all var(--dur-slow) var(--ease-in-out);
+  opacity: 0; transform: translateY(100px) scale(.3);
+  pointer-events: none;
+}
+.window.maximized {
+  inset: 0 0 64px 0 !important; /* 底部留任务栏空间 */
+  width: 100% !important; height: auto !important;
+  border-radius: 0; border: none;
+}
+.window.maximized .window-body { border-radius: 0 }
+
+/* ── Title Bar (40px, 对齐飞牛 44px 但咱更紧凑) ── */
+.window-titlebar {
+  height: 40px; min-height: 40px; flex-shrink: 0;
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 6px 0 14px;
+  background: rgba(255,255,255,.03);
+  border-bottom: 1px solid var(--border-subtle);
+  cursor: grab; user-select: none;
+}
+.window-titlebar:active { cursor: grabbing }
+.window-icon { font-size: 18px; flex-shrink: 0 }
+.window-title {
+  flex: 1; font-size: 13px; font-weight: 600; color: var(--text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  min-width: 0;
+}
+
+/* ── Window Control Buttons (对齐飞牛) ── */
+.window-ctrls { display: flex; gap: 2px; flex-shrink: 0; margin-left: auto }
+.window-ctrls button {
+  width: 28px; height: 28px; border: none; background: transparent;
+  color: var(--text-tertiary); font-size: 14px; cursor: pointer;
+  border-radius: var(--radius-xs);
+  display: flex; align-items: center; justify-content: center;
+  font-family: inherit; line-height: 1;
+  transition: all var(--dur-fast) var(--ease-out);
+}
+.window-ctrls button:hover {
+  background: var(--surface-card-hover);
+  color: var(--text-primary);
+}
+.win-close:hover { background: var(--color-danger) !important; color: #fff !important }
+.win-close:active { background: #cc3333 !important }
+
+/* ── Window Body ── */
+.window-body {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  padding: 16px;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  /* 原 SPA 页面内容继承所有原有样式 */
+}
+.window-body::-webkit-scrollbar { width: 4px }
+.window-body::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.08); border-radius: 2px;
+}
+
+/* ── Resize Handles (6px 热区) ── */
+.win-resize-n, .win-resize-s { position: absolute; left: 6px; right: 6px; height: 6px; z-index: 5 }
+.win-resize-n { top: 0; cursor: n-resize }
+.win-resize-s { bottom: 0; cursor: s-resize }
+.win-resize-e, .win-resize-w { position: absolute; top: 6px; bottom: 6px; width: 6px; z-index: 5 }
+.win-resize-e { right: 0; cursor: e-resize }
+.win-resize-w { left: 0; cursor: w-resize }
+.win-resize-ne, .win-resize-nw, .win-resize-se, .win-resize-sw {
+  position: absolute; width: 12px; height: 12px; z-index: 5;
+}
+.win-resize-ne { top: 0; right: 0; cursor: ne-resize }
+.win-resize-nw { top: 0; left: 0; cursor: nw-resize }
+.win-resize-se { bottom: 0; right: 0; cursor: se-resize }
+.win-resize-sw { bottom: 0; left: 0; cursor: sw-resize }
+
+/* ═══ Taskbar (底部全宽, 64px) ═══ */
+.taskbar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 500;
+  height: 64px;
+  background: var(--surface-elevated);
+  backdrop-filter: saturate(200%) var(--blur-lg);
+  -webkit-backdrop-filter: saturate(200%) var(--blur-lg);
+  border-top: 1px solid var(--border-default);
+  box-shadow: 0 -4px 32px rgba(0,0,0,.3), var(--shadow-glow-sm);
+  padding: 0 8px;
+  display: flex; align-items: center; gap: 4px;
+}
+.taskbar-left {
+  display: flex; align-items: center; gap: 2px; flex-shrink: 0;
+}
+.taskbar-center {
+  flex: 1; display: flex; align-items: center; gap: 2px;
+  overflow-x: auto; justify-content: center; min-width: 0;
+}
+.taskbar-center::-webkit-scrollbar { display: none }
+.taskbar-right {
+  display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* ── Taskbar Buttons ── */
+.tb-btn {
+  width: 44px; height: 44px; border: none; background: transparent;
+  border-radius: var(--radius-sm); color: var(--text-tertiary);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 16px; flex-shrink: 0;
+  transition: all var(--dur-fast) var(--ease-out);
+  position: relative; font-family: inherit;
+}
+.tb-btn:hover {
+  background: var(--surface-card-hover);
+  color: var(--text-primary);
+}
+.tb-btn:active { transform: scale(.93) }
+
+/* Taskbar running window indicator */
+.tb-window-btn {
+  width: 48px; height: 44px; border: none; background: transparent;
+  border-radius: var(--radius-sm); color: var(--text-secondary);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 14px; flex-shrink: 0;
+  transition: all var(--dur-fast) var(--ease-out);
+  position: relative; font-family: inherit;
+}
+.tb-window-btn:hover {
+  background: var(--surface-card-hover);
+  color: var(--text-primary);
+}
+.tb-window-btn.active {
+  background: var(--brand-primary-bg);
+  color: var(--brand-primary);
+}
+.tb-window-btn.active::after {
+  content: ''; position: absolute; bottom: 3px; left: 50%;
+  transform: translateX(-50%);
+  width: 16px; height: 3px; border-radius: 2px;
+  background: var(--brand-primary);
+}
+
+/* Taskbar clock */
+.tb-clock {
+  font-size: 13px; color: var(--text-secondary);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+}
+.tb-weather {
+  font-size: 12px; color: var(--color-warning); white-space: nowrap;
+}
+
+/* ═══ Launcher (Cmd+K / 启动台) ═══ */
+.launcher-overlay {
+  position: fixed; inset: 0; z-index: 600;
+  background: rgba(0,0,0,.7);
+  backdrop-filter: var(--blur-lg);
+  -webkit-backdrop-filter: var(--blur-lg);
+  display: flex; align-items: flex-start; justify-content: center;
+  padding-top: 18vh;
+  opacity: 0; pointer-events: none;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.launcher-overlay.show {
+  opacity: 1; pointer-events: auto;
+}
+.launcher-panel {
+  width: min(480px, calc(100vw - 32px));
+  max-height: 60vh;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  transform: scale(.92);
+  transition: transform var(--dur-fast) var(--ease-spring);
+}
+.launcher-overlay.show .launcher-panel { transform: scale(1) }
+.launcher-search {
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.launcher-search input {
+  width: 100%; padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-default);
+  background: var(--surface-card);
+  color: var(--text-primary); font-size: 15px;
+  font-family: inherit; outline: none;
+  transition: all var(--dur-fast) var(--ease-out);
+}
+.launcher-search input:focus {
+  border-color: rgba(255,255,255,.25);
+  box-shadow: 0 0 20px rgba(99,102,241,.12);
+}
+.launcher-search input::placeholder { color: var(--text-disabled) }
+.launcher-results {
+  flex: 1; overflow-y: auto; padding: 8px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 6px;
+}
+.launcher-results::-webkit-scrollbar { width: 4px }
+.launcher-results::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.08); border-radius: 2px;
+}
+.launcher-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; border-radius: var(--radius-md);
+  cursor: pointer; font-size: 13px; font-weight: 500;
+  color: var(--text-secondary);
+  transition: all var(--dur-fast) var(--ease-out);
+}
+.launcher-item:hover {
+  background: var(--surface-card-hover);
+  color: var(--text-primary);
+}
+.launcher-item .launcher-icon {
+  font-size: 20px; flex-shrink: 0;
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--surface-card); display: flex;
+  align-items: center; justify-content: center;
+}
+
+/* ═══ Responsive ═══ */
+@media (max-width: 800px) {
+  .window {
+    inset: 0 0 64px 0 !important;
+    width: 100% !important; height: auto !important;
+    border-radius: 0; border: none;
+  }
+  .window-body { border-radius: 0 }
+  .win-resize-n, .win-resize-s, .win-resize-e, .win-resize-w,
+  .win-resize-ne, .win-resize-nw, .win-resize-se, .win-resize-sw { display: none }
+  .window-titlebar { cursor: default }
+  .desktop-icons { display: none }
+  .taskbar { height: 56px }
+  .taskbar-center { display: none } /* 移动端不显示窗口按钮，用底部导航 */
+}
+
+@media (max-width: 520px) {
+  .taskbar { height: 50px; padding: 0 4px }
+  .tb-btn { width: 36px; height: 36px }
+  .launcher-panel { width: calc(100vw - 16px) }
+  .launcher-results { grid-template-columns: repeat(2, 1fr) }
+}
